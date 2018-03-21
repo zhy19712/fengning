@@ -2,6 +2,18 @@
 // 应用公共文件
 
 /**
+ * OBJECT对象转ARRAY数组
+ * @param  [object]
+ * @return [array]
+ */
+
+
+function object2array(&$object) {
+    $object =  json_decode( json_encode( $object),true);
+    return  $object;
+}
+
+/**
  * 根据附件表的id返回url地址
  * @param  [type] $id [description]
  * @return [type]     [description]

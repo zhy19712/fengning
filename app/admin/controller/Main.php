@@ -6,6 +6,7 @@ namespace app\admin\controller;
 use \think\Db;
 use \think\Cookie;
 use app\admin\controller\Permissions;
+
 class Main extends Permissions
 {
     public function index()
@@ -13,4 +14,6 @@ class Main extends Permissions
 
         return $this->fetch();
     }
+
+
 }
