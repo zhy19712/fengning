@@ -25,7 +25,7 @@ class Common extends Controller
 
 
     /**
-     * 图片上传方法
+     * 上传方法
      * @return [type] [description]
      */
     public function upload($module='admin',$use='admin_thumb')

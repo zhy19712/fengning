@@ -22,10 +22,6 @@
             </ul>
             <ul class="layui-nav layui-layout-right kit-nav">
                 <li class="layui-nav-item"><a href="javascript:;" id="tag" style="color:#333;"><i class="fa fa-tag" aria-hidden="true"></i></a></li>
-                <li class="layui-nav-item" style="background-color: transparent !important;">
-                    <a href="javascript:;" id="color" style="color:#333;" class="refresh">皮肤<span class="layui-badge-dot"></span></a>
-                    </a>
-                </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;" style="color:#333;">
                         <img src="{$cookie.thumb|geturl}" class="layui-nav-img">欢迎, {empty name="$cookie.nickname"}{$cookie.name}{else /}{$cookie.nickname}{/empty}
@@ -35,5 +31,10 @@
                         <dd><a href="javascript:;"  id="logout" style="color:#333;"><span><i class="fa fa-sign-out" aria-hidden="true"></i> 退了</span></a></dd>
                     </dl>
                 </li>
+                <li class="layui-nav-item" style="background-color: transparent !important;">
+                    <a href="javascript:;" id="color" style="color:#333;" class="refresh">皮肤<span class="layui-badge-dot"></span></a>
+                    </a>
+                </li>
+
             </ul>
         </div>
