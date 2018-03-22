@@ -31,25 +31,32 @@
   <script>
       $(document).ready(function() {
           // $.ajax({
-          //     url:"{:url('admin/main/datatables')}"
-          //     ,type:'post'
-          //     ,data:{draw:0}
-          //     ,success:function(res){
+          //     url:"{:url('admin/common/dataJoin')}",
+          //     type:'get',
+          //     success:function(res){
           //         console.log(res)
           //     }
           // })
-        var columns = ['id','name','position','office'];
+
           $('#example').dataTable( {
               "processing": true,
               "serverSide": true,
               "ajax": {
-                  "url": "{:url('admin/common/datatables?tableName=datatables_example')}"
+                  "url": "{:url('admin/common/datatablesSingle?tableName=datatables_example&field=id&op=>&condition=1')}"
               },
               columns: [
-                  {"name": "id"},
-                  {"name": "name"},
-                  {"name": "position"},
-                  {"name": "office"}
+                  {
+                      name: "id"
+                  },
+                  {
+                      name: "name"
+                  },
+                  {
+                      name: "position"
+                  },
+                  {
+                      name: "office"
+                  }
               ]
           } );
       } );

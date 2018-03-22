@@ -2,11 +2,13 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\DatatablesExample;
 use \think\Cache;
 use \think\Controller;
 use think\Loader;
 use think\Db;
 use \think\Cookie;
+use think\Model;
 use \think\Session;
 class Common extends Controller
 {
@@ -14,7 +16,7 @@ class Common extends Controller
      * datatables单表查询搜索排序分页
      * 输入参数$table:表名 string
      * 输入参数$columns:对应列名 array
-     * 输入参数$where:查询条件
+     * 输入参数$field $op $condition:查询条件
      * 输入参数$draw:不知道干嘛的，但是必要
      * 输入参数$order_column:排序列
      * 输入参数$order_dir:升/降序
@@ -23,13 +25,15 @@ class Common extends Controller
      * 输入参数$length:分页长度
      * @return [type] [description]
      */
-    function datatables()
+    function datatablesSingle()
     {
         //接收表名，列名数组 必要
         $columns = $this->request->param('columns/a');
         $table = $this->request->param('tableName');
         //接收查询条件，可以为空
-        $where = $this->request->param('where');
+        $field = $this->request->param('field');
+        $op = $this->request->param('op');
+        $condition = $this->request->param('condition');
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
@@ -64,16 +68,23 @@ class Common extends Controller
         $recordsTotal = Db::name($table)->count(0);
         $recordsFilteredResult = array();
         if(strlen($search)>0){
+            //没有搜索条件的情况
             if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->where($field,$op,$condition)->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         }else{
+            //有搜索条件的情况
             if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where($field,$op,$condition)->order($order)->limit(intval($start),intval($length))->select();
+                //*****多表查询join改这里******
+                //$recordsFilteredResult = Db::name('datatables_example')->alias('d')->join('datatables_example_join e','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
+
                 $recordsFiltered = $recordsTotal;
             }
         }
+
         $temp = array();
         $infos = array();
         foreach ($recordsFilteredResult as $key => $value) {
