@@ -10,7 +10,7 @@ namespace app\contract\controller;
 
 use app\admin\controller\Permissions;
 
-class contract extends Permissions
+class Contract extends Permissions
 
 {
     public function index()
