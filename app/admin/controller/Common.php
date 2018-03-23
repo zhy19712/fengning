@@ -204,6 +204,9 @@ class Common extends Controller
                             }
                         }
                         Session::set("admin",$name['id']); //保存新的
+                        Session::set("current_name",$name['name']); //保存新的
+                        Session::set("current_id",$name['id']); //保存新的
+                        Session::set("current_nickname",$name['nickname']); //保存新的
                         Session::set("admin_cate_id",$name['admin_cate_id']); //保存新的
                         //记录登录时间和ip
                         Db::name('admin')->where('id',$name['id'])->update(['login_ip' =>  $this->request->ip(),'login_time' => time()]);
