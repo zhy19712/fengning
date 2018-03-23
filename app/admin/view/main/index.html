@@ -24,6 +24,7 @@
       <th>姓名</th>
       <th>职位</th>
       <th>办公室</th>
+      <th>操作</th>
     </tr>
     </thead>
   </table>
@@ -44,6 +45,7 @@
               "ajax": {
                   "url": "{:url('admin/common/datatablesSingle?tableName=datatables_example&field=id&op=>&condition=1')}"
               },
+              dom:'lf<".layui-btn-group"<"#add.layui-btn layui-btn-sm layui-btn-normal"><"#import.layui-btn layui-btn-sm layui-btn-normal">>tipr',
               columns: [
                   {
                       name: "id"
@@ -57,8 +59,38 @@
                   {
                       name: "office"
                   }
-              ]
+              ],
+              columnDefs: [
+                  {
+                      searchable: false,
+                      orderable: false,
+                      targets: 4,
+                      render :  function(data,type,row) {
+                          var html = "<div class='layui-btn-group'><button type='button' class='layui-btn layui-btn-xs' style='margin-left: 5px;' onclick='showpdf1(this)'><i class='layui-icon'>&#xe60a;</i></button>" ;
+                          html += "<button type='button' class='layui-btn layui-btn-sm' style='margin-left: 5px;' onclick='download(this)'><i class='layui-icon'>&#xe601;</i></button>";
+                          html += "<button type='button' class='layui-btn layui-btn-sm' style='margin-left: 5px;' onclick='zedit(this)'><i class='layui-icon'>&#xe642;</i></button>";
+                          html += "<button type='button' class='layui-btn layui-btn-xs' style='margin-left: 5px;' onclick='del(this)'><i class='layui-icon'>&#xe640;</i></button></div>";
+                          return html;
+                      }
+                  }
+              ],
+              language: {
+                  "sProcessing": "数据加载中...",
+                  "lengthMenu": "每页_MENU_ 条记录",
+                  "zeroRecords": "没有找到记录",
+                  "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+                  "infoEmpty": "无记录",
+                  "search": "搜索：",
+                  "infoFiltered": "(从 _MAX_ 条记录过滤)",
+                  "paginate": {
+                      "previous": "上一页",
+                      "next": "下一页"
+                  }
+              }
           } );
+
+          $('#add').html('添加');
+          $('#import').html('导入');
       } );
   </script>
   </body>
