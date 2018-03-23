@@ -22,6 +22,15 @@ class Contract extends Permissions
     }
 
     /**
+     * 添加
+     * @return mixed
+     */
+    public function add()
+    {
+        return $this->fetch();
+    }
+
+    /**
      * 新增或修改
      * @return array
      */
