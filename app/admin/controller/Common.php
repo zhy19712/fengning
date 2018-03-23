@@ -16,12 +16,12 @@ class Common extends Controller
      * datatables单表查询搜索排序分页
      * 输入参数$table:表名 string
      * 输入参数$columns:对应列名 array
-     * 输入参数$draw:不知道干嘛的，但是必要
-     * 输入参数$order_column:排序列
-     * 输入参数$order_dir:升/降序
-     * 输入参数$search:搜索条件
-     * 输入参数$start:分页开始
-     * 输入参数$length:分页长度
+     * 输入参数$draw:不知道干嘛的，但是必要 int
+     * 输入参数$order_column:排序列 int
+     * 输入参数$order_dir:升/降序 string
+     * 输入参数$search:搜索条件 string
+     * 输入参数$start:分页开始 int
+     * 输入参数$length:分页长度 int
      * @return [type] [description]
      */
     function datatablesPre()
@@ -30,9 +30,6 @@ class Common extends Controller
         $columns = $this->request->param('columns/a');
         $table = $this->request->param('tableName');
         //接收查询条件，可以为空
-        $field = $this->request->param('field');
-        $op = $this->request->param('op');
-        $condition = $this->request->param('condition');
         $columnNum = sizeof($columns);
         $columnString = '';
         for ($i = 0; $i < $columnNum; $i++) {
