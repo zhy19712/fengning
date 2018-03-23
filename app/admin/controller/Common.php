@@ -72,14 +72,14 @@ class Common extends Controller
         $recordsTotal = Db::name($table)->count(0);
         $recordsFilteredResult = array();
         if(strlen($search)>0){
-            //没有搜索条件的情况
+            //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         }else{
-            //有搜索条件的情况
+            //没有搜索条件的情况
             if($limitFlag){
                 $recordsFilteredResult = Db::name($table)->order($order)->limit(intval($start),intval($length))->select();
                 //*****多表查询join改这里******
