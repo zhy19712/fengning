@@ -7,15 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="__CSS__/animate.min.css" media="all">
-    <link rel="stylesheet" href="__CSS__/bootstrap.min.css" media="all">
     <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all">
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="__JS__/jquery.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="__JS__/jquery.jedate.js"></script>
-    <script type="text/javascript" charset="utf8" src="__JS__/jquery.jedate.js"></script>
-    <script type="text/javascript" charset="utf8" src="__JS__/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="__PUBLIC__/jquery/jquery.min.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <style type="text/css">
         #path{
             line-height: 30px;
@@ -113,17 +110,7 @@
                 "url":"{:url('contract/common/datatablesPre?tableName=contract')}"
             },
             "dom": '<"mybtn layui-btn layui-btn-sm"><"selectyear"><"myl"l><"float_left"f>tip',
-            "columnDefs": [
-                {
-                    "searchable": false,
-                    "orderable": false,
-                    "targets": [6],
-                    "render" :  function(data,type,row) {
-                        var html =  "<input type='button' class='layui-btn layui-btn-xs btn-xs' style='margin-left: 5px;' onclick='riskEdit(this)' value='编辑'/>" ;
-                        html += "<input type='button' class='btn btn-danger btn-outline btn-xs' style='margin-left: 5px;' onclick='del(this)' value='删除'/>" ;
-                        return html;
-                    }
-                },
+            columns:[
                 {
                     name: "contractCode"
                 },
@@ -143,7 +130,21 @@
                     name: "signingDate"
                 }
             ],
-            "language": {
+            columnDefs: [
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: [6],
+                    render :  function(data,type,row) {
+                        var html =  "<input type='button' class='layui-btn layui-btn-xs btn-xs' style='margin-left: 5px;' onclick='riskEdit(this)' value='编辑'/>" ;
+                        html += "<input type='button' class='btn btn-danger btn-outline btn-xs' style='margin-left: 5px;' onclick='del(this)' value='删除'/>" ;
+                        return html;
+                    }
+                },
+
+
+            ],
+            language: {
                 "lengthMenu": "每页_MENU_ 条记录",
                 "zeroRecords": "没有找到记录",
                 "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
