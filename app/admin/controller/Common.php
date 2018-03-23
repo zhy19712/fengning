@@ -16,7 +16,6 @@ class Common extends Controller
      * datatables单表查询搜索排序分页
      * 输入参数$table:表名 string
      * 输入参数$columns:对应列名 array
-     * 输入参数$field $op $condition:查询条件
      * 输入参数$draw:不知道干嘛的，但是必要
      * 输入参数$order_column:排序列
      * 输入参数$order_dir:升/降序
