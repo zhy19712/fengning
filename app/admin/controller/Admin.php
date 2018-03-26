@@ -97,7 +97,7 @@ class Admin extends Permissions
                 //是提交操作
                 $post = $this->request->post();
                 //验证昵称是否存在
-                $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->select();
+                $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->find();
                 if(!empty($nickname)) {
                     return $this->error('提交失败：该昵称已被占用');
                 }
@@ -146,12 +146,12 @@ class Admin extends Permissions
 	                $this->error('提交失败：' . $validate->getError());
 	            }
 	            //验证用户名是否存在
-	            $name = $model->where(['name'=>$post['name'],'id'=>['neq',$post['id']]])->select();
+	            $name = $model->where(['name'=>$post['name'],'id'=>['neq',$post['id']]])->find();
 	            if(!empty($name)) {
 	            	return $this->error('提交失败：该用户名已被注册');
 	            }
 	            //验证昵称是否存在
-	            $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->select();
+	            $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->find();
 	            if(!empty($nickname)) {
 	            	return $this->error('提交失败：该昵称已被占用');
 	            }
@@ -185,12 +185,12 @@ class Admin extends Permissions
 	                $this->error('提交失败：' . $validate->getError());
 	            }
 	            //验证用户名是否存在
-	            $name = $model->where('name',$post['name'])->select();
+	            $name = $model->where('name',$post['name'])->find();
 	            if(!empty($name)) {
 	            	return $this->error('提交失败：该用户名已被注册');
 	            }
 	            //验证昵称是否存在
-	            $nickname = $model->where('nickname',$post['nickname'])->select();
+	            $nickname = $model->where('nickname',$post['nickname'])->find();
 	            if(!empty($nickname)) {
 	            	return $this->error('提交失败：该昵称已被占用');
 	            }
@@ -255,6 +255,32 @@ class Admin extends Permissions
             $this->assign('id',$id);
     		return $this->fetch();
     	}
+    }
+
+    /**
+     * 重置密码
+     * @return mixed|void
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * @author hutao
+     */
+    public function editPwd()
+    {
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+        if($id > 0){
+            if(Session::get('admin') == 1) {
+                // 管理员可以重置他人密码为 '123456'
+                if(false == Db::name('admin')->where('id',$id)->update(['password'=>password('123456')])) {
+                    return $this->error('重置失败');
+                } else {
+                    addlog();//写入日志
+                    return $this->success('重置成功');
+                }
+            } else {
+                return $this->error('没有权限重置他人密码');
+            }
+        }
+        return $this->fetch();
     }
 
 
