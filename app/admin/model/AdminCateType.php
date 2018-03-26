@@ -5,7 +5,7 @@
  * Date: 2018/3/26
  * Time: 10:19
  */
-namespace app\contract\model;
+namespace app\admin\model;
 
 use think\Model;
 use think\Session;
