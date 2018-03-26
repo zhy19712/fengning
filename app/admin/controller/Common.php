@@ -28,6 +28,8 @@ class Common extends Controller
     {
         //接收表名，列名数组 必要
         $columns = $this->request->param('columns/a');
+        //获取查询条件
+        $pid = $this->request->has('pid') ? $this->request->param('pid', 0, 'intval') : 0;
         $table = $this->request->param('tableName');
         //接收查询条件，可以为空
         $columnNum = sizeof($columns);
@@ -56,10 +58,10 @@ class Common extends Controller
         $length = $this->request->has('length') ? $this->request->param('length', 0, 'intval') : 0;
         $limitFlag = isset($start) && $length != -1 ;
         //新建的方法名与数据库表名保持一致
-        return $this->$table($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
+        return $this->$table($pid,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
     }
 
-    public function datatables_example($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function datatables_example($pid,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
         //查询
         //条件过滤后记录数 必要
@@ -72,7 +74,7 @@ class Common extends Controller
             //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where('pid',$pid)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         }else{
