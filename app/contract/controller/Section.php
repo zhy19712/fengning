@@ -9,14 +9,28 @@
 namespace app\contract\controller;
 
 use app\admin\controller\Permissions;
+use app\admin\model\AdminCate;
+use app\admin\model\AdminGroup;
 use app\contract\model\SectionModel;
 
 class Section extends Permissions
 {
+
     public function index()
     {
         return $this->fetch();
     }
+    public function add()
+    {
+       $orgs=AdminGroup::all(['category'=>1,'']);
+        $this->assign('orgs',json_encode($orgs));
+        return $this->fetch();
+    }
+
+    /**
+     * 标段——新增或修改
+     * @return array
+     */
     public function addoredit()
     {
         if ($this->request->isAjax()) {
@@ -34,6 +48,11 @@ class Section extends Permissions
             }
         }
     }
+
+    /**
+     * 标段——删除
+     * @return array
+     */
     public function del()
     {
         if ($this->request->isAjax()) {

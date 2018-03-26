@@ -2,49 +2,89 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\AdminGroup;
 use \think\Db;
-use \think\Cookie;
 use \think\Session;
 use app\admin\model\Admin as adminModel;//管理员模型
 use app\admin\model\AdminMenu;
-use app\admin\controller\Permissions;
 class Admin extends Permissions
 {
     /**
-     * 管理员列表
-     * @return [type] [description]
+     * 获取 组织机构 左侧的树结构
+     * @return mixed|\think\response\Json
+     * @author hutao
      */
     public function index()
     {
-        //实例化管理员模型
-        $model = new adminModel();
-
-        $post = $this->request->param();
-        if (isset($post['keywords']) and !empty($post['keywords'])) {
-            $where['nickname'] = ['like', '%' . $post['keywords'] . '%'];
+        // 获取左侧的树结构
+        if(request()->isAjax()){
+            $node = new AdminGroup();
+            $nodeStr = $node->getNodeInfo();
+            return json($nodeStr);
         }
-        if (isset($post['admin_cate_id']) and $post['admin_cate_id'] > 0) {
-            $where['admin_cate_id'] = $post['admin_cate_id'];
-        }
- 
-        if(isset($post['create_time']) and !empty($post['create_time'])) {
-            $min_time = strtotime($post['create_time']);
-            $max_time = $min_time + 24 * 60 * 60;
-            $where['create_time'] = [['>=',$min_time],['<=',$max_time]];
-        }
-        
-        $admin = empty($where) ? $model->order('create_time desc')->paginate(20) : $model->where($where)->order('create_time desc')->paginate(20,false,['query'=>$this->request->param()]);
-        
-        $this->assign('admin',$admin);
-        $info['cate'] = Db::name('admin_cate')->select();
-        $this->assign('info',$info);
         return $this->fetch();
     }
 
-    
+    /**
+     * 新增 或者 编辑 组织机构的节点
+     * @return mixed|\think\response\Json
+     * @author hutao
+     */
+    public function editNode()
+    {
+        if(request()->isAjax()){
+            $node = new AdminGroup();
+            $param = input('post.');
+            /**
+             * 前台需要传递的是 pid 父级节点编号,type 机构类型,name 节点名称
+             * 系统自动判断赋值 category 1 组织机构 2 部门
+             */
+            if(empty($param['type'])){
+                $data = ['pid' => $param['pid'],'category' => '2','name' => $param['name']];
+            }else{
+                $data = ['pid' => $param['pid'],'category' => '1','type' => $param['type'],'name' => $param['name']];
+            }
+            if(empty($param['id'])){
+                $flag = $node->insertTb($data);
+                return json($flag);
+            }else{
+                $data['id'] = $param['id'];
+                $flag = $node->editTb($data);
+                return json($flag);
+            }
+        }
+        return $this->fetch();
+    }
+
+    /**
+     * 删除 组织机构的节点
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function delNode()
+    {
+        $param = input('post.');
+        $node = new AdminGroup();
+        // 是否包含子节点
+        $exist = $node->isParent($param['id']);
+        if(!empty($exist)){
+            return json(['code' => -1,'msg' => '包含子节点,不能删除']);
+        }
+        // 先删除节点下的用户
+        $user = new AdminModel();
+        $user->delUserByGroupId($param['id']);
+        // 最后删除此节点
+        $flag = $node->deleteTb($param);
+        return json($flag);
+    }
+
+
     /**
      * 管理员个人资料修改，属于无权限操作，仅能修改昵称和头像，后续可增加其他字段
-     * @return [type] [description]
+     * @return mixed|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function personal()
     {
@@ -57,7 +97,7 @@ class Admin extends Permissions
                 //是提交操作
                 $post = $this->request->post();
                 //验证昵称是否存在
-                $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->select();
+                $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->find();
                 if(!empty($nickname)) {
                     return $this->error('提交失败：该昵称已被占用');
                 }
@@ -81,7 +121,10 @@ class Admin extends Permissions
 
     /**
      * 管理员的添加及修改
-     * @return [type] [description]
+     * @return mixed|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function publish()
     {
@@ -103,12 +146,12 @@ class Admin extends Permissions
 	                $this->error('提交失败：' . $validate->getError());
 	            }
 	            //验证用户名是否存在
-	            $name = $model->where(['name'=>$post['name'],'id'=>['neq',$post['id']]])->select();
+	            $name = $model->where(['name'=>$post['name'],'id'=>['neq',$post['id']]])->find();
 	            if(!empty($name)) {
 	            	return $this->error('提交失败：该用户名已被注册');
 	            }
 	            //验证昵称是否存在
-	            $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->select();
+	            $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->find();
 	            if(!empty($nickname)) {
 	            	return $this->error('提交失败：该昵称已被占用');
 	            }
@@ -142,12 +185,12 @@ class Admin extends Permissions
 	                $this->error('提交失败：' . $validate->getError());
 	            }
 	            //验证用户名是否存在
-	            $name = $model->where('name',$post['name'])->select();
+	            $name = $model->where('name',$post['name'])->find();
 	            if(!empty($name)) {
 	            	return $this->error('提交失败：该用户名已被注册');
 	            }
 	            //验证昵称是否存在
-	            $nickname = $model->where('nickname',$post['nickname'])->select();
+	            $nickname = $model->where('nickname',$post['nickname'])->find();
 	            if(!empty($nickname)) {
 	            	return $this->error('提交失败：该昵称已被占用');
 	            }
@@ -168,9 +211,15 @@ class Admin extends Permissions
     	}
     }
 
+
     /**
      * 修改密码
-     * @return [type] [description]
+     * @return mixed|void
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function editPassword()
     {
@@ -208,10 +257,37 @@ class Admin extends Permissions
     	}
     }
 
+    /**
+     * 重置密码
+     * @return mixed|void
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * @author hutao
+     */
+    public function editPwd()
+    {
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+        if($id > 0){
+            if(Session::get('admin') == 1) {
+                // 管理员可以重置他人密码为 '123456'
+                if(false == Db::name('admin')->where('id',$id)->update(['password'=>password('123456')])) {
+                    return $this->error('重置失败');
+                } else {
+                    addlog();//写入日志
+                    return $this->success('重置成功');
+                }
+            } else {
+                return $this->error('没有权限重置他人密码');
+            }
+        }
+        return $this->fetch();
+    }
+
 
     /**
      * 管理员删除
-     * @return [type] [description]
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function delete()
     {
@@ -232,10 +308,11 @@ class Admin extends Permissions
     	}
     }
 
-    
+
     /**
      * 管理员权限分组列表
-     * @return [type] [description]
+     * @return mixed
+     * @throws \think\exception\DbException
      */
     public function adminCate()
     {
@@ -262,7 +339,10 @@ class Admin extends Permissions
 
     /**
      * 管理员角色添加和修改操作
-     * @return [type] [description]
+     * @return mixed|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function adminCatePublish()
     {
@@ -402,10 +482,10 @@ class Admin extends Permissions
         return $menus;
     }
 
-
     /**
      * 管理员角色删除
-     * @return [type] [description]
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function adminCateDelete()
     {
@@ -429,7 +509,8 @@ class Admin extends Permissions
 
     /**
      * 用户禁用/解禁
-     * @return [type] [description]
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function audit()
     {

@@ -1,0 +1,180 @@
+{include file="public/common_header"}
+<style>
+    .mybtn {
+        position: absolute;
+        right: 1%;
+        top: 0;
+    }
+    #tableItem_filter{
+        float: left;
+    }
+    #tableItem_length{
+
+    }
+    .layui-icon{
+        float: left;
+        line-height: 40px;
+        text-align: center;
+        width: 25%;
+    }
+    .layui-icon:hover{
+        background-color:#1E9FFF;
+        color: #fff!important;
+    }
+</style>
+<div data-options="region:'west',title:'角色分类树',split:true" style="width:180px;">
+    <div style="height:30px">
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe654;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe642;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe640;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe61a;</i>
+    </div>
+    <hr />
+    <ul class="ztree" id="ztree"></ul>
+</div>
+<div data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#eee;">
+    <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>角色名称</th>
+            <th>创建人</th>
+            <th>创建时间</th>
+            <th>角色描述</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div data-options="region:'east',title:'管理信息',split:true" style="width:280px;">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">角色用户</li>
+            <li>角色权限</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                1. 高度默认自适应，也可以随意固宽。
+                <br>2. Tab进行了响应式处理，所以无需担心数量多少。
+            </div>
+            <div class="layui-tab-item">内容2</div>
+        </div>
+    </div>
+</div>
+
+{include file="public/common_footer"}
+<script>
+    //字符解码
+    function ajaxDataFilter(treeId, parentNode, responseData) {
+
+        if (responseData) {
+            for(var i =0; i < responseData.length; i++) {
+                responseData[i] = JSON.parse(responseData[i]);
+                responseData[i].name = decodeURIComponent(responseData[i].name);
+            }
+        }
+        return responseData;
+    }
+    //组织结构树
+    var setting = {
+        view: {
+            showLine: true, //设置 zTree 是否显示节点之间的连线。
+            // selectedMulti: false, //设置是否允许同时选中多个节点。
+            // dblClickExpand: true //双击节点时，是否自动展开父节点的标识。
+        },
+        async: {
+            enable : true,
+            autoParam: ["pid"],
+            type : "post",
+            url : "./roletree",
+            dataType :"json",
+            dataFilter: ajaxDataFilter
+        },
+        data:{
+            keep: {
+                leaf : true,
+                parent : true
+            },
+            simpleData : {
+                enable:true,
+                idkey: "id",
+                pIdKey: "pid",
+                rootPId:0
+            }
+        },
+        callback: {
+            onClick: this.onClick
+
+        }
+    };
+
+    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
+
+    //组织结构表格
+    var tableItem = $('#tableItem').DataTable( {
+        pagingType:   "full_numbers",
+        processing: true,
+        serverSide: true,
+        ajax: {
+            "url":"{:url('admin/common/datatablesPre?tableName=admin_cate')}"
+        },
+        // data:[
+        //     [1,1,1,1,1]
+        // ],
+        dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
+        columns:[
+            {
+                name: "id"
+            },
+            {
+                name: "role_name"
+            },
+            {
+                name: "create_owner"
+            },
+            {
+                name: "create_time"
+            },
+            {
+                name: "desc"
+            },
+            {
+                name: "desc"
+            }
+        ],
+        columnDefs: [
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [5],
+                "render" :  function(data,type,row) {
+                    var html = "<i class=\"layui-icon\"></i>" ;
+                    html += "<i class=\"layui-icon\"></i>" ;
+                    html += "<i class=\"layui-icon\">&#xe640;</i>" ;
+                    return html;
+                }
+            }
+        ],
+        language: {
+            "lengthMenu": "每页_MENU_ 条记录",
+            "zeroRecords": "没有找到记录",
+            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+            "infoEmpty": "无记录",
+            "search": "搜索：",
+            "infoFiltered": "(从 _MAX_ 条记录过滤)",
+            "paginate": {
+                "previous": "上一页",
+                "next": "下一页"
+            }
+        }
+    });
+    $(".mybtn").html("新增");
+    //
+    layui.use('element', function(){
+        var $ = layui.jquery
+            ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+    });
+
+</script>
+</body>
+</html>
