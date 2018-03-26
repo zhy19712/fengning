@@ -14,6 +14,7 @@ use think\Model;
 
 class AdminGroup extends Model
 {
+    protected $table='fengning_admin_group';
     //自动写入创建、更新时间
     protected $autoWriteTimestamp = true;
 
