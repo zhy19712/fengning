@@ -23,7 +23,10 @@ class Contract extends Permissions
 
     public function getAll()
     {
-        return json(ContractModel::all()->column('id,contractName'));
+        $m=new ContractModel();
+        $list= $m->select()->field('id');
+//        $list=ContractModel::all();//
+        return json($list);
     }
 
     /**
