@@ -28,6 +28,8 @@ class Common extends Controller
     {
         //接收表名，列名数组 必要
         $columns = $this->request->param('columns/a');
+        //获取查询条件
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         $table = $this->request->param('tableName');
         //接收查询条件，可以为空
         $columnNum = sizeof($columns);
@@ -56,10 +58,10 @@ class Common extends Controller
         $length = $this->request->has('length') ? $this->request->param('length', 0, 'intval') : 0;
         $limitFlag = isset($start) && $length != -1 ;
         //新建的方法名与数据库表名保持一致
-        return $this->$table($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
+        return $this->$table($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
     }
 
-    public function datatables_example($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function datatables_example($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
         //查询
         //条件过滤后记录数 必要
@@ -72,13 +74,55 @@ class Common extends Controller
             //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where('id',$id)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         }else{
             //没有搜索条件的情况
             if($limitFlag){
                 $recordsFilteredResult = Db::name($table)->order($order)->limit(intval($start),intval($length))->select();
+                //*****多表查询join改这里******
+                //$recordsFilteredResult = Db::name('datatables_example')->alias('d')->join('datatables_example_join e','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+    /*
+     * 角色管理
+     */
+    public function admin_cate($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    {
+
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //表的总记录数 必要
+        $recordsTotal = 0;
+        $recordsTotal = Db::name($table)->count(0);
+        $recordsFilteredResult = array();
+        if(strlen($search)>0){
+            //有搜索条件的情况
+            if($limitFlag){
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->where('pid',$id)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        }else{
+            //没有搜索条件的情况
+            if($limitFlag){
+                $recordsFilteredResult = Db::name($table)->where('pid',$id)->order($order)->limit(intval($start),intval($length))->select();
                 //*****多表查询join改这里******
                 //$recordsFilteredResult = Db::name('datatables_example')->alias('d')->join('datatables_example_join e','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
                 $recordsFiltered = $recordsTotal;
