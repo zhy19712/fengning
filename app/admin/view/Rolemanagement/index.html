@@ -8,8 +8,28 @@
     #tableItem_filter{
         float: left;
     }
+    #tableItem_length{
+
+    }
+    .layui-icon{
+        float: left;
+        line-height: 40px;
+        text-align: center;
+        width: 25%;
+    }
+    .layui-icon:hover{
+        background-color:#1E9FFF;
+        color: #fff!important;
+    }
 </style>
 <div data-options="region:'west',title:'角色分类树',split:true" style="width:180px;">
+    <div style="height:30px">
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe654;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe642;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe640;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe61a;</i>
+    </div>
+    <hr />
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#eee;">
@@ -46,8 +66,10 @@
 <script>
     //字符解码
     function ajaxDataFilter(treeId, parentNode, responseData) {
+
         if (responseData) {
             for(var i =0; i < responseData.length; i++) {
+                responseData[i] = JSON.parse(responseData[i]);
                 responseData[i].name = decodeURIComponent(responseData[i].name);
             }
         }
@@ -90,30 +112,34 @@
 
     //组织结构表格
     var tableItem = $('#tableItem').DataTable( {
+        pagingType:   "full_numbers",
         processing: true,
-        // serverSide: true,
-        // ajax: {
-        //     "url": "__SCRIPT__/safety_edupeople.php"
-        // },
-        data:[
-            [1,1,1,1,1]
-        ],
+        serverSide: true,
+        ajax: {
+            "url":"{:url('admin/common/datatablesPre?tableName=admin_cate')}"
+        },
+        // data:[
+        //     [1,1,1,1,1]
+        // ],
         dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
         columns:[
             {
                 name: "id"
             },
             {
-                name: "name"
+                name: "role_name"
             },
             {
-                name: "position"
+                name: "create_owner"
             },
             {
-                name: "office"
+                name: "create_time"
             },
             {
-                name: "office"
+                name: "desc"
+            },
+            {
+                name: "desc"
             }
         ],
         columnDefs: [
@@ -122,8 +148,9 @@
                 "orderable": false,
                 "targets": [5],
                 "render" :  function(data,type,row) {
-                    var html = "<input type='button' class='btn btn-primary btn-outline btn-xs' style='margin-left: 5px;' onclick='manageEdit(this)' value='编辑'/>" ;
-                    html += "<input type='button' class='btn btn-danger btn-outline btn-xs' style='margin-left: 5px;' onclick='manageDel(this)' value='删除'/>" ;
+                    var html = "<i class=\"layui-icon\"></i>" ;
+                    html += "<i class=\"layui-icon\"></i>" ;
+                    html += "<i class=\"layui-icon\">&#xe640;</i>" ;
                     return html;
                 }
             }
@@ -147,6 +174,7 @@
         var $ = layui.jquery
             ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
     });
+
 </script>
 </body>
 </html>
