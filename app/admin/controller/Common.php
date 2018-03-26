@@ -100,7 +100,7 @@ class Common extends Controller
     /*
      * 角色管理
      */
-    function rolemanagement($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    function admin_cate($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
         //查询
         //条件过滤后记录数 必要
