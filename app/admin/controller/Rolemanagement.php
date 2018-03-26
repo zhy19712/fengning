@@ -112,11 +112,12 @@ class Rolemanagement extends Permissions
         $user = new AdminModel();
         $cate = new AdminCate();
         $data = $cate->findcateid($param['id']);
+
         if(!empty($data))
         {
-            foreach ((array)$data as $k=>$v)
+            foreach ((array)$data as $v)
             {
-                $user->delUserByCateId($v['id']);//循环删除同个admin_cate_id下的用户
+                $user->delUserByCateId($v);//循环删除同个admin_cate_id下的用户
             }
         }
 

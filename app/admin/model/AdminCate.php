@@ -15,7 +15,9 @@ class AdminCate extends Model
      */
     public function findcateid($id)
     {
-        $data = $this->field("id")->where("pid",$id)->select();
+        $data = $this->where("pid",$id)->column("id");
         return $data;
     }
+
+
 }
