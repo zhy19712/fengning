@@ -12,6 +12,7 @@ use think\Model;
 
 class SectionModel extends Model
 {
+    protected $table='fengnig_section';
     /**
      * 外键——合同
      * @return \think\model\relation\HasOne
@@ -27,7 +28,7 @@ class SectionModel extends Model
      */
     public function builder()
     {
-        return $this->hasOne('AdminCate', 'id', 'builderId');
+        return $this->hasOne('AdminGroup', 'id', 'builderId');
     }
     /**
      * 外键——监理现场管理机构
@@ -35,7 +36,7 @@ class SectionModel extends Model
      */
     public function supervisor()
     {
-        return $this->hasOne('AdminCate', 'id', 'supervisorId');
+        return $this->hasOne('AdminGroup', 'id', 'supervisorId');
     }
     /**
      * 外键——施工现场管理机构
@@ -43,7 +44,7 @@ class SectionModel extends Model
      */
     public function constructor()
     {
-        return $this->hasOne('AdminCate', 'id', 'constructorId');
+        return $this->hasOne('AdminGroup', 'id', 'constructorId');
     }
     /**
      * 外键——设计现场管理机构
@@ -51,7 +52,7 @@ class SectionModel extends Model
      */
     public function designer()
     {
-        return $this->hasOne('AdminCate', 'id', 'designerId');
+        return $this->hasOne('AdminGroup', 'id', 'designerId');
     }
     /**
      * 外键——其他现场管理机构
@@ -59,7 +60,7 @@ class SectionModel extends Model
      */
     public function otherId()
     {
-        return $this->hasOne('AdminCate', 'id', 'otherId');
+        return $this->hasOne('AdminGroup', 'id', 'otherId');
     }
     /**
      * 外键——验评用户

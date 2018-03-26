@@ -21,6 +21,11 @@ class Contract extends Permissions
         return $this->fetch();
     }
 
+    public function getAll()
+    {
+        return json(ContractModel::all()->column('id,contractName'));
+    }
+
     /**
      * 视图——合同——添加
      * @return mixed
