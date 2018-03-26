@@ -100,8 +100,9 @@ class Common extends Controller
     /*
      * 角色管理
      */
-    function admin_cate($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function admin_cate($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
+
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
@@ -128,7 +129,7 @@ class Common extends Controller
         $temp = array();
         $infos = array();
         foreach ($recordsFilteredResult as $key => $value) {
-            $length = sizeof($value);
+            $length = sizeof($columns);
             for ($i = 0; $i < $length; $i++) {
                 array_push($temp, $value[$columns[$i]['name']]);
             }
