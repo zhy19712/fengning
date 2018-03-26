@@ -26,7 +26,7 @@ class AdminCateType extends Model
     /*
      * 添加角色类型节点
      */
-    public function insertCateType($param)
+    public function insertCatetype($param)
     {
         try{
             $result = $this->allowField(true)->save($param);
@@ -42,7 +42,7 @@ class AdminCateType extends Model
     /*
      * 编辑角色类型节点
      */
-    public function editTb($param)
+    public function editCatetype($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
@@ -54,5 +54,27 @@ class AdminCateType extends Model
         }catch(PDOException $e){
             return ['code' => 0, 'msg' => $e->getMessage()];
         }
+    }
+
+    /*
+     * 删除角色类型节点
+     */
+    public function delCatetype($id)
+    {
+        try{
+            $this->where("id",$id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
+    /*
+     * 获取一个角色类型节点信息
+     */
+    public function getOne($id)
+    {
+        $data = $this->find($id);
+        return $data;
     }
 }

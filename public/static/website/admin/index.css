@@ -3,5 +3,11 @@
     background: #FFF;
     border-color: #FFF;
 }
+.current-path{
+    margin-bottom: 10px;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #cecece;
+}
 .dataTables_wrapper .dataTables_paginate .paginate_button{}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{}
