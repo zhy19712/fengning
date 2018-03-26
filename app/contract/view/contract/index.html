@@ -52,16 +52,15 @@
                     <div id="mytable1_wrapper">
                         <table id="admin_table" width="100%" class="table table-striped table-bordered">
                             <thead>
-                            <tr>
-                                <td style="display: none;"></td>
-                                <td>合同编号</td>
-                                <td>合同名称</td>
-                                <td>乙方</td>
-                                <td>乙方简称</td>
-                                <td>合同总金额（万元）</td>
-                                <td>签订日期</td>
-                                <td>操作</td>
-                            </tr>
+                                <tr>
+                                    <td>合同编号</td>
+                                    <td>合同名称</td>
+                                    <td>乙方</td>
+                                    <td>乙方简称</td>
+                                    <td>合同总金额（万元）</td>
+                                    <td>签订日期</td>
+                                    <td>操作</td>
+                                </tr>
                             </thead>
                         </table>
                     </div>
@@ -70,7 +69,8 @@
         </div>
     </div>
 </body>
-<script>
+<script type="text/javascript">
+     var adminId;//每一行的id
      var admin_table = $('#admin_table').DataTable({
             processing: true,
             serverSide: true,
@@ -79,9 +79,6 @@
             },
             dom: '<"mybtn layui-btn layui-btn-sm"><"selectyear"><"myl"l><"float_left"f>tip',
             columns:[
-                {
-                    name: "id"
-                },
                 {
                     name: "contractCode"
                 },
@@ -99,6 +96,8 @@
                 },
                 {
                     name: "signingDate"
+                },{
+                    name: "id"
                 }
             ],
             columnDefs: [
@@ -107,6 +106,7 @@
                     orderable: false,
                     targets: [6],
                     render :  function(data,type,row) {
+                        adminId = data;
                         var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(this)'><i class='fa fa-pencil'></i></a>" ;
                         html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(this)'><i class='fa fa-trash'></i></a>" ;
                         return html;
@@ -142,27 +142,8 @@
     })
     //编辑
     function conEdit(that){
-        var id = $(that).parent("td").parent("tr").children("td:first-child").text();
+        var id = adminId;
         console.log(id)
-        var contractCode ,
-            contractName,
-            firstParty,
-            secondParty,
-            contractAmount,
-            secondPartyCorporation,
-            firstPartyCorporation,
-            createUser,
-            signingDate,
-            secondProjectManager,
-            firstLinkMan,
-            contractDay,
-            startDate,
-            endDate,
-            contractLive,
-            projectName,
-            secondPartShortName,id
-        ;
-
         $.ajax({
             url: "{:url('./contract/contract/getOne')}?id="+id,
             type: "post",
@@ -170,62 +151,44 @@
             dataType: "json",
             success: function (res) {
                 console.log(res);
-                id  = res.id;
-                contractCode = res.contractName;
-                contractName = res.contractName;
-                firstParty = res.firstParty;
-                secondParty = res.secondParty;
-                contractAmount = res.contractAmount;
-                secondPartyCorporation = res.secondPartyCorporation;
-                firstPartyCorporation = res.firstPartyCorporation;
-                createUser = res.createUser;
-                signingDate = res.signingDate;
-                secondProjectManager = res.secondProjectManager;
-                firstLinkMan = res.firstLinkMan;
-                contractDay = res.contractDay;
-                startDate = res.startDate;
-                endDate = res.endDate;
-                contractLive = res.contractLive;
-                projectName = res.projectName;
-                secondPartShortName = res.secondPartShortName;
+                layer.open({
+                    type: 2,
+                    title: '编辑合同',
+                    shadeClose: true,
+                    area: ['780px', '550px'],
+                    content: '{:url("add")}',
+                    success: function(layero, index){
+                        var body = layer.getChildFrame('body', index);
+                        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                        // console.log(body.html()) //得到iframe页的body内容
+                        body.find('input[name="id"]').val(id);
+                        body.find('input[name="contractCode"]').val(res.contractCode);
+                        body.find('input[name="contractName"]').val(res.contractName);
+                        body.find('input[name="firstParty"]').val(res.firstParty);
+                        body.find('input[name="secondParty"]').val(res.secondParty);
+                        body.find('input[name="contractAmount"]').val(res.contractAmount);
+                        body.find('input[name="secondPartyCorporation"]').val(res.secondPartyCorporation);
+                        body.find('input[name="firstPartyCorporation"]').val(res.firstPartyCorporation);
+                        body.find('input[name="createUser"]').val(res.createUser);
+                        body.find('input[name="signingDate"]').val(res.signingDate);
+                        body.find('input[name="secondProjectManager"]').val(res.secondProjectManager);
+                        body.find('input[name="firstLinkMan"]').val(res.firstLinkMan);
+                        body.find('input[name="contractDay"]').val(res.contractDay);
+                        body.find('input[name="startDate"]').val(res.startDate);
+                        body.find('input[name="endDate"]').val(res.endDate);
+                        body.find('input[name="contractLive"]').val(res.contractLive);
+                        body.find('input[name="projectName"]').val(res.projectName);
+                        body.find('input[name="secondPartShortName"]').val(res.secondPartShortName);
+
+                    }
+                });
             }
         })
-        layer.open({
-            type: 2,
-            title: '编辑合同',
-            shadeClose: true,
-            area: ['780px', '550px'],
-            content: '{:url("add")}',
-            success: function(layero, index){
-                var body = layer.getChildFrame('body', index);
-                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                console.log(body.html()) //得到iframe页的body内容
-                body.find('input[name="id"]').val(id);
-                body.find('input[name="contractCode"]').val(contractCode);
-                body.find('input[name="contractName"]').val(contractName);
-                body.find('input[name="firstParty"]').val(firstParty);
-                body.find('input[name="secondParty"]').val(secondParty);
-                body.find('input[name="contractAmount"]').val(contractAmount);
-                body.find('input[name="secondPartyCorporation"]').val(secondPartyCorporation);
-                body.find('input[name="firstPartyCorporation"]').val(firstPartyCorporation);
-                body.find('input[name="createUser"]').val(createUser);
-                body.find('input[name="signingDate"]').val(signingDate);
-                body.find('input[name="secondProjectManager"]').val(secondProjectManager);
-                body.find('input[name="firstLinkMan"]').val(firstLinkMan);
-                body.find('input[name="contractDay"]').val(contractDay);
-                body.find('input[name="startDate"]').val(startDate);
-                body.find('input[name="endDate"]').val(endDate);
-                body.find('input[name="contractLive"]').val(contractLive);
-                body.find('input[name="projectName"]').val(projectName);
-                body.find('input[name="secondPartShortName"]').val(secondPartShortName);
-
-            }
-        });
     }
     //删除
     function conDel(that){
         layer.confirm('是否删除该合同?', function(index){
-            var id = $(that).parent("td").parent("tr").children("td:first-child").text();
+            var id = adminId;
             console.log(id)
             $.ajax({
                 url: "{:url('./contract/contract/del')}",
