@@ -26,6 +26,26 @@ class Admin extends Permissions
     }
 
     /**
+     * 获取一条节点信息 和 节点类型
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @author hutao
+     */
+    public function getNode()
+    {
+        if(request()->isAjax()){
+            $param = input('post.');
+            $id = isset($param['id']) ? $param['id'] : 0;
+            $node = new AdminGroup();
+            $info['node'] = $node->getOne($id);
+            $info['nodeType'] = Db::name('admin_group_type')->select();
+            return json($info);
+        }
+    }
+
+    /**
      * 新增 或者 编辑 组织机构的节点
      * @return mixed|\think\response\Json
      * @author hutao
