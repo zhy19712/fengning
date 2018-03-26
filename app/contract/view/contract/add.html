@@ -34,8 +34,7 @@
             <div class="ibox-content">
                 <!--新增用户信息开始-->
                 <form class="layui-form" name="memberAdd" id="memberAdd" method="post"  action="#" onsubmit="return false">
-                    <input type="text" name="addId" id="addId" style="display: none;">
-                    <!--<input type="text" name="cont_id" id="cont_id" style="display: none;">-->
+                    <input type="hidden" name="id" id="addId" style="display: none;">
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">合同编号</label>
@@ -178,7 +177,7 @@
     </div>
 </div>
 </body>
-<script>
+<script id="nameLay">
     layui.use(['form', 'layedit', 'laydate'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -203,34 +202,51 @@
             var index = parent.layer.getFrameIndex(window.name);
             parent.layer.close(index);
         };
-
+        function refreshSub() {
+            parent.admin_table.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
+        }
         //监听提交
         form.on('submit(demo1)', function(data){
-            var dataJson = JSON.stringify(data.field);
-            console.log(JSON.stringify(data.field));
-
-            $.ajax({
-                type: "Post",
-                url:"{:url('addoredit')}",
-                data:dataJson,
-                success: function (res) {
-                    console.log(res)
-                    // if (data.ressult == "Faild") {
-                    //     alert("保存失败!");
-                    //     closWin();
-                    // }
-                    // else {
-                    //     alert("保存成功！")
-                    //     closWin();
-                    // }
-                },
-                error: function (data) {
-                    debugger;
-                }
-            })
-
+            console.log($("#addId").val())
+            console.log(data);
+            if($("#addId").val() == ''){
+                console.log($("#addId").val())
+                $.ajax({
+                    type: "Post",
+                    url:"{:url('addoredit')}",
+                    data:data.field,
+                    success: function (res) {
+                        console.log(res)
+                        if(res.code == 1) {
+                            refreshSub();
+                            parent.layer.msg('保存成功！');
+                            closWin();
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                    }
+                })
+            }else if($("#addId").val() != ''){
+                $.ajax({
+                    type: "Post",
+                    url:"{:url('addoredit')}",
+                    data:data.field,
+                    success: function (res) {
+                        console.log(res)
+                        if(res.code == 1) {
+                            refreshSub();
+                            parent.layer.msg('编辑成功！');
+                            closWin();
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                    }
+                })
+            }
             // parent.layer.tips('Look here', '#memberAdd', {time: 1000});
-            // return false;
+            return false;
         });
         $('button[type="reset"]').click(function () {
             closWin();
