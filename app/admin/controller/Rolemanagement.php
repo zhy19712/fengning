@@ -8,13 +8,13 @@
 /*
  * 角色管理
  */
-namespace app\contract\controller;
+namespace app\admin\controller;
 
 use \think\Db;
 use \think\Cookie;
 use \think\Session;
 use app\admin\controller\Permissions;
-use app\contract\model\AdminCateType;
+use app\admin\model\AdminCateType;
 
 class Rolemanagement extends Permissions
 {
@@ -61,7 +61,6 @@ class Rolemanagement extends Permissions
         }
 
             return json($res);
-
         }
 
     }
