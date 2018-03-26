@@ -23,7 +23,10 @@ class Contract extends Permissions
 
     public function getAll()
     {
-        return json(ContractModel::all()->column('id,contractName'));
+        $m=new ContractModel();
+        $list= $m->select()->field('id');
+//        $list=ContractModel::all();//
+        return json($list);
     }
 
     /**
@@ -43,7 +46,7 @@ class Contract extends Permissions
     {
         if ($this->request->isAjax()) {
             try {
-                $mod = input('post');
+                $mod = input('post.');
                 $m = new ContractModel();
                 $res = $m->AddOrEdit($mod);
                 if ($res) {
