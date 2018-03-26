@@ -43,7 +43,7 @@ class Contract extends Permissions
     {
         if ($this->request->isAjax()) {
             try {
-                $mod = input('post');
+                $mod = input('post.');
                 $m = new ContractModel();
                 $res = $m->AddOrEdit($mod);
                 if ($res) {
