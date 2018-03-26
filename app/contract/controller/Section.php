@@ -13,10 +13,20 @@ use app\contract\model\SectionModel;
 
 class Section extends Permissions
 {
+
     public function index()
     {
         return $this->fetch();
     }
+    public function add()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 标段——新增或修改
+     * @return array
+     */
     public function addoredit()
     {
         if ($this->request->isAjax()) {
@@ -34,6 +44,11 @@ class Section extends Permissions
             }
         }
     }
+
+    /**
+     * 标段——删除
+     * @return array
+     */
     public function del()
     {
         if ($this->request->isAjax()) {

@@ -1,0 +1,7 @@
+.fa:before{
+    color: #3C8DBC;
+    background: #FFF;
+    border-color: #FFF;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button{}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover
