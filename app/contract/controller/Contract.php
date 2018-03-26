@@ -25,9 +25,7 @@ class Contract extends Permissions
     public function getAll()
     {
         $m=new ContractModel();
-        $list= $m->select()->column();
-//        $list= Db::table('fengning_contract');//->field('firstPart');
-//        $list=ContractModel::all();//
+        $list= $m->field('id,contractName')->select();
         return json($list);
     }
 

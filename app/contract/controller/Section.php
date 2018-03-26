@@ -22,7 +22,7 @@ class Section extends Permissions
     }
     public function add()
     {
-       $orgs=AdminGroup::all(['category'=>1,'']);
+       $orgs=AdminGroup::all(['category'=>1]);
         $this->assign('orgs',json_encode($orgs));
         return $this->fetch();
     }
