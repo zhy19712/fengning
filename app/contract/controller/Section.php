@@ -10,6 +10,7 @@ namespace app\contract\controller;
 
 use app\admin\controller\Permissions;
 use app\admin\model\AdminCate;
+use app\admin\model\AdminGroup;
 use app\contract\model\SectionModel;
 
 class Section extends Permissions
@@ -21,8 +22,8 @@ class Section extends Permissions
     }
     public function add()
     {
-//        $orgs=AdminCate::
-        $this->assign('orgs',json_encode());
+       $orgs=AdminGroup::all(['category'=>1,'']);
+        $this->assign('orgs',json_encode($orgs));
         return $this->fetch();
     }
 
