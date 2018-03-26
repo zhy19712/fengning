@@ -102,7 +102,7 @@ class Common extends Controller
     /*
      * 角色管理
      */
-    public function admin_cate($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function admin_cate($pid,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
 
         //查询
@@ -116,7 +116,7 @@ class Common extends Controller
             //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where('pid',$pid)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         }else{
