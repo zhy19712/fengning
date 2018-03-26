@@ -10,6 +10,7 @@ namespace app\contract\controller;
 
 use app\admin\controller\Permissions;
 use app\contract\model\ContractModel;
+use think\Db;
 use think\Exception;
 use think\Request;
 
@@ -24,11 +25,17 @@ class Contract extends Permissions
     public function getAll()
     {
         $m=new ContractModel();
-        $list= $m->select()->field('id');
+        $list= $m->select()->column();
+//        $list= Db::table('fengning_contract');//->field('firstPart');
 //        $list=ContractModel::all();//
         return json($list);
     }
 
+    public function getOne()
+    {
+        $m=ContractModel::get(input('id'));
+        return json($m);
+    }
     /**
      * 视图——合同——添加
      * @return mixed
