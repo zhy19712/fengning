@@ -13,6 +13,20 @@ use think\Model;
 class SectionModel extends Model
 {
     /**
+     * 外键——合同
+     * @return \think\model\relation\HasOne
+     */
+    public function contract()
+    {
+        return $this->hasOne('ContractModel','id','contractId');
+    }
+
+    public function eveluateUser()
+    {
+        return $this->hasOne('Admin','id','eveluateUserId');
+    }
+
+    /**
      * 标段——新增或修改
      * @param $mod
      * @return array
