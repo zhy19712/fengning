@@ -8,13 +8,28 @@
     #tableItem_filter{
         float: left;
     }
+    #tableItem_length{
+
+    }
+    .layui-icon{
+        float: left;
+        line-height: 40px;
+        text-align: center;
+        width: 25%;
+    }
+    .layui-icon:hover{
+        background-color:#1E9FFF;
+        color: #fff!important;
+    }
 </style>
 <div data-options="region:'west',title:'角色分类树',split:true" style="width:180px;">
     <div style="height:30px">
-        <i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe654;</i>
-        <i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe642;</i>
-        <i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe640;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe654;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe642;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe640;</i>
+        <i class="layui-icon" style="font-size: 20px; color: #1E9FFF;">&#xe61a;</i>
     </div>
+    <hr />
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#eee;">
@@ -97,6 +112,7 @@
 
     //组织结构表格
     var tableItem = $('#tableItem').DataTable( {
+        pagingType:   "full_numbers",
         processing: true,
         serverSide: true,
         ajax: {
@@ -121,6 +137,9 @@
             },
             {
                 name: "desc"
+            },
+            {
+                name: "desc"
             }
         ],
         columnDefs: [
@@ -131,6 +150,7 @@
                 "render" :  function(data,type,row) {
                     var html = "<i class=\"layui-icon\"></i>" ;
                     html += "<i class=\"layui-icon\"></i>" ;
+                    html += "<i class=\"layui-icon\">&#xe640;</i>" ;
                     return html;
                 }
             }
