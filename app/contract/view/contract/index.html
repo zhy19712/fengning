@@ -69,12 +69,8 @@
             </div>
         </div>
     </div>
-
 </body>
 <script>
-
-
-
      var admin_table = $('#admin_table').DataTable({
             processing: true,
             serverSide: true,
@@ -111,8 +107,8 @@
                     orderable: false,
                     targets: [6],
                     render :  function(data,type,row) {
-                        var html =  "<input type='button' class='layui-btn layui-btn-xs btn-xs' style='margin-left: 5px;' onclick='conEdit(this)' value='编辑'/>" ;
-                        html += "<input type='button' class='btn btn-danger  btn-xs' style='margin-left: 5px;' onclick='conDel(this)' value='删除'/>" ;
+                        var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(this)'><i class='fa fa-pencil'></i></a>" ;
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(this)'><i class='fa fa-trash'></i></a>" ;
                         return html;
                     }
                 },
@@ -130,31 +126,20 @@
                 }
             }
         });
-        $("div.mybtn").html('<div id="xz">新增</div>');
-        // $("#contract_modal").html('<div id="xz">新增</div>');
-
-        //新增
-        $("#admin_table_wrapper .mybtn").click(function () {
-            layer.open({
-                type: 2,
-                title: '新增合同',
-                shadeClose: true,
-                area: ['780px', '550px'],
-                content: '{:url("add")}',
-                success: function(layero, index){
-                    var laysrc = layer.getChildFrame('#nameLay', index);
-                    var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                    // console.log(body.html()) //得到iframe页的body内容
-                    console.log(laysrc.html())
-
-
-                },
-                end:function () {
-                    admin_table.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
-                }
-            });
-        })
-
+    $("div.mybtn").html('<div id="xz">新增</div>');
+    //新增
+    $("#admin_table_wrapper .mybtn").click(function () {
+        layer.open({
+            type: 2,
+            title: '新增合同',
+            shadeClose: true,
+            area: ['780px', '550px'],
+            content: '{:url("add")}',
+            end:function () {
+                admin_table.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
+            }
+        });
+    })
     //编辑
     function conEdit(that){
         var id = $(that).parent("td").parent("tr").children("td:first-child").text();
