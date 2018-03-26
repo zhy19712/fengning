@@ -22,7 +22,7 @@ class Contract extends Permissions
     }
 
     /**
-     * 添加
+     * 视图——合同——添加
      * @return mixed
      */
     public function add()
@@ -31,7 +31,7 @@ class Contract extends Permissions
     }
 
     /**
-     * 新增或修改
+     * 合同——新增或修改
      * @return array
      */
     public function addoredit()
@@ -52,6 +52,10 @@ class Contract extends Permissions
         }
     }
 
+    /**
+     * 合同——删除合同
+     * @return array
+     */
     public function del()
     {
         if ($this->request->isAjax()) {
