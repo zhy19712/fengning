@@ -45,6 +45,50 @@
         </tr>
         </thead>
     </table>
+    <!--<form  id="roleform" action="#" onsubmit="return false" class="layui-form">-->
+        <!--<div class="layui-form-item">-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">编号</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="number_id" id="date1" lay-verify="date" placeholder="编号" autocomplete="off" class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">角色名称</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="role_name" id="role_name" lay-verify="date" lay-verify="required" placeholder="角色名称" autocomplete="off" class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="layui-form-item">-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">创建人</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="create_owner" placeholder="创建人" autocomplete="off" class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">创建时间</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="create_time" placeholder="创建时间" autocomplete="off" class="layui-input">-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="layui-form-item">-->
+                <!--<label class="layui-form-label">角色描述</label>-->
+                <!--<div class="layui-input-block">-->
+                    <!--<input type="area" name="desc" placeholder="角色描述"  autocomplete="off" class="layui-input">-->
+                <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="layui-form-item">-->
+            <!--<div class="col-xs-12" style="text-align: center;">-->
+                <!--<button class="layui-btn" lay-submit="" lay-filter="demo1"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;-->
+                <!--<button type="reset" class="layui-btn layui-btn-danger"><i class="fa fa-close"></i> 返回</button>-->
+                <!--&lt;!&ndash;<a class="layui-btn layui-btn-danger layui-layer-close layui-layer-close1" href="javascript:;"><i class="fa fa-close"></i>返回</a>&ndash;&gt;-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</form>-->
 </div>
 <div data-options="region:'east',title:'管理信息',split:true" style="width:280px;">
     <div class="layui-tab">
@@ -121,7 +165,7 @@
         dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
         columns:[
             {
-                name: "id"
+                name: "number_id"
             },
             {
                 name: "role_name"
@@ -164,12 +208,67 @@
             }
         }
     });
+
     $(".mybtn").html("新增");
+    //新增
+    var dom = ['<form  id="roleform" action="#" onsubmit="return false" class="layui-form">',
+        '        <div class="layui-form-item">',
+        '            <div class="layui-inline">',
+        '                <label class="layui-form-label">编号</label>',
+        '                <div class="layui-input-inline">',
+        '                    <input type="text" name="number_id" id="date1" lay-verify="date" placeholder="编号" autocomplete="off" class="layui-input">',
+        '                </div>',
+        '            </div>',
+        '            <div class="layui-inline">',
+        '                <label class="layui-form-label">角色名称</label>',
+        '                <div class="layui-input-inline">',
+        '                    <input type="text" name="role_name" id="role_name" lay-verify="date" lay-verify="required" placeholder="角色名称" autocomplete="off" class="layui-input">',
+        '                </div>',
+        '            </div>',
+        '        </div>',
+        '        <div class="layui-form-item">',
+        '            <div class="layui-inline">',
+        '                <label class="layui-form-label">创建人</label>',
+        '                <div class="layui-input-inline">',
+        '                    <input type="text" name="create_owner" placeholder="创建人" autocomplete="off" class="layui-input">',
+        '                </div>',
+        '            </div>',
+        '            <div class="layui-inline">',
+        '                <label class="layui-form-label">创建时间</label>',
+        '                <div class="layui-input-inline">',
+        '                    <input type="text" name="create_time" placeholder="创建时间" autocomplete="off" class="layui-input">',
+        '                </div>',
+        '            </div>',
+        '        </div>',
+        '        <div class="layui-form-item">',
+        '                <label class="layui-form-label">角色描述</label>',
+        '                <div class="layui-input-block">',
+        '                    <input type="area" name="desc" placeholder="角色描述"  autocomplete="off" class="layui-input">',
+        '                </div>',
+        '        </div>',
+        '        <div class="layui-form-item">',
+        '            <div class="col-xs-12" style="text-align: center;">',
+        '                <button class="layui-btn" lay-submit="" lay-filter="demo1"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;',
+        '                <button type="reset" class="layui-btn layui-btn-danger"><i class="fa fa-close"></i> 返回</button>',
+        '                <!--<a class="layui-btn layui-btn-danger layui-layer-close layui-layer-close1" href="javascript:;"><i class="fa fa-close"></i>返回</a>-->',
+        '            </div>',
+        '        </div>',
+        '    </form>'].join("");
+    $("#tableItem_wrapper .mybtn").click(function () {
+        layer.open({
+            type: 1,
+            title: '角色管理—新增',
+            area: ['390px', '260px'],
+            content:dom
+        });
+    });
+
     //tab 切换
     layui.use(['element',"layer"], function(){
         var $ = layui.jquery
             ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
     });
+
     //点击获取路径
     function onClick(e, treeId, node) {
         $(".layout-panel-center .panel-title").text("");
@@ -190,7 +289,6 @@
         //判断是否拉数据
         groupid = sNodes[0].pId //父节点的id
         if (!sNodes[0].children){
-            alert(selfid);
             var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
             tableItem.ajax.url(url).load();
         }
@@ -198,11 +296,17 @@
     }
     //点击添加 删除 编辑节点
     function addNodetree() {
-        if(!selfid){
-            layer.msg("请选择节点");
-            return;
-        }
-
+            $.ajax({
+                url:'./editCatetype',
+                type:"post",
+                data:{id:selfid,pid:groupid,name:sNodes[0].name},
+                success: function (res) {
+                    if(res.code===1){
+                        layer.msg("删除节点成功",{time:1500,shade: 0.1});
+                        zTreeObj.reAsyncChildNodes(null, "refresh");
+                    }
+                }
+            });
     };
 
     function editNodetree() {
@@ -233,24 +337,30 @@
         //         }
         //     }
         // })
-
     };
     function delNodetree() {
         if(!selfid){
             layer.msg("请选择节点");
             return;
         }
-        $.ajax({
-            url:'./delCatetype',
-            type:"post",
-            data:{id:selfid},
-            success: function (res) {
-                if(res.code===1){
-                    layer.msg("删除节点成功",{time:1500,shade: 0.1});
-                    zTreeObj.reAsyncChildNodes(null, "refresh");
-                }
-            }
-        })
+        if(!sNodes[0].children){
+            layer.confirm("该操作会将关联数据同步删除，是否确认删除？",function () {
+                $.ajax({
+                    url:'./delCatetype',
+                    type:"post",
+                    data:{id:selfid},
+                    success: function (res) {
+                        if(res.code===1){
+                            layer.msg("删除节点成功",{time:1500,shade: 0.1});
+                            zTreeObj.reAsyncChildNodes(null, "refresh");
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.msg("包含下级，无法删除",{time:1500,shade: 0.1});
+        }
+
     };
 </script>
 </body>
