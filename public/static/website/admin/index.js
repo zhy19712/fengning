@@ -1,20 +1,19 @@
 $(function(){
     //组织结构树
     var setting = {
+        async: {
+            enable : true,
+            autoParam: ["pId"],
+            type : "post",
+            url : "./index",
+            dataType :"json"
+        },
         showLine:true,
         showTitle:true,
         showIcon:true
     }
 
-    var nodes = [
-        {name: "父节点1", children: [
-                {name: "子节点1"},
-                {name: "子节点2"}
-            ]
-        }
-    ];
-
-    zTreeObj = $.fn.zTree.init($("#ztree"), setting, nodes);
+    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
     //组织结构表格
 
