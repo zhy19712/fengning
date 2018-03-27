@@ -270,7 +270,7 @@ class Rolemanagement extends Permissions
 
     public function addpeople()
     {
-        $this->fetch();
+        return $this->fetch();
     }
 
     /**
