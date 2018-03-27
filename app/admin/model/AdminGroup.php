@@ -30,18 +30,22 @@ class AdminGroup extends Model
         return "[" . substr($str, 0, -1) . "]";
     }
 
+    /*
+     * 组织机构
+     */
+
     public function getNodeName()
     {
         $result = $this->field('id,pid,name')->select();
         $str = "";
         foreach($result as $key=>$vo){
-            $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
+            $str .= '{ "id": "' . $vo['id'] . '", "pid":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
             $str .= '},';
         }
         $user = Db::name('admin')->field('id,admin_group_id,name')->select();
         foreach($user as $key=>$vo){
             $id = $vo['id'] + $vo['admin_group_id'] + 10000;
-            $str .= '{ "id": "' . $id . '", "pId":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
+            $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
             $str .= '},';
         }
         return "[" . substr($str, 0, -1) . "]";
