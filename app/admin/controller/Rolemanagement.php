@@ -92,7 +92,6 @@ class Rolemanagement extends Permissions
             }else{
                 $data = [
                     'id' => $param['id'],
-                    'pid' => $param['pid'],
                     'name' => $param['name']
                 ];
                 $flag = $model->editCatetype($data);
