@@ -113,7 +113,7 @@ class Admin extends Permissions
         $user = new AdminModel();
         $user->delUserByGroupId($param['id']);
         // 最后删除此节点
-        $flag = $node->deleteTb($param);
+        $flag = $node->deleteTb($param['id']);
         return json($flag);
     }
 

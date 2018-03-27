@@ -67,7 +67,7 @@ class AdminGroup extends Model
     public function deleteTb($id)
     {
         try{
-            $this->delete($id);
+            $this->where('id',$id)->delete();
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
