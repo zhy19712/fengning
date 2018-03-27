@@ -230,7 +230,8 @@ class Rolemanagement extends Permissions
             //先查询所有的admin_id
             $all_admin_id = $model->getAdminid($param['id']);
 
-            if($all_admin_id)
+
+            if($all_admin_id["admin_id"])
             {
                 $all_admin_id = explode(",",$all_admin_id['admin_id']);//拆分字符串
 
