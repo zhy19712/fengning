@@ -33,7 +33,9 @@ class AdminCateType extends Model
             if(false === $result){
                 return ['code' => -1,'msg' => $this->getError()];
             }else{
-                return ['code' => 1,'msg' => '添加成功'];
+                $last_id = $this-> getLastInsID();
+                $data = $this->where("id",$last_id)->find();
+                return ['code' => 1,'msg' => '添加成功','data'=>$data];
             }
         }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];

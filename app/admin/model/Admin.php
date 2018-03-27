@@ -47,6 +47,20 @@ class Admin extends Model
     }
 
     /**
+     * 指定In查询条件
+     * @access public
+     * @param mixed  $field     查询字段
+     * @param mixed  $condition 查询条件
+     * @param string $logic     查询逻辑 and or xor
+     * @return $this
+     */
+    function whereIn($field, $condition, $logic = 'AND')
+    {
+        $this->parseWhereExp($logic, $field, 'in', $condition);
+        return $this;
+    }
+
+    /**
      * 根据角色类型管理 编号 关联删除 用户
      * @return array
      */
@@ -55,7 +69,9 @@ class Admin extends Model
         $user = $this->where('admin_cate_id',$cate_id)->column('id','thumb');
         if(count($user) > 0){
             $thumbArr = array_values($user);
-            $thumbPath = Db::name('attachment')->where($thumbArr)->column('filepath');
+
+            $thumbPath = Db::name('attachment')->where(['id'=>['in',$thumbArr]])->column('filepath');
+
             if(count($thumbPath) > 0){
                 // 删除每一个用户的头像
                 foreach($thumbPath as $k=>$v){
@@ -66,7 +82,8 @@ class Admin extends Model
             }
             // 删除用户记录
             $idArr = array_keys($user);
-            $this->delete($idArr);
+
+            $this->where(['id'=>['in',$idArr]])->delete();
         }
         return ['code' => 1, 'msg' => '删除成功'];
     }
