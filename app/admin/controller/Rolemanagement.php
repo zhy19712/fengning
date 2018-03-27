@@ -92,7 +92,6 @@ class Rolemanagement extends Permissions
             }else{
                 $data = [
                     'id' => $param['id'],
-                    'pid' => $param['pid'],
                     'name' => $param['name']
                 ];
                 $flag = $model->editCatetype($data);
@@ -219,11 +218,11 @@ class Rolemanagement extends Permissions
             $param = input('post.');
             //定义一个空数组
             $res = array();
+            //定义一个空数组
             $where = array();
-            if($param['name'])
-            {
-                $where['name'] = $param['name'];//搜索用户名
-            }
+
+            $where['name'] = $param['name'];//搜索用户名
+
 
             //实例化模型类
             $model = new AdminCate();
@@ -240,10 +239,8 @@ class Rolemanagement extends Permissions
                     $where['id'] = $v;
                     $res[] = $user->getName($where);
                 }
-                halt($res);
             }
-            $this->assign('admininfo',$res);
-            return $this->fetch();
+            return json($res);
         }
     }
 
@@ -254,12 +251,30 @@ class Rolemanagement extends Permissions
 
     public function delAdminname()
     {
+        if(request()->isAjax()) {
+            $model = new AdminCate();
+            $param = input('post.');
+            $flag = $model->delAdminid($param);
+            return json($flag);
+        }
+    }
+
+    /**
+     * 添加角色类型下的分组用户
+     * @return \think\response\Json
+     */
+
+    public function addAdminname()
+    {
         $model = new AdminCate();
-        $param = input('post.');
+        $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id
         $param['id'] = 20;
-        $param['admin_id'] = 22;
-        $data = $model->delAdminid($param);
-//        halt($data);
+        $param['admin_id'] = 23;
+        $data = $model->addAdminid($param);
+        halt($data);
+
+
+
     }
 
 }

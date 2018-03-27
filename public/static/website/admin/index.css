@@ -26,8 +26,26 @@
 .layui-form-select .layui-input{
     padding-right: 0;
 }
-.layui-textarea{
-    width: 90%;
+.upload label{
+    width: 58px;
+    height: 39px;
+}
+.autograph .layui-form-mid{
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.autograph .layui-input-inline{
+    margin-right: 0;
+}
+.autograph .webuploader-pick{
+    padding: 9px 15px;
+}
+.layui-form-item .autograph .layui-input-inline{
+    width: 132px;
+}
+.layui-input[name="pname"]{
+    cursor: no-drop;
+    background: #ccc;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button{}
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover{}
