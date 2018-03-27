@@ -26,6 +26,7 @@ class Admin extends Permissions
     }
 
     /**
+     * 点击编辑的时候
      * 获取一条节点信息 和 节点类型
      * @return \think\response\Json
      * @throws \think\db\exception\DataNotFoundException
@@ -35,12 +36,20 @@ class Admin extends Permissions
      */
     public function getNode()
     {
+        /**
+         *  type 是用来判断 编辑 的是机构 还是 部门
+         *  当编辑机构的时候 就返回 机构类型 nodeType
+         *  提交编辑的时候 把 选择机构的编号提交过来 名称就是 type
+         */
         if(request()->isAjax()){
             $param = input('post.');
             $id = isset($param['id']) ? $param['id'] : 0;
+            $type = isset($param['type']) ? $param['type'] : 0;
             $node = new AdminGroup();
             $info['node'] = $node->getOne($id);
-            $info['nodeType'] = Db::name('admin_group_type')->select();
+            if($type != 0){
+                $info['nodeType'] = Db::name('admin_group_type')->select();
+            }
             return json($info);
         }
     }
@@ -56,7 +65,14 @@ class Admin extends Permissions
             $node = new AdminGroup();
             $param = input('post.');
             /**
+             * 当新增 机构的时候
              * 前台需要传递的是 pid 父级节点编号,type 机构类型,name 节点名称
+             * 编辑 机构的时候 传递 id 自己的编号 pid 父级节点编号,type 机构类型,name 节点名称
+             *
+             * 当新增 部门的时候
+             * 前台需要传递的是 pid 父级节点编号,name 节点名称
+             * 编辑 机构的时候 传递 id 自己的编号 pid 父级节点编号,name 节点名称
+             *
              * 系统自动判断赋值 category 1 组织机构 2 部门
              */
             if(empty($param['type'])){
@@ -83,6 +99,9 @@ class Admin extends Permissions
      */
     public function delNode()
     {
+        /**
+         * 前台只需要给我传递 要删除的 节点自己的id 编号
+         */
         $param = input('post.');
         $node = new AdminGroup();
         // 是否包含子节点
@@ -105,6 +124,9 @@ class Admin extends Permissions
      */
     public function getParents()
     {
+        /**
+         * 前台就传递 当前点击的节点的 id 编号
+         */
         if(request()->isAjax()){
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
             $node = new AdminGroup();
