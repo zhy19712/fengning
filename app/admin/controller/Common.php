@@ -110,7 +110,7 @@ class Common extends Controller
         $recordsFiltered = 0;
         //表的总记录数 必要
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->count(0);
+        $recordsTotal = Db::name($table)->where('pid',$id)->count(0);
         $recordsFilteredResult = array();
         if(strlen($search)>0){
             //有搜索条件的情况
