@@ -40,6 +40,8 @@ class Rolemanagement extends Permissions
      */
     public function index()
     {
+        $current_name =Session::get('current_name');
+        $this->assign("current_name",$current_name);
         return $this->fetch();
     }
 
@@ -90,7 +92,6 @@ class Rolemanagement extends Permissions
             }else{
                 $data = [
                     'id' => $param['id'],
-                    'pid' => $param['pid'],
                     'name' => $param['name']
                 ];
                 $flag = $model->editCatetype($data);
@@ -125,6 +126,22 @@ class Rolemanagement extends Permissions
         $flag = $model->delCatetype($param['id']);
         return json($flag);
     }
+    /*
+     * 获取一条admin_cate表中的信息
+     */
+    public function getOne($id)
+    {
+        if(request()->isAjax()) {
+            //实例化模型类
+            $cate = new AdminCate();
+            $data = $cate->getOne($id);
+            return json(['code'=> 1, 'data' => $data]);
+        }else
+        {
+            return $this->fetch();
+        }
+
+    }
 
     /**
      * 新增 或者 编辑 角色类型
@@ -139,6 +156,7 @@ class Rolemanagement extends Permissions
             if(empty($param['id']))//id为空时表示新增角色类型节点
             {
                 $data = [
+                    'pid' => $param['pid'],//admin_cate_type表中的id_
                     'number_id' => $param['number_id'],//编号
                     'role_name' => $param['role_name'],//角色名称
                     'create_owner' => $param['create_owner'],//创建人
@@ -171,19 +189,74 @@ class Rolemanagement extends Permissions
      */
     public function delCate()
     {
-        $param = input('post.');
-        $model = new AdminCate();
-        // 先删除节点下的用户
-        $user = new AdminModel();
-        $res = $user->delUserByCateId($param['id']);
-        // 最后删除此节点
-        $flag = $model->delCate($param['id']);
+        if(request()->isAjax()) {
+            $param = input('post.');
+            $model = new AdminCate();
+            // 先删除节点下的用户
+            $user = new AdminModel();
+            $res = $user->delUserByCateId($param['id']);
+            // 最后删除此节点
+            $flag = $model->delCate($param['id']);
 
-        if($res || $flag)
-        {
-            return json($flag);
+            if ($res || $flag) {
+                return json($flag);
+            }
         }
 
+    }
+
+    /**
+     * 根据角色类型查询角色类型下的所有用户
+     * @return \think\response\Json
+     */
+
+    public function getAdminname()
+    {
+
+        if(request()->isAjax()) {
+
+            $param = input('post.');
+            //定义一个空数组
+            $res = array();
+            //定义一个空数组
+            $where = array();
+
+            $where['name'] = $param['name'];//搜索用户名
+
+
+            //实例化模型类
+            $model = new AdminCate();
+            $user = new AdminModel();
+            //先查询所有的admin_id
+            $all_admin_id = $model->getAdminid($param['id']);
+
+            if($all_admin_id)
+            {
+                $all_admin_id = explode(",",$all_admin_id['admin_id']);//拆分字符串
+
+                foreach ((array)$all_admin_id as $v)
+                {
+                    $where['id'] = $v;
+                    $res[] = $user->getName($where);
+                }
+            }
+            return json($res);
+        }
+    }
+
+    /**
+     * 删除角色类型下的分组用户
+     * @return \think\response\Json
+     */
+
+    public function delAdminname()
+    {
+        if(request()->isAjax()) {
+            $model = new AdminCate();
+            $param = input('post.');
+            $flag = $model->delAdminid($param);
+            return json($flag);
+        }
     }
 
 }

@@ -67,9 +67,52 @@ class AdminCate extends Model
      */
     public function getOne($id)
     {
-        $data = $this->find($id);
+        $data = $this->where("id",$id)->find();
         return $data;
     }
+
+    /*
+     * 根据admin_cate用户表中的admin_id字段查询admin表中对应的用户
+     */
+
+    public function getAdminid($id)
+    {
+        $data = $this->field("admin_id")->where('id',$id)->find();
+        return $data;
+    }
+
+    /*
+     * 根据传过来的admin_cate表中的id删除admin_cate用户表中的admin_id
+     */
+
+    public function delAdminid($param)
+    {
+        $admin_id = $this->field("admin_id")->where("id",$param['id'])->find();
+        if($admin_id)
+        {
+            $admin_id = explode(",",$admin_id['admin_id']);
+            foreach ($admin_id as $k=>$v)
+            {
+                if($param['admin_id'] == $v)
+                {
+                    unset($admin_id[$k]);
+                }
+            }
+            $admin_id = implode(",",$admin_id);
+
+            //把处理过得数据重新插入数组中
+            $result = $this->allowField(true)->save(['admin_id'=>$admin_id],['id' => $param['id']]);
+            if($result)
+            {
+                return ['code' => 1,'msg' => "删除成功"];
+            }
+
+        }else{
+            return ['code' => -1,'msg' => "删除失败"];
+        }
+    }
+
+
 
 
 }

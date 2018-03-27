@@ -38,9 +38,12 @@ class Admin extends Permissions
         if(request()->isAjax()){
             $param = input('post.');
             $id = isset($param['id']) ? $param['id'] : 0;
+            $type = isset($param['type']) ? $param['type'] : 0;
             $node = new AdminGroup();
             $info['node'] = $node->getOne($id);
-            $info['nodeType'] = Db::name('admin_group_type')->select();
+            if($type != 0){
+                $info['nodeType'] = Db::name('admin_group_type')->select();
+            }
             return json($info);
         }
     }
@@ -96,6 +99,27 @@ class Admin extends Permissions
         // 最后删除此节点
         $flag = $node->deleteTb($param);
         return json($flag);
+    }
+
+    /**
+     * 获取路径
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function getParents()
+    {
+        if(request()->isAjax()){
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            $node = new AdminGroup();
+            $path = "";
+            while($id>0)
+            {
+                $data = $node->getOne($id);
+                $path = $data['name'] . ">>" . $path;
+                $id = $data['pid'];
+            }
+            return json(['code' => 1,'path' => substr($path, 0 , -2),'msg' => "success"]);
+        }
     }
 
 
