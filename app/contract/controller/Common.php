@@ -122,7 +122,7 @@ class Common extends Controller
                     ->join('admin_group c', 'a.constructorId=c.id', 'left')
                     ->join('admin_group d', 'a.designerId=d.id', 'left')
                     ->join('admin_group e', 'a.supervisorId=e.id', 'left')
-                    ->field('a.id,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
+                    ->field('a.code,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
                     ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -134,7 +134,7 @@ class Common extends Controller
                     ->join('admin_group c', 'a.constructorId=c.id', 'left')
                     ->join('admin_group d', 'a.designerId=d.id', 'left')
                     ->join('admin_group e', 'a.supervisorId=e.id', 'left')
-                    ->field('a.id,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
+                    ->field('a.id,a.code,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 //*****多表查询join改这里******
 //                $recordsFilteredResult = Db::name($table)->alias('a')->join('admin_group b','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
