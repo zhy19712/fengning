@@ -259,5 +259,23 @@ class Rolemanagement extends Permissions
         }
     }
 
+    /**
+     * 添加角色类型下的分组用户
+     * @return \think\response\Json
+     */
+
+    public function addAdminname()
+    {
+        $model = new AdminCate();
+        $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id
+        $param['id'] = 20;
+        $param['admin_id'] = 23;
+        $data = $model->addAdminid($param);
+        halt($data);
+
+
+
+    }
+
 }
 
