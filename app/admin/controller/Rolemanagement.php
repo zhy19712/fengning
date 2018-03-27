@@ -218,11 +218,11 @@ class Rolemanagement extends Permissions
             $param = input('post.');
             //定义一个空数组
             $res = array();
+            //定义一个空数组
             $where = array();
-            if($param['name'])
-            {
-                $where['name'] = $param['name'];//搜索用户名
-            }
+
+            $where['name'] = $param['name'];//搜索用户名
+
 
             //实例化模型类
             $model = new AdminCate();
@@ -239,10 +239,8 @@ class Rolemanagement extends Permissions
                     $where['id'] = $v;
                     $res[] = $user->getName($where);
                 }
-                halt($res);
             }
-            $this->assign('admininfo',$res);
-            return $this->fetch();
+            return json($res);
         }
     }
 
@@ -253,12 +251,12 @@ class Rolemanagement extends Permissions
 
     public function delAdminname()
     {
-        $model = new AdminCate();
-        $param = input('post.');
-        $param['id'] = 20;
-        $param['admin_id'] = 22;
-        $data = $model->delAdminid($param);
-//        halt($data);
+        if(request()->isAjax()) {
+            $model = new AdminCate();
+            $param = input('post.');
+            $flag = $model->delAdminid($param);
+            return json($flag);
+        }
     }
 
 }
