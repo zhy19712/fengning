@@ -1,5 +1,6 @@
 
-var selfid,zTreeObj,groupid,sNodes;
+var selfid,zTreeObj,groupid,sNodes,selectData="";
+var userList=[];
 //时间
 Date.prototype.Format = function (fmt) { // author: meizz
     var o = {
@@ -147,6 +148,7 @@ layui.use(['element',"layer",'form'], function(){
 
 //点击获取路径
 function onClick(e, treeId, node) {
+    selectData = "";
     $(".layout-panel-center .panel-title").text("");
     sNodes = zTreeObj.getSelectedNodes();//选中节点
     selfid = zTreeObj.getSelectedNodes()[0].id
@@ -156,64 +158,72 @@ function onClick(e, treeId, node) {
     if (node) {
         //判断是否还有父节点
         while (node){
-            path = node.name + ">>" + path;
+            path = node.name + "-" + path;
             node = node.getParentNode();
         }
     }else{
         $(".layout-panel-center .panel-title").text(sNodes[0].name);
     }
-    //判断是否拉数据
     groupid = sNodes[0].pId //父节点的id
-    if (!sNodes[0].children){
         var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
         tableItem.ajax.url(url).load();
-    }
     $(".layout-panel-center .panel-title").text("当前路径:"+path)
 }
-//点击添加 删除 编辑节点
+
+//点击添加节点
 function addNodetree() {
-    $.ajax({
-        url:'./editCatetype',
-        type:"post",
-        data:{id:selfid,pid:groupid,name:sNodes[0].name},
-        success: function (res) {
-            if(res.code===1){
-                layer.msg("删除节点成功",{time:1500,shade: 0.1});
-                zTreeObj.reAsyncChildNodes(null, "refresh");
+    var pid  = selfid?selfid:0;
+    layer.prompt({
+        title: '请输入节点名称',
+    },function(value, index, elem){
+        $.ajax({
+            url:'./editCatetype',
+            type:"post",
+            data:{pid:pid,name:value},
+            success: function (res) {
+                if(res.code===1){
+                    if(sNodes){
+                        zTreeObj.addNodes(sNodes[0],res.data);
+                    }else{
+                        zTreeObj.addNodes(null,res.data);
+                    }
+
+                }
             }
-        }
+        });
+        layer.close(index);
     });
+
 };
 
+//编辑节点
 function editNodetree() {
     if(!selfid){
         layer.msg("请选择节点",{time:1500,shade: 0.1});
         return;
     }
-    // $.ajax({
-    //     url: "getOneNode",
-    //     type: "post",
-    //     data: {id:selfid},
-    //     dataType: "json",
-    //     success: function (res) {
-    //         if(sNodes.level == 0) {
-    //             $("#level2 input").val("");
-    //             $("#treePid").val(mytree_node.pId);
-    //             $("#id2").val(mytree_node.id);
-    //             $("#companyName").val(res.pname);
-    //             $("#level2 h5").text('编辑');
-    //             $("#level2").modal('show');
-    //         }else if(sNodes.level == 1) {
-    //             $("#level2 input").val("");
-    //             $("#treePid").val(mytree_node.pId);
-    //             $("#id2").val(mytree_node.id);
-    //             $("#companyName").val(res.pname);
-    //             $("#level2 h5").text('编辑');
-    //             $("#level2").modal('show');
-    //         }
-    //     }
-    // })
+    console.log(sNodes[0])
+    layer.prompt({
+        title: '编辑',
+        value:sNodes[0].name
+    },function(value, index, elem){
+        $.ajax({
+            url:'./editCatetype',
+            type:"post",
+            data:{id:selfid,name:value},
+            success: function (res) {
+                if(res.code===1){
+                    sNodes[0].name = value;
+                    zTreeObj.updateNode(sNodes[0]);//更新节点名称
+                    layer.msg("编辑成功")
+                 }
+            }
+        });
+        layer.close(index);
+    });
 };
+
+//删除节点
 function delNodetree() {
     if(!selfid){
         layer.msg("请选择节点");
@@ -228,7 +238,8 @@ function delNodetree() {
                 success: function (res) {
                     if(res.code===1){
                         layer.msg("删除节点成功",{time:1500,shade: 0.1});
-                        zTreeObj.reAsyncChildNodes(null, "refresh");
+                        zTreeObj.removeNode(sNodes[0]);
+                        selfid = "";
                     }
                 }
             });
@@ -239,7 +250,48 @@ function delNodetree() {
 
 };
 //
-//编辑
+
+//全部展开
+$('#openNode').click(function(){
+    zTreeObj.expandAll(true);
+});
+
+//收起所有
+$('#closeNode').click(function(){
+    zTreeObj.expandAll(false);
+});
+
+//上移
+$('#upMoveNode').click(function () {
+    if (!selfid){
+        layer.msg('请选择节点');
+        return false;
+    }
+
+    var node = sNodes[0].getPreNode();
+    if (node===null){
+        layer.msg('已经移到顶啦');
+        return false;
+    }
+    zTreeObj.moveNode(node, sNodes[0], "prev");
+});
+
+//下移
+$('#downMoveNode').click(function () {
+
+    if (!selfid){
+        layer.msg('请选择节点');
+        return false;
+    }
+
+    var node = sNodes[0].getNextNode();
+    if (node===null){
+        layer.msg('已经移到底啦');
+        return false;
+    }
+    zTreeObj.moveNode(node, sNodes[0], "next");
+});
+//表格编辑
 function conEdit(id){
     $.ajax({
         url: "./getOne",
@@ -264,7 +316,7 @@ function conEdit(id){
         }
     })
 }
-//删除
+//表格删除
 function conDel(id){
     layer.confirm('该操作会将关联数据同步删除，是否确认删除？', function(index){
         console.log(id);
@@ -285,3 +337,93 @@ function conDel(id){
         layer.close(index);
     });
 }
+
+//获取点击行
+$("#tableItem").delegate("tbody tr","click",function (e) {
+    if($(e.target).hasClass("dataTables_empty")){
+       return;
+    }
+    $(".path").html("");
+    $(this).addClass("select-color").siblings().removeClass("select-color");
+    selectData = tableItem.row(".select-color").data();//获取选中行数据
+    $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[1]);
+    getAdminname(selectData[5])
+});
+//拉取角色用户
+function getAdminname(id) {
+    $.ajax({
+        type:"post",
+        url:"./getAdminname",
+        data:{id:id,name:''},
+        success: function (res) {
+            console.log(res)
+            userList = res;
+            showUser();
+        },
+        error: function (data) {
+            debugger;
+        }
+    })
+};
+//删除的点击事件
+$(".userContainer").delegate("p a","click",function () {
+    var admin_id = $(this).attr('id').slice(1);
+    var that = $(this);
+    $.ajax({
+        type:"post",
+        url:"./delAdminname",
+        data:{id:selectData[5],admin_id:admin_id},
+        success: function (res) {
+            if(res.code===1){
+                layer.msg("删除成功");
+                console.log(that.parent("p"))
+                that.parent("p").remove()
+            }
+        },
+        error: function (data) {
+            debugger;
+        }
+    })
+})
+//展示名字
+function showUser() {
+    var str = ""
+    for(var i=0 ; i<userList.length;i++){
+        str += '<p id="p'+userList[i].id+'">'+userList[i].name+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
+    }
+    console.log(str)
+    $(".userContainer").html(str);
+}
+//筛选
+$('#usernameSearch').bind('input propertychange', function() {
+    var userList2 = [];
+    var that = $(this);
+    if(that.val().trim()===""){
+        showUser();
+        return;
+    }
+    setTimeout(function () {
+        for(var i=0 ; i<userList.length;i++){
+            //有就push进去
+            if(userList[i].name.indexOf(that.val().trim())!==-1){
+                userList2.push(userList[i]);
+            }
+        }
+        $(".userContainer").html("");
+        var str = ""
+        for(var j=0 ; j<userList2.length;j++){
+            str += '<p id="p'+userList2[j].id+'">'+userList2[j].name+'&nbsp;<a id="a'+userList2[j].id+'"><i class="fa fa-times"></i></a></p>';
+        }
+        $(".userContainer").html(str);
+    },20)
+});
+//点击添加角色用户
+$(".ibox-tools i").click(function () {
+    if(selectData===""){
+        layer.msg("请先选择角色");
+        return;
+    }
+    var path = $(".path").html();//获取角色类型+角色名称的路径信息
+    window.open("./addpeople?path=" + path + "&roleId=" + selectData[5], "授权", "height=500, width=700, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+
+});
