@@ -98,6 +98,27 @@ class Admin extends Permissions
         return json($flag);
     }
 
+    /**
+     * 获取路径
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function getParents()
+    {
+        if(request()->isAjax()){
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            $node = new AdminGroup();
+            $path = "";
+            while($id>0)
+            {
+                $data = $node->getOne($id);
+                $path = $data['name'] . ">>" . $path;
+                $id = $data['pid'];
+            }
+            return json(['code' => 1,'path' => substr($path, 0 , -2),'msg' => "success"]);
+        }
+    }
+
 
     /**
      * 管理员个人资料修改，属于无权限操作，仅能修改昵称和头像，后续可增加其他字段
