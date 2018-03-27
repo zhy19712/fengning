@@ -303,7 +303,6 @@ class Rolemanagement extends Permissions
             $node = new AdminGroup();
             $nodeStr = $node->getNodeName();
 
-            halt($nodeStr);
             return json($nodeStr);
         }
         return $this->fetch();
