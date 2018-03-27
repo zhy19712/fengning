@@ -40,6 +40,8 @@ class Rolemanagement extends Permissions
      */
     public function index()
     {
+        $current_name =Session::get('current_name');
+        $this->assign("current_name",$current_name);
         return $this->fetch();
     }
 
