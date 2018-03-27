@@ -20,10 +20,10 @@ class AdminGroup extends Model
 
     public function getNodeInfo()
     {
-        $result = $this->field('id,pid,name')->select();
+        $result = $this->field('id,pid,name,category')->select();
         $str = "";
         foreach($result as $key=>$vo){
-            $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
+            $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"';
             $str .= '},';
         }
         return "[" . substr($str, 0, -1) . "]";
