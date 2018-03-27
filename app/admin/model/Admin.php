@@ -48,7 +48,6 @@ class Admin extends Model
 
     /**
      * 根据角色类型管理 编号 关联删除 用户
-     * @param $group_id
      * @return array
      */
     public function delUserByCateId($cate_id)
@@ -71,5 +70,17 @@ class Admin extends Model
         }
         return ['code' => 1, 'msg' => '删除成功'];
     }
+
+    /**
+     * 查询一个用户信息的用户名name
+     */
+
+    public function getName($where)
+    {
+        $data = $this->field("id,name")->where($where)->find();
+        return $data;
+    }
+
+
 
 }
