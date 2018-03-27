@@ -94,7 +94,7 @@ class Admin extends Model
 
     public function getName($where)
     {
-        $data = $this->field("id,name")->where($where)->find();
+        $data = $this->field("id,name")->where("id = ".$where['id']."  and name like '%" .$where['name']. "%'")->find();
         return $data;
     }
 
