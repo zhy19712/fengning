@@ -38,9 +38,12 @@ class Admin extends Permissions
         if(request()->isAjax()){
             $param = input('post.');
             $id = isset($param['id']) ? $param['id'] : 0;
+            $type = isset($param['type']) ? $param['type'] : 0;
             $node = new AdminGroup();
             $info['node'] = $node->getOne($id);
-            $info['nodeType'] = Db::name('admin_group_type')->select();
+            if($type != 0){
+                $info['nodeType'] = Db::name('admin_group_type')->select();
+            }
             return json($info);
         }
     }
