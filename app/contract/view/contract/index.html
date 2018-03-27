@@ -44,6 +44,25 @@
             bottom: 18px;
             left: 175px;
         }
+        #mytable1_wrapper .dataTables_wrapper {
+            position: relative;
+            clear: both;
+            zoom: 1;
+            overflow-x: auto;
+        }
+        #mytable1_wrapper table{
+            width: 800px;
+        }
+        table {
+            table-layout:fixed;
+        }
+        table td{
+            word-break:break-all;
+        }
+        .highlight {
+            background: #a58878 !important;
+        }
+
     </style>
 <body class="layui-layout-body" style="overflow-y:visible;">
     <!--表格-->
@@ -130,6 +149,12 @@
             }
         });
     $("div.mybtn").html('<div id="xz">新增</div>');
+     //变色
+     $('#admin_table tbody').on( 'mouseover', 'td', function () {
+         $(this).parent("tr").addClass('highlight');
+     }).on( 'mouseleave', 'td', function () {
+         $(this).parent("tr").removeClass( 'highlight' );
+     });
     //新增
     $("#admin_table_wrapper .mybtn").click(function () {
         layer.open({
