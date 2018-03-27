@@ -21,21 +21,6 @@ use app\admin\model\AdminGroup;
 
 class Rolemanagement extends Permissions
 {
-     /**
-     * 角色分类树function
-     * @return [type] [description]
-     */
-    function tree($data,$pid=0){
-        static $treeList = array();
-        foreach($data as $v){
-            if($v['pid']==$pid){
-                $treeList[]=$v;//将结果装到$treeList中
-                $this->tree($data,$v['id']);
-            }
-        }
-        return $treeList;
-    }
-
     /*
      * 模板首页
      */
@@ -57,7 +42,7 @@ class Rolemanagement extends Permissions
             $model = new AdminCateType();
             //查询fengning_admin_cate_type角色类型表
             $data = $model->getall();
-            $res = $this->tree($data);
+            $res = tree($data);
 
         foreach ((array)$res as $k => $v) {
             $v['id'] = strval($v['id']);

@@ -48,7 +48,7 @@ class AdminGroup extends Model
             $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
             $str .= '},';
         }
-        return "[" . substr($str, 0, -1) . "]";
+        return [" . substr($str, 0, -1) . "];
     }
 
     public function isParent($id)
