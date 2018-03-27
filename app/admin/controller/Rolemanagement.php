@@ -126,5 +126,65 @@ class Rolemanagement extends Permissions
         return json($flag);
     }
 
+    /**
+     * 新增 或者 编辑 角色类型
+     * @return mixed|\think\response\Json
+     */
+    public function editCate()
+    {
+        if(request()->isAjax()){
+            $model = new AdminCate();
+            $param = input('post.');
+            //前台传过来的角色类型id
+            if(empty($param['id']))//id为空时表示新增角色类型节点
+            {
+                $data = [
+                    'number_id' => $param['number_id'],//编号
+                    'role_name' => $param['role_name'],//角色名称
+                    'create_owner' => $param['create_owner'],//创建人
+                    'create_time' => $param['create_time'],//创建时间
+                    'desc' => $param['desc']//备注
+
+                ];
+                $flag = $model->insertCate($data);
+                return json($flag);
+            }else{
+                $data = [
+                    'id' => $param['id'],
+                    'number_id' => $param['number_id'],//编号
+                    'role_name' => $param['role_name'],//角色名称
+                    'create_owner' => $param['create_owner'],//创建人
+                    'create_time' => $param['create_time'],//创建时间
+                    'desc' => $param['desc']//备注
+
+                ];
+                $flag = $model->editCate($data);
+                return json($flag);
+            }
+        }
+        return $this->fetch();
+    }
+
+    /**
+     * 删除角色类型
+     * @return \think\response\Json
+     */
+    public function delCate()
+    {
+        $param = input('post.');
+        $model = new AdminCate();
+        // 先删除节点下的用户
+        $user = new AdminModel();
+        $res = $user->delUserByCateId($param['id']);
+        // 最后删除此节点
+        $flag = $model->delCate($param['id']);
+
+        if($res || $flag)
+        {
+            return json($flag);
+        }
+
+    }
+
 }
 
