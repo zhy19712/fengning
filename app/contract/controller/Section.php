@@ -9,9 +9,9 @@
 namespace app\contract\controller;
 
 use app\admin\controller\Permissions;
-use app\admin\model\AdminCate;
 use app\admin\model\AdminGroup;
 use app\contract\model\SectionModel;
+use think\Db;
 
 class Section extends Permissions
 {
@@ -20,13 +20,22 @@ class Section extends Permissions
     {
         return $this->fetch();
     }
+
     public function add()
     {
-       $orgs=AdminGroup::all(['category'=>1,'']);
-        $this->assign('orgs',json_encode($orgs));
+        $orgs = AdminGroup::all(['category' => 1]);
+        $this->assign('orgs', json_encode($orgs));
         return $this->fetch();
     }
 
+    public function sections()
+    {
+        $d=new SectionModel();
+        $m=$d->with("builder")->select();
+//        $m=SectionModel::get(1)->with('builder');
+//        $m=Db::name("section")->with("builder") ->select();
+        return json($m);
+    }
     /**
      * 标段——新增或修改
      * @return array

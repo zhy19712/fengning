@@ -1,7 +1,5 @@
-.fa:before{
-    color: #3C8DBC;
-    background: #FFF;
-    border-color: #FFF;
+.ztree-title i.fa{
+    width: 11%;
 }
 .current-path{
     margin-bottom: 10px;
