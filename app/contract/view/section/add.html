@@ -58,7 +58,8 @@
         #memberAdd .layui-form-label {
             width: 114px;
         }
-        #memberAdd #contract option{
+        #memberAdd #contractId option{
+            display: block;
             height: 100px;
         }
         #memberAdd ul li{
@@ -73,6 +74,7 @@
             display: none;
             z-index: 7;
         }
+
 
     </style>
 <body>
@@ -293,15 +295,6 @@
         //     var optionStr='';
         //     var data = res;
         //     for(var i=0;i<data.length;i++){
-        //         // '<div class="layui-form-select">\n' +
-        //         // '        <div class="layui-select-title">\n' +
-        //         // '            <input type="text" placeholder="请选择" value="" class="layui-input">\n' +
-        //         // '            <i class="layui-edge"></i>\n' +
-        //         // '        </div>\n' +
-        //         // '        <dl class="layui-anim layui-anim-upbit" style="">\n' +
-        //         // '            <dd lay-value="" class="layui-disabled">没有选项</dd>\n' +
-        //         // '        </dl>\n' +
-        //         // '    </div>'
         //         optionStr += '<li><span>' + data[i].id + '</span>' + data[i].contractName + '</li>'
         //     }
         //     $("#contract").append(optionStr)

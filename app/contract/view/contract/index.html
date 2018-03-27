@@ -14,59 +14,78 @@
     <script type="text/javascript" charset="utf8" src="__PUBLIC__/layui/lay/modules/layer.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <style type="text/css">
-        #path{
+        #conTable #path{
             line-height: 30px;
             font-weight: 700;
             border-bottom: 1px solid #000;
         }
-        #spanPath{
+        #conTable #spanPath{
             display: inline-block;
             float: left;
         }
-        #mytable1_wrapper{
+        #conTable #mytable1_wrapper{
             position: relative;
             margin-top: 5px;
         }
-        .mybtn{
+        #conTable .mybtn{
             position: absolute;
             right: 1%;
             top: 0;
         }
-        .float_left{
+        #conTable .float_left{
             float: left;
         }
-        .float_left input:hover{
+        #conTable .float_left input:hover{
             border-color: #9ac6ff;
         }
-        .dataTables_length{
+        #conTable .dataTables_length{
             height: 8px;
             position:absolute;
             bottom: 18px;
             left: 175px;
         }
-        #mytable1_wrapper .dataTables_wrapper {
+        #conTable #mytable1_wrapper .dataTables_wrapper {
             position: relative;
             clear: both;
             zoom: 1;
             overflow-x: auto;
         }
-        #mytable1_wrapper table{
-            width: 800px;
+        #conTable #mytable1_wrapper table{
+            border-top: 1px solid #00c0ef;
+            margin-top: 36px;
         }
-        table {
+        #conTable table {
             table-layout:fixed;
         }
-        table td{
+        #conTable table td{
             word-break:break-all;
         }
-        .highlight {
-            background: #a58878 !important;
+        #conTable .highlight {
+            background: #cbc408 !important;
         }
-
+        #conTable .dataTables_wrapper .dataTables_paginate {
+            position: fixed;
+            bottom: 35px;
+            right: 0;
+        }
+        #conTable .dataTables_wrapper .dataTables_info {
+            position: fixed;
+            bottom: 35px;
+            left: 25px;
+        }
+        #conTable .dataTables_length{
+            height: 8px;
+            position: fixed;
+            bottom: 46px;
+            left: 175px;
+        }
+        #conTable thead {
+            border-top: 1px solid red;
+        }
     </style>
 <body class="layui-layout-body" style="overflow-y:visible;">
     <!--表格-->
-    <div class="wrapper wrapper-content animated fadeInRight" style="width: 98%;vertical-align: top;padding: 0;margin-top: 20px;margin-left: 20px;text-align: center">
+    <div id="conTable" class="wrapper wrapper-content animated fadeInRight" style="width: 98%;vertical-align: top;padding: 0;margin-top: 20px;margin-left: 20px;text-align: center">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
                 <div class="row">
