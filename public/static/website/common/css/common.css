@@ -1,12 +1,16 @@
 .layout-body{
     position: relative;
 }
-.fa:before{
+i.fa{
+    text-align: center;
+    cursor: pointer;
+}
+i.fa:before{
     color: #00c0ef;
     background: #FFF;
     border-color: #FFF;
 }
-.fa:hover:before{
+i.fa:hover:before{
     color: #009dc3;
 }
 .ztree-title{
@@ -18,13 +22,13 @@
     line-height: 30px;
     border-bottom: 1px solid #cecece;
 }
-.ztree-title i.fa{
-    text-align: center;
-    cursor: pointer;
-}
+
 .ztree li a.curSelectedNode{
     background-color: #cecece;
 }
 .ztree{
     margin-top: 30px;
+}
+table.table i.fa{
+    margin-left: 10px;
 }
