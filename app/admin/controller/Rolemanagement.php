@@ -270,7 +270,7 @@ class Rolemanagement extends Permissions
             $model = new AdminCate();
             $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id,数组admin_id为添加的用户表中的id
             $data = $model->addAdminid($param);
-            return josn($data);
+            return json($data);
         }
     }
 
@@ -286,6 +286,7 @@ class Rolemanagement extends Permissions
         if(request()->isAjax()) {
             // 获取左侧的树结构
             $model = new AdminGroup();
+            //定义一个空的字符串
             $str = "";
             $data = $model->getall();
             $res = tree($data);
@@ -296,12 +297,10 @@ class Rolemanagement extends Permissions
                 $v['pid'] = strval($v['pid']);
                 $res[$k] = json_encode($v);
             }
-//            halt($res);
-
 
             $user = Db::name('admin')->field('id,admin_group_id,name')->select();
 
-            foreach($user as $key=>$vo){
+            foreach((array)$user as $key=>$vo){
                 $id = $vo['id'] + $vo['admin_group_id'] + 10000;
                 $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
                 $str .= '}*';
@@ -310,9 +309,13 @@ class Rolemanagement extends Permissions
 
             $str = explode("*",$str);
 
-            $merge = array_merge($res,$str);
+            //$res,$str这两个数组都存在时，才可以合并
 
-//            halt($merge);
+            if($res && $str)
+            {
+                $merge = array_merge($res,$str);
+            }
+
             return json($merge);
         }
     }
