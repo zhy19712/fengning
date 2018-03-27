@@ -81,7 +81,7 @@
         addNode(nodes[0]);
     });
 
-    //编辑节点
+    //编辑节点弹层
     function editNode(treeNode, newName) {
         $.ajax({
             url:'./getNode',
@@ -97,6 +97,7 @@
         });
     }
 
+    //编辑节点
     $('#editNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var nodes = treeObj.getSelectedNodes();
@@ -124,13 +125,13 @@
                     dataType:'JSON',
                     type:'POST',
                     data:{
-                        pid:nodes[0].id,
+                        pid:nodes[0].pId,
+                        id:nodes[0].id,
                         name:newName
                     },
                     success:function(data){
-                        $('input[type="hidden"][name="treeId"]').val(data.data);
-                        var id = $('input[type="hidden"][name="treeId"]').val();
-                        zTree.addNodes(treeNode, {id:id,pId:treeNode.pId, name:newName});
+                        $('#'+nodes[0].tId+'_span').html(newName);
+                        layer.msg('编辑成功！', {icon: 1});
                     }
                 });
                 layer.close(index);
@@ -139,7 +140,7 @@
     });
 
     //删除节点
-    function delNode(currentNodeId,currentNodeName) {
+    $('#delNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var nodes = treeObj.getSelectedNodes();
         var isParent;
@@ -151,17 +152,23 @@
         if (nodes.length > 0) {
             isParent = nodes[0].isParent;
         }
-        layer.confirm('警告！删除'+currentNodeName+'单位工程节点将会删除它的所有子节点以及节点所包含的文件！确认删除?',{
+
+        //禁止删除父节点
+        if(isParent){
+            layer.msg('包含下级，无法删除。');
+            return false
+        }
+
+        layer.confirm('该操作会将关联用户同步删除，是否确认删除？',{
             icon:3,
             title:'提示'
         },function(index){
             $.ajax({
-                url:'{:url("Admin/delNode")}',
+                url:'./delNode',
                 dataType:'JSON',
                 type:'POST',
                 data:{
-                    id:currentNodeId,
-                    pname:currentNodeName
+                    id:nodes[0].id
                 },
                 success:function(){
                     for (var i=0, l=nodes.length; i < l; i++){
@@ -172,12 +179,6 @@
             });
             layer.close(index);
         });
-    };
-
-    $('#delNode').click(function () {
-        var currentNodeId = $('input[type="hidden"][name="groupId"]').val();
-        var currentNodeName = $('input[type="hidden"][name="currentNodeName"]').val();
-        delNode(currentNodeId,currentNodeName);
     });
 
     //全部展开
