@@ -239,6 +239,8 @@ class Rolemanagement extends Permissions
                     $where['id'] = $v;
                     $res[] = $user->getName($where);
                 }
+                //去除数组中的空的元素
+                $res = array_filter($res);
             }
             return json($res);
         }
@@ -266,15 +268,15 @@ class Rolemanagement extends Permissions
 
     public function addAdminname()
     {
-        $model = new AdminCate();
-        $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id
-        $param['id'] = 20;
-        $param['admin_id'] = 23;
-        $data = $model->addAdminid($param);
-        halt($data);
 
-
-
+//        if(request()->isAjax()) {
+            $model = new AdminCate();
+            $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id
+            $param['id'] = 20;
+            $param['admin_id'] = [22,23];
+            $data = $model->addAdminid($param);
+            halt($data);
+//        }
     }
 
 }

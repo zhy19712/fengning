@@ -122,8 +122,14 @@ class AdminCate extends Model
         if($admin_id)
         {
             $admin_id = explode(",",$admin_id['admin_id']);
+            if($param['admin_id'])
+            {
+                foreach ((array)$param['admin_id'] as $v)
+                {
+                    array_push($admin_id,strval($v));
+                }
+            }
 
-            array_push($admin_id,strval($param['admin_id']));
 
             $admin_id = implode(",",$admin_id);
 
