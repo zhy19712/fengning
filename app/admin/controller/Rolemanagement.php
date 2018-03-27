@@ -269,14 +269,14 @@ class Rolemanagement extends Permissions
     public function addAdminname()
     {
 
-//        if(request()->isAjax()) {
+        if(request()->isAjax()) {
             $model = new AdminCate();
             $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id
             $param['id'] = 20;
             $param['admin_id'] = [22,23];
             $data = $model->addAdminid($param);
-            halt($data);
-//        }
+            return josn($data);
+        }
     }
 
 }

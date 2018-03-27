@@ -130,10 +130,7 @@ class AdminCate extends Model
                 }
             }
 
-
             $admin_id = implode(",",$admin_id);
-
-
 
             //把处理过得数据重新插入数组中
             $result = $this->allowField(true)->save(['admin_id'=>$admin_id],['id' => $param['id']]);
