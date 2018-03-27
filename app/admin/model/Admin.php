@@ -50,7 +50,6 @@ class Admin extends Model
      * 根据角色类型管理 编号 关联删除 用户
      * @param $group_id
      * @return array
-     * @author hutao
      */
     public function delUserByCateId($cate_id)
     {
