@@ -155,6 +155,7 @@ class Rolemanagement extends Permissions
             if(empty($param['id']))//id为空时表示新增角色类型节点
             {
                 $data = [
+                    'pid' => $param['pid'],//admin_cate_type表中的id_
                     'number_id' => $param['number_id'],//编号
                     'role_name' => $param['role_name'],//角色名称
                     'create_owner' => $param['create_owner'],//创建人
