@@ -30,8 +30,13 @@ class Section extends Permissions
 
     public function sections()
     {
-        $d=new SectionModel();
-        $m=$d->with("builder")->select();
+        $m=Db::name('section')->alias('a')
+            ->join('admin_group b','a.builderId=b.id','left')
+            ->join('admin_group c','a.constructorId=c.id','left')
+            ->join('admin_group d','a.designerId=d.id','left')
+            ->join('admin_group e','a.supervisorId=e.id','left')
+            ->field('a.id,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
+            ->select();
 //        $m=SectionModel::get(1)->with('builder');
 //        $m=Db::name("section")->with("builder") ->select();
         return json($m);
