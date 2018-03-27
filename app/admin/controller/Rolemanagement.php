@@ -279,18 +279,41 @@ class Rolemanagement extends Permissions
     /**
      * 获取 组织机构 左侧的树结构
      * @return mixed|\think\response\Json
-     * @author hutao
      */
     public function getindex()
     {
-        // 获取左侧的树结构
-        if(request()->isAjax()){
-            $node = new AdminGroup();
-            $nodeStr = $node->getNodeName();
 
-            return json($nodeStr);
+        if(request()->isAjax()) {
+            // 获取左侧的树结构
+            $model = new AdminGroup();
+            $str = "";
+            $data = $model->getall();
+            $res = tree($data);
+
+            foreach ((array)$res as $k => $v) {
+
+                $v['id'] = strval($v['id']);
+                $res[$k] = json_encode($v);
+            }
+//            halt($res);
+
+
+            $user = Db::name('admin')->field('id,admin_group_id,name')->select();
+
+            foreach($user as $key=>$vo){
+                $id = $vo['id'] + $vo['admin_group_id'] + 10000;
+                $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
+                $str .= '}*';
+            }
+            $str = substr($str, 0, -1);
+
+            $str = explode("*",$str);
+
+            $merge = array_merge($res,$str);
+
+//            halt($merge);
+            return json($merge);
         }
-        return $this->fetch();
     }
 
 }
