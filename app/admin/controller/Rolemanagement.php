@@ -17,6 +17,7 @@ use app\admin\controller\Permissions;
 use app\admin\model\AdminCateType;
 use app\admin\model\Admin as adminModel;//管理员模型
 use app\admin\model\AdminCate;
+use app\admin\model\AdminGroup;
 
 class Rolemanagement extends Permissions
 {
@@ -262,6 +263,16 @@ class Rolemanagement extends Permissions
         }
     }
 
+
+    /*
+     * 弹框添加角色类型下的分组用户模板
+     */
+
+    public function addpeople()
+    {
+        $this->fetch();
+    }
+
     /**
      * 添加角色类型下的分组用户
      * @return \think\response\Json
@@ -276,6 +287,26 @@ class Rolemanagement extends Permissions
             $data = $model->addAdminid($param);
             return josn($data);
         }
+    }
+
+
+
+    /**
+     * 获取 组织机构 左侧的树结构
+     * @return mixed|\think\response\Json
+     * @author hutao
+     */
+    public function getindex()
+    {
+        // 获取左侧的树结构
+//        if(request()->isAjax()){
+            $node = new AdminGroup();
+            $nodeStr = $node->getNodeInfo();
+            echo "<pre>";
+            halt($nodeStr);
+            return json($nodeStr);
+//        }
+//        return $this->fetch();
     }
 
 }
