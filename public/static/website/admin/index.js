@@ -1,13 +1,10 @@
-$(function(){
-    //初始化弹层组件
-    layui.use('layer');
-    //初始化form组件
-    layui.use('form');
+    //初始化layui组件
+
     //组织结构树
     var setting = {
         async: {
             enable : true,
-            autoParam: ["pId"],
+            autoParam: ["pId","id"],
             type : "post",
             url : "./index",
             dataType :"json"
@@ -16,6 +13,13 @@ $(function(){
             enable:true,
             drag:{
                 isMove: true
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pId"
             }
         },
         view:{
@@ -38,26 +42,33 @@ $(function(){
         }
         var zTree = $.fn.zTree.getZTreeObj("ztree");
         //将新节点添加到数据库中
-        layer.prompt({
-            title: '请输入节点名称',
-        },function(value, index, elem){
-            $.ajax({
-                url:'{:url("Admin/editNode")}',
-                dataType:'JSON',
-                type:'POST',
-                data:{
-                    pid:treeNode.id,
-                    pname:value
-                },
-                success:function(data){
-                    $('input[type="hidden"][name="treeId"]').val(data.data);
-                    var id = $('input[type="hidden"][name="treeId"]').val();
-                    zTree.addNodes(treeNode, {id:id,pId:treeNode.pId, name:newName});
-                }
-            });
-            layer.close(index);
+        layer.open({
+            id:'3',
+            type:'1',
+            area:['660px','200px'],
+            title:'新增节点',
+            btn: ['保存', '关闭'],
+            content: $('#addNodeForm'),
+            yes: function(index, layero){
+                console.log(index, layero);
+                var newName = $(layero).find('input[name="name"]').val();
+                $.ajax({
+                    url:'./editNode',
+                    dataType:'JSON',
+                    type:'POST',
+                    data:{
+                        pid:treeNode.id,
+                        name:newName
+                    },
+                    success:function(data){
+                        $('input[type="hidden"][name="treeId"]').val(data.data);
+                        var id = $('input[type="hidden"][name="treeId"]').val();
+                        zTree.addNodes(treeNode, {id:id,pId:treeNode.pId, name:newName});
+                    }
+                });
+                layer.close(index);
+            }
         });
-
         return false;
     };
 
@@ -65,6 +76,7 @@ $(function(){
     $('#addNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var nodes = treeObj.getSelectedNodes();
+        $('input[name="pname"]').val(nodes[0].name);
         console.log(nodes[0]);
         addNode(nodes[0]);
     });
@@ -72,16 +84,15 @@ $(function(){
     //编辑节点
     function editNode(treeNode, newName) {
         $.ajax({
-            url:'{:url("Admin/editNode")}',
+            url:'./getNode',
             dataType:'JSON',
             type:'POST',
             data:{
-                id:treeNode.id,
-                pname:newName
+                id:treeNode.id
             },
-            success:function(){
-                $('#'+treeNode.tId+'_span').html(newName);
-                layer.msg('编辑成功！', {icon: 1});
+            success:function(res){
+                $('input[name="name"]').val(res.node.name);
+                console.log(res);
             }
         });
     }
@@ -89,19 +100,41 @@ $(function(){
     $('#editNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var nodes = treeObj.getSelectedNodes();
+        if (nodes.length > 0) {
+            var pNode = nodes[0].getParentNode();
+            $('input[name="pname"]').val(pNode.name);
+        }
         if(nodes==''){
             layer.msg('请选择节点');
             return false;
         }
-        layer.prompt({
-            title: '编辑',
-        },function(value, index, elem){
-            if(!value){
-                layer.msg('请输入节点名称');
-                return false;
+        editNode(nodes[0]);
+        layer.open({
+            id:'4',
+            type:'1',
+            area:['660px','200px'],
+            title:'编辑节点',
+            btn: ['保存', '关闭'],
+            content: $('#addNodeForm'),
+            yes: function(index, layero){
+                console.log(index, layero);
+                var newName = $(layero).find('input[name="name"]').val();
+                $.ajax({
+                    url:'./editNode',
+                    dataType:'JSON',
+                    type:'POST',
+                    data:{
+                        pid:nodes[0].id,
+                        name:newName
+                    },
+                    success:function(data){
+                        $('input[type="hidden"][name="treeId"]').val(data.data);
+                        var id = $('input[type="hidden"][name="treeId"]').val();
+                        zTree.addNodes(treeNode, {id:id,pId:treeNode.pId, name:newName});
+                    }
+                });
+                layer.close(index);
             }
-            editNode(nodes[0],value);
-            layer.close(index);
         });
     });
 
@@ -299,9 +332,9 @@ $(function(){
 
     //上传电子签名
     uploader = WebUploader.create({
-        auto: false,
+        auto: true,
         // swf文件路径
-        swf:  '/static/admin/js/webupload/Uploader.swf',
+        swf:  '/static/public/webupload/Uploader.swf',
 
         // 文件接收服务端。
         server: "/admin/common/upload",
@@ -332,21 +365,54 @@ $(function(){
 
     });
 
-    uploader.on( 'uploadSuccess', function( file ,res) {
-        layer.msg(file.name+'已上传成功');
-        console.log(res);
+    $('.webuploader-pick').next().css({
+        width:'58px',
+        height:'39px'
     });
 
-    //新增
+    uploader.on( 'uploadSuccess', function( file ,res) {
+        layer.msg(file.name+'已上传成功');
+        $('input[name="signature"]').val(file.name);
+        console.log(res.id);
+    });
+
+    $('input[name="password"]').keyup(function(){
+        var val = $(this).val();
+        $('input[name="password_confirm"]').val(val);
+        console.log($('input[name="password_confirm"]').val());
+    })
+
+    //新增弹层
     $('#add').click(function(){
-        layer.open({
+        var addIndex = layer.open({
             id:'1',
             type:'1',
-            area:['650px','600px'],
+            area:['660px','600px'],
             title:'新增',
             content:$('#org')
         });
     });
+    layui.use('form',function(){
+        var form = layui.form;
+        //表单提交
+        form.on('submit(saveAndCreat)', function(data){
+            data.field.pid =
+            $.ajax({
+                url:'./publish',
+                dataType:'JSON',
+                type:'POST',
+                data:data,
+                success:function(){
+                    layer.msg('保存成功');
+                }
+            });
+        });
+    });
+
+    //关闭弹层
+    $('#close').click(function () {
+        layer.closeAll('page')
+    })
 
 
     //查看
@@ -356,10 +422,7 @@ $(function(){
             type:'1',
             area:['650px','600px'],
             title:'新增',
-            content:$('#org'),
-            cancel:function(index, layero){
-                uploader.destroy();//重置上传插件
-            }
+            content:$('#org')
         });
     }
 
@@ -380,4 +443,3 @@ $(function(){
             return false;
         }
     }*/
-})
