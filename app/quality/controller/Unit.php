@@ -9,7 +9,11 @@ namespace app\quality\controller;
 use app\admin\controller\Permissions;
 
 class Unit extends Permissions{
-    public  function index()
+    public  function plan()
+    {
+        return $this->fetch();
+    }
+    public  function control()
     {
         return $this->fetch();
     }
