@@ -27,12 +27,18 @@ class Admin extends Model
      */
     public function delUserByGroupId($group_id)
     {
-        $user = $this->where('admin_group_id',$group_id)->column('id','thumb');
+        $user = $this->where('admin_group_id',$group_id)->column('id,thumb,signature');
         if(count($user) > 0){
-            $thumbArr = array_values($user);
-            $thumbPath = Db::name('attachment')->whereIn($thumbArr)->column('filepath');
+            $idArr = $thumbArr = [];
+            foreach($user as $u){
+                $idArr[] = $u['id'];
+                $thumbArr[] = $u['thumb'];  // 头像
+                $thumbArr[] = $u['signature']; // 电子签名
+            }
+            $thumbArr = array_filter($thumbArr);
+            $thumbPath = Db::name('attachment')->whereIn('id',$thumbArr)->column('filepath');
             if(count($thumbPath) > 0){
-                // 删除每一个用户的头像
+                // 删除每一个用户的头像 和 电子签名
                 foreach($thumbPath as $k=>$v){
                     if(file_exists($v)){
                         unlink($v); //删除文件
@@ -40,8 +46,7 @@ class Admin extends Model
                 }
             }
             // 删除用户记录
-            $idArr = array_keys($user);
-            $this->delete($idArr);
+            $this->whereIn('id',$idArr)->delete();
         }
         return ['code' => 1, 'msg' => '删除成功'];
     }
