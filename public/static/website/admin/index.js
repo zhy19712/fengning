@@ -1,15 +1,17 @@
 $(function(){
     //初始化弹层组件
     layui.use('layer');
+    //初始化form组件
+    layui.use('form');
     //组织结构树
     var setting = {
-        /*async: {
+        async: {
             enable : true,
             autoParam: ["pId"],
             type : "post",
             url : "./index",
             dataType :"json"
-        },*/
+        },
         dit:{
             enable:true,
             drag:{
@@ -19,23 +21,14 @@ $(function(){
         view:{
             selectedMulti: false
         },
+        callback:{
+            onClick:zTreeOnClick
+        },
         showLine:true,
         showTitle:true,
         showIcon:true
     }
 
-    var nodes = [
-        {name: "父节点1", children: [
-                {name: "子节点1"},
-                {name: "子节点2"}
-            ]},{name: "父节点1", children: [
-                {name: "子节点1"},
-                {name: "子节点2"}
-            ]},{name: "父节点1", children: [
-                {name: "子节点1"},
-                {name: "子节点2"}
-            ]}
-    ];
 
     //添加节点
     function addNode(treeNode) {
@@ -202,17 +195,52 @@ $(function(){
         treeObj.moveNode(node, selectNode[0], "next");
     });
 
-    zTreeObj = $.fn.zTree.init($("#ztree"), setting, nodes);
+    //点击节点
+    function zTreeOnClick(event, treeId, treeNode) {
+        console.log(treeNode);
+        /*$('input[type="hidden"][name="currentNodeName"]').val(treeNode.name);
+        $('input[type="hidden"][name="groupId"]').val(treeNode.id);
+        $('input[type="hidden"][name="dataCount"]').val(treeNode.id);*/
+
+        if(treeNode.isParent){
+           // $('#tableItem_wrapper').css("visibility","hidden");
+        }else{
+            //$('#tableItem_wrapper').css("visibility","visible");
+            tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ treeNode.id).load();
+            console.log(tableItem.rows().count());
+        }
+
+        //获取路径
+        /*$.ajax({
+            url: "./getParents",
+            type: "post",
+            data: {id:treeNode.id},
+            dataType: "json",
+            success: function (res) {
+                if(res.msg === "success"){
+                    $("#path").text("当前路径:" + res.path)
+                }
+            }
+        });*/
+
+        //构建按版本查询
+        //viewHistoryVer(treeNode.id);
+
+    };
+
+    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
     //组织结构表格
 
-    /*var tableItem = $('#tableItem').DataTable( {
+    var tableItem = $('#tableItem').DataTable( {
         processing: true,
         serverSide: true,
+       /* data : [
+            ['Trident','Internet Explorer 4.0','Win 95+','4','X','Y','Z'],
+        ],*/
         ajax: {
-            "url":"{:url('common/datatablesPre?tableName=admin')}"
+            "url":"/admin/common/datatablesPre?tableName=admin"
         },
-        /!*dom: 'lf<"#manageExportExcel.export-excel btn-outline btn-primary"><"#manageExport.export btn-outline btn-primary"><"#manageImport.import btn-outline btn-primary"><"#manageAdd.add btn-outline btn-primary">rtip',*!/
         columns: [
             {
                 name: "order"
@@ -234,7 +262,11 @@ $(function(){
             },
             {
                 name: "status"
+            },
+            {
+                name: "status"
             }
+
         ],
         columnDefs: [
             {
@@ -242,10 +274,10 @@ $(function(){
                 "orderable": false,
                 "targets": [7],
                 "render" :  function(data,type,row) {
-                    var html = "<button type='button' class='' style='margin-left: 5px;' onclick='manageEdit(this)'><i class='fa fa-search'></i></button >" ;
-                    html += "<button type='button' class='' style='margin-left: 5px;' onclick='manageDel(this)'><i class='fa fa-pencil'></i></button>" ;
-                    html += "<button type='button' class='' style='margin-left: 5px;' onclick='manageDel(this)'><i class='fa fa-cog'></i></button>" ;
-                    html += "<button type='button' class='' style='margin-left: 5px;' onclick='manageDel(this)'><i class='fa fa-user-secret'></i></button>" ;
+                    var html = "<i class='fa fa-search' title='查看' onclick='abcd(this)'></i>" ;
+                        html += "<i class='fa fa-pencil' title='编辑' onclick='weEdit(this)'></i>" ;
+                        html += "<i class='fa fa-cog' title='重置密码' onclick='reset(this)'></i>" ;
+                        html += "<i class='fa fa-user-secret' title='置为有效' onclick='active(this)'></i>" ;
                     return html;
                 }
             }
@@ -263,5 +295,89 @@ $(function(){
                 "next": "下一页"
             }
         }
-    });*/
+    });
+
+    //上传电子签名
+    uploader = WebUploader.create({
+        auto: false,
+        // swf文件路径
+        swf:  '/static/admin/js/webupload/Uploader.swf',
+
+        // 文件接收服务端。
+        server: "/admin/common/upload",
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: {
+            multiple: false,
+            id: "#upload",
+            innerHTML: "上传"
+        },
+        formData:{
+            major_key:'',
+            group_id:'',
+            number:'',
+            go_date:'',
+            standard:'',
+            evaluation:'',
+            sdi_user:'',
+        },
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/jpg,image/jpeg,image/png'
+        },
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false
+
+    });
+
+    uploader.on( 'uploadSuccess', function( file ,res) {
+        layer.msg(file.name+'已上传成功');
+        console.log(res);
+    });
+
+    //新增
+    $('#add').click(function(){
+        layer.open({
+            id:'1',
+            type:'1',
+            area:['650px','600px'],
+            title:'新增',
+            content:$('#org')
+        });
+    });
+
+
+    //查看
+    function abcd() {
+        layer.open({
+            id:'2',
+            type:'1',
+            area:['650px','600px'],
+            title:'新增',
+            content:$('#org'),
+            cancel:function(index, layero){
+                uploader.destroy();//重置上传插件
+            }
+        });
+    }
+
+    //数据返回
+    /*function complete(data){
+        var groupid = $('input[type="hidden"][name="groupId"]').val();
+        console.log(data);
+        if(data.code==1){
+            layer.msg(data.msg);
+            tableItem.ajax.url("__SCRIPT__/safety_statutesdi.php?pid=" + groupid).load();
+            importExcel.reset();
+            viewHistoryVer(groupid);
+            $("#addRules_modal").modal('hide');
+
+        }else{
+            layer.msg(data.info,{icon: 5});
+            importExcel.reset();
+            return false;
+        }
+    }*/
 })

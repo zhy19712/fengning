@@ -3,9 +3,31 @@
 }
 .current-path{
     margin-bottom: 10px;
-    height: 40px;
-    line-height: 40px;
+    padding-bottom: 5px;
+    height: 30px;
+    line-height: 30px;
     border-bottom: 1px solid #cecece;
+}
+.current-path h3{
+    float: left;
+}
+.current-path .add{
+    float: right;
+}
+.current-path i.fa:before{
+    margin-right: 5px;
+    color: #FFF;
+    background: none;
+    border-color: #FFF;
+}
+.current-path i.fa:hover:before{
+    color: #FFF;
+}
+.layui-form-select .layui-input{
+    padding-right: 0;
+}
+.layui-textarea{
+    width: 90%;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button{}
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover{}

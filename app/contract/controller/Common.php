@@ -5,6 +5,7 @@
  * Date: 2018/3/23
  * Time: 15:32
  */
+
 namespace app\contract\controller;
 
 use \think\Cache;
@@ -14,6 +15,7 @@ use think\Db;
 use \think\Cookie;
 use think\Model;
 use \think\Session;
+
 class Common extends Controller
 {
     /**
@@ -48,9 +50,9 @@ class Common extends Controller
         $order_dir = $this->request->param('order/a')['0']['dir'];
 
         $order = "";
-        if(isset($order_column)){
+        if (isset($order_column)) {
             $i = intval($order_column);
-            $order = $columns[$i]['name'].' '.$order_dir;
+            $order = $columns[$i]['name'] . ' ' . $order_dir;
         }
         //搜索
         //获取前台传过来的过滤条件
@@ -58,12 +60,12 @@ class Common extends Controller
         //分页
         $start = $this->request->has('start') ? $this->request->param('start', 0, 'intval') : 0;
         $length = $this->request->has('length') ? $this->request->param('length', 0, 'intval') : 0;
-        $limitFlag = isset($start) && $length != -1 ;
+        $limitFlag = isset($start) && $length != -1;
         //新建的方法名与数据库表名保持一致
-        return $this->$table($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
+        return $this->$table($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString);
     }
 
-     function contract($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    function contract($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
@@ -72,17 +74,17 @@ class Common extends Controller
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->order($order)->limit(intval($start),intval($length))->select();
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->order($order)->limit(intval($start), intval($length))->select();
                 //*****多表查询join改这里******
                 //$recordsFilteredResult = Db::name('datatables_example')->alias('d')->join('datatables_example_join e','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
                 $recordsFiltered = $recordsTotal;
@@ -101,7 +103,8 @@ class Common extends Controller
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
-    function section($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+
+    function section($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
@@ -110,19 +113,31 @@ class Common extends Controller
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->with("builder,supervisor,constructor,designer")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('admin_group b', 'a.builderId=b.id', 'left')
+                    ->join('admin_group c', 'a.constructorId=c.id', 'left')
+                    ->join('admin_group d', 'a.designerId=d.id', 'left')
+                    ->join('admin_group e', 'a.supervisorId=e.id', 'left')
+                    ->field('a.code,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
+                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->with("builder,supervisor,constructor,designer")->order($order)->limit(intval($start),intval($length))->select();
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('admin_group b', 'a.builderId=b.id', 'left')
+                    ->join('admin_group c', 'a.constructorId=c.id', 'left')
+                    ->join('admin_group d', 'a.designerId=d.id', 'left')
+                    ->join('admin_group e', 'a.supervisorId=e.id', 'left')
+                    ->field('a.id,a.code,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 //*****多表查询join改这里******
-                //$recordsFilteredResult = Db::name('datatables_example')->alias('d')->join('datatables_example_join e','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
+//                $recordsFilteredResult = Db::name($table)->alias('a')->join('admin_group b','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
                 $recordsFiltered = $recordsTotal;
             }
         }

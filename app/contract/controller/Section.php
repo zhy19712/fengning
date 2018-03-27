@@ -21,6 +21,11 @@ class Section extends Permissions
         return $this->fetch();
     }
 
+    /**
+     * 标段——新增
+     * @return mixed
+     * @throws \think\exception\DbException
+     */
     public function add()
     {
         $orgs = AdminGroup::all(['category' => 1]);
@@ -28,12 +33,14 @@ class Section extends Permissions
         return $this->fetch();
     }
 
-    public function sections()
+    /**
+     * 标段——获取
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getOne()
     {
-        $d=new SectionModel();
-        $m=$d->with("builder")->select();
-//        $m=SectionModel::get(1)->with('builder');
-//        $m=Db::name("section")->with("builder") ->select();
+        $m=SectionModel::get(input('id'));
         return json($m);
     }
     /**
@@ -57,7 +64,6 @@ class Section extends Permissions
             }
         }
     }
-
     /**
      * 标段——删除
      * @return array

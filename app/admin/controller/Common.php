@@ -141,6 +141,48 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
+    public function admin($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->count(0);
+        $recordsFilteredResult = array();
+        if(strlen($search)>0){
+            //有搜索条件的情况
+            if($limitFlag){
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('admin_group g','a.admin_group_id = g.id')
+                    ->field('a.id,a.order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')
+                    ->where('a.admin_group_id',$id)
+                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        }else{
+            //没有搜索条件的情况
+            if($limitFlag){
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name('admin')->alias('a')
+                    ->join('admin_group g','a.admin_group_id = g.id')
+                    ->field('a.id,a.order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')->where('a.admin_group_id',$id)->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
     /**
      * 清除全部缓存
      * @return [type] [description]
