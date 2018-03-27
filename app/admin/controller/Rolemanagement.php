@@ -293,6 +293,7 @@ class Rolemanagement extends Permissions
             foreach ((array)$res as $k => $v) {
 
                 $v['id'] = strval($v['id']);
+                $v['pid'] = strval($v['pid']);
                 $res[$k] = json_encode($v);
             }
 //            halt($res);
