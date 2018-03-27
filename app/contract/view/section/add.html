@@ -227,6 +227,18 @@
             closWin();
         })
 
+        $.ajax({
+            type: "Post",
+            url:"{:url('Contract/getAll')}",
+            success: function (res) {
+                console.log(res)
+            },
+            error: function (res) {
+                console.log(res)
+                debugger;
+            }
+        })
+
     });
 </script>
 </html>
