@@ -55,7 +55,7 @@ class Admin extends Model
         $user = $this->where('admin_cate_id',$cate_id)->column('id','thumb');
         if(count($user) > 0){
             $thumbArr = array_values($user);
-            $thumbPath = Db::name('attachment')->whereIn($thumbArr)->column('filepath');
+            $thumbPath = Db::name('attachment')->where($thumbArr)->column('filepath');
             if(count($thumbPath) > 0){
                 // 删除每一个用户的头像
                 foreach($thumbPath as $k=>$v){

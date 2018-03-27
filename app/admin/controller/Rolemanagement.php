@@ -259,7 +259,7 @@ class Rolemanagement extends Permissions
         $param['id'] = 20;
         $param['admin_id'] = 22;
         $data = $model->delAdminid($param);
-        halt($data);
+//        halt($data);
     }
 
 }

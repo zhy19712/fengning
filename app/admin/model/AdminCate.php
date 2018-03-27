@@ -91,6 +91,7 @@ class AdminCate extends Model
         if($admin_id)
         {
             $admin_id = explode(",",$admin_id);
+            halt($admin_id);
         }else{
             return ['code' => -1,'msg' => "删除失败"];
         }
