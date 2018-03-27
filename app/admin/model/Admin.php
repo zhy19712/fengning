@@ -73,12 +73,18 @@ class Admin extends Model
     {
         $user = $this->where('admin_cate_id',$cate_id)->column('id','thumb');
         if(count($user) > 0){
-            $thumbArr = array_values($user);
+            $idArr = $thumbArr = [];
+            foreach($user as $u){
+                $idArr[] = $u['id'];
+                $thumbArr[] = $u['thumb'];  // 头像
+                $thumbArr[] = $u['signature']; // 电子签名
+            }
+            $thumbArr = array_filter($thumbArr);
 
             $thumbPath = Db::name('attachment')->where(['id'=>['in',$thumbArr]])->column('filepath');
 
             if(count($thumbPath) > 0){
-                // 删除每一个用户的头像
+                // 删除每一个用户的头像 和 电子签名
                 foreach($thumbPath as $k=>$v){
                     if(file_exists($v)){
                         unlink($v); //删除文件
@@ -86,8 +92,6 @@ class Admin extends Model
                 }
             }
             // 删除用户记录
-            $idArr = array_keys($user);
-
             $this->where(['id'=>['in',$idArr]])->delete();
         }
         return ['code' => 1, 'msg' => '删除成功'];

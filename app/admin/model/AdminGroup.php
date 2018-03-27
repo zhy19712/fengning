@@ -31,7 +31,7 @@ class AdminGroup extends Model
     }
 
     /*
-     * 组织机构
+     * 组织机构下的人员管理
      */
 
     public function getNodeName()
