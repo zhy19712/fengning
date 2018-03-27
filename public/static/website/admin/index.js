@@ -1,5 +1,5 @@
     //初始化layui组件
-
+    var initUi = layui.use('form');
     //组织结构树
     var setting = {
         async: {
@@ -33,15 +33,90 @@
         showIcon:true
     }
 
+    //添加机构
+    $('#addOffice').click(function () {
+        var treeObj = $.fn.zTree.getZTreeObj("ztree");
+        var nodes = treeObj.getSelectedNodes();
+        var typeCode;
+        var id;
+
+        layer.open({
+            id:'5',
+            type:'1',
+            area:['660px','550px'],
+            title:'新增节点',
+            btn: ['保存', '关闭'],
+            content: $('#addOfficeForm'),
+            success:function(){
+                $.ajax({
+                    url:'./getNode',
+                    dataType:'JSON',
+                    type:'POST',
+                    data:{
+                        type:1
+                    },
+                    success:function(res){
+                        var options = [];
+                        for(var i = 0;i<res.nodeType.length;i++){
+                            options.push('<option value='+ res.nodeType[i].id +'>'+ res.nodeType[i].name +'</option>');
+                        }
+                        $('select[name="officeType"]').append(options);
+                        initUi.form.render();
+
+                        initUi.form.on('select(officeType)', function(data){
+                            typeCode = data.value;
+                        });
+                    }
+                });
+            },
+            yes: function(index, layero){
+                if(nodes.length <= 0){
+                    id = 0;
+                }else{
+                    id = nodes[0].id
+                }
+                var newName = $(layero).find('input[name="officeName"]').val();
+                typeCode = $('select[name="officeType"] option:selected').val();
+                $.ajax({
+                    url:'./editNode',
+                    dataType:'JSON',
+                    type:'POST',
+                    data:{
+                        type:typeCode,
+                        pid:id,
+                        name:newName
+                    },
+                    success:function(data){
+                        $('input[type="hidden"][name="treeId"]').val(data.data);
+                        var id = $('input[type="hidden"][name="treeId"]').val();
+                        if(nodes.length <= 0){
+                            //treeObj.addNodes(null,{name:newName});
+                            treeObj.reAsyncChildNodes(null, "refresh",false);
+                            //treeObj.expandNode(nodes[0], true, true, true);
+                        }else{
+                            //treeObj.addNodes(nodes[0], {id:id,pId:nodes[0].pId, name:newName});
+                            treeObj.reAsyncChildNodes(null, "refresh",false);
+                           //treeObj.expandNode(nodes[0], true, true, true);
+                        }
+                    }
+                });
+                layer.close(index);
+            }
+        });
+        return false;
+    });
+
 
     //添加节点
-    function addNode(treeNode) {
-        if(!treeNode){
+    $('#addNode').click(function () {
+        var treeObj = $.fn.zTree.getZTreeObj("ztree");
+        var nodes = treeObj.getSelectedNodes();
+        if(!nodes[0]){
             layer.msg('请选择节点');
             return false;
         }
-        var zTree = $.fn.zTree.getZTreeObj("ztree");
-        //将新节点添加到数据库中
+        $('input[name="pname"]').val(nodes[0].name);
+
         layer.open({
             id:'3',
             type:'1',
@@ -57,42 +132,94 @@
                     dataType:'JSON',
                     type:'POST',
                     data:{
-                        pid:treeNode.id,
+                        pid:nodes[0].id,
                         name:newName
                     },
                     success:function(data){
                         $('input[type="hidden"][name="treeId"]').val(data.data);
-                        var id = $('input[type="hidden"][name="treeId"]').val();
-                        zTree.addNodes(treeNode, {id:id,pId:treeNode.pId, name:newName});
+                        //var id = $('input[type="hidden"][name="treeId"]').val();
+                        //treeObj.addNodes(nodes[0], {id:id,pId:nodes[0].pId, name:newName});
+                        treeObj.reAsyncChildNodes(null, "refresh",false);
                     }
                 });
                 layer.close(index);
             }
         });
         return false;
-    };
-
-    //添加节点事件
-    $('#addNode').click(function () {
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        var nodes = treeObj.getSelectedNodes();
-        $('input[name="pname"]').val(nodes[0].name);
-        console.log(nodes[0]);
-        addNode(nodes[0]);
     });
 
     //编辑节点弹层
-    function editNode(treeNode, newName) {
+    var typeCode;
+    function editNode(treeNode, type) {
         $.ajax({
             url:'./getNode',
             dataType:'JSON',
             type:'POST',
             data:{
+                type:type,
                 id:treeNode.id
             },
             success:function(res){
                 $('input[name="name"]').val(res.node.name);
-                console.log(res);
+                $('input[name="officeName"]').val(res.node.name);
+
+                $('select[name="officeType"]').html('');
+
+                //构建select
+                var options = [];
+                for(var i = 0;i<res.nodeType.length;i++){
+                    options.push('<option value='+ res.nodeType[i].id +'>'+ res.nodeType[i].name +'</option>');
+                }
+                $('select[name="officeType"]').append(options);
+
+                //回显select
+                $('select[name="officeType"] option').each(function (i,n) {
+                    var val = $(n).val();
+                    if(res.node.type == val){
+                        $(this).attr('selected',true);
+                        typeCode = res.node.type;
+                    }
+                });
+                initUi.form.render();
+
+            }
+        });
+    }
+
+    //提交编辑
+    function getEditRes(treeNode,formName,name) {
+        initUi.form.on('select(officeType)', function(data){
+            typeCode = data.value;
+        });
+        if(!treeNode.pId){
+            treeNode.pId = 0;
+        }
+        layer.open({
+            id:'4',
+            type:'1',
+            area:['660px','550px'],
+            title:'编辑节点',
+            btn: ['保存', '关闭'],
+            content: $('#'+formName),
+            yes: function(index, layero){
+                console.log(index, layero);
+                var newName = $(layero).find('input[name='+ name +']').val();
+                $.ajax({
+                    url:'./editNode',
+                    dataType:'JSON',
+                    type:'POST',
+                    data:{
+                        type:typeCode,
+                        pid:treeNode.pId,
+                        id:treeNode.id,
+                        name:newName
+                    },
+                    success:function(data){
+                        $('#'+treeNode.tId+'_span').html(newName);
+                        layer.msg('编辑成功！', {icon: 1});
+                    }
+                });
+                layer.close(index);
             }
         });
     }
@@ -103,40 +230,23 @@
         var nodes = treeObj.getSelectedNodes();
         if (nodes.length > 0) {
             var pNode = nodes[0].getParentNode();
-            $('input[name="pname"]').val(pNode.name);
+            if(!pNode){
+                $('input[name="pname"]').val('上级名称');
+            }else{
+                $('input[name="pname"]').val(pNode.name);
+            }
         }
         if(nodes==''){
             layer.msg('请选择节点');
             return false;
         }
-        editNode(nodes[0]);
-        layer.open({
-            id:'4',
-            type:'1',
-            area:['660px','200px'],
-            title:'编辑节点',
-            btn: ['保存', '关闭'],
-            content: $('#addNodeForm'),
-            yes: function(index, layero){
-                console.log(index, layero);
-                var newName = $(layero).find('input[name="name"]').val();
-                $.ajax({
-                    url:'./editNode',
-                    dataType:'JSON',
-                    type:'POST',
-                    data:{
-                        pid:nodes[0].pId,
-                        id:nodes[0].id,
-                        name:newName
-                    },
-                    success:function(data){
-                        $('#'+nodes[0].tId+'_span').html(newName);
-                        layer.msg('编辑成功！', {icon: 1});
-                    }
-                });
-                layer.close(index);
-            }
-        });
+        if(nodes[0].category==1){
+            getEditRes(nodes[0],'addOfficeForm','officeName');
+        }
+        if(nodes[0].category==2){
+            getEditRes(nodes[0],'addNodeForm','name');
+        }
+        editNode(nodes[0],nodes[0].category);
     });
 
     //删除节点
@@ -236,16 +346,13 @@
         $('input[type="hidden"][name="groupId"]').val(treeNode.id);
         $('input[type="hidden"][name="dataCount"]').val(treeNode.id);*/
 
-        if(treeNode.isParent){
-           // $('#tableItem_wrapper').css("visibility","hidden");
-        }else{
-            //$('#tableItem_wrapper').css("visibility","visible");
+        if(treeNode.level==1){
             tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ treeNode.id).load();
             console.log(tableItem.rows().count());
         }
 
         //获取路径
-        /*$.ajax({
+        $.ajax({
             url: "./getParents",
             type: "post",
             data: {id:treeNode.id},
@@ -255,7 +362,7 @@
                     $("#path").text("当前路径:" + res.path)
                 }
             }
-        });*/
+        });
 
         //构建按版本查询
         //viewHistoryVer(treeNode.id);
