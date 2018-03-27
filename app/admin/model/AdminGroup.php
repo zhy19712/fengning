@@ -11,6 +11,7 @@ namespace app\admin\model;
 
 use think\exception\PDOException;
 use think\Model;
+use think\Db;
 
 class AdminGroup extends Model
 {
@@ -24,6 +25,23 @@ class AdminGroup extends Model
         $str = "";
         foreach($result as $key=>$vo){
             $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
+            $str .= '},';
+        }
+        return "[" . substr($str, 0, -1) . "]";
+    }
+
+    public function getNodeName()
+    {
+        $result = $this->field('id,pid,name')->select();
+        $str = "";
+        foreach($result as $key=>$vo){
+            $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
+            $str .= '},';
+        }
+        $user = Db::name('admin')->field('id,admin_group_id,name')->select();
+        foreach($user as $key=>$vo){
+            $id = $vo['id'] + $vo['admin_group_id'] + 10000;
+            $str .= '{ "id": "' . $id . '", "pId":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
             $str .= '},';
         }
         return "[" . substr($str, 0, -1) . "]";
