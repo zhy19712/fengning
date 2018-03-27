@@ -21,6 +21,11 @@ class Section extends Permissions
         return $this->fetch();
     }
 
+    /**
+     * 标段——新增
+     * @return mixed
+     * @throws \think\exception\DbException
+     */
     public function add()
     {
         $orgs = AdminGroup::all(['category' => 1]);
@@ -28,17 +33,14 @@ class Section extends Permissions
         return $this->fetch();
     }
 
-    public function sections()
+    /**
+     * 标段——获取
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getOne()
     {
-//        $m=Db::name('section')->alias('a')
-//            ->join('admin_group b','a.builderId=b.id','left')
-//            ->join('admin_group c','a.constructorId=c.id','left')
-//            ->join('admin_group d','a.designerId=d.id','left')
-//            ->join('admin_group e','a.supervisorId=e.id','left')
-//            ->field('a.id,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
-//            ->select();
-        $m=AdminGroup::where(['category' => 1]);
-//        $m=Db::name("section")->with("builder") ->select();
+        $m=SectionModel::get(input('id'));
         return json($m);
     }
     /**
@@ -62,7 +64,6 @@ class Section extends Permissions
             }
         }
     }
-
     /**
      * 标段——删除
      * @return array
