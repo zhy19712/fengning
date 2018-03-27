@@ -27,16 +27,16 @@
             margin-bottom: 8px;
         }
         #memberAdd .layui-form-item .layui-input {
-            width: 87.5%;
+            width: 88%;
         }
         #memberAdd .layui-form-select .layui-edge{
-            right: 78px;
+            right: 66px;
         }
         #memberAdd .layui-form-select .layui-input{
             width: 75%;
         }
         #memberAdd .layui-form-select dl {
-            left: 129px;
+            left: 144px;
             min-width: 75%;
         }
         #memberAdd .layui-form-select dl dd.layui-this {
@@ -47,12 +47,31 @@
             border: 1px solid #0d77b6;
             position: relative;
             margin: 0px 15px 10px 15px;
+            padding-top:9px;
         }
         #memberAdd .borForm .bgSpan{
             position: absolute;
             background:white;
             top: -10px;
             left: 5px;
+        }
+        #memberAdd .layui-form-label {
+            width: 114px;
+        }
+        #memberAdd #contract option{
+            height: 100px;
+        }
+        #memberAdd ul li{
+            border: 1px solid;
+            margin: 5px;
+            height: 32px;
+            width: 545px;
+            margin-left: 33px;
+            text-align: center;
+        }
+        #memberAdd #opi{
+            display: none;
+            z-index: 7;
         }
 
     </style>
@@ -79,7 +98,7 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label">标段简称</label>
                                 <div class="layui-input-inline">
-                                    <input type="tel" name="shortName" placeholder="合同编号" lay-verify="required" autocomplete="off" class="layui-input">
+                                    <input type="text" name="shortName" placeholder="合同编号" lay-verify="required" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-inline">
@@ -97,46 +116,48 @@
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">所属合同</label>
-                            <div class="layui-input-block" class="inpLength">
-                                <input type="text" name="contract" lay-verify="title" autocomplete="off" placeholder="请输入所属合同" class="layui-input">
-                            </div>
+                            <select name="contractId" id="contractId" lay-ignore style="width: 545px;height: 36px;"></select>
                         </div>
                     </div>
                     <!--业主现场管理机构-->
                     <div class="borForm">
                         <span class="bgSpan">管理配置</span>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">所属合同</label>
-                            <select name="city" lay-verify="" lay-search>
-                                <option value="010">layer</option>
-                            </select>
+                            <label class="layui-form-label">业主现场管理机构</label>
+                            <select name="builderId" id="builderId" lay-ignore style="width: 545px;height: 36px;"></select>
+                            <!--<select name="builderId" lay-verify="" lay-search>-->
+                                <!--<option></option>-->
+                            <!--</select>-->
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">所属合同</label>
-                            <select name="city" lay-verify="" lay-search>
-                                <option value="010">layer</option>
-                            </select>
+                            <label class="layui-form-label">监理现场管理机构</label>
+                            <select name="supervisorId" id="supervisorId" lay-ignore style="width: 545px;height: 36px;"></select>
+                            <!--<select name="supervisorId" lay-verify="" lay-search>-->
+                                <!--<option value="010">layer</option>-->
+                            <!--</select>-->
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">所属合同</label>
-                            <select name="city" lay-verify="" lay-search>
-                                <option value="010">layer</option>
-                            </select>
+                            <label class="layui-form-label">设计现场管理机构</label>
+                            <select name="designerId" id="designerId" lay-ignore style="width: 545px;height: 36px;"></select>
+                            <!--<select name="designerId" lay-verify="" lay-search>-->
+                                <!--<option value="010">layer</option>-->
+                            <!--</select>-->
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">所属合同</label>
-                            <select name="city" lay-verify="" lay-search>
-                                <option value="010">layer</option>
-                            </select>
+                            <label class="layui-form-label">施工现场管理机构</label>
+                            <select name="constructorId" id="constructorId" lay-ignore style="width: 545px;height: 36px;"></select>
+                            <!--<select name="constructorId" lay-verify="" lay-search>-->
+                                <!--<option value="010">layer</option>-->
+                            <!--</select>-->
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">所属合同</label>
-                            <select name="city" lay-verify="" lay-search>
-                                <option value="010">layer</option>
-                            </select>
+                            <label class="layui-form-label">其他现场管理机构</label>
+                            <select name="otherId" id="otherId" lay-ignore style="width: 545px;height: 36px;"></select>
+                            <!--<select name="otherId" lay-verify="" lay-search>-->
+                                <!--<option value="010">layer</option>-->
+                            <!--</select>-->
                         </div>
                     </div>
-
                     <div class="layui-form-item">
                         <div class="col-xs-12" style="text-align: center;">
                             <button class="layui-btn" lay-submit="" lay-filter="demo1"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;
@@ -153,7 +174,25 @@
 </body>
 <script id="nameLay">
     var orgs=JSON.parse($("#_orgs").val());
-    console.log(orgs)
+    // console.log(orgs)
+    for(var i=0;i<orgs.length;i++){
+        //(业主)建设单位1
+        //监理单位2
+        //设计单位4
+       // 施工单位5
+        //其他单位12
+        if(orgs[i].type == 1){
+            $("#builderId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+        }else if(orgs[i].type == 2){
+            $("#supervisorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+        }else if(orgs[i].type == 4){
+            $("#designerId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+        }else if(orgs[i].type == 5){
+            $("#constructorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+        }else if(orgs[i].type == 12){
+            $("#otherId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+        }
+    }
     layui.use(['form', 'layedit', 'laydate'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -227,18 +266,54 @@
             closWin();
         })
 
-        $.ajax({
-            type: "Post",
-            url:"{:url('Contract/getAll')}",
-            success: function (res) {
-                console.log(res)
-            },
-            error: function (res) {
-                console.log(res)
-                debugger;
-            }
-        })
+
 
     });
+    $.ajax({
+        type: "GET",
+        url:"{:url('Contract/getAll')}",
+        success: function (data) {
+            $("#contractId").empty();
+            $(data).each(function () {
+                // if (secton.ContractId !== null) {
+                //     if (secton.ContractId === this.id) {
+                //         $("#contractId").append($("<option/>").text(this.contractName).attr("value", this.id).attr("selected", true));
+                //     }
+                //     else {
+                //         $("#contractId").append($("<option/>").text(this.contractName).attr("value", this.id));
+                //     }
+                // }
+                // else {
+                    $("#contractId").append($("<option/>").text(this.contractName).attr({"value": this.id,"width": "545px","height": "100px"}));
+                // }
+            });
+        },
+        // success: function (res) {
+        //     console.log(res)
+        //     var optionStr='';
+        //     var data = res;
+        //     for(var i=0;i<data.length;i++){
+        //         // '<div class="layui-form-select">\n' +
+        //         // '        <div class="layui-select-title">\n' +
+        //         // '            <input type="text" placeholder="请选择" value="" class="layui-input">\n' +
+        //         // '            <i class="layui-edge"></i>\n' +
+        //         // '        </div>\n' +
+        //         // '        <dl class="layui-anim layui-anim-upbit" style="">\n' +
+        //         // '            <dd lay-value="" class="layui-disabled">没有选项</dd>\n' +
+        //         // '        </dl>\n' +
+        //         // '    </div>'
+        //         optionStr += '<li><span>' + data[i].id + '</span>' + data[i].contractName + '</li>'
+        //     }
+        //     $("#contract").append(optionStr)
+        // },
+        error: function (res) {
+            console.log(res)
+            debugger;
+        }
+    })
+    // $("#contract").click(function () {
+    //     $("#contract").attr('display','block');
+    // })
+
 </script>
 </html>
