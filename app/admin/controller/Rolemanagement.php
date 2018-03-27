@@ -270,7 +270,7 @@ class Rolemanagement extends Permissions
 
     public function addpeople()
     {
-        $this->fetch();
+        return $this->fetch();
     }
 
     /**
@@ -299,14 +299,14 @@ class Rolemanagement extends Permissions
     public function getindex()
     {
         // 获取左侧的树结构
-//        if(request()->isAjax()){
+        if(request()->isAjax()){
             $node = new AdminGroup();
-            $nodeStr = $node->getNodeInfo();
-            echo "<pre>";
+            $nodeStr = $node->getNodeName();
+
             halt($nodeStr);
             return json($nodeStr);
-//        }
-//        return $this->fetch();
+        }
+        return $this->fetch();
     }
 
 }
