@@ -17,6 +17,7 @@ use app\admin\controller\Permissions;
 use app\admin\model\AdminCateType;
 use app\admin\model\Admin as adminModel;//管理员模型
 use app\admin\model\AdminCate;
+use app\admin\model\AdminGroup;
 
 class Rolemanagement extends Permissions
 {
@@ -230,7 +231,8 @@ class Rolemanagement extends Permissions
             //先查询所有的admin_id
             $all_admin_id = $model->getAdminid($param['id']);
 
-            if($all_admin_id)
+
+            if($all_admin_id["admin_id"])
             {
                 $all_admin_id = explode(",",$all_admin_id['admin_id']);//拆分字符串
 
@@ -239,6 +241,8 @@ class Rolemanagement extends Permissions
                     $where['id'] = $v;
                     $res[] = $user->getName($where);
                 }
+                //去除数组中的空的元素
+                $res = array_filter($res);
             }
             return json($res);
         }
@@ -259,6 +263,16 @@ class Rolemanagement extends Permissions
         }
     }
 
+
+    /*
+     * 弹框添加角色类型下的分组用户模板
+     */
+
+    public function addpeople()
+    {
+        $this->fetch();
+    }
+
     /**
      * 添加角色类型下的分组用户
      * @return \think\response\Json
@@ -266,15 +280,33 @@ class Rolemanagement extends Permissions
 
     public function addAdminname()
     {
-        $model = new AdminCate();
-        $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id
-        $param['id'] = 20;
-        $param['admin_id'] = 23;
-        $data = $model->addAdminid($param);
-        halt($data);
+
+        if(request()->isAjax()) {
+            $model = new AdminCate();
+            $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id
+            $data = $model->addAdminid($param);
+            return josn($data);
+        }
+    }
 
 
 
+    /**
+     * 获取 组织机构 左侧的树结构
+     * @return mixed|\think\response\Json
+     * @author hutao
+     */
+    public function getindex()
+    {
+        // 获取左侧的树结构
+//        if(request()->isAjax()){
+            $node = new AdminGroup();
+            $nodeStr = $node->getNodeInfo();
+            echo "<pre>";
+            halt($nodeStr);
+            return json($nodeStr);
+//        }
+//        return $this->fetch();
     }
 
 }

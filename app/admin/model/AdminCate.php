@@ -122,12 +122,15 @@ class AdminCate extends Model
         if($admin_id)
         {
             $admin_id = explode(",",$admin_id['admin_id']);
-
-            array_push($admin_id,strval($param['admin_id']));
+            if($param['admin_id'])
+            {
+                foreach ((array)$param['admin_id'] as $v)
+                {
+                    array_push($admin_id,strval($v));
+                }
+            }
 
             $admin_id = implode(",",$admin_id);
-
-
 
             //把处理过得数据重新插入数组中
             $result = $this->allowField(true)->save(['admin_id'=>$admin_id],['id' => $param['id']]);

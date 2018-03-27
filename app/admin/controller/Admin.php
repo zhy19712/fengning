@@ -64,6 +64,23 @@ class Admin extends Permissions
         if(request()->isAjax()){
             $node = new AdminGroup();
             $param = input('post.');
+            // 验证规则
+            if(empty($param['type'])){
+                $validate = new \think\Validate([
+                    ['name', 'require|max:100', '部门名称不能为空|名称不能超过100个字符'],
+                    ['pid', 'require', '请选择组织机构'],
+                ]);
+            }else{
+                $validate = new \think\Validate([
+                    ['name', 'require|max:100', '机构名称不能为空|名称不能超过100个字符'],
+                    ['type', 'require', '请选择机构类型'],
+                ]);
+            }
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                $this->error('提交失败：' . $validate->getError());
+            }
+
             /**
              * 当新增 机构的时候
              * 前台需要传递的是 pid 父级节点编号,type 机构类型,name 节点名称
