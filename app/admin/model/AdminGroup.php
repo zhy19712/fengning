@@ -29,10 +29,10 @@ class AdminGroup extends Model
                 $str .= '},';
             }
         }else{
-            $result = Db::name('admin_cate')->field('id,pid,name')->select();
+            $result = Db::name('admin_cate')->field('id,pid,role_name')->select();
             $str = "";
             foreach($result as $key=>$vo){
-                $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
+                $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['role_name'].'"';
                 $str .= '},';
             }
         }
