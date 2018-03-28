@@ -32,7 +32,7 @@
             selectedMulti: false
         },
         callback:{
-            onClick:zTreeOnClick
+            onClick:zTreeOnClick,
         },
         showLine:true,
         showTitle:true,
@@ -387,6 +387,7 @@
     //点击节点
     function zTreeOnClick(event, treeId, treeNode) {
         console.log(treeNode);
+        $('#groupId').val(treeNode.id);
         admin_group_id = treeNode.id;
         admin_group_name = treeNode.name;
         /*$('input[type="hidden"][name="currentNodeName"]').val(treeNode.name);
@@ -419,7 +420,6 @@
     zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
     //组织结构表格
-
     var tableItem = $('#tableItem').DataTable( {
         processing: true,
         serverSide: true,
@@ -462,11 +462,15 @@
                 "orderable": false,
                 "targets": [7],
                 "render" :  function(data,type,row) {
-                    console.log(data);
+                    var status = row[6];    //后台返回的是否禁用状态
                     var html = "<i class='fa fa-search' id="+ data +" title='查看' onclick='view(this)'></i>" ;
-                        html += "<i class='fa fa-pencil' id="+ data +" title='编辑' onclick='edit(this)'></i>" ;
+                        html += "<i class='fa fa-pencil' id="+ data +" title='编辑' onclick='editor(this)'></i>" ;
                         html += "<i class='fa fa-cog' id="+ data +" title='重置密码' onclick='reset(this)'></i>" ;
-                        html += "<i class='fa fa-user-secret' id="+ data +" title='置为有效' onclick='active(this)'></i>" ;
+                        if(row[6]==1){
+                            html += "<i class='fa fa-user-secret' id="+ data +" status="+ status +" title='置为无效' onclick='audit(this)'></i>" ;
+                        }else if(row[6]==0){
+                            html += "<i class='fa fa-user-times' id="+ data +" status="+ status +" title='置为有效' onclick='audit(this)'></i>" ;
+                        }
                     return html;
                 }
             }
@@ -486,7 +490,7 @@
         }
     });
 
-    //上传电子签名
+    //新增上传电子签名
     uploader = WebUploader.create({
         auto: true,
         // swf文件路径
@@ -529,6 +533,8 @@
     uploader.on( 'uploadSuccess', function( file ,res) {
         layer.msg(file.name+'已上传成功');
         $('input[name="signature"]').val(file.name);
+        $('#signatureId').val(res.id);
+
         console.log(res.id);
     });
 
@@ -539,7 +545,7 @@
     });
 
     //管理员分组弹层
-    $('#manageZtreeBtn').click(function () {
+    $('.manageZtreeBtn').click(function () {
         layer.open({
             id:'6',
             type:'1',
@@ -591,6 +597,60 @@
 
     $.fn.zTree.init($("#manageZtree"), manageSetting, null);
 
+    //所属部门树弹层
+    $('.groupZtreeBtn').click(function () {
+        layer.open({
+            id:'6',
+            type:'1',
+            area:['300px','500px'],
+            title:'请选择管理员分组',
+            content:$('#groupZtreeDialog')
+        });
+    });
+
+    //所属部门树
+    var groupSetting = {
+        async: {
+            enable : true,
+            autoParam: ["pId","id"],
+            type : "post",
+            url : "./index",
+            dataType :"json"
+        },
+        dit:{
+            enable:true,
+            drag:{
+                isMove: true
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pId"
+            }
+        },
+        view:{
+            selectedMulti: false
+        },
+        callback:{
+            onDblClick:groupZtreeOnClick
+        },
+        showLine:true,
+        showTitle:true,
+        showIcon:true
+    }
+
+    //所属部门树点击
+    function groupZtreeOnClick(event, treeId, treeNode) {
+        $('input[name="admin_group_id"]').val(treeNode.name);
+        admin_group_id = treeNode.id;
+        admin_cate_id = treeNode.id;
+        layer.close(layer.index);
+    }
+
+    $.fn.zTree.init($("#groupZtree"), groupSetting, null);
+
     //新增弹层
     $('#add').click(function(){
         layer.open({
@@ -601,6 +661,9 @@
             content:$('#org'),
             success:function(){
                 $('input[name="admin_group_id"]').val(admin_group_name);
+            },
+            cancel: function(index, layero){
+                $('#org')[0].reset();
             }
         });
     });
@@ -608,6 +671,8 @@
     //表单提交方法
     function submitForm(data) {
         data.field.admin_group_id = admin_group_id;
+        data.field.id = $('input[name="editId"]').val();
+        data.field.signature = $('#signatureId').val();
         console.log(data.field);
         $.ajax({
             url:'./publish',
@@ -616,12 +681,13 @@
             data:data.field,
             success:function(res){
                 var filter = $(data.elem).attr('lay-filter');
+                var groupId = $('#groupId').val();
                 if(filter=='save'){
                     layer.closeAll('page');
                 }
                 $('#org')[0].reset();
                 layer.msg(res.msg);
-                tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ admin_group_id).load();
+                tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ groupId).load();
             }
         });
     }
@@ -631,6 +697,7 @@
         var form = layui.form;
         //表单提交
         form.on('submit(save)', function(data){
+            console.log(data);
             submitForm(data);
             return false;
         });
@@ -641,9 +708,10 @@
     });
 
     //关闭弹层
-    $('#close').click(function () {
+    $('.close').click(function () {
+        $('#org')[0].reset();
         layer.closeAll('page');
-    })
+    });
 
     //查看表单
     function viewForm(id){
@@ -674,7 +742,7 @@
         });
     }
 
-    //查看
+    //查看弹层
     function view(that) {
         var id = $(that).attr('id');
         layer.open({
@@ -688,10 +756,74 @@
                 viewForm(id);
             },
             yes:function () {
+                $('#org')[0].reset();
                 layer.closeAll('page');
+            },
+            cancel: function(index, layero){
+                $('#org')[0].reset();
             }
         });
     }
+
+    //编辑弹层
+    function editor(that) {
+        var id = $(that).attr('id');
+        $('input[name="editId"]').val(id);
+        layer.open({
+            id:'1',
+            type:'1',
+            area:['660px','700px'],
+            title:'编辑',
+            content:$('#editOrg'),
+            success:function(){
+                viewForm(id);
+            },
+            cancel: function(index, layero){
+                $('#org')[0].reset();
+            }
+        });
+    }
+
+    //重置密码
+    function reset(that) {
+        var id = $(that).attr('id');
+        $.ajax({
+            url:'./editPwd',
+            dataType:'JSON',
+            type:'POST',
+            data:{
+                id:id
+            },
+            success:function(res){
+                layer.msg(res.msg);
+            }
+        });
+    }
+
+    //用户禁用/解禁
+    function audit(that) {
+        var status = $(that).attr('status');
+        var id = $(that).attr('id');
+        $.ajax({
+            url:'./audit',
+            dataType:'JSON',
+            type:'POST',
+            data:{
+                id:id
+            },
+            success:function(res){
+                if(status==1){
+                    $(that).attr('status','0');
+                    $(that).addClass('fa-user-times').removeClass('fa-user-secret');
+                }else if(status==0){
+                    $(that).attr('status','1');
+                    $(that).addClass('fa-user-secret').removeClass('fa-user-times');
+                }
+                layer.msg(res.msg);
+            }
+        });
+    }
+
 
     //数据返回
     /*function complete(data){

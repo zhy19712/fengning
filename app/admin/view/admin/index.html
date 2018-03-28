@@ -1,6 +1,7 @@
 {include file="public/common_header"}
 <link rel="stylesheet" href="__WEBSITE__/admin/index.css">
-
+<input type="hidden" id="groupId">
+<input type="hidden" id="signatureId">
 <div data-options="region:'west',title:'组织机构',split:true" style="width:260px;">
     <div class="ztree-title">
         <i title="新增机构" class="fa fa-lg fa-building" id="addOffice"></i>
@@ -67,7 +68,7 @@
                 <input type="text" name="admin_cate_id" placeholder="点击获取分组列表" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux">
-                <i class="fa fa-th-list manage-ztree-btn" id="manageZtreeBtn" ></i>
+                <i class="fa fa-th-list manage-ztree-btn manageZtreeBtn"></i>
             </div>
         </div>
     </div>
@@ -150,9 +151,9 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="saveAndCreat" id="saveAndCreat">保存并新建</button>
-            <button class="layui-btn" lay-submit lay-filter="save" id="save">保存</button>
-            <button type="button" class="layui-btn layui-btn-primary" id="close">关闭</button>
+            <button class="layui-btn" lay-submit lay-filter="saveAndCreat">保存并新建</button>
+            <button class="layui-btn" lay-submit lay-filter="save">保存</button>
+            <button type="button" class="layui-btn layui-btn-primary close">关闭</button>
         </div>
     </div>
 </form>
@@ -254,6 +255,119 @@
     </div>
 </form>
 
+<!-- 编辑表单 -->
+<form action="" class="layui-form" id="editOrg" style="display: none">
+    <input type="hidden" name="editId" value="">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="nickname" placeholder="请输入姓名" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">排序号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="order" placeholder="请输入排序号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">所在部门</label>
+            <div class="layui-input-inline">
+                <input type="text" name="admin_group_id" placeholder="请输入所在部门" autocomplete="off" class="layui-input" readonly>
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <i class="fa fa-th-list manage-ztree-btn groupZtreeBtn" id=""></i>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">管理员分组</label>
+            <div class="layui-input-inline">
+                <input type="text" name="admin_cate_id" placeholder="点击获取分组列表" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <i class="fa fa-th-list manage-ztree-btn manageZtreeBtn"></i>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">邮箱地址</label>
+            <div class="layui-input-inline">
+                <input type="text" name="mail" placeholder="请输入邮箱地址" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">手机号码</label>
+            <div class="layui-input-inline">
+                <input type="text" name="mobile" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">办公电话</label>
+            <div class="layui-input-inline">
+                <input type="text" name="tele" placeholder="请输入办公电话" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">登录名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" placeholder="请输入登录名" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">所属岗位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="position" placeholder="请输入所属岗位" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">微信号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="wechat" placeholder="请输入微信号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-inline">
+                <select name="gender" lay-verify="">
+                    <option value="">男</option>
+                    <option value="">女</option>
+                </select>
+            </div>
+        </div>
+        <div class="autograph">
+            <label class="layui-form-label">电子签名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="signature" placeholder="请上传电子签名" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <div id="upload" class="upload"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea name="remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="save">保存</button>
+            <button type="button" class="layui-btn layui-btn-primary close">关闭</button>
+        </div>
+    </div>
+</form>
+
 <!-- 新增节点 -->
 <form action="" class="layui-form" id="addNodeForm" style="display: none">
     <div class="layui-form-item">
@@ -299,8 +413,13 @@
 </form>
 
 <!-- 管理员分组 -->
-<div id="manageZtreeDialog">
+<div id="manageZtreeDialog" style="display: none">
     <ul id="manageZtree" class="ztree"></ul>
+</div>
+
+<!-- 所属部门 -->
+<div id="groupZtreeDialog" style="display: none">
+    <ul id="groupZtree" class="ztree"></ul>
 </div>
 
 {include file="public/common_footer"}
