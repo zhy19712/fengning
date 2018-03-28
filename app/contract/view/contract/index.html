@@ -25,7 +25,7 @@
             font-size: 17px;
             border-bottom: 1px dotted #cecece;
         }
-        #secTable .dataTables_filter label{
+        #conTable .dataTables_filter label{
             font-size: 15px;
             font-weight: 800;
         }
@@ -45,9 +45,10 @@
         #conTable .float_left{
             float: left;
         }
-        #conTable .float_left input:hover{
+        #conTable .float_left input:focus{
             border-color: #9ac6ff;
         }
+
         #conTable .dataTables_length{
             height: 8px;
             position:absolute;
@@ -77,17 +78,20 @@
             position: fixed;
             bottom: 8px;
             right: 0;
+            z-index: 4;
         }
         #conTable .dataTables_wrapper .dataTables_info {
             position: fixed;
             bottom: 10px;
             left: 25px;
+            z-index: 4;
         }
         #conTable .dataTables_length{
             height: 8px;
             position: fixed;
             bottom: 19px;
             left: 175px;
+            z-index: 4;
         }
         #conTable #admin_table .odd{
             background-color: #f9f9f9;
@@ -100,6 +104,14 @@
         }
         .fa-pencil:before, .fa-trash:before {
             color: #00c0ef;
+        }
+        #conTable .xia{
+            width: 100%;
+            height: 40px;
+            background: white;
+            position: fixed;
+            bottom: 0;
+            left: 0;
         }
     </style>
 <body class="layui-layout-body" style="overflow-y:hidden;">
@@ -123,6 +135,7 @@
                                 </tr>
                             </thead>
                         </table>
+                        <div class="xia"></div>
                     </div>
                 </div>
             </div>
@@ -273,5 +286,8 @@
             layer.close(index);
         });
     }
+    $(".float_left input").click(function () {
+        $(".float_left input").attr({'border':'1px solid #9ac6ff'});
+    })
 </script>
 </html>
