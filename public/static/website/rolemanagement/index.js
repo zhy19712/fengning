@@ -52,6 +52,11 @@ var setting = {
             rootPId:0
         }
     },
+    edit: {
+        enable: true,
+        showRemoveBtn: false,
+        showRenameBtn: false
+    },
     callback: {
         onClick: this.onClick
     }
@@ -173,24 +178,25 @@ function onClick(e, treeId, node) {
 //点击添加节点
 function addNodetree() {
     var pid  = selfid?selfid:0;
+
     layer.prompt({
         title: '请输入节点名称',
     },function(value, index, elem){
+        var newNode = {
+                name: value
+        };
         $.ajax({
             url:'./editCatetype',
             type:"post",
             data:{pid:pid,name:value},
             success: function (res) {
                 if(res.code===1){
-                    if(sNodes){
-                        alert(111)
-                        zTreeObj.addNodes(sNodes[0],res.data);
-                        zTreeObj.reAsyncChildNodes(sNodes[0], "refresh", false);
-                        zTreeObj.reAsyncChildNodes(sNodes[0].getParentNode()[0], "refresh", false);
+                    if(sNodes[0]){
+                        zTreeObj.addNodes(sNodes[0], res.data);
                     }else{
                         zTreeObj.addNodes(null,res.data);
-                        zTreeObj.reAsyncChildNodes(sNodes[0], "refresh", false);
-                        zTreeObj.reAsyncChildNodes(sNodes[0].getParentNode()[0], "refresh", false);
+                        // zTreeObj.reAsyncChildNodes(sNodes[0], "refresh", false);
+                        // zTreeObj.reAsyncChildNodes(sNodes[0].getParentNode()[0], "refresh", true);
                     }
 
                 }
@@ -244,6 +250,8 @@ function delNodetree() {
                     if(res.code===1){
                         layer.msg("删除节点成功",{time:1500,shade: 0.1});
                         zTreeObj.removeNode(sNodes[0]);
+                        zTreeObj.reAsyncChildNodes(sNodes[0], "refresh", false);
+                        zTreeObj.reAsyncChildNodes(sNodes[0].getParentNode()[0], "refresh", true);
                         selfid = "";
                     }
                 }

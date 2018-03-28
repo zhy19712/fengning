@@ -74,7 +74,7 @@
         <i title="展开所有" class="fa fa-lg fa-plus-square" id="openNode"></i>
         <i title="收起所有" class="fa fa-lg fa-minus-square" id="closeNode"></i>
     </div>
-    <ul class="ztree" id="ztree"></ul>
+    <ul class="ztree" id="ztree" style="overflow-y: scroll; height: 500px;"></ul>
 </div>
 <div style="display: none;" id="current_name">{$current_name}</div>
 <div data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#eee;">
@@ -171,6 +171,7 @@
 
 {include file="public/common_footer"}
 <script src="__WEBSITE__/rolemanagement/index.js"></script>
+<script src="http://apps.bdimg.com/libs/jquery.cookie/1.4.1/jquery.cookie.min.js"></script>
 <script>
     //组织结构表格
     var tableItem = $('#tableItem').DataTable( {
