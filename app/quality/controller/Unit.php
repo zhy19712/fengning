@@ -8,6 +8,11 @@
 namespace app\quality\controller;
 use app\admin\controller\Permissions;
 
+/**
+ * 单位质量
+ * Class Unit
+ * @package app\quality\controller
+ */
 class Unit extends Permissions{
     public  function plan()
     {
