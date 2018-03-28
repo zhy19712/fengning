@@ -51,6 +51,18 @@
     p i.fa:before {
         color: #fff;
     }
+    /*#tableItem_length{*/
+        /*position: fixed;*/
+        /*float: left;*/
+        /*bottom: 0%;*/
+    /*}*/
+    /*#tableItem_paginate{*/
+        /*position: fixed;*/
+        /*float: left;*/
+        /*margin-left: 20px;*/
+        /*bottom: 0%;*/
+    /*}*/
+
 </style>
 <div data-options="region:'west',title:'角色分类树',split:true" style="width:180px;">
     <div class="ztree-title">
@@ -79,7 +91,7 @@
         </tr>
         </thead>
     </table>
-    <div class="info"></div>
+    <div class="tbcontainer"></div>
     <!--<form  id="roleform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">-->
         <!--<input type="hidden" name="id" id="addId" style="display: none;">-->
         <!--<div class="layui-form-item">-->
@@ -180,7 +192,7 @@
                 name: "create_owner"
             },
             {
-                name: "create_time"
+                name: "date"
             },
             {
                 name: "desc"
@@ -219,6 +231,11 @@
                 "sNext": ">",
                 "sLast": ">>"
             }
+        },
+        "fnInitComplete": function (oSettings, json) {
+
+
+
         }
     });
     //新增

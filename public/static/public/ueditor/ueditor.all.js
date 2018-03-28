@@ -13758,7 +13758,7 @@ UE.plugin.register('anchor', function (){
                 utils.cssRule('anchor',
                     '.anchorclass{background: url(\''
                         + this.options.themePath
-                        + this.options.theme +'/images/anchor.gif\') no-repeat scroll left center transparent;cursor: auto;display: inline-block;height: 16px;width: 15px;}',
+                        + this.options.theme +'/img/anchor.gif\') no-repeat scroll left center transparent;cursor: auto;display: inline-block;height: 16px;width: 15px;}',
                     this.document);
             }
         },
@@ -14069,7 +14069,7 @@ UE.plugin.register('wordimage',function(){
                 var attrs = img.attrs,
                     flag = parseInt(attrs.width) < 128 || parseInt(attrs.height) < 43,
                     opt = me.options,
-                    src = opt.UEDITOR_HOME_URL + 'themes/default/images/spacer.gif';
+                    src = opt.UEDITOR_HOME_URL + 'themes/default/img/spacer.gif';
                 if (attrs['src'] && /^(?:(file:\/+))/.test(attrs['src'])) {
                     img.setAttr({
                         width:attrs.width,
@@ -14077,7 +14077,7 @@ UE.plugin.register('wordimage',function(){
                         alt:attrs.alt,
                         word_img: attrs.src,
                         src:src,
-                        'style':'background:url(' + ( flag ? opt.themePath + opt.theme + '/images/word.gif' : opt.langPath + opt.lang + '/images/localimage.png') + ') no-repeat center center;border:1px solid #ddd'
+                        'style':'background:url(' + ( flag ? opt.themePath + opt.theme + '/img/word.gif' : opt.langPath + opt.lang + '/img/localimage.png') + ') no-repeat center center;border:1px solid #ddd'
                     })
                 }
             })
@@ -17654,7 +17654,7 @@ UE.plugins['video'] = function (){
         switch (type){
             case 'image':
                 str = '<img ' + (id ? 'id="' + id+'"' : '') + ' width="'+ width +'" height="' + height + '" _url="'+url+'" class="' + classname.replace(/\bvideo-js\b/, '') + '"'  +
-                    ' src="' + me.options.UEDITOR_HOME_URL+'themes/default/images/spacer.gif" style="background:url('+me.options.UEDITOR_HOME_URL+'themes/default/images/videologo.gif) no-repeat center center; border:1px solid gray;'+(align ? 'float:' + align + ';': '')+'" />'
+                    ' src="' + me.options.UEDITOR_HOME_URL+'themes/default/img/spacer.gif" style="background:url('+me.options.UEDITOR_HOME_URL+'themes/default/img/videologo.gif) no-repeat center center; border:1px solid gray;'+(align ? 'float:' + align + ';': '')+'" />'
                 break;
             case 'embed':
                 str = '<embed type="application/x-shockwave-flash" class="' + classname + '" pluginspage="http://www.macromedia.com/go/getflashplayer"' +
@@ -19949,7 +19949,7 @@ UE.plugins['table'] = function () {
         'defaultCols':5,
         'defaultRows':5,
         'tdvalign':'top',
-        'cursorpath':me.options.UEDITOR_HOME_URL + "themes/default/images/cursor_",
+        'cursorpath':me.options.UEDITOR_HOME_URL + "themes/default/img/cursor_",
         'tableDragable':false,
         'classList':["ue-table-interlace-color-single","ue-table-interlace-color-double"]
     });
@@ -21849,7 +21849,7 @@ UE.plugins['tablesort'] = function () {
         //添加表格可排序的样式
         utils.cssRule('tablesort',
             'table.sortEnabled tr.firstRow th,table.sortEnabled tr.firstRow td{padding-right:20px;background-repeat: no-repeat;background-position: center right;' +
-                '   background-image:url(' + me.options.themePath + me.options.theme + '/images/sortable.png);}',
+                '   background-image:url(' + me.options.themePath + me.options.theme + '/img/sortable.png);}',
             me.document);
 
         //做单元格合并操作时,清除可排序标识
@@ -23468,7 +23468,7 @@ UE.commands['insertparagraph'] = {
 //    function createInsertStr( obj, toIframe, addParagraph ) {
 //        return !toIframe ?
 //                (addParagraph ? '<p>' : '') + '<img title="'+obj.title+'" width="' + obj.width + '" height="' + obj.height + '"' +
-//                        ' src="' + me.options.UEDITOR_HOME_URL + 'themes/default/images/spacer.gif" style="background:url(' + obj.logo+') no-repeat center center; border:1px solid gray;" class="edui-faked-webapp" _url="' + obj.url + '" />' +
+//                        ' src="' + me.options.UEDITOR_HOME_URL + 'themes/default/img/spacer.gif" style="background:url(' + obj.logo+') no-repeat center center; border:1px solid gray;" class="edui-faked-webapp" _url="' + obj.url + '" />' +
 //                        (addParagraph ? '</p>' : '')
 //                :
 //                '<iframe class="edui-faked-webapp" title="'+obj.title+'" width="' + obj.width + '" height="' + obj.height + '"  scrolling="no" frameborder="0" src="' + obj.url + '" logo_url = '+obj.logo+'></iframe>';
@@ -23512,7 +23512,7 @@ UE.plugin.register('webapp', function (){
     function createInsertStr(obj,toEmbed){
         return  !toEmbed ?
             '<img title="'+obj.title+'" width="' + obj.width + '" height="' + obj.height + '"' +
-                ' src="' + me.options.UEDITOR_HOME_URL + 'themes/default/images/spacer.gif" _logo_url="'+obj.logo+'" style="background:url(' + obj.logo
+                ' src="' + me.options.UEDITOR_HOME_URL + 'themes/default/img/spacer.gif" _logo_url="'+obj.logo+'" style="background:url(' + obj.logo
                 +') no-repeat center center; border:1px solid gray;" class="edui-faked-webapp" _url="' + obj.url + '" ' +
                 (obj.align && !obj.cssfloat? 'align="' + obj.align + '"' : '') +
                 (obj.cssfloat ? 'style="float:' + obj.cssfloat + '"' : '') +
@@ -23657,7 +23657,7 @@ UE.plugin.register('music', function (){
                     (align && !cssfloat? 'align="' + align + '"' : '') +
                     (cssfloat ? 'style="float:' + cssfloat + '"' : '') +
                     ' width="'+ width +'" height="' + height + '" _url="'+url+'" class="edui-faked-music"' +
-                    ' src="'+me.options.langPath+me.options.lang+'/images/music.png" />'
+                    ' src="'+me.options.langPath+me.options.lang+'/img/music.png" />'
             :
             '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer"' +
                 ' src="' + url + '" width="' + width  + '" height="' + height  + '" '+ (align && !cssfloat? 'align="' + align + '"' : '') +
@@ -23762,7 +23762,7 @@ UE.plugin.register('autoupload', function (){
         if (filetype == 'image') {
             loadingHtml = '<img class="loadingclass" id="' + loadingId + '" src="' +
                 me.options.themePath + me.options.theme +
-                '/images/spacer.gif" title="' + (me.getLang('autoupload.loading') || '') + '" >';
+                '/img/spacer.gif" title="' + (me.getLang('autoupload.loading') || '') + '" >';
             successHandler = function(data) {
                 var link = urlPrefix + data.url,
                     loader = me.document.getElementById(loadingId);
@@ -23779,7 +23779,7 @@ UE.plugin.register('autoupload', function (){
             loadingHtml = '<p>' +
                 '<img class="loadingclass" id="' + loadingId + '" src="' +
                 me.options.themePath + me.options.theme +
-                '/images/spacer.gif" title="' + (me.getLang('autoupload.loading') || '') + '" >' +
+                '/img/spacer.gif" title="' + (me.getLang('autoupload.loading') || '') + '" >' +
                 '</p>';
             successHandler = function(data) {
                 var link = urlPrefix + data.url,
@@ -23894,10 +23894,10 @@ UE.plugin.register('autoupload', function (){
                     utils.cssRule('loading',
                         '.loadingclass{display:inline-block;cursor:default;background: url(\''
                             + this.options.themePath
-                            + this.options.theme +'/images/loading.gif\') no-repeat center center transparent;border:1px solid #cccccc;margin-left:1px;height: 22px;width: 22px;}\n' +
+                            + this.options.theme +'/img/loading.gif\') no-repeat center center transparent;border:1px solid #cccccc;margin-left:1px;height: 22px;width: 22px;}\n' +
                             '.loaderrorclass{display:inline-block;cursor:default;background: url(\''
                             + this.options.themePath
-                            + this.options.theme +'/images/loaderror.png\') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;' +
+                            + this.options.theme +'/img/loaderror.png\') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;' +
                             '}',
                         this.document);
                 }
@@ -24513,7 +24513,7 @@ UE.plugin.register('simpleupload', function (){
                 var allowFiles = me.getOpt('imageAllowFiles');
 
                 me.focus();
-                me.execCommand('inserthtml', '<img class="loadingclass" id="' + loadingId + '" src="' + me.options.themePath + me.options.theme +'/images/spacer.gif" title="' + (me.getLang('simpleupload.loading') || '') + '" >');
+                me.execCommand('inserthtml', '<img class="loadingclass" id="' + loadingId + '" src="' + me.options.themePath + me.options.theme +'/img/spacer.gif" title="' + (me.getLang('simpleupload.loading') || '') + '" >');
 
                 function callback(){
                     try{
@@ -24596,10 +24596,10 @@ UE.plugin.register('simpleupload', function (){
                 utils.cssRule('loading',
                     '.loadingclass{display:inline-block;cursor:default;background: url(\''
                     + this.options.themePath
-                    + this.options.theme +'/images/loading.gif\') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;}\n' +
+                    + this.options.theme +'/img/loading.gif\') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;}\n' +
                     '.loaderrorclass{display:inline-block;cursor:default;background: url(\''
                     + this.options.themePath
-                    + this.options.theme +'/images/loaderror.png\') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;' +
+                    + this.options.theme +'/img/loaderror.png\') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;' +
                     '}',
                     this.document);
             },

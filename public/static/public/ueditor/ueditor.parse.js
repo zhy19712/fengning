@@ -388,7 +388,7 @@ UE.parse.register('table', function (utils) {
                 selector + ' table.noBorderTable th,' +
                 selector + ' table.noBorderTable caption{border:1px dashed #ddd !important}' +
                 selector + ' table.sortEnabled tr.firstRow th,' + selector + ' table.sortEnabled tr.firstRow td{padding-right:20px; background-repeat: no-repeat;' +
-                    'background-position: center right; background-image:url(' + this.rootPath + 'themes/default/images/sortable.png);}' +
+                    'background-position: center right; background-image:url(' + this.rootPath + 'themes/default/img/sortable.png);}' +
                 selector + ' table.sortEnabled tr.firstRow th:hover,' + selector + ' table.sortEnabled tr.firstRow td:hover{background-color: #EEE;}' +
                 selector + ' table{margin-bottom:10px;border-collapse:collapse;display:table;}' +
                 selector + ' td,' + selector + ' th{ background:white; padding: 5px 10px;border: 1px solid #DDD;}' +
