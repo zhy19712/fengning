@@ -22,11 +22,21 @@ class AdminGroup extends Model
     public function getNodeInfo($type = 'group')
     {
         if($type == 'group'){
-            $result = $this->field('id,pid,name,category,idv,pidv')->select();
+            $result = $this->column('id,pid,name,category,idv,pidv');
+
+            $sortArr = [];
+            foreach ($result as $v){
+                $sortArr[] = $v['idv'];
+            }
+            asort($sortArr);
             $str = "";
-            foreach($result as $key=>$vo){
-                $str .= '{ "id": "' . $vo['idv'] . '", "pId":"' . $vo['pidv'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"'.',"idv":"'.$vo['id'].'"'.',"pidv":"'.$vo['pid'].'"';
-                $str .= '},';
+            foreach ($sortArr as $v){
+                foreach($result as $key=>$vo){
+                    if($v == $vo['idv']){
+                        $str .= '{ "id": "' . $vo['idv'] . '", "pId":"' . $vo['pidv'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"'.',"idv":"'.$vo['id'].'"'.',"pidv":"'.$vo['pid'].'"';
+                        $str .= '},';
+                    }
+                }
             }
         }else{
             $result = Db::name('admin_cate')->field('id,pid,role_name')->select();
