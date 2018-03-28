@@ -226,6 +226,7 @@ class Rolemanagement extends Permissions
                     $where['id'] = $v;
                     $res[] = $user->getName($where);
                 }
+
                 //去除数组中的空的元素
                 $res = array_filter($res);
             }
