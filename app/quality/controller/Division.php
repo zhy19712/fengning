@@ -16,5 +16,8 @@ use app\admin\controller\Permissions;
  * @package app\quality\controller
  */
 class Division extends Permissions{
-
+public function index()
+{
+    return $this->fetch();
+}
 }

@@ -319,7 +319,7 @@ class Rolemanagement extends Permissions
         //获取角色id
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         $model = new \app\admin\model\AdminCate();
-        $menuModel = new AdminMenu();
+
         if($id > 0) {
             //是修改操作
             if(request()->isAjax()) {
@@ -336,7 +336,9 @@ class Rolemanagement extends Permissions
                 if(false == $model->allowField(true)->save($post,['id'=>$id])) {
                     return $this->error('修改失败');
                 } else {
-                    addlog($model->id);//写入日志
+
+//                    addlog($model->id);//写入日志
+
                     return $this->success('修改角色信息成功');
                 }
             } else {

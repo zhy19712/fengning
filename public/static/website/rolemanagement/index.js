@@ -347,7 +347,10 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
     $(this).addClass("select-color").siblings().removeClass("select-color");
     selectData = tableItem.row(".select-color").data();//获取选中行数据
     $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[1]);
-    getAdminname(selectData[5])
+    console.log($("#catepublish").attr('src'));
+    console.log(123)
+    $("#catepublish").attr('src','/admin/rolemanagement/catepublish.shtml?roleId='+selectData[5]);
+    getAdminname(selectData[5]);
 });
 //拉取角色用户
 function getAdminname(id) {
