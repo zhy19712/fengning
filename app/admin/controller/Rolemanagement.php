@@ -11,14 +11,11 @@
 namespace app\admin\controller;
 
 use \think\Db;
-use \think\Cookie;
 use \think\Session;
-use app\admin\controller\Permissions;
 use app\admin\model\AdminCateType;
 use app\admin\model\Admin as adminModel;//管理员模型
 use app\admin\model\AdminCate;
 use app\admin\model\AdminGroup;
-use app\admin\model\AdminMenu;
 
 class Rolemanagement extends Permissions
 {
@@ -343,7 +340,7 @@ class Rolemanagement extends Permissions
                     return $this->error('修改失败');
                 } else {
 
-//                    addlog($model->id);//写入日志
+                    addlog($model->id);//写入日志
 
                     return $this->success('修改角色信息成功');
                 }
