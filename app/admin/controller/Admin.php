@@ -197,7 +197,7 @@ class Admin extends Permissions
             if(empty($prev_id) && !empty($next_id) && ($id < $next_id)){
                 Db::name('admin_group')->where('id',$next_idv)->update(['idv' => $id,'pidv' => $pidv]);
                 Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $next_pidv]);
-            }else if(empty($next_id) && !empty($prev_id) && ($id < $prev_id)){
+            }else if(empty($next_id) && !empty($prev_id) && ($id > $prev_id)){
                 Db::name('admin_group')->where('id',$idv)->update(['idv' => $prev_id,'pidv' => $prev_pidv]);
                 Db::name('admin_group')->where('id',$prev_idv)->update(['idv' => $id,'pidv' => $pidv]);
             }
