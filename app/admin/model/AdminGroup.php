@@ -22,10 +22,10 @@ class AdminGroup extends Model
     public function getNodeInfo($type = 'group')
     {
         if($type == 'group'){
-            $result = $this->field('id,pid,name,category')->select();
+            $result = $this->field('id,pid,name,category,idv,pidv')->select();
             $str = "";
             foreach($result as $key=>$vo){
-                $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"';
+                $str .= '{ "id": "' . $vo['idv'] . '", "pId":"' . $vo['pidv'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"'.',"idv":"'.$vo['id'].'"'.',"pidv":"'.$vo['pid'].'"';
                 $str .= '},';
             }
         }else{
@@ -49,11 +49,13 @@ class AdminGroup extends Model
     public function insertTb($param)
     {
         try{
-            $result = $this->allowField(true)->save($param);
-            if(false === $result){
-                return ['code' => -1,'msg' => $this->getError()];
-            }else{
+            $id = $this->allowField(true)->insertGetId($param);
+            $node = $this->getOne($id);
+            $result = $this->where('id',$id)->update(['idv' => $id,'pidv' => $node['pid']]);
+            if(1 == $result){
                 return ['code' => 1,'msg' => '添加成功'];
+            }else{
+                return ['code' => -1,'msg' => $this->getError()];
             }
         }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
