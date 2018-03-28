@@ -23,6 +23,8 @@ class Admin extends Model
      * 根据组织机构 编号 关联删除 用户
      * @param $group_id
      * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      * @author hutao
      */
     public function delUserByGroupId($group_id)
@@ -46,7 +48,7 @@ class Admin extends Model
                 }
             }
             // 删除用户记录
-            $this->whereIn('id',$idArr)->delete();
+            Db::name('admin')->whereIn('id',$idArr)->delete();
         }
         return ['code' => 1, 'msg' => '删除成功'];
     }

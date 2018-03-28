@@ -15,14 +15,19 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <style type="text/css">
         body{
-            height: 450px;
+            height: 870px;
             border: 1px dotted #cecece;
             background: #ffffff;
         }
         #conTable #path{
             line-height: 30px;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 17px;
             border-bottom: 1px dotted #cecece;
+        }
+        #secTable .dataTables_filter label{
+            font-size: 15px;
+            font-weight: 800;
         }
         #conTable #spanPath{
             display: inline-block;
@@ -57,7 +62,7 @@
         }
         #conTable #mytable1_wrapper table{
             /*border-top: 1px solid #00c0ef;*/
-            margin-top: 36px;
+            margin-top: 12px;
         }
         #conTable table {
             table-layout:fixed;
@@ -97,7 +102,7 @@
             color: #00c0ef;
         }
     </style>
-<body class="layui-layout-body" style="overflow-y:visible;">
+<body class="layui-layout-body" style="overflow-y:hidden;">
     <!--表格-->
     <div id="conTable" class="wrapper wrapper-content animated fadeInRight" style="width: 98%;vertical-align: top;padding: 0;margin-left: 20px;text-align: center">
         <div class="ibox float-e-margins">
@@ -129,6 +134,7 @@
      var admin_table = $('#admin_table').DataTable({
             processing: true,
             serverSide: true,
+            sScrollY:'720px',
             ajax: {
                 url:"{:url('contract/common/datatablesPre?tableName=contract')}"
             },
