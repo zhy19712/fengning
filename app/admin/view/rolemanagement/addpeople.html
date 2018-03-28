@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="__PUBLIC__/datatables/css/jquery.dataTables.min.css" media="all" />
     <link rel="stylesheet" href="__PUBLIC__/datatables/css/buttons.dataTables.min.css" media="all" />
     <link rel="stylesheet" href="__COMMONCSS__/common.css" />
+    <link rel="stylesheet" href="__WEBSITE__/rolemanagement/css/ztreeicon.css">
     <style type="text/css">
         body {
             background-color: white;
@@ -274,6 +275,7 @@ $('#username_key').bind('input propertychange', function() {
                     html = "<p2 id='p" + item.id + "'>" + item.name + "&nbsp;<a id='a" + item.id + "'><i class='fa fa-times'></i></a><input type='hidden' value='" + item.id + "'></p2>"
                     $("#selectedUserDiv").append(html);
                     $("#a" + item.id).click(function () {
+                        alert(item.id)
                         $("#p" + item.id).remove();
                     });
                 });
