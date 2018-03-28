@@ -19,13 +19,22 @@ class AdminGroup extends Model
     //自动写入创建、更新时间
     protected $autoWriteTimestamp = true;
 
-    public function getNodeInfo()
+    public function getNodeInfo($type = 'group')
     {
-        $result = $this->field('id,pid,name,category')->select();
-        $str = "";
-        foreach($result as $key=>$vo){
-            $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"';
-            $str .= '},';
+        if($type == 'group'){
+            $result = $this->field('id,pid,name,category')->select();
+            $str = "";
+            foreach($result as $key=>$vo){
+                $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"';
+                $str .= '},';
+            }
+        }else{
+            $result = Db::name('admin_cate')->field('id,pid,name')->select();
+            $str = "";
+            foreach($result as $key=>$vo){
+                $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
+                $str .= '},';
+            }
         }
         return "[" . substr($str, 0, -1) . "]";
     }
