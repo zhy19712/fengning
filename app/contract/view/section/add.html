@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -126,38 +127,33 @@
                         <span class="bgSpan">管理配置</span>
                         <div class="layui-form-item">
                             <label class="layui-form-label">业主现场管理机构</label>
-                            <select name="builderId" id="builderId" lay-ignore style="width: 545px;height: 36px;"></select>
-                            <!--<select name="builderId" lay-verify="" lay-search>-->
-                                <!--<option></option>-->
-                            <!--</select>-->
+                            <select name="builderId" id="builderId" lay-ignore style="width: 545px;height: 36px;">
+                                <!--<option value="">请选择</option>-->
+                            </select>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">监理现场管理机构</label>
-                            <select name="supervisorId" id="supervisorId" lay-ignore style="width: 545px;height: 36px;"></select>
-                            <!--<select name="supervisorId" lay-verify="" lay-search>-->
-                                <!--<option value="010">layer</option>-->
-                            <!--</select>-->
+                            <select name="supervisorId" id="supervisorId" lay-ignore style="width: 545px;height: 36px;">
+                                <!--<option value="">请选择</option>-->
+                            </select>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">设计现场管理机构</label>
-                            <select name="designerId" id="designerId" lay-ignore style="width: 545px;height: 36px;"></select>
-                            <!--<select name="designerId" lay-verify="" lay-search>-->
-                                <!--<option value="010">layer</option>-->
-                            <!--</select>-->
+                            <select name="designerId" id="designerId" lay-ignore style="width: 545px;height: 36px;">
+                                <!--<option value="">请选择</option>-->
+                            </select>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">施工现场管理机构</label>
-                            <select name="constructorId" id="constructorId" lay-ignore style="width: 545px;height: 36px;"></select>
-                            <!--<select name="constructorId" lay-verify="" lay-search>-->
-                                <!--<option value="010">layer</option>-->
-                            <!--</select>-->
+                            <select name="constructorId" id="constructorId" lay-ignore style="width: 545px;height: 36px;">
+                                <!--<option value="">请选择</option>-->
+                            </select>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">其他现场管理机构</label>
-                            <select name="otherId" id="otherId" lay-ignore style="width: 545px;height: 36px;"></select>
-                            <!--<select name="otherId" lay-verify="" lay-search>-->
-                                <!--<option value="010">layer</option>-->
-                            <!--</select>-->
+                            <select name="otherId" id="otherId" lay-ignore style="width: 545px;height: 36px;">
+                                <!--<option value="">请选择</option>-->
+                            </select>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -181,18 +177,19 @@
         //(业主)建设单位1
         //监理单位2
         //设计单位4
-       // 施工单位5
+        // 施工单位5
         //其他单位12
         if(orgs[i].type == 1){
-            $("#builderId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+            $("#builderId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
+            // $("#builderId").append($("<option  <s:if test=\"%{builderId==1}\">selected</s:if> ><option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
         }else if(orgs[i].type == 2){
-            $("#supervisorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+            $("#supervisorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
         }else if(orgs[i].type == 4){
-            $("#designerId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+            $("#designerId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
         }else if(orgs[i].type == 5){
-            $("#constructorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+            $("#constructorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
         }else if(orgs[i].type == 12){
-            $("#otherId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id,"width": "545px","height": "100px"}));
+            $("#otherId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
         }
     }
     layui.use(['form', 'layedit', 'laydate'], function(){
@@ -267,9 +264,6 @@
         $('button[type="reset"]').click(function () {
             closWin();
         })
-
-
-
     });
     $.ajax({
         type: "GET",
@@ -286,27 +280,15 @@
                 //     }
                 // }
                 // else {
-                    $("#contractId").append($("<option/>").text(this.contractName).attr({"value": this.id,"width": "545px","height": "100px"}));
+                $("#contractId").append($("<option/>").text(this.contractName).attr({"value": this.id,"width": "545px","height": "100px"}));
                 // }
             });
         },
-        // success: function (res) {
-        //     console.log(res)
-        //     var optionStr='';
-        //     var data = res;
-        //     for(var i=0;i<data.length;i++){
-        //         optionStr += '<li><span>' + data[i].id + '</span>' + data[i].contractName + '</li>'
-        //     }
-        //     $("#contract").append(optionStr)
-        // },
         error: function (res) {
             console.log(res)
             debugger;
         }
     })
-    // $("#contract").click(function () {
-    //     $("#contract").attr('display','block');
-    // })
 
 </script>
 </html>

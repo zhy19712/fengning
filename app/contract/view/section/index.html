@@ -14,6 +14,10 @@
     <script type="text/javascript" charset="utf8" src="__PUBLIC__/layui/lay/modules/layer.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <style type="text/css">
+        body{
+            height: 870px;
+            border: 1px dotted #cecece;
+        }
         #secTable #path{
             line-height: 30px;
             font-weight: 700;
@@ -55,7 +59,7 @@
             word-break:break-all;
         }
         #secTable .highlight {
-            background: #cbc408 !important;
+            background: #FDD5B5 !important;
         }
         #secTable .dataTables_wrapper .dataTables_paginate {
             position: fixed;
@@ -72,6 +76,12 @@
             position: fixed;
             bottom: 46px;
             left: 175px;
+        }
+        #secTable #admin_table .odd{
+            background-color: #dcdcdc94;
+        }
+        #secTable #admin_table .even{
+            background-color: white;
         }
     </style>
 <body class="layui-layout-body" style="overflow-y:visible;">
@@ -210,12 +220,12 @@
                         body.find('input[name="shortName"]').val(res.shortName);
                         body.find('input[name="money"]').val(res.money);
                         body.find('input[name="name"]').val(res.name);
-                        body.find('input[name="contract"]').val(res.contract);
-                        body.find('input[name="builder"]').val(res.builder);
-                        body.find('input[name="supervisor"]').val(res.supervisor);
-                        body.find('input[name="designer"]').val(res.designer);
-                        body.find('input[name="constructor"]').val(res.constructor);
-                        body.find('input[name="other"]').val(res.other);
+                        body.find('input[name="contractId"]').val(res.contractId);
+                        body.find('input[name="builderId"]').val(res.builderId);
+                        body.find('input[name="supervisorId"]').val(res.supervisorId);
+                        body.find('input[name="designerId"]').val(res.designerId);
+                        body.find('input[name="constructorId"]').val(res.constructorId);
+                        body.find('input[name="otherId"]').val(res.otherId);
                     },
                 });
             }
