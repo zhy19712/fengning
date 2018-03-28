@@ -31,6 +31,10 @@
         margin-right:30px;
         margin-top: 10px;
     }
+    .ibox-tools2{
+        float: right;
+        margin-right:15px;
+    }
     p {
         float: left;
         margin: 4px;
@@ -143,7 +147,14 @@
             </div>
             <div class="layui-tab-item">
                 <div >
-                    <h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>
+                    <h3 class="path" style="margin-left: 5px;color:#56abe9;">系统管理-超级管理员</h3>
+                    <div class="ibox-tools2">
+                        <button class="layui-btn layui-btn-sm" id="btnSaveRolePermission">保存</button>
+                    </div>
+                    <hr>
+                    <div style="width: 100%">
+                        <ul id="treeRight" class="ztree"></ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -230,6 +241,75 @@
         $('#create_time').val(nowtime);
     });
 
+    $(function () {
+        $("#btnSaveRolePermission").click(function () { saveRolePermission(); });
+        initPermissionTree();
+    });
+    //加载功能菜单树
+    function initPermissionTree() {
+        var setting = {
+            check: {
+                enable: true
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            view: {
+                selectedMulti: false
+            }
+        };
+        $.ajax({
+            type: "Get",
+            url: "./",
+            success: function (data) {
+                $.fn.zTree.init($("#treeRight"), setting, data.result);
+            }
+        });
+    };
+    //保存角色与功能关联关系
+    function saveRolePermission() {
+        var menuIds = [];
+        var permissionTree = $.fn.zTree.getZTreeObj("treeRight");
+        if (window.parent.selectedRow) {
+            var nodes = permissionTree.getCheckedNodes(true);
+            $.each(nodes, function (i, item) {
+                menuIds.push(item.id);
+            });
+            var sendData = { "dto": { "RoleId": window.parent.selectedRow.id, "MenuIds": menuIds } }
+            $.ajax({
+                type: "Post",
+                url: "/Role/SaveRoleMenu",
+                data: sendData,
+                success: function (data) {
+                    if (data.result == "Success")
+                        layerAlert("保存成功。")
+                    else
+                        layerAlert("保存失败。")
+                }
+            });
+        }
+        else {
+            layerAlert("请选择角色。")
+        }
+    };
+    //根据角色关联的功能菜单数据更改选中状态。
+    function initMenuDataByRole(roleId) {
+        var permissionTree = $.fn.zTree.getZTreeObj("treeRight");
+        permissionTree.checkAllNodes(false);
+        $.ajax({
+            type: "Get",
+            url: "/Role/GetMenusByRole?roleId=" + roleId + "&_t=" + new Date(),
+            success: function (data) {
+                $.each(data.result.menus, function (i, item) {
+                    var node = permissionTree.getNodeByParam("id", item.id, null);
+                    if (node)
+                        permissionTree.checkNode(node, true, false);
+                });
+            }
+        });
+    };
 </script>
 </body>
 </html>

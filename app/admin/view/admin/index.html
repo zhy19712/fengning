@@ -3,7 +3,7 @@
 
 <div data-options="region:'west',title:'组织机构',split:true" style="width:260px;">
     <div class="ztree-title">
-        <i title="新增机构" class="fa fa-lg fa-building"></i>
+        <i title="新增机构" class="fa fa-lg fa-building" id="addOffice"></i>
         <i title="新增节点" class="fa fa-lg fa-sitemap" id="addNode"></i>
         <i title="编辑节点" class="fa fa-lg fa-pencil" id="editNode"></i>
         <i title="删除节点" class="fa fa-lg fa-trash" id="delNode"></i>
@@ -16,7 +16,7 @@
 </div>
 <div data-options="region:'center',title:''" style="padding:5px;background:#eee;">
     <div class="current-path">
-        <h3>当前路径：</h3>
+        <h3 id="path">当前路径：</h3>
         <button class="layui-btn layui-btn-normal layui-btn-sm add">
             <i class="fa fa-plus" id="add"></i>新增
         </button>
@@ -144,18 +144,45 @@
     </div>
 </form>
 
-<form action="" id="addNodeForm" style="display: none">
+<!-- 新增节点 -->
+<form action="" class="layui-form" id="addNodeForm" style="display: none">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">上级名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="pname" placeholder="请输入姓名" lay-verify="required" autocomplete="off" class="layui-input" readonly>
+                <input type="text" name="pname" placeholder="上级名称" lay-verify="required" autocomplete="off" class="layui-input" readonly>
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">节点名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="name" placeholder="请输入排序号" autocomplete="off" class="layui-input">
+                <input type="text" name="name" placeholder="请输入节点名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- 新增机构 -->
+<form action="" class="layui-form" id="addOfficeForm" lay-filter="addOfficeForm" style="display: none">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">上级机构</label>
+            <div class="layui-input-inline">
+                <input type="text" name="pname" placeholder="上级机构" lay-verify="required" autocomplete="off" class="layui-input" readonly>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">机构名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="officeName" placeholder="请输入机构名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">机构类型</label>
+            <div class="layui-input-inline">
+                <select name="officeType" lay-verify="" lay-filter="officeType" ></select>
             </div>
         </div>
     </div>
