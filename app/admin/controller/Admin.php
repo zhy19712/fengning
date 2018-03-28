@@ -193,15 +193,19 @@ class Admin extends Permissions
                 Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
                 Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
             }else if(!empty($prev_id) && !empty($next_id)){
-                if(($id < $prev_id) && ($id > $next_id)){
+                if(($id < $prev_id) && ($id < $next_id)){
                     Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
                     Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
                     Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
-                }else if(($id < $prev_id) && ($id < $next_id)){
+                }else if(($id < $prev_id) && ($id > $next_id)){
                     Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
                     Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
                     Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
                     // next_id
+                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
+                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
+                }else if(($id > $prev_id) && ($id > $next_id)){
                     Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
                     Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
                     Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
