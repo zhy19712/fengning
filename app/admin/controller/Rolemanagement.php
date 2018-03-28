@@ -119,9 +119,8 @@ class Rolemanagement extends Permissions
     {
         if(request()->isAjax()) {
             //实例化模型类
-            $param = input('post.');
-
             $cate = new AdminCate();
+            $param = input('post.');
             $data = $cate->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }else
