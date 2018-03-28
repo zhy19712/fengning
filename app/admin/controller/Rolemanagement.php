@@ -317,10 +317,16 @@ class Rolemanagement extends Permissions
     public function catepublish()
     {
         //获取角色id
+        $roleId = $this->request->has('roleId') ? $this->request->param('roleId', 0, 'intval') : 0;
+
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+
+        $id = $roleId?$roleId:$id;
+
         $model = new \app\admin\model\AdminCate();
 
         if($id > 0) {
+
             //是修改操作
             if(request()->isAjax()) {
                 //是提交操作
@@ -337,7 +343,7 @@ class Rolemanagement extends Permissions
                     return $this->error('修改失败');
                 } else {
 
-//                    addlog($model->id);//写入日志
+                    addlog($model->id);//写入日志
 
                     return $this->success('修改角色信息成功');
                 }
