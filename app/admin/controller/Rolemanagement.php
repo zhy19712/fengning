@@ -317,7 +317,7 @@ class Rolemanagement extends Permissions
     public function catepublish()
     {
         //获取角色id
-        $id = $this->request->has('roleId') ? $this->request->param('roleId', 0, 'intval') : 0;
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         $model = new \app\admin\model\AdminCate();
         $menuModel = new AdminMenu();
         if($id > 0) {
