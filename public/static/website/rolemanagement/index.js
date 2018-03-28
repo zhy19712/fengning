@@ -347,9 +347,7 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
     $(this).addClass("select-color").siblings().removeClass("select-color");
     selectData = tableItem.row(".select-color").data();//获取选中行数据
     $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[1]);
-    console.log($("#catepublish").attr('src'));
-    console.log(123)
-    $("#catepublish").attr('src','/admin/rolemanagement/catepublish.shtml?roleId='+selectData[5]);
+    $("#catepublish").attr('src','/admin/rolemanagement/catepublish.shtml?roleId='+selectData[5]+'&path='+$(".path").html());
     getAdminname(selectData[5]);
 });
 //拉取角色用户
@@ -430,3 +428,7 @@ $(".ibox-tools i").click(function () {
     window.open("./addpeople?path=" + path + "&roleId=" + selectData[5], "授权", "height=500, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
 
 });
+//
+function cateMsg(str) {
+    layer.msg(str)
+}

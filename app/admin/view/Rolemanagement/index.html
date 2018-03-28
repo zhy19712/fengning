@@ -79,6 +79,7 @@
         </tr>
         </thead>
     </table>
+    <div class="info"></div>
     <!--<form  id="roleform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">-->
         <!--<input type="hidden" name="id" id="addId" style="display: none;">-->
         <!--<div class="layui-form-item">-->
@@ -126,7 +127,7 @@
         <!--</div>-->
     <!--</form>-->
 </div>
-<div data-options="region:'east',title:'管理信息',split:true" style="width:280px;">
+<div data-options="region:'east',title:'管理信息',split:true" style="width:330px;">
     <div class="layui-tab">
         <ul class="layui-tab-title">
             <li class="layui-this">角色用户</li>
@@ -146,14 +147,9 @@
                 <div class="userContainer" style="width: 100%;"></div>
             </div>
             <div class="layui-tab-item">
-                <div >
-                    <h3 class="path" style="margin-left: 5px;color:#56abe9;">系统管理-超级管理员</h3>
-                    <div class="ibox-tools2">
-                        <button class="layui-btn layui-btn-sm" id="btnSaveRolePermission">保存</button>
-                    </div>
-                    <hr>
-                    <div style="width: 100%">
-                        <iframe src="/admin/rolemanagement/catepublish.shtml" id="catepublish" frameborder="0" width="100%;" height="418px;"></iframe>
+                <div>
+                    <div style="width: 100%;">
+                        <iframe src="/admin/rolemanagement/catepublish.shtml?path=" id="catepublish" frameborder="0" width="100%;" height="690px;"></iframe>
                     </div>
                 </div>
             </div>
@@ -204,6 +200,10 @@
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
                     return html;
                 }
+            },
+            {
+                "orderable": false,
+                "targets": [4]
             }
         ],
         language: {
@@ -214,8 +214,10 @@
             "search": "搜索：",
             "infoFiltered": "(从 _MAX_ 条记录过滤)",
             "paginate": {
-                "previous": "<",
-                "next": ">"
+                "sFirst": "<<",
+                "sPrevious": "<",
+                "sNext": ">",
+                "sLast": ">>"
             }
         }
     });
