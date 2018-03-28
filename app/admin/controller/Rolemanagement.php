@@ -18,6 +18,7 @@ use app\admin\model\AdminCateType;
 use app\admin\model\Admin as adminModel;//管理员模型
 use app\admin\model\AdminCate;
 use app\admin\model\AdminGroup;
+use app\admin\model\AdminMenu;
 
 class Rolemanagement extends Permissions
 {
@@ -303,6 +304,134 @@ class Rolemanagement extends Permissions
 
             return json($merge);
         }
+    }
+
+    /**
+     * 管理员角色添加和修改操作
+     * @return mixed|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function adminCatePublish()
+    {
+        //获取角色id
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+        $model = new \app\admin\model\AdminCate();
+        $menuModel = new AdminMenu();
+        if($id > 0) {
+            //是修改操作
+            if($this->request->isPost()) {
+                //是提交操作
+                $post = $this->request->post();
+                //验证  唯一规则： 表名，字段名，排除主键值，主键名
+                $validate = new \think\Validate([
+                    ['name', 'require', '角色名称不能为空'],
+                ]);
+                //验证部分数据合法性
+                if (!$validate->check($post)) {
+                    $this->error('提交失败：' . $validate->getError());
+                }
+                //验证用户名是否存在
+                $name = $model->where(['name'=>$post['name'],'id'=>['neq',$post['id']]])->select();
+                if(!empty($name)) {
+                    return $this->error('提交失败：该角色名已存在');
+                }
+                //处理选中的权限菜单id，转为字符串
+                if(!empty($post['admin_menu_id'])) {
+                    $post['permissions'] = implode(',',$post['admin_menu_id']);
+                } else {
+                    $post['permissions'] = '0';
+                }
+                if(false == $model->allowField(true)->save($post,['id'=>$id])) {
+                    return $this->error('修改失败');
+                } else {
+                    addlog($model->id);//写入日志
+                    return $this->success('修改角色信息成功','admin/admin/adminCate');
+                }
+            } else {
+                //非提交操作
+                $info['cate'] = $model->where('id',$id)->find();
+                if(!empty($info['cate']['permissions'])) {
+                    //将菜单id字符串拆分成数组
+                    $info['cate']['permissions'] = explode(',',$info['cate']['permissions']);
+                }
+                $menus = Db::name('admin_menu')->select();
+                $info['menu'] = $this->menulist($menus);
+                $this->assign('info',$info);
+                return $this->fetch();
+            }
+        } else {
+            //是新增操作
+            if($this->request->isPost()) {
+                //是提交操作
+                $post = $this->request->post();
+                //验证  唯一规则： 表名，字段名，排除主键值，主键名
+                $validate = new \think\Validate([
+                    ['name', 'require', '角色名称不能为空'],
+                ]);
+                //验证部分数据合法性
+                if (!$validate->check($post)) {
+                    $this->error('提交失败：' . $validate->getError());
+                }
+                //验证用户名是否存在
+                $name = $model->where('name',$post['name'])->find();
+                if(!empty($name)) {
+                    return $this->error('提交失败：该角色名已存在');
+                }
+                //处理选中的权限菜单id，转为字符串
+                if(!empty($post['admin_menu_id'])) {
+                    $post['permissions'] = implode(',',$post['admin_menu_id']);
+                }
+                if(false == $model->allowField(true)->save($post)) {
+                    return $this->error('添加角色失败');
+                } else {
+                    addlog($model->id);//写入日志
+                    return $this->success('添加角色成功','admin/admin/adminCate');
+                }
+            } else {
+                //非提交操作
+                $menus = Db::name('admin_menu')->select();
+                $info['menu'] = $this->menulist($menus);
+                //$info['menu'] = $this->menulist($info['menu']);
+                $this->assign('info',$info);
+                return $this->fetch();
+            }
+        }
+    }
+
+    protected function menulist($menu,$id=0,$level=0){
+
+        static $menus = array();
+        $size = count($menus)-1;
+        foreach ($menu as $value) {
+            if ($value['pid']==$id) {
+                $value['level'] = $level+1;
+                if($level == 0)
+                {
+                    $value['str'] = str_repeat('',$value['level']);
+                    $menus[] = $value;
+                }
+                elseif($level == 2)
+                {
+                    $value['str'] = '&emsp;&emsp;&emsp;&emsp;'.'└ ';
+                    $menus[$size]['list'][] = $value;
+                }
+                elseif($level == 3)
+                {
+                    $value['str'] = '&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;'.'└ ';
+                    $menus[$size]['list'][] = $value;
+                }
+                else
+                {
+                    $value['str'] = '&emsp;&emsp;'.'└ ';
+                    $menus[$size]['list'][] = $value;
+                }
+
+                $this->menulist($menu,$value['id'],$value['level']);
+            }
+        }
+        return $menus;
     }
 
 }
