@@ -146,8 +146,8 @@
                     success:function(data){
                         $('input[type="hidden"][name="treeId"]').val(data.data);
                         //var id = $('input[type="hidden"][name="treeId"]').val();
-                        //treeObj.addNodes(nodes[0], {id:id,pId:nodes[0].pId, name:newName});
-                        treeObj.reAsyncChildNodes(null, "refresh",false);
+                        treeObj.addNodes(nodes[0], {id:id,pId:nodes[0].pId, name:newName});
+                        //treeObj.reAsyncChildNodes(null, "refresh",false);
                     }
                 });
                 $('#addNodeForm')[0].reset();
@@ -336,15 +336,25 @@
         }
 
         var prevId = prevNode.id;
+        var prev_idv = prevNode.idv;
+        var prev_pidv = prevNode.pidv;
         var id = treeNode.id;
+        var idv = treeNode.idv;
+        var pidv = treeNode.pidv;
 
         $.ajax({
             url: "./sortNode",
             type: "post",
             data: {
                 prev_id:prevId,
+                prev_idv:prev_idv,
+                prev_pidv:prev_pidv,
                 next_id:0,
-                id:id
+                next_idv:0,
+                next_pidv:0,
+                id:id,
+                idv:idv,
+                pidv:pidv
             },
             dataType: "json",
             success: function (res) {
@@ -373,15 +383,25 @@
         }
 
         var nextId = nextNode.id;
+        var next_idv = nextNode.idv;
+        var next_pidv = nextNode.pidv;
         var id = treeNode.id;
+        var idv = treeNode.idv;
+        var pidv = treeNode.pidv;
 
         $.ajax({
             url: "./sortNode",
             type: "post",
             data: {
                 prev_id:0,
+                prev_idv:0,
+                prev_pidv:0,
                 next_id:nextId,
-                id:id
+                next_idv:next_idv,
+                next_pidv:next_pidv,
+                id:id,
+                idv:idv,
+                pidv:pidv
             },
             dataType: "json",
             success: function (res) {
