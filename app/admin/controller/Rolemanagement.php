@@ -336,7 +336,9 @@ class Rolemanagement extends Permissions
                 if(false == $model->allowField(true)->save($post,['id'=>$id])) {
                     return $this->error('修改失败');
                 } else {
-                    addlog($model->id);//写入日志
+
+//                    addlog($model->id);//写入日志
+
                     return $this->success('修改角色信息成功');
                 }
             } else {
