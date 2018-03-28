@@ -8,7 +8,6 @@
 namespace app\admin\model;
 
 use think\Model;
-use think\Session;
 use think\exception\PDOException;
 
 class AdminCateType extends Model
