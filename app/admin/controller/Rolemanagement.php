@@ -282,7 +282,7 @@ class Rolemanagement extends Permissions
             if(!empty($user))//如果$user不为空时
             {
                 foreach((array)$user as $key=>$vo){
-                    $id = $vo['id'] + $vo['admin_group_id'] + 10000;
+                    $id = $vo['id'] + 10000;
                     $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
                     $str .= '}*';
                 }

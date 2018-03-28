@@ -92,7 +92,7 @@ class AdminCate extends Model
             if($param['admin_id'])
             {
                 //拆分传过来的用户id数组为字符串
-                $str = explode(",",$param['admin_id']);
+                $str = implode(",",$param['admin_id']);
             }
             //把处理过得数据重新插入数组中
             $result = $this->allowField(true)->save(['admin_id'=>$str],['id' => $param['id']]);
