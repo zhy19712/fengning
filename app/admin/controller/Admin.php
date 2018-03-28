@@ -123,6 +123,8 @@ class Admin extends Permissions
     /**
      * 删除 组织机构的节点
      * @return \think\response\Json
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      * @author hutao
      */
     public function delNode()
@@ -186,29 +188,65 @@ class Admin extends Permissions
             $num = $node->count() + 10;// 总数据条数
             if(empty($prev_id) && !empty($next_id) && ($id > $next_id)){
                 Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                // 关联修改 $id
                 Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
+                Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
+                Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
+                // 关联修改 $next_id
                 Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
+                Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
+                Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
             }else if(!empty($prev_id) && empty($next_id) && ($id < $prev_id)){
                 Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                // 关联修改 $id
                 Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
+                Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
+                Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
+                // 关联修改 $prev_id
                 Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
+                Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
+                Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
             }else if(!empty($prev_id) && !empty($next_id)){
                 if(($id < $prev_id) && ($id < $next_id)){
                     Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                    // 关联修改 $id
                     Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
+                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
+                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
+                    // 关联修改 $prev_id
                     Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
+                    Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
+                    Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
                 }else if(($id < $prev_id) && ($id > $next_id)){
                     Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                    // 关联修改 $id
                     Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
+                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
+                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
+                    // 关联修 $prev_id
                     Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
+                    Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
+                    Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
                     // next_id
                     Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                    // 关联修改 $id
                     Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
+                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
+                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
+                    // 关联修改 $next_id
                     Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
+                    Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
+                    Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
                 }else if(($id > $prev_id) && ($id > $next_id)){
                     Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                    // 关联修改 $id
                     Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
+                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
+                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
+                    // 关联修改 $next_id
                     Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
+                    Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
+                    Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
                 }
             }
             return json(['code' => 1,'msg' => '成功']);
@@ -306,6 +344,7 @@ class Admin extends Permissions
     			$info['admin_cate'] = Db::name('admin_cate')->select();
     			$this->assign('info',$info);
     			if($type == 'group'){
+                    $info['attachment'] = Db::name('attachment')->where('id',$info['admin']['signature'])->find();
     			    return json($info);
                 }
     			return $this->fetch();
@@ -662,6 +701,14 @@ class Admin extends Permissions
             if($this->request->isPost()) {
                 //是提交操作
                 $post = $this->request->post();
+
+                if(!isset($post['status'])){
+                   $status = Db::name('admin')->where('id',$id)->value('status');
+                   $status = ($status == 1) ? 0 : 1;
+                   Db::name('admin')->where('id',$id)->update(['status'=>$status]);
+                   return json(['code' => 1,'status' => $status,'msg' => '成功']);
+                }
+
                 $status = $post['status'];
                 if(false == Db::name('admin')->where('id',$id)->update(['status'=>$status])) {
                     return $this->error('操作失败');

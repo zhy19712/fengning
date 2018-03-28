@@ -9,8 +9,23 @@
     <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
     <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
 </head>
+<style>
+    h3{
+        margin-top: 5px;
+        font-weight: 600;
+        font-size: 16px;
+        display: inline-block;
+    }
+    .layui-btn{
+        position: fixed;
+        right: 10px;
+        top: 10px;
+    }
+</style>
 <body style="padding:10px;">
 <div class="body-div">
+    <h3 class="path" style="margin-left: 5px;color:#56abe9;">系统管理-超级管理员</h3>
+    <hr>
     <div style="margin-top: 20px;">
     </div>
     <form class="layui-form" id="admin">
@@ -73,7 +88,7 @@
         {/notempty}
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="admin">立即提交</button>
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="admin">保存</button>
             </div>
         </div>
     </form>
@@ -99,6 +114,10 @@
         }
         //获取参数
         urlSearch();
+        if(objdata.path!==""){
+            $(".path").html(decodeURIComponent(objdata.path));
+        }
+
         var admin_menu_id = [];
         //截取参数
         function str2Arr(str) {
@@ -139,11 +158,9 @@
                         async: false,
                         success:function(res) {
                             if(res.code == 1) {
-                                layer.alert(res.msg, function(index){
-                                    location.href = res.url;
-                                })
+                                window.parent.cateMsg(res.msg);
                             } else {
-                                layer.msg(res.msg);
+                                window.parent.cateMsg(res.msg)
                             }
                         }
                     })
