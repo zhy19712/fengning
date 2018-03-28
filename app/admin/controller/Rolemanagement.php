@@ -324,7 +324,8 @@ class Rolemanagement extends Permissions
             //是修改操作
             if(request()->isAjax()) {
                 //是提交操作
-                $post = $this->request->post();
+                $post = input('post./a');
+
                 //验证  唯一规则： 表名，字段名，排除主键值，主键名
                 //验证用户名是否存在
                 //处理选中的权限菜单id，转为字符串
