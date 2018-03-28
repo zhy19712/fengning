@@ -186,6 +186,11 @@ class Admin extends Permissions
             $next_id = input('post.next_id'); // 后一个节点的编号 没有默认0
             $node = new AdminGroup();
             $num = $node->count() + 10;// 总数据条数
+
+            dump($prev_id);
+            dump($id);
+            halt($next_id);
+
             if(empty($prev_id) && !empty($next_id) && ($id > $next_id)){
                 Db::name('admin_group')->where('idv',$next_id)->update(['idv' => $num]);
                 // 关联修改 $id
