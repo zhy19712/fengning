@@ -403,7 +403,7 @@ class Rolemanagement extends Permissions
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function adminCatePublish()
+    public function catepublish()
     {
         //获取角色id
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
