@@ -311,54 +311,77 @@
     });
 
     //上移下移方法
-    function getMoveNode() {
-        $.ajax({
-            url: "./sortNode",
-            type: "post",
-            data: {id:treeNode.id},
-            dataType: "json",
-            success: function (res) {
-                if(res.msg === "success"){
-                    $("#path").text("当前路径:" + res.path)
-                }
-            }
-        });
-    }
+    /*function getMoveNode(treeObj,selectNode,treeNode,prevNode,nextNode,state) {
+
+    }*/
 
     //上移
     $('#upMoveNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var selectNode = treeObj.getSelectedNodes();
+        var treeNode = selectNode[0];
+        var prevNode = treeNode.getPreNode();
+        var prevId = prevNode.id;
+        var id = treeNode.id;
 
         if (selectNode.length <= 0){
             layer.msg('请选择节点');
             return false;
         }
 
-        var node = selectNode[0].getPreNode();
-        if (node===null){
+        if (prevNode===null){
             layer.msg('已经移到顶啦');
             return false;
         }
-        treeObj.moveNode(node, selectNode[0], "prev");
+
+        $.ajax({
+            url: "./sortNode",
+            type: "post",
+            data: {
+                prev_id:prevId,
+                next_id:0,
+                id:id
+            },
+            dataType: "json",
+            success: function (res) {
+                treeObj.moveNode(prevNode, treeNode, "prev");
+            }
+        });
+
     });
 
     //下移
     $('#downMoveNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var selectNode = treeObj.getSelectedNodes();
+        var treeNode = selectNode[0];
+        var nextNode = treeNode.getNextNode();
+        var nextId = nextNode.id;
+        var id = treeNode.id;
 
         if (selectNode.length <= 0){
             layer.msg('请选择节点');
             return false;
         }
 
-        var node = selectNode[0].getNextNode();
-        if (node===null){
+        if (nextNode===null){
             layer.msg('已经移到底啦');
             return false;
         }
-        treeObj.moveNode(node, selectNode[0], "next");
+
+        $.ajax({
+            url: "./sortNode",
+            type: "post",
+            data: {
+                prev_id:0,
+                next_id:nextId,
+                id:id
+            },
+            dataType: "json",
+            success: function (res) {
+                treeObj.moveNode(nextNode, treeNode, "next");
+            }
+        });
     });
 
     //点击节点
@@ -441,7 +464,7 @@
                 "render" :  function(data,type,row) {
                     console.log(data);
                     var html = "<i class='fa fa-search' id="+ data +" title='查看' onclick='view(this)'></i>" ;
-                        html += "<i class='fa fa-pencil' id="+ data +" title='编辑' onclick='weEdit(this)'></i>" ;
+                        html += "<i class='fa fa-pencil' id="+ data +" title='编辑' onclick='edit(this)'></i>" ;
                         html += "<i class='fa fa-cog' id="+ data +" title='重置密码' onclick='reset(this)'></i>" ;
                         html += "<i class='fa fa-user-secret' id="+ data +" title='置为有效' onclick='active(this)'></i>" ;
                     return html;
@@ -558,7 +581,8 @@
         showTitle:true,
         showIcon:true
     }
-    
+
+    //管理员分组树点击
     function manageZtreeOnClick(event, treeId, treeNode) {
         $('input[name="admin_cate_id"]').val(treeNode.name);
         admin_cate_id = treeNode.id;
