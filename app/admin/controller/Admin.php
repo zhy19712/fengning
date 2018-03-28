@@ -186,67 +186,60 @@ class Admin extends Permissions
             $next_id = input('post.next_id'); // 后一个节点的编号 没有默认0
             $node = new AdminGroup();
             $num = $node->count() + 10;// 总数据条数
+
+            dump($prev_id);
+            dump($id);
+            halt($next_id);
+
             if(empty($prev_id) && !empty($next_id) && ($id > $next_id)){
-                Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                Db::name('admin_group')->where('idv',$next_id)->update(['idv' => $num]);
                 // 关联修改 $id
-                Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
-                Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
-                Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
+                Db::name('admin_group')->where('idv',$id)->update(['idv' => $next_id]);
+                Db::name('admin_group')->where('pidv',$id)->update(['pidv' => $next_id]);
                 // 关联修改 $next_id
-                Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
-                Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
-                Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
+                Db::name('admin_group')->where('idv',$next_id)->update(['idv' => $id]);
+                Db::name('admin_group')->where('pidv',$next_id)->update(['pidv' => $id]);
             }else if(!empty($prev_id) && empty($next_id) && ($id < $prev_id)){
-                Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                Db::name('admin_group')->where('idv',$prev_id)->update(['idv' => $num]);
                 // 关联修改 $id
-                Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
-                Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
-                Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
+                Db::name('admin_group')->where('idv',$id)->update(['idv' => $prev_id]);
+                Db::name('admin_group')->where('pidv',$id)->update(['pidv' => $prev_id]);
                 // 关联修改 $prev_id
-                Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
-                Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
-                Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
+                Db::name('admin_group')->where('idv',$prev_id)->update(['idv' => $id]);
+                Db::name('admin_group')->where('pidv',$prev_id)->update(['pidv' => $id]);
             }else if(!empty($prev_id) && !empty($next_id)){
                 if(($id < $prev_id) && ($id < $next_id)){
-                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('idv',$prev_id)->update(['idv' => $num]);
                     // 关联修改 $id
-                    Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
-                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
-                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
+                    Db::name('admin_group')->where('idv',$id)->update(['idv' => $prev_id]);
+                    Db::name('admin_group')->where('pidv',$id)->update(['pidv' => $prev_id]);
                     // 关联修改 $prev_id
-                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
-                    Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
-                    Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
+                    Db::name('admin_group')->where('idv',$prev_id)->update(['idv' => $id]);
+                    Db::name('admin_group')->where('pidv',$prev_id)->update(['pidv' => $id]);
                 }else if(($id < $prev_id) && ($id > $next_id)){
-                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('idv',$prev_id)->update(['idv' => $num]);
                     // 关联修改 $id
-                    Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
-                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
-                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
+                    Db::name('admin_group')->where('idv',$id)->update(['idv' => $prev_id]);
+                    Db::name('admin_group')->where('pidv',$id)->update(['pidv' => $prev_id]);
                     // 关联修 $prev_id
-                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
-                    Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
-                    Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
+                    Db::name('admin_group')->where('idv',$prev_id)->update(['idv' => $id]);
+                    Db::name('admin_group')->where('pidv',$prev_id)->update(['pidv' => $id]);
                     // next_id
-                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('idv',$next_id)->update(['idv' => $num]);
                     // 关联修改 $id
-                    Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
-                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
-                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
+                    Db::name('admin_group')->where('idv',$id)->update(['idv' => $next_id]);
+                    Db::name('admin_group')->where('pidv',$id)->update(['pidv' => $next_id]);
                     // 关联修改 $next_id
-                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
-                    Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
-                    Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
+                    Db::name('admin_group')->where('idv',$next_id)->update(['idv' => $id]);
+                    Db::name('admin_group')->where('pidv',$next_id)->update(['pidv' => $id]);
                 }else if(($id > $prev_id) && ($id > $next_id)){
-                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('id',$next_id)->update(['idv' => $num]);
                     // 关联修改 $id
-                    Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
-                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
-                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
+                    Db::name('admin_group')->where('idv',$id)->update(['idv' => $next_id]);
+                    Db::name('admin_group')->where('pidv',$id)->update(['pidv' => $next_id]);
                     // 关联修改 $next_id
-                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
-                    Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
-                    Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
+                    Db::name('admin_group')->where('idv',$next_id)->update(['idv' => $id]);
+                    Db::name('admin_group')->where('pidv',$next_id)->update(['pidv' => $id]);
                 }
             }
             return json(['code' => 1,'msg' => '成功']);

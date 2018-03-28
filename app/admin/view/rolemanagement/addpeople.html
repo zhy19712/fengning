@@ -275,7 +275,6 @@ $('#username_key').bind('input propertychange', function() {
                     html = "<p2 id='p" + item.id + "'>" + item.name + "&nbsp;<a id='a" + item.id + "'><i class='fa fa-times'></i></a><input type='hidden' value='" + item.id + "'></p2>"
                     $("#selectedUserDiv").append(html);
                     $("#a" + item.id).click(function () {
-                        alert(item.id)
                         $("#p" + item.id).remove();
                     });
                 });
@@ -304,7 +303,11 @@ $('#username_key').bind('input propertychange', function() {
         var userIds = [];
         var inputs = $("#selectedUserDiv").find("input"); //所有选中的部门及人员[input]元素
         $.each(inputs, function (i, item) {
-            userIds.push($(item).val())
+            if($(item).val()>=10000){
+                userIds.push($(item).val()-10000)
+            }else{
+                userIds.push($(item).val())
+            }
         });
         var sendData = {"id": roleId, "admin_id": userIds}
         $.ajax({

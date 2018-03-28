@@ -120,7 +120,8 @@ class Rolemanagement extends Permissions
         if(request()->isAjax()) {
             //实例化模型类
             $cate = new AdminCate();
-            $data = $cate->getOne($id);
+            $param = input('post.');
+            $data = $cate->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }else
         {
@@ -146,7 +147,7 @@ class Rolemanagement extends Permissions
                     'number_id' => $param['number_id'],//编号
                     'role_name' => $param['role_name'],//角色名称
                     'create_owner' => $param['create_owner'],//创建人
-                    'create_time' => $param['create_time'],//创建时间
+                    'date' => $param['date'],//创建时间
                     'desc' => $param['desc']//备注
 
                 ];
@@ -157,8 +158,6 @@ class Rolemanagement extends Permissions
                     'id' => $param['id'],
                     'number_id' => $param['number_id'],//编号
                     'role_name' => $param['role_name'],//角色名称
-                    'create_owner' => $param['create_owner'],//创建人
-                    'create_time' => $param['create_time'],//创建时间
                     'desc' => $param['desc']//备注
 
                 ];
@@ -282,7 +281,7 @@ class Rolemanagement extends Permissions
             if(!empty($user))//如果$user不为空时
             {
                 foreach((array)$user as $key=>$vo){
-                    $id = $vo['id'] + $vo['admin_group_id'] + 10000;
+                    $id = $vo['id'] + 10000;
                     $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
                     $str .= '}*';
                 }

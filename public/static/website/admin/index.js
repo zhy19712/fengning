@@ -106,6 +106,7 @@
                         }
                     }
                 });
+                $('#addOfficeForm')[0].reset();
                 layer.close(index);
             }
         });
@@ -149,6 +150,7 @@
                         treeObj.reAsyncChildNodes(null, "refresh",false);
                     }
                 });
+                $('#addNodeForm')[0].reset();
                 layer.close(index);
             }
         });
@@ -312,7 +314,7 @@
 
     //上移下移方法
     /*function getMoveNode(treeObj,selectNode,treeNode,prevNode,nextNode,state) {
-
+        //TODO 模块做完封装上移下移方法
     }*/
 
     //上移
@@ -320,19 +322,21 @@
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var selectNode = treeObj.getSelectedNodes();
         var treeNode = selectNode[0];
-        var prevNode = treeNode.getPreNode();
-        var prevId = prevNode.id;
-        var id = treeNode.id;
 
         if (selectNode.length <= 0){
             layer.msg('请选择节点');
             return false;
         }
 
-        if (prevNode===null){
+        var prevNode = treeNode.getPreNode();
+
+        if (!prevNode){
             layer.msg('已经移到顶啦');
             return false;
         }
+
+        var prevId = prevNode.id;
+        var id = treeNode.id;
 
         $.ajax({
             url: "./sortNode",
@@ -355,19 +359,21 @@
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var selectNode = treeObj.getSelectedNodes();
         var treeNode = selectNode[0];
-        var nextNode = treeNode.getNextNode();
-        var nextId = nextNode.id;
-        var id = treeNode.id;
 
         if (selectNode.length <= 0){
             layer.msg('请选择节点');
             return false;
         }
 
-        if (nextNode===null){
+        var nextNode = treeNode.getNextNode();
+
+        if (!nextNode){
             layer.msg('已经移到底啦');
             return false;
         }
+
+        var nextId = nextNode.id;
+        var id = treeNode.id;
 
         $.ajax({
             url: "./sortNode",
@@ -462,13 +468,13 @@
                 "orderable": false,
                 "targets": [7],
                 "render" :  function(data,type,row) {
-                    var status = row[6];    //后台返回的是否禁用状态
+                    var status = row[6];    //后台返回的是否禁用用户状态
                     var html = "<i class='fa fa-search' id="+ data +" title='查看' onclick='view(this)'></i>" ;
                         html += "<i class='fa fa-pencil' id="+ data +" title='编辑' onclick='editor(this)'></i>" ;
                         html += "<i class='fa fa-cog' id="+ data +" title='重置密码' onclick='reset(this)'></i>" ;
-                        if(row[6]==1){
+                        if(status==1){
                             html += "<i class='fa fa-user-secret' id="+ data +" status="+ status +" title='置为无效' onclick='audit(this)'></i>" ;
-                        }else if(row[6]==0){
+                        }else if(status==0){
                             html += "<i class='fa fa-user-times' id="+ data +" status="+ status +" title='置为有效' onclick='audit(this)'></i>" ;
                         }
                     return html;
@@ -653,6 +659,10 @@
 
     //新增弹层
     $('#add').click(function(){
+        if(!admin_group_id){
+            layer.msg('请选择节点');
+            return false;
+        }
         layer.open({
             id:'1',
             type:'1',
@@ -812,6 +822,10 @@
                 id:id
             },
             success:function(res){
+                if(res.code==0){
+                    layer.msg(res.msg);
+                    return false;
+                }
                 if(status==1){
                     $(that).attr('status','0');
                     $(that).addClass('fa-user-times').removeClass('fa-user-secret');

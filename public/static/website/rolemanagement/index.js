@@ -89,7 +89,7 @@ var dom = ['    <form  id="roleform" action="#" onsubmit="return false" class="l
     '            <div class="layui-inline">',
     '                <label class="layui-form-label">创建时间</label>',
     '                <div class="layui-input-inline">',
-    '                    <input type="text" name="create_time" id="create_time" placeholder="创建时间" readonly autocomplete="off" class="layui-input">',
+    '                    <input type="text" name="date" id="date" placeholder="创建时间" readonly autocomplete="off" class="layui-input">',
     '                </div>',
     '            </div>',
     '        </div>',
@@ -183,9 +183,14 @@ function addNodetree() {
             success: function (res) {
                 if(res.code===1){
                     if(sNodes){
+                        alert(111)
                         zTreeObj.addNodes(sNodes[0],res.data);
+                        zTreeObj.reAsyncChildNodes(sNodes[0], "refresh", false);
+                        zTreeObj.reAsyncChildNodes(sNodes[0].getParentNode()[0], "refresh", false);
                     }else{
                         zTreeObj.addNodes(null,res.data);
+                        zTreeObj.reAsyncChildNodes(sNodes[0], "refresh", false);
+                        zTreeObj.reAsyncChildNodes(sNodes[0].getParentNode()[0], "refresh", false);
                     }
 
                 }
@@ -312,7 +317,7 @@ function conEdit(id){
             $("#role_name").val(res.data.role_name);
             $("#desc").val(res.data.desc);
             $('#create_owner').val(res.data.create_owner);
-            $('#create_time').val(res.data.create_time);
+            $('#date').val(res.data.date);
         }
     })
 }
