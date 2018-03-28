@@ -321,8 +321,8 @@
         var selectNode = treeObj.getSelectedNodes();
         var treeNode = selectNode[0];
         var prevNode = treeNode.getPreNode();
-        var id = treeNode.id;
         var prevId = prevNode.id;
+        var id = treeNode.id;
 
         if (selectNode.length <= 0){
             layer.msg('请选择节点');
@@ -357,6 +357,7 @@
         var treeNode = selectNode[0];
         var nextNode = treeNode.getNextNode();
         var nextId = nextNode.id;
+        var id = treeNode.id;
 
         if (selectNode.length <= 0){
             layer.msg('请选择节点');
