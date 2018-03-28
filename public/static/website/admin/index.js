@@ -146,8 +146,8 @@
                     success:function(data){
                         $('input[type="hidden"][name="treeId"]').val(data.data);
                         //var id = $('input[type="hidden"][name="treeId"]').val();
-                        treeObj.addNodes(nodes[0], {id:id,pId:nodes[0].pId, name:newName});
-                        //treeObj.reAsyncChildNodes(null, "refresh",false);
+                        //treeObj.addNodes(nodes[0], {id:id,pId:nodes[0].pId, name:newName});
+                        treeObj.reAsyncChildNodes(null, "refresh",false);
                     }
                 });
                 $('#addNodeForm')[0].reset();
@@ -359,6 +359,7 @@
             dataType: "json",
             success: function (res) {
                 treeObj.moveNode(prevNode, treeNode, "prev");
+                treeObj.reAsyncChildNodes(null, "refresh",false);
             }
         });
 
@@ -406,6 +407,7 @@
             dataType: "json",
             success: function (res) {
                 treeObj.moveNode(nextNode, treeNode, "next");
+                treeObj.reAsyncChildNodes(null, "refresh",false);
             }
         });
     });
