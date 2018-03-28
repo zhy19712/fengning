@@ -17,11 +17,12 @@
         body{
             height: 870px;
             border: 1px dotted #cecece;
+            background: #ffffff;
         }
         #conTable #path{
             line-height: 30px;
             font-weight: 700;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #cecece;
         }
         #conTable #spanPath{
             display: inline-block;
@@ -55,7 +56,7 @@
             overflow-x: auto;
         }
         #conTable #mytable1_wrapper table{
-            border-top: 1px solid #00c0ef;
+            /*border-top: 1px solid #00c0ef;*/
             margin-top: 36px;
         }
         #conTable table {
@@ -83,19 +84,19 @@
             bottom: 46px;
             left: 175px;
         }
-        /*#conTable thead {*/
-            /*border-top: 1px solid red;*/
-        /*}*/
         #conTable #admin_table .odd{
-            background-color: #dcdcdc94;
+            background-color: #f9f9f9;
         }
         #conTable #admin_table .even{
             background-color: white;
         }
+        #conTable .layui-btn{
+            background-color: #1E9FFF;
+        }
     </style>
 <body class="layui-layout-body" style="overflow-y:visible;">
     <!--表格-->
-    <div id="conTable" class="wrapper wrapper-content animated fadeInRight" style="width: 98%;vertical-align: top;padding: 0;margin-top: 20px;margin-left: 20px;text-align: center">
+    <div id="conTable" class="wrapper wrapper-content animated fadeInRight" style="width: 98%;vertical-align: top;padding: 0;margin-left: 20px;text-align: center">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
                 <div class="row">
@@ -177,7 +178,7 @@
                 }
             }
         });
-    $("div.mybtn").html('<div id="xz">新增</div>');
+    $("div.mybtn").html('<div>新增</div>');
      //变色
      $('#admin_table tbody').on( 'mouseover', 'td', function () {
          $(this).parent("tr").addClass('highlight');
