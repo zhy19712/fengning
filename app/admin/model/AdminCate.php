@@ -82,69 +82,27 @@ class AdminCate extends Model
     }
 
     /*
-     * 根据传过来的admin_cate表中的id删除admin_cate用户表中的admin_id
-     */
-
-    public function delAdminid($param)
-    {
-        $admin_id = $this->field("admin_id")->where("id",$param['id'])->find();
-        if($admin_id)
-        {
-            $admin_id = explode(",",$admin_id['admin_id']);
-            foreach ($admin_id as $k=>$v)
-            {
-                if($param['admin_id'] == $v)
-                {
-                    unset($admin_id[$k]);
-                }
-            }
-            $admin_id = implode(",",$admin_id);
-
-            //把处理过得数据重新插入数组中
-            $result = $this->allowField(true)->save(['admin_id'=>$admin_id],['id' => $param['id']]);
-            if($result)
-            {
-                return ['code' => 1,'msg' => "删除成功"];
-            }
-
-        }else{
-            return ['code' => -1,'msg' => "删除失败"];
-        }
-    }
-
-    /*
      * 根据传过来的admin_cate表中的id,admin表中的id，添加到admin_cate用户表中的admin_id
      */
 
-    public function addAdminid($param)
+    public function editAdminid($param)
     {
-        $admin_id = $this->field("admin_id")->where("id",$param['id'])->find();
-        if($admin_id)
-        {
-            $admin_id = explode(",",$admin_id['admin_id']);
+            //定义一个空的字符串
+            $str = "";
             if($param['admin_id'])
             {
-                foreach ((array)$param['admin_id'] as $v)
-                {
-                    array_push($admin_id,strval($v));
-                }
+                //拆分传过来的用户id数组为字符串
+                $str = explode(",",$param['admin_id']);
             }
-
-            $admin_id = implode(",",$admin_id);
-
             //把处理过得数据重新插入数组中
-            $result = $this->allowField(true)->save(['admin_id'=>$admin_id],['id' => $param['id']]);
+            $result = $this->allowField(true)->save(['admin_id'=>$str],['id' => $param['id']]);
             if($result)
             {
                 return ['code' => 1,'msg' => "添加成功"];
+            }else{
+                return ['code' => -1,'msg' => "添加失败"];
             }
 
-        }else{
-            return ['code' => -1,'msg' => "添加失败"];
-        }
     }
-
-
-
 
 }

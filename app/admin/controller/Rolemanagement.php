@@ -233,22 +233,6 @@ class Rolemanagement extends Permissions
         }
     }
 
-    /**
-     * 删除角色类型下的分组用户
-     * @return \think\response\Json
-     */
-
-    public function delAdminname()
-    {
-        if(request()->isAjax()) {
-            $model = new AdminCate();
-            $param = input('post.');
-            $flag = $model->delAdminid($param);
-            return json($flag);
-        }
-    }
-
-
     /*
      * 弹框添加角色类型下的分组用户模板
      */
@@ -269,7 +253,7 @@ class Rolemanagement extends Permissions
         if(request()->isAjax()) {
             $model = new AdminCate();
             $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id,数组admin_id为添加的用户表中的id
-            $data = $model->addAdminid($param);
+            $data = $model->editAdminid($param);
             return json($data);
         }
     }

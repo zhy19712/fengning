@@ -30,27 +30,6 @@ class AdminGroup extends Model
         return "[" . substr($str, 0, -1) . "]";
     }
 
-    /*
-     * 组织机构下的人员管理
-     */
-
-    public function getNodeName()
-    {
-        $result = $this->field('id,pid,name')->select();
-        $str = "";
-        foreach($result as $key=>$vo){
-            $str .= '{ "id": "' . $vo['id'] . '", "pid":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
-            $str .= '},';
-        }
-        $user = Db::name('admin')->field('id,admin_group_id,name')->select();
-        foreach($user as $key=>$vo){
-            $id = $vo['id'] + $vo['admin_group_id'] + 10000;
-            $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
-            $str .= '},';
-        }
-        return "[" . substr($str, 0, -1) . "]";
-    }
-
     public function isParent($id)
     {
         $is_exist = $this->where('pid',$id)->find();
@@ -103,8 +82,8 @@ class AdminGroup extends Model
     }
 
     /*
- * 查询所有的角色类型表中的数据
- */
+     * 查询所有组织机构表中的所有数据
+     */
 
     public function getall()
     {

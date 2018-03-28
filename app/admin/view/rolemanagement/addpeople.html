@@ -150,6 +150,8 @@
 <script src="__PUBLIC__/datatables/js/dataTables.buttons.min.js"></script>
 <script src="__PUBLIC__/datatables/js/dataTables.bootstrap.js"></script>
 <script>
+    layui.use("layer");
+
 //获取参数
   var objdata = {};
     function urlSearch() {
@@ -284,7 +286,7 @@ $('#username_key').bind('input propertychange', function() {
         if (element.length > 0)
             return;
         var html = "";
-        if (treeNode.componentId == 0) //选择的是单位信息
+        if (treeNode.id < 10000) //选择的是单位信息
             return;
         else  //选择的是人员信息
             html = "<p2 id='p" + treeNode.id + "'>" + treeNode.name + "&nbsp;<a id='a" + treeNode.id + "'><i class='fa fa-times'></i></a><input type='hidden' value='" + treeNode.id + "' data-type='" + treeNode.componentId + "'></p2>"
@@ -307,9 +309,15 @@ $('#username_key').bind('input propertychange', function() {
             type: "Post",
             url: "./addAdminname",
             data: sendData,
-            success: function (data) {
-                window.opener.initUserDataByRole(roleId);
-                window.close();
+            success: function (res) {
+                if(res.code===1){
+                    window.opener.getAdminname(roleId);
+                    layer.msg("成功");
+                    window.close();
+                }else{
+                    layer.msg(res.msg)
+                }
+
             }
         });
     }
