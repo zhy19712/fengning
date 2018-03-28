@@ -268,6 +268,7 @@ class Admin extends Permissions
     {
     	//获取管理员id
     	$id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+    	$type = $this->request->has('type') ? $this->request->param('type') : '';
     	$model = new adminModel();
     	if($id > 0) {
     		//是修改操作
@@ -304,6 +305,9 @@ class Admin extends Permissions
     			$info['admin'] = $model->where('id',$id)->find();
     			$info['admin_cate'] = Db::name('admin_cate')->select();
     			$this->assign('info',$info);
+    			if($type == 'group'){
+    			    return json($info);
+                }
     			return $this->fetch();
     		}
     	} else {
