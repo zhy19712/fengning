@@ -310,6 +310,21 @@
         treeObj.expandAll(false);
     });
 
+    //上移下移方法
+    function getMoveNode() {
+        $.ajax({
+            url: "./sortNode",
+            type: "post",
+            data: {id:treeNode.id},
+            dataType: "json",
+            success: function (res) {
+                if(res.msg === "success"){
+                    $("#path").text("当前路径:" + res.path)
+                }
+            }
+        });
+    }
+
     //上移
     $('#upMoveNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
@@ -613,16 +628,24 @@
             dataType:'JSON',
             type:'GET',
             data:{
+                type:'group',
                 id:id
             },
             success:function(res){
-                var filter = $(data.elem).attr('lay-filter');
-                if(filter=='save'){
-                    layer.closeAll('page');
-                }
-                $('#org')[0].reset();
-                layer.msg(res.msg);
-                tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ admin_group_id).load();
+                var data = res.admin;
+                $('input[name="nickname"]').val(data.nickname);
+                $('input[name="order"]').val(data.order);
+                $('input[name="admin_group_id"]').val(admin_group_name);
+                $('input[name="admin_cate_id"]').val(data.admin_cate_id);
+                $('input[name="mail"]').val(data.mail);
+                $('input[name="mobile"]').val(data.mobile);
+                $('input[name="tele"]').val(data.tele);
+                $('input[name="name"]').val(data.name);
+                $('input[name="position"]').val(data.position);
+                $('input[name="wechat"]').val(data.wechat);
+                $('select[name="gender"]').val(data.gender);
+                $('input[name="signature"]').val(data.signature);
+                $('textarea[name="remark"]').val(data.remark);
             }
         });
     }
