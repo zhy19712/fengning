@@ -106,6 +106,7 @@
                         }
                     }
                 });
+                $('#addOfficeForm')[0].reset();
                 layer.close(index);
             }
         });
@@ -149,6 +150,7 @@
                         treeObj.reAsyncChildNodes(null, "refresh",false);
                     }
                 });
+                $('#addNodeForm')[0].reset();
                 layer.close(index);
             }
         });
@@ -320,15 +322,15 @@
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var selectNode = treeObj.getSelectedNodes();
         var treeNode = selectNode[0];
-        var prevNode = treeNode.getPreNode();
-
 
         if (selectNode.length <= 0){
             layer.msg('请选择节点');
             return false;
         }
 
-        if (prevNode===null){
+        var prevNode = treeNode.getPreNode();
+
+        if (!prevNode){
             layer.msg('已经移到顶啦');
             return false;
         }
@@ -357,15 +359,15 @@
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var selectNode = treeObj.getSelectedNodes();
         var treeNode = selectNode[0];
-        var nextNode = treeNode.getNextNode();
-
 
         if (selectNode.length <= 0){
             layer.msg('请选择节点');
             return false;
         }
 
-        if (nextNode===null){
+        var nextNode = treeNode.getNextNode();
+
+        if (!nextNode){
             layer.msg('已经移到底啦');
             return false;
         }
@@ -657,6 +659,10 @@
 
     //新增弹层
     $('#add').click(function(){
+        if(!admin_group_id){
+            layer.msg('请选择节点');
+            return false;
+        }
         layer.open({
             id:'1',
             type:'1',

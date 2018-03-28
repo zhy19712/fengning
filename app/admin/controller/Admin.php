@@ -181,74 +181,25 @@ class Admin extends Permissions
     public function sortNode()
     {
         if(request()->isAjax()){
-            $prev_id = input('post.prev_id'); // 前一个节点的编号 没有默认0
-            $id = input('post.id'); // 当前节点的编号
-            $next_id = input('post.next_id'); // 后一个节点的编号 没有默认0
+            $prev_id = input('post.prev_id'); // 前一个节点的排序编号 没有默认0
+            $prev_idv = input('post.prev_idv'); // 前一个节点的编号 没有默认0
+            $id = input('post.id'); // 当前节点的排序编号
+            $idv = input('post.idv'); // 当前节点的编号
+            $next_id = input('post.next_id'); // 后一个节点的排序编号 没有默认0
+            $next_idv = input('post.next_idv'); // 后一个节点的编号 没有默认0
             $node = new AdminGroup();
-            $num = $node->count() + 10;// 总数据条数
-            if(empty($prev_id) && !empty($next_id) && ($id > $next_id)){
-                Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
-                // 关联修改 $id
-                Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
-                Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
-                Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
-                // 关联修改 $next_id
-                Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
-                Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
-                Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
-            }else if(!empty($prev_id) && empty($next_id) && ($id < $prev_id)){
-                Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
-                // 关联修改 $id
-                Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
-                Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
-                Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
-                // 关联修改 $prev_id
-                Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
-                Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
-                Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
-            }else if(!empty($prev_id) && !empty($next_id)){
-                if(($id < $prev_id) && ($id < $next_id)){
-                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
-                    // 关联修改 $id
-                    Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
-                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
-                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
-                    // 关联修改 $prev_id
-                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
-                    Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
-                    Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
-                }else if(($id < $prev_id) && ($id > $next_id)){
-                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
-                    // 关联修改 $id
-                    Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
-                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $prev_id]);
-                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $prev_id]);
-                    // 关联修 $prev_id
-                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
-                    Db::name('admin_group')->where('pid',$prev_id)->update(['pid' => $id]);
-                    Db::name('admin')->where('admin_group_id',$prev_id)->update(['admin_group_id' => $id]);
-                    // next_id
-                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
-                    // 关联修改 $id
-                    Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
-                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
-                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
-                    // 关联修改 $next_id
-                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
-                    Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
-                    Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
-                }else if(($id > $prev_id) && ($id > $next_id)){
-                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
-                    // 关联修改 $id
-                    Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
-                    Db::name('admin_group')->where('pid',$id)->update(['pid' => $next_id]);
-                    Db::name('admin')->where('admin_group_id',$id)->update(['admin_group_id' => $next_id]);
-                    // 关联修改 $next_id
-                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
-                    Db::name('admin_group')->where('pid',$next_id)->update(['pid' => $id]);
-                    Db::name('admin')->where('admin_group_id',$next_id)->update(['admin_group_id' => $id]);
-                }
+            $id_node = $node->getOne($id);
+            // 下移
+            if(empty($prev_id) && !empty($next_id) && ($id < $next_id)){
+                $next_node = $node->getOne($next_id);
+                Db::name('admin_group')->where('id',$next_idv)->update(['idv' => $id,'pidv' => $id_node['pidv']]);
+                Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $next_node['pidv']]);
+            }else if(empty($next_id) && !empty($prev_id) && ($id < $prev_id)){
+                $prev_node = $node->getOne($prev_id);
+                Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $prev_node['pidv']]);
+                Db::name('admin_group')->where('id',$prev_idv)->update(['idv' => $id,'pidv' => $id_node['pidv']]);
             }
+
             return json(['code' => 1,'msg' => '成功']);
         }
         return $this->fetch();
