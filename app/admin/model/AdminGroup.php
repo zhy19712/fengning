@@ -82,7 +82,7 @@ class AdminGroup extends Model
     }
 
     /*
-     * 查询所有中的数据
+     * 查询所有组织机构表中的所有数据
      */
 
     public function getall()
