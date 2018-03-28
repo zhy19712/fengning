@@ -111,6 +111,7 @@ class Rolemanagement extends Permissions
         $flag = $model->delCatetype($param['id']);
         return json($flag);
     }
+
     /*
      * 获取一条admin_cate表中的信息
      */
@@ -194,7 +195,6 @@ class Rolemanagement extends Permissions
      * 根据角色类型查询角色类型下的所有用户
      * @return \think\response\Json
      */
-
     public function getAdminname()
     {
 
@@ -236,7 +236,6 @@ class Rolemanagement extends Permissions
     /*
      * 弹框添加角色类型下的分组用户模板
      */
-
     public function addpeople()
     {
         return $this->fetch();
@@ -246,7 +245,6 @@ class Rolemanagement extends Permissions
      * 添加角色类型下的分组用户
      * @return \think\response\Json
      */
-
     public function addAdminname()
     {
 
@@ -257,8 +255,6 @@ class Rolemanagement extends Permissions
             return json($data);
         }
     }
-
-
 
     /**
      * 获取 组织机构 左侧的树结构
@@ -283,24 +279,27 @@ class Rolemanagement extends Permissions
             }
 
             $user = Db::name('admin')->field('id,admin_group_id,name')->select();
-
-            foreach((array)$user as $key=>$vo){
-                $id = $vo['id'] + $vo['admin_group_id'] + 10000;
-                $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
-                $str .= '}*';
-            }
-            $str = substr($str, 0, -1);
-
-            $str = explode("*",$str);
-
-            //$res,$str这两个数组都存在时，才可以合并
-
-            if($res && $str)
+            if(!empty($user))//如果$user不为空时
             {
-                $merge = array_merge($res,$str);
+                foreach((array)$user as $key=>$vo){
+                    $id = $vo['id'] + $vo['admin_group_id'] + 10000;
+                    $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
+                    $str .= '}*';
+                }
+                $str = substr($str, 0, -1);
+
+                $str = explode("*",$str);
+
+                //$res,$str这两个数组都存在时，才可以合并
+
+                if($res && $str)
+                {
+                    $merge = array_merge($res,$str);
+                }
+
+                return json($merge);
             }
 
-            return json($merge);
         }
     }
 
