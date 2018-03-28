@@ -119,8 +119,10 @@ class Rolemanagement extends Permissions
     {
         if(request()->isAjax()) {
             //实例化模型类
+            $param = input('post.');
+
             $cate = new AdminCate();
-            $data = $cate->getOne($id);
+            $data = $cate->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }else
         {
@@ -146,7 +148,7 @@ class Rolemanagement extends Permissions
                     'number_id' => $param['number_id'],//编号
                     'role_name' => $param['role_name'],//角色名称
                     'create_owner' => $param['create_owner'],//创建人
-                    'create_time' => $param['create_time'],//创建时间
+                    'date' => $param['date'],//创建时间
                     'desc' => $param['desc']//备注
 
                 ];
@@ -157,8 +159,6 @@ class Rolemanagement extends Permissions
                     'id' => $param['id'],
                     'number_id' => $param['number_id'],//编号
                     'role_name' => $param['role_name'],//角色名称
-                    'create_owner' => $param['create_owner'],//创建人
-                    'create_time' => $param['create_time'],//创建时间
                     'desc' => $param['desc']//备注
 
                 ];

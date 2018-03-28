@@ -86,7 +86,7 @@ function createFlashUploader(opt, callbacks) {
     //处理图片资源地址的编码，补全等问题
     for(var i in i18n){
         if(!(i in {"lang":1,"uploadingTF":1,"imageTF":1,"textEncoding":1}) && i18n[i]){
-            i18n[i] = encodeURIComponent(editor.options.langPath + editor.options.lang + "/images/" + i18n[i]);
+            i18n[i] = encodeURIComponent(editor.options.langPath + editor.options.lang + "/img/" + i18n[i]);
         }
     }
     opt = utils.extend(opt,i18n,false);
