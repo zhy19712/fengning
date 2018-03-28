@@ -351,6 +351,11 @@ class Rolemanagement extends Permissions
                 $this->assign('info',$info);
                 return $this->fetch();
             }
+        }else{
+            $menus = Db::name('admin_menu')->select();
+            $info['menu'] = $this->menulist($menus);
+            $this->assign('info',$info);
+            return $this->fetch();
         }
     }
 
