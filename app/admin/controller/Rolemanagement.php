@@ -326,18 +326,7 @@ class Rolemanagement extends Permissions
                 //是提交操作
                 $post = $this->request->post();
                 //验证  唯一规则： 表名，字段名，排除主键值，主键名
-                $validate = new \think\Validate([
-                    ['name', 'require', '角色名称不能为空'],
-                ]);
-                //验证部分数据合法性
-                if (!$validate->check($post)) {
-                    $this->error('提交失败：' . $validate->getError());
-                }
                 //验证用户名是否存在
-                $name = $model->where(['name'=>$post['name'],'id'=>['neq',$post['id']]])->select();
-                if(!empty($name)) {
-                    return $this->error('提交失败：该角色名已存在');
-                }
                 //处理选中的权限菜单id，转为字符串
                 if(!empty($post['admin_menu_id'])) {
                     $post['permissions'] = implode(',',$post['admin_menu_id']);
@@ -348,7 +337,7 @@ class Rolemanagement extends Permissions
                     return $this->error('修改失败');
                 } else {
                     addlog($model->id);//写入日志
-                    return $this->success('修改角色信息成功','admin/admin/adminCate');
+                    return $this->success('修改角色信息成功');
                 }
             } else {
                 //非提交操作
@@ -359,42 +348,6 @@ class Rolemanagement extends Permissions
                 }
                 $menus = Db::name('admin_menu')->select();
                 $info['menu'] = $this->menulist($menus);
-                $this->assign('info',$info);
-                return $this->fetch();
-            }
-        } else {
-            //是新增操作
-            if($this->request->isPost()) {
-                //是提交操作
-                $post = $this->request->post();
-                //验证  唯一规则： 表名，字段名，排除主键值，主键名
-                $validate = new \think\Validate([
-                    ['name', 'require', '角色名称不能为空'],
-                ]);
-                //验证部分数据合法性
-                if (!$validate->check($post)) {
-                    $this->error('提交失败：' . $validate->getError());
-                }
-                //验证用户名是否存在
-                $name = $model->where('name',$post['name'])->find();
-                if(!empty($name)) {
-                    return $this->error('提交失败：该角色名已存在');
-                }
-                //处理选中的权限菜单id，转为字符串
-                if(!empty($post['admin_menu_id'])) {
-                    $post['permissions'] = implode(',',$post['admin_menu_id']);
-                }
-                if(false == $model->allowField(true)->save($post)) {
-                    return $this->error('添加角色失败');
-                } else {
-                    addlog($model->id);//写入日志
-                    return $this->success('添加角色成功','admin/admin/adminCate');
-                }
-            } else {
-                //非提交操作
-                $menus = Db::name('admin_menu')->select();
-                $info['menu'] = $this->menulist($menus);
-                //$info['menu'] = $this->menulist($info['menu']);
                 $this->assign('info',$info);
                 return $this->fetch();
             }
