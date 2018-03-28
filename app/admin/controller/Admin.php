@@ -701,6 +701,14 @@ class Admin extends Permissions
             if($this->request->isPost()) {
                 //是提交操作
                 $post = $this->request->post();
+
+                if(!isset($post['status'])){
+                   $status = Db::name('admin')->where('id',$id)->value('status');
+                   $status = ($status == 1) ? 0 : 1;
+                   Db::name('admin')->where('id',$id)->update(['status'=>$status]);
+                   return json(['code' => 1,'status' => $status,'msg' => '成功']);
+                }
+
                 $status = $post['status'];
                 if(false == Db::name('admin')->where('id',$id)->update(['status'=>$status])) {
                     return $this->error('操作失败');
