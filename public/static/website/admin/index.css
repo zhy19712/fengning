@@ -30,18 +30,16 @@
     width: 58px;
     height: 39px;
 }
-.autograph .layui-form-mid{
+.layui-form-item .autograph .layui-form-mid{
     padding: 0 !important;
     margin: 0 !important;
 }
-.autograph .layui-input-inline{
-    margin-right: 0;
-}
-.autograph .webuploader-pick{
+.layui-form-item .autograph .webuploader-pick{
     padding: 9px 15px;
 }
 .layui-form-item .autograph .layui-input-inline{
-    width: 132px;
+    margin-right: 0;
+    width: 70%;
 }
 .layui-input[name="pname"]{
     cursor: no-drop;

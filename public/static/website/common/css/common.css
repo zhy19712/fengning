@@ -32,3 +32,6 @@ i.fa:hover:before{
 table.table i.fa{
     margin-left: 10px;
 }
+.layui-input[disabled],.layui-textarea[disabled]{
+    cursor: not-allowed;
+}
