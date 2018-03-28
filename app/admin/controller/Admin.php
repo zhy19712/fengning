@@ -194,10 +194,10 @@ class Admin extends Permissions
             $next_pidv = input('post.next_pidv'); // 后一个节点的父级编号 没有默认0
 
             // 下移
-            if(empty($prev_id) && !empty($next_id) && ($id < $next_id)){
+            if(empty($prev_id)){
                 Db::name('admin_group')->where('id',$next_idv)->update(['idv' => $id,'pidv' => $pidv]);
                 Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $next_pidv]);
-            }else if(empty($next_id) && !empty($prev_id) && ($id > $prev_id)){
+            }else if(empty($next_id)){
                 Db::name('admin_group')->where('id',$idv)->update(['idv' => $prev_id,'pidv' => $prev_pidv]);
                 Db::name('admin_group')->where('id',$prev_idv)->update(['idv' => $id,'pidv' => $pidv]);
             }
