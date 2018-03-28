@@ -317,12 +317,12 @@ class Rolemanagement extends Permissions
     public function catepublish()
     {
         //获取角色id
-        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+        $id = $this->request->has('roleId') ? $this->request->param('roleId', 0, 'intval') : 0;
         $model = new \app\admin\model\AdminCate();
         $menuModel = new AdminMenu();
         if($id > 0) {
             //是修改操作
-            if($this->request->isPost()) {
+            if(request()->isAjax()) {
                 //是提交操作
                 $post = $this->request->post();
                 //验证  唯一规则： 表名，字段名，排除主键值，主键名
