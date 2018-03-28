@@ -25,6 +25,17 @@ class Admin extends Permissions
         return $this->fetch();
     }
 
+    public function getAdminCate()
+    {
+        // 获取左侧的树结构
+        if(request()->isAjax()){
+            $node = new AdminGroup();
+            $nodeStr = $node->getNodeInfo('cate');
+            return json($nodeStr);
+        }
+        return $this->fetch();
+    }
+
     /**
      * 点击编辑的时候
      * 获取一条节点信息 和 节点类型
@@ -158,6 +169,53 @@ class Admin extends Permissions
         }
     }
 
+    /**
+     * 上移下移
+     * @return mixed|\think\response\Json
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     * @author hutao
+     */
+    public function sortNode()
+    {
+        if(request()->isAjax()){
+            $prev_id = input('post.prev_id'); // 前一个节点的编号 没有默认0
+            $id = input('post.id'); // 当前节点的编号
+            $next_id = input('post.next_id'); // 后一个节点的编号 没有默认0
+            $node = new AdminGroup();
+            $num = $node->count() + 10;// 总数据条数
+            if(empty($prev_id) && !empty($next_id) && ($id > $next_id)){
+                Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
+                Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
+            }else if(!empty($prev_id) && empty($next_id) && ($id < $prev_id)){
+                Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
+                Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
+            }else if(!empty($prev_id) && !empty($next_id)){
+                if(($id < $prev_id) && ($id < $next_id)){
+                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
+                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
+                }else if(($id < $prev_id) && ($id > $next_id)){
+                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('id',$id)->update(['id' => $prev_id]);
+                    Db::name('admin_group')->where('id',$prev_id)->update(['id' => $id]);
+                    // next_id
+                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
+                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
+                }else if(($id > $prev_id) && ($id > $next_id)){
+                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $num]);
+                    Db::name('admin_group')->where('id',$id)->update(['id' => $next_id]);
+                    Db::name('admin_group')->where('id',$next_id)->update(['id' => $id]);
+                }
+            }
+            return json(['code' => 1,'msg' => '成功']);
+        }
+        return $this->fetch();
+    }
+
 
     /**
      * 管理员个人资料修改，属于无权限操作，仅能修改昵称和头像，后续可增加其他字段
@@ -210,6 +268,7 @@ class Admin extends Permissions
     {
     	//获取管理员id
     	$id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+    	$type = $this->request->has('type') ? $this->request->param('type') : '';
     	$model = new adminModel();
     	if($id > 0) {
     		//是修改操作
@@ -246,6 +305,9 @@ class Admin extends Permissions
     			$info['admin'] = $model->where('id',$id)->find();
     			$info['admin_cate'] = Db::name('admin_cate')->select();
     			$this->assign('info',$info);
+    			if($type == 'group'){
+    			    return json($info);
+                }
     			return $this->fetch();
     		}
     	} else {

@@ -1,5 +1,11 @@
     //初始化layui组件
     var initUi = layui.use('form');
+    //当前节点id
+    var admin_group_id;
+    //当前节点名称
+    var admin_group_name;
+    //管理员分组id
+    var admin_cate_id;
     //组织结构树
     var setting = {
         async: {
@@ -109,6 +115,7 @@
 
     //添加节点
     $('#addNode').click(function () {
+        //TODO 重构
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var nodes = treeObj.getSelectedNodes();
         if(!nodes[0]){
@@ -303,6 +310,21 @@
         treeObj.expandAll(false);
     });
 
+    //上移下移方法
+    function getMoveNode() {
+        $.ajax({
+            url: "./sortNode",
+            type: "post",
+            data: {id:treeNode.id},
+            dataType: "json",
+            success: function (res) {
+                if(res.msg === "success"){
+                    $("#path").text("当前路径:" + res.path)
+                }
+            }
+        });
+    }
+
     //上移
     $('#upMoveNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
@@ -342,6 +364,8 @@
     //点击节点
     function zTreeOnClick(event, treeId, treeNode) {
         console.log(treeNode);
+        admin_group_id = treeNode.id;
+        admin_group_name = treeNode.name;
         /*$('input[type="hidden"][name="currentNodeName"]').val(treeNode.name);
         $('input[type="hidden"][name="groupId"]').val(treeNode.id);
         $('input[type="hidden"][name="dataCount"]').val(treeNode.id);*/
@@ -405,7 +429,7 @@
                 name: "status"
             },
             {
-                name: "status"
+                name: "id"
             }
 
         ],
@@ -415,10 +439,11 @@
                 "orderable": false,
                 "targets": [7],
                 "render" :  function(data,type,row) {
-                    var html = "<i class='fa fa-search' title='查看' onclick='abcd(this)'></i>" ;
-                        html += "<i class='fa fa-pencil' title='编辑' onclick='weEdit(this)'></i>" ;
-                        html += "<i class='fa fa-cog' title='重置密码' onclick='reset(this)'></i>" ;
-                        html += "<i class='fa fa-user-secret' title='置为有效' onclick='active(this)'></i>" ;
+                    console.log(data);
+                    var html = "<i class='fa fa-search' id="+ data +" title='查看' onclick='view(this)'></i>" ;
+                        html += "<i class='fa fa-pencil' id="+ data +" title='编辑' onclick='weEdit(this)'></i>" ;
+                        html += "<i class='fa fa-cog' id="+ data +" title='重置密码' onclick='reset(this)'></i>" ;
+                        html += "<i class='fa fa-user-secret' id="+ data +" title='置为有效' onclick='active(this)'></i>" ;
                     return html;
                 }
             }
@@ -488,49 +513,159 @@
         var val = $(this).val();
         $('input[name="password_confirm"]').val(val);
         console.log($('input[name="password_confirm"]').val());
-    })
+    });
+
+    //管理员分组弹层
+    $('#manageZtreeBtn').click(function () {
+        layer.open({
+            id:'6',
+            type:'1',
+            area:['300px','500px'],
+            title:'请选择管理员分组',
+            content:$('#manageZtreeDialog')
+        });
+    });
+
+    //管理员分组树
+    var manageSetting = {
+        async: {
+            enable : true,
+            autoParam: ["pId","id"],
+            type : "post",
+            url : "./getAdminCate",
+            dataType :"json"
+        },
+        dit:{
+            enable:true,
+            drag:{
+                isMove: true
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pId"
+            }
+        },
+        view:{
+            selectedMulti: false
+        },
+        callback:{
+            onDblClick:manageZtreeOnClick
+        },
+        showLine:true,
+        showTitle:true,
+        showIcon:true
+    }
+    
+    function manageZtreeOnClick(event, treeId, treeNode) {
+        $('input[name="admin_cate_id"]').val(treeNode.name);
+        admin_cate_id = treeNode.id;
+        layer.close(layer.index);
+    }
+
+    $.fn.zTree.init($("#manageZtree"), manageSetting, null);
 
     //新增弹层
     $('#add').click(function(){
-        var addIndex = layer.open({
+        layer.open({
             id:'1',
             type:'1',
-            area:['660px','600px'],
+            area:['660px','700px'],
             title:'新增',
-            content:$('#org')
+            content:$('#org'),
+            success:function(){
+                $('input[name="admin_group_id"]').val(admin_group_name);
+            }
         });
     });
+
+    //表单提交方法
+    function submitForm(data) {
+        data.field.admin_group_id = admin_group_id;
+        console.log(data.field);
+        $.ajax({
+            url:'./publish',
+            dataType:'JSON',
+            type:'POST',
+            data:data.field,
+            success:function(res){
+                var filter = $(data.elem).attr('lay-filter');
+                if(filter=='save'){
+                    layer.closeAll('page');
+                }
+                $('#org')[0].reset();
+                layer.msg(res.msg);
+                tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ admin_group_id).load();
+            }
+        });
+    }
+
+    //表单提交
     layui.use('form',function(){
         var form = layui.form;
         //表单提交
+        form.on('submit(save)', function(data){
+            submitForm(data);
+            return false;
+        });
         form.on('submit(saveAndCreat)', function(data){
-            data.field.pid =
-            $.ajax({
-                url:'./publish',
-                dataType:'JSON',
-                type:'POST',
-                data:data,
-                success:function(){
-                    layer.msg('保存成功');
-                }
-            });
+            submitForm(data);
+            return false;
         });
     });
 
     //关闭弹层
     $('#close').click(function () {
-        layer.closeAll('page')
+        layer.closeAll('page');
     })
 
+    //查看表单
+    function viewForm(id){
+        $.ajax({
+            url:'./publish',
+            dataType:'JSON',
+            type:'GET',
+            data:{
+                type:'group',
+                id:id
+            },
+            success:function(res){
+                var data = res.admin;
+                $('input[name="nickname"]').val(data.nickname);
+                $('input[name="order"]').val(data.order);
+                $('input[name="admin_group_id"]').val(admin_group_name);
+                $('input[name="admin_cate_id"]').val(data.admin_cate_id);
+                $('input[name="mail"]').val(data.mail);
+                $('input[name="mobile"]').val(data.mobile);
+                $('input[name="tele"]').val(data.tele);
+                $('input[name="name"]').val(data.name);
+                $('input[name="position"]').val(data.position);
+                $('input[name="wechat"]').val(data.wechat);
+                $('select[name="gender"]').val(data.gender);
+                $('input[name="signature"]').val(data.signature);
+                $('textarea[name="remark"]').val(data.remark);
+            }
+        });
+    }
 
     //查看
-    function abcd() {
+    function view(that) {
+        var id = $(that).attr('id');
         layer.open({
             id:'2',
             type:'1',
-            area:['650px','600px'],
-            title:'新增',
-            content:$('#org')
+            area:['700px','600px'],
+            title:'查看',
+            btn:['关闭'],
+            content:$('#orgStatic'),
+            success:function () {
+                viewForm(id);
+            },
+            yes:function () {
+                layer.closeAll('page');
+            }
         });
     }
 

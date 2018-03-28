@@ -18,6 +18,7 @@ use app\admin\model\AdminCateType;
 use app\admin\model\Admin as adminModel;//管理员模型
 use app\admin\model\AdminCate;
 use app\admin\model\AdminGroup;
+use app\admin\model\AdminMenu;
 
 class Rolemanagement extends Permissions
 {
@@ -28,6 +29,7 @@ class Rolemanagement extends Permissions
     {
         $current_name =Session::get('current_name');
         $this->assign("current_name",$current_name);
+
         return $this->fetch();
     }
 
@@ -226,28 +228,13 @@ class Rolemanagement extends Permissions
                     $where['id'] = $v;
                     $res[] = $user->getName($where);
                 }
+
                 //去除数组中的空的元素
                 $res = array_filter($res);
             }
             return json($res);
         }
     }
-
-    /**
-     * 删除角色类型下的分组用户
-     * @return \think\response\Json
-     */
-
-    public function delAdminname()
-    {
-        if(request()->isAjax()) {
-            $model = new AdminCate();
-            $param = input('post.');
-            $flag = $model->delAdminid($param);
-            return json($flag);
-        }
-    }
-
 
     /*
      * 弹框添加角色类型下的分组用户模板
@@ -269,7 +256,7 @@ class Rolemanagement extends Permissions
         if(request()->isAjax()) {
             $model = new AdminCate();
             $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id,数组admin_id为添加的用户表中的id
-            $data = $model->addAdminid($param);
+            $data = $model->editAdminid($param);
             return json($data);
         }
     }
@@ -318,6 +305,92 @@ class Rolemanagement extends Permissions
 
             return json($merge);
         }
+    }
+
+    /**
+     * 管理员角色添加和修改操作
+     * @return mixed|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function catepublish()
+    {
+        //获取角色id
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+        $model = new \app\admin\model\AdminCate();
+
+        if($id > 0) {
+            //是修改操作
+            if(request()->isAjax()) {
+                //是提交操作
+                $post = $this->request->post();
+                //验证  唯一规则： 表名，字段名，排除主键值，主键名
+                //验证用户名是否存在
+                //处理选中的权限菜单id，转为字符串
+                if(!empty($post['admin_menu_id'])) {
+                    $post['permissions'] = implode(',',$post['admin_menu_id']);
+                } else {
+                    $post['permissions'] = '0';
+                }
+                if(false == $model->allowField(true)->save($post,['id'=>$id])) {
+                    return $this->error('修改失败');
+                } else {
+                    addlog($model->id);//写入日志
+                    return $this->success('修改角色信息成功');
+                }
+            } else {
+                //非提交操作
+                $info['cate'] = $model->where('id',$id)->find();
+                if(!empty($info['cate']['permissions'])) {
+                    //将菜单id字符串拆分成数组
+                    $info['cate']['permissions'] = explode(',',$info['cate']['permissions']);
+                }
+                $menus = Db::name('admin_menu')->select();
+                $info['menu'] = $this->menulist($menus);
+                $this->assign('info',$info);
+                return $this->fetch();
+            }
+        }else{
+            $menus = Db::name('admin_menu')->select();
+            $info['menu'] = $this->menulist($menus);
+            $this->assign('info',$info);
+            return $this->fetch();
+        }
+    }
+
+    protected function menulist($menu,$id=0,$level=0){
+
+        static $menus = array();
+        $size = count($menus)-1;
+        foreach ($menu as $value) {
+            if ($value['pid']==$id) {
+                $value['level'] = $level+1;
+                if($level == 0)
+                {
+                    $value['str'] = str_repeat('',$value['level']);
+                    $menus[] = $value;
+                }
+                elseif($level == 2)
+                {
+                    $value['str'] = '&emsp;&emsp;&emsp;&emsp;'.'└ ';
+                    $menus[$size]['list'][] = $value;
+                }
+                elseif($level == 3)
+                {
+                    $value['str'] = '&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;'.'└ ';
+                    $menus[$size]['list'][] = $value;
+                }
+                else
+                {
+                    $value['str'] = '&emsp;&emsp;'.'└ ';
+                    $menus[$size]['list'][] = $value;
+                }
+
+                $this->menulist($menu,$value['id'],$value['level']);
+            }
+        }
+        return $menus;
     }
 
 }
