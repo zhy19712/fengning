@@ -183,21 +183,23 @@ class Admin extends Permissions
         if(request()->isAjax()){
             $prev_id = input('post.prev_id'); // 前一个节点的排序编号 没有默认0
             $prev_idv = input('post.prev_idv'); // 前一个节点的编号 没有默认0
+            $prev_pidv = input('post.prev_pidv'); // 前一个节点的父级编号 没有默认0
+
             $id = input('post.id'); // 当前节点的排序编号
             $idv = input('post.idv'); // 当前节点的编号
+            $pidv = input('post.pidv'); // 当前节点的父级编号
+
             $next_id = input('post.next_id'); // 后一个节点的排序编号 没有默认0
             $next_idv = input('post.next_idv'); // 后一个节点的编号 没有默认0
-            $node = new AdminGroup();
-            $id_node = $node->getOne($id);
+            $next_pidv = input('post.next_pidv'); // 后一个节点的父级编号 没有默认0
+
             // 下移
             if(empty($prev_id) && !empty($next_id) && ($id < $next_id)){
-                $next_node = $node->getOne($next_id);
-                Db::name('admin_group')->where('id',$next_idv)->update(['idv' => $id,'pidv' => $id_node['pidv']]);
-                Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $next_node['pidv']]);
+                Db::name('admin_group')->where('id',$next_idv)->update(['idv' => $id,'pidv' => $pidv]);
+                Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $next_pidv]);
             }else if(empty($next_id) && !empty($prev_id) && ($id < $prev_id)){
-                $prev_node = $node->getOne($prev_id);
-                Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $prev_node['pidv']]);
-                Db::name('admin_group')->where('id',$prev_idv)->update(['idv' => $id,'pidv' => $id_node['pidv']]);
+                Db::name('admin_group')->where('id',$idv)->update(['idv' => $prev_id,'pidv' => $prev_pidv]);
+                Db::name('admin_group')->where('id',$prev_idv)->update(['idv' => $id,'pidv' => $pidv]);
             }
 
             return json(['code' => 1,'msg' => '成功']);
