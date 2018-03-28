@@ -22,7 +22,7 @@
         #conTable #path{
             line-height: 30px;
             font-weight: 700;
-            border-bottom: 1px solid #cecece;
+            border-bottom: 1px dotted #cecece;
         }
         #conTable #spanPath{
             display: inline-block;
@@ -70,18 +70,18 @@
         }
         #conTable .dataTables_wrapper .dataTables_paginate {
             position: fixed;
-            bottom: 35px;
+            bottom: 8px;
             right: 0;
         }
         #conTable .dataTables_wrapper .dataTables_info {
             position: fixed;
-            bottom: 35px;
+            bottom: 10px;
             left: 25px;
         }
         #conTable .dataTables_length{
             height: 8px;
             position: fixed;
-            bottom: 46px;
+            bottom: 19px;
             left: 175px;
         }
         #conTable #admin_table .odd{
@@ -91,7 +91,10 @@
             background-color: white;
         }
         #conTable .layui-btn{
-            background-color: #1E9FFF;
+            background-color: #00c0ef;
+        }
+        .fa-pencil:before, .fa-trash:before {
+            color: #00c0ef;
         }
     </style>
 <body class="layui-layout-body" style="overflow-y:visible;">
@@ -159,8 +162,8 @@
                     targets: [6],
                     render :  function(data,type,row) {
                         adminId = data;
-                        var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(this)'><i class='fa fa-pencil'></i></a>" ;
-                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(this)'><i class='fa fa-trash'></i></a>" ;
+                        var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a>" ;
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
                         return html;
                     }
                 },
@@ -178,7 +181,7 @@
                 }
             }
         });
-    $("div.mybtn").html('<div>新增</div>');
+    $("div.mybtn").html('<div><i class="fa fa-plus"></i>&nbsp;新增</div>');
      //变色
      $('#admin_table tbody').on( 'mouseover', 'td', function () {
          $(this).parent("tr").addClass('highlight');
