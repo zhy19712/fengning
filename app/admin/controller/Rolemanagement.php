@@ -319,7 +319,7 @@ class Rolemanagement extends Permissions
         //获取角色id
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         $model = new \app\admin\model\AdminCate();
-        $menuModel = new AdminMenu();
+
         if($id > 0) {
             //是修改操作
             if(request()->isAjax()) {
