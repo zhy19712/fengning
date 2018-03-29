@@ -11,10 +11,10 @@ use think\Model;
 class DocumentTypeModel extends Model{
     protected $name='archive_documenttype';
 
-    public function addOrEdit()
+    public function addOrEdit($mod)
     {
         if (empty($mod['id'])) {
-            $res = $this->allowField(true)->insert($mod);
+            $res = $this->allowField(true)->save($mod);
         } else {
             $res= $this->allowField(true)->save($mod, ['id' => $mod['id']]);
         }

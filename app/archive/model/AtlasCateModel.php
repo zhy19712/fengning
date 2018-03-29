@@ -19,7 +19,7 @@ class AtlasCateModel extends Model
     protected $name='atlas_cate';
 
     /**
-     * 新增图册记录
+     * 新增一条图册记录
      */
     public function insertCate($param)
     {
@@ -43,7 +43,7 @@ class AtlasCateModel extends Model
         return $catenumber;
     }
     /**
-     * 编辑图册记录
+     * 编辑一条图册记录
      */
     public function editCate($param)
     {
@@ -56,6 +56,18 @@ class AtlasCateModel extends Model
             }
         }catch(PDOException $e){
             return ['code' => 0, 'msg' => $e->getMessage()];
+        }
+    }
+    /*
+     * 根据图册id删除一条图册记录
+     */
+    public function delCate($id)
+    {
+        try{
+            $this->where("id",$id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
 
