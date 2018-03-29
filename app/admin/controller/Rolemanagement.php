@@ -95,6 +95,7 @@ class Rolemanagement extends Permissions
         $param = input('post.');
         $model = new AdminCateType();
         // 先删除节点下的用户
+
         $user = new AdminModel();
         $cate = new AdminCate();
         $data = $cate->findcateid($param['id']);
@@ -108,10 +109,19 @@ class Rolemanagement extends Permissions
         }
 
         // 最后删除此节点
-        $flag2 = $user->deladmincate($param);
+//        $flag2 = $user->deladmincate($param);//请依次删除
+        $admin_cate_id = $cate->getadmincateid($param);
+        if($admin_cate_id)
+        {
+            foreach ($admin_cate_id as $key=>$value)
+            {
+                //删除admin表中的admin_cate_id中包含此id
+                $user->deladmincate($value);
+            }
+        }
         $flag = $model->delCatetype($param['id']);
         $flag1 = $cate->delPidCate($param['id']);
-        if($flag || $flag1 ||$flag2)
+        if($flag || $flag1)
         {
             return json($flag);
         }
