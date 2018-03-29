@@ -227,7 +227,7 @@ class Admin extends Permissions
                 if(!empty($nickname)) {
                     return $this->error('提交失败：该昵称已被占用');
                 }
-                if(false == $model->allowField(true)->save($post,['id'=>$id])) {
+                if(false === $model->allowField(true)->save($post,['id'=>$id])) {
                     return $this->error('修改失败');
                 } else {
                     addlog($model->id);//写入日志
@@ -235,9 +235,8 @@ class Admin extends Permissions
                 }
             } else {
                 //非提交操作
-                $info['admin'] = $model->where('id',$id)->find();
-                $this->assign('info',$info);
-                return $this->fetch();
+                $info = $model->where('id',$id)->find();
+                return json(['code' => 1,'data' => $info,'msg' => '查询成功']);
             }
         } else {
             return $this->error('id不正确');
