@@ -266,8 +266,7 @@ class Admin extends Permissions
     			$post = $this->request->post();
     			//验证  唯一规则： 表名，字段名，排除主键值，主键名
 	            $validate = new \think\Validate([
-	                ['name', 'require|alphaDash', '管理员名称不能为空|用户名格式只能是字母、数组、——或_'],
-	                ['admin_cate_id', 'require', '请选择管理员分组'],
+	                ['name', 'require|alphaDash', '管理员名称不能为空|用户名格式只能是字母、数组、——或_']
 	            ]);
 	            //验证部分数据合法性
 	            if (!$validate->check($post)) {
@@ -309,8 +308,7 @@ class Admin extends Permissions
 	            $validate = new \think\Validate([
 	                ['name', 'require|alphaDash', '用户名不能为空|用户名格式只能是字母、数组、——或_'],
 	                ['password', 'require|confirm', '密码不能为空|两次密码不一致'],
-	                ['password_confirm', 'require', '重复密码不能为空'],
-	                ['admin_cate_id', 'require', '请选择管理员分组'],
+	                ['password_confirm', 'require', '重复密码不能为空']
 	            ]);
 	            //验证部分数据合法性
 	            if (!$validate->check($post)) {
