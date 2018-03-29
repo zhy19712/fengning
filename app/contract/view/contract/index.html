@@ -192,7 +192,7 @@
                     orderable: false,
                     targets: [6],
                     render :  function(data,type,row) {
-                        adminId = data;
+                        // adminId = data;
                         var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a>" ;
                         html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
                         return html;
@@ -234,7 +234,7 @@
     })
     //编辑
     function conEdit(that){
-        var id = adminId;
+        var id = admin_table.row(".highlight").data()[6];
         console.log(id)
         $.ajax({
             url: "{:url('./contract/contract/getOne')}?id="+id,
@@ -279,9 +279,9 @@
     }
     //删除
     function conDel(that){
+        var id = admin_table.row(".highlight").data()[6];
+        console.log(id)
         layer.confirm('是否删除该合同?', function(index){
-            var id = adminId;
-            console.log(id)
             $.ajax({
                 url: "{:url('./contract/contract/del')}",
                 type: "post",
