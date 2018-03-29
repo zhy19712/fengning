@@ -108,9 +108,10 @@ class Rolemanagement extends Permissions
         }
 
         // 最后删除此节点
+        $flag2 = $user->deladmincate($param);
         $flag = $model->delCatetype($param['id']);
         $flag1 = $cate->delPidCate($param['id']);
-        if($flag || $flag1)
+        if($flag || $flag1 ||$flag2)
         {
             return json($flag);
         }
