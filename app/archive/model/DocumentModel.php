@@ -27,11 +27,7 @@ Class DocumentModel extends Model
     public function add($mod)
     {
         $res = $this->allowField(true)->save($mod);
-        if ($res) {
-            return ['code' => 1];
-        } else {
-            return ['code' => -1];
-        }
+        return $res;
     }
 
     /**
@@ -41,6 +37,6 @@ Class DocumentModel extends Model
      */
     public function move($parms)
     {
-       return DocumentModel::update(['type'=>$parms['type']],['id'=>$parms['id']]);
+        return DocumentModel::update(['type' => $parms['type']], ['id' => $parms['id']]);
     }
 }
