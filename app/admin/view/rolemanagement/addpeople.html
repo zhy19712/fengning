@@ -296,7 +296,7 @@ $('#username_key').bind('input propertychange', function() {
     };
     //左侧组织机构树双击事件处理
     function onDblClick(event, treeId, treeNode) {
-        var element = $("#selectedUserDiv").find("input[value='" + treeNode.id + "']");
+        var element = $("#selectedUserDiv").find("input[value='" + (treeNode.id-10000) + "']");
         if (element.length > 0)
             return;
         var html = "";
