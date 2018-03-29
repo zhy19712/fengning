@@ -51,7 +51,7 @@ class Division extends Permissions{
     }
 
     /**
-     * 新增 或者 编辑 组织机构的节点
+     * 新增 或者 编辑 工程划分的节点
      * @return mixed|\think\response\Json
      * @author hutao
      */
@@ -60,17 +60,21 @@ class Division extends Permissions{
         if(request()->isAjax()){
             $node = new DivisionModel();
             $param = input('post.');
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            $en_type = isset($param['en_type']) ? $param['en_type'] : '';
             // 验证规则
-            if(empty($param['type'])){
-                $validate = new \think\Validate([
-                    ['name', 'require|max:100', '部门名称不能为空|名称不能超过100个字符'],
-                    ['pid', 'require', '请选择组织机构'],
-                ]);
+            $rule = [
+                ['d_code', 'require|alphaDash', '编码不能为空|编码只能是字母、数字和破折号 - 的组合'],
+                ['d_name', 'require|max:100', '名称不能为空|名称不能超过100个字符'],
+                ['type', 'require|number', '请选择分类|分类只能是数字'],
+                ['primary', 'require|number', '请选择是否是主要工程|是否是主要工程只能是数字']
+            ];
+            // 分类 1单位 2分部 3分项
+            if($param['type'] != 3 && empty($en_type)){
+                $validate = new \think\Validate($rule);
             }else{
-                $validate = new \think\Validate([
-                    ['name', 'require|max:100', '机构名称不能为空|名称不能超过100个字符'],
-                    ['type', 'require', '请选择机构类型'],
-                ]);
+                array_push($rule,['en_type', 'require|number', '请选择工程分类|工程类型只能是数字']);
+                $validate = new \think\Validate($rule);
             }
             //验证部分数据合法性
             if (!$validate->check($param)) {
@@ -78,26 +82,29 @@ class Division extends Permissions{
             }
 
             /**
-             * 当新增 机构的时候
-             * 前台需要传递的是 pid 父级节点编号,type 机构类型,name 节点名称
-             * 编辑 机构的时候 传递 id 自己的编号 pid 父级节点编号,type 机构类型,name 节点名称
+             * 节点 层级
+             * 顶级节点 -》标段 -》单位工程 =》 子单位工程 =》分部工程 -》子分部工程 -》 分项工程 -》 单元工程 (注意 这是一条数据 是不在 树节点里的)
              *
-             * 当新增 部门的时候
-             * 前台需要传递的是 pid 父级节点编号,name 节点名称
-             * 编辑 机构的时候 传递 id 自己的编号 pid 父级节点编号,name 节点名称
+             * 顶级节点 -》标段  不允许 增删改,它们是从其他表格获取的
              *
-             * 系统自动判断赋值 category 1 组织机构 2 部门
+             * 当新增 单位工程 =》 子单位工程 =》分部工程 -》子分部工程 的时候
+             * 前台需要传递的是 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,primary 是否主要工程,remark 描述
+             * 编辑 的时候 一定要 传递 id 编号
+             *
+             * 当新增 分项工程 的时候
+             * 前台需要传递的是 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,en_type 工程分类,primary 是否主要工程,remark 描述
+             * 编辑 的时候 一定要 传递 id 编号
+             *
              */
-            if(empty($param['type'])){
-                $data = ['pid' => $param['pid'],'category' => '2','name' => $param['name']];
-            }else{
-                $data = ['pid' => $param['pid'],'category' => '1','type' => $param['type'],'name' => $param['name']];
+            $data = ['pid' => $param['pid'],'d_code' => $param['d_code'],'d_name' => $param['d_name'],'type' => $param['type'],'primary' => $param['primary'],'remark' => $param['remark']];
+            if($param['type'] == 3 && !empty($en_type)){
+                $data['en_type'] = $en_type;
             }
-            if(empty($param['id'])){
+            if(empty($id)){
                 $flag = $node->insertTb($data);
                 return json($flag);
             }else{
-                $data['id'] = $param['id'];
+                $data['id'] = $id;
                 $flag = $node->editTb($data);
                 return json($flag);
             }
@@ -106,7 +113,7 @@ class Division extends Permissions{
     }
 
     /**
-     * 删除 组织机构的节点
+     * 删除 工程划分的节点
      * @return \think\response\Json
      * @throws \think\Exception
      * @throws \think\exception\PDOException
@@ -115,7 +122,7 @@ class Division extends Permissions{
     public function delNode()
     {
         /**
-         * 前台只需要给我传递 要删除的 节点自己的id 编号
+         * 前台只需要给我传递 要删除的 节点的 id 编号
          */
         $param = input('post.');
         $node = new DivisionModel();
@@ -124,6 +131,9 @@ class Division extends Permissions{
         if(!empty($exist)){
             return json(['code' => -1,'msg' => '包含子节点,不能删除']);
         }
+        // 如果删除的是 分项工程 那么它 包含单元工程, 应该首先批量删除单元工程
+        //Todo 如果 单元工程下面有 还包含其他的数据 那么 也要关联删除
+
 
         // 最后删除此节点
         $flag = $node->deleteTb($param['id']);
