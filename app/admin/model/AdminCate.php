@@ -56,6 +56,18 @@ class AdminCate extends Model
     public function delCate($id)
     {
         try{
+            $this->where("id",$id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+    /*
+     * 根据pid删除角色类型
+     */
+    public function delPidCate($id)
+    {
+        try{
             $this->where("pid",$id)->delete();
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
