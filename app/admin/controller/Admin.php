@@ -401,7 +401,7 @@ class Admin extends Permissions
         if($id > 0){
             if(Session::get('admin') == 1) {
                 // 管理员可以重置他人密码为 '123456'
-                if(false == Db::name('admin')->where('id',$id)->update(['password'=>password('123456')])) {
+                if(false === Db::name('admin')->where('id',$id)->update(['password'=>password('123456')])) {
                     return $this->error('重置失败');
                 } else {
                     addlog();//写入日志
