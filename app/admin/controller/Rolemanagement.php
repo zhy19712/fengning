@@ -207,33 +207,29 @@ class Rolemanagement extends Permissions
             $param = input('post.');
             //定义一个空数组
             $res = array();
-            //定义一个空数组
-            $where = array();
-
-            $where['name'] = $param['name'];//搜索用户名
-
-
             //实例化模型类
-            $model = new AdminCate();
             $user = new AdminModel();
-            //先查询所有的admin_id
-            $all_admin_id = $model->getAdminid($param['id']);
-
-
-            if($all_admin_id["admin_id"])
+            //先查询admin表中的所有的admin_cate_id
+            $datainfo = $user->getAdmincateid();
+            if($datainfo)
             {
-                $all_admin_id = explode(",",$all_admin_id['admin_id']);//拆分字符串
-
-                foreach ((array)$all_admin_id as $v)
+                foreach ($datainfo as $k=>$v)
                 {
-                    $where['id'] = $v;
-                    $res[] = $user->getName($where);
-                }
+                    $admincateid = explode(",",$v['admin_cate_id']);
+                    //判断传过来的admin_cate_id中的id是否存在admin表中的admin_cate_id字段中
+                    if(in_array($param["id"],$admincateid))
+                    {
+                        $res[] = $v["id"];
+                        $res[] = $v["name"];
 
-                //去除数组中的空的元素
-                $res = array_filter($res);
+                    }
+                }
+                return json($res);//返回json数据
+            }else
+            {
+                return $this->fetch();
             }
-            return json($res);
+
         }
     }
 
