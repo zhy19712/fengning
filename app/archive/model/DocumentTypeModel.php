@@ -9,7 +9,7 @@ namespace app\archive\model;
 use think\Model;
 
 class DocumentTypeModel extends Model{
-    protected $name='archive_document_type';
+    protected $name='archive_documenttype';
 
     public function addOrEdit()
     {

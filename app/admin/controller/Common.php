@@ -121,7 +121,7 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('admin_group g','a.admin_group_id = g.id')
-                    ->field('a.id,a.order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')
+                    ->field('a.id,a.order as g_order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')
                     ->whereIn('a.admin_group_id',$idArr)
                     ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -132,7 +132,7 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name('admin')->alias('a')
                     ->join('admin_group g','a.admin_group_id = g.id')
-                    ->field('a.id,a.order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')->whereIn('a.admin_group_id',$idArr)->select();
+                    ->field('a.id,a.order as g_order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')->whereIn('a.admin_group_id',$idArr)->select();
                 $recordsFiltered = $recordsTotal;
             }
         }

@@ -11,7 +11,7 @@ namespace app\archive\controller;
 use app\admin\controller\Permissions;
 use app\archive\model\DocumentTypeModel;
 
-class DocumentType extends Permissions
+class Documenttype extends Permissions
 {
     /**
      * 获取树

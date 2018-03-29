@@ -22,16 +22,16 @@ class DivisionModel extends Model
     public function getNodeInfo()
     {
         $section = Db::name('section')->column('id,code,name'); // 标段列表
-        $division = $this->column('id,pid,divisionName'); // 工程列表
+        $division = $this->column('id,pid,d_name,section_id'); // 工程列表
         $str = "";
         $str .= '{ "id": "' . 1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"';
         $str .= '},';
         foreach($section as $v){
-            $str .= '{ "id": "' . $v['id'] . '", "pId":"' . 1 . '", "name":"' . $v['name'].'"';
+            $str .= '{ "id": "' . $v['id'] . '", "pId":"' . 1 . '", "name":"' . $v['name'].'"' . ',"code":"' . $v['code'] .'"';
             $str .= '},';
             foreach($division as $vo){
-                if($v['id'] == $vo['pid']){
-                    $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['divisionName'].'"';
+                if($v['id'] == $vo['sectionId']){
+                    $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"';
                     $str .= '},';
                 }
             }
