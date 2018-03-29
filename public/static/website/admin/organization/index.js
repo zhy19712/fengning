@@ -742,6 +742,7 @@
     });
 
     //查看表单
+    var data={};
     function viewForm(id){
         $.ajax({
             url:'./publish',
@@ -752,6 +753,11 @@
                 id:id
             },
             success:function(res){
+
+                if(res.code==0){
+                    layer.msg(res.msg);
+                    return false;
+                }
                 var data = res.admin;
                 $('input[name="nickname"]').val(data.nickname);
                 $('input[name="order"]').val(data.order);
@@ -797,6 +803,7 @@
     function editor(that) {
         var id = $(that).attr('id');
         $('input[name="editId"]').val(id);
+
         layer.open({
             id:'1',
             type:'1',
