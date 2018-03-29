@@ -41,4 +41,34 @@ class Document extends Permissions
             return json(['code' => -1]);
         }
     }
+
+    /**
+     * 归档
+     * @return \think\response\Json
+     */
+    public function archiving()
+    {
+        $id = input('id');
+        if (
+        DocumentModel::update(['status' => 1], ['id' => $id])) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
+    }
+
+    /**
+     * 一键归档
+     * @return \think\response\Json
+     */
+    public function batchArchiving()
+    {
+        $tid = input('tid');
+        if (DocumentModel::update(['status' => 1], ['type' => $tid])) {
+            return json(['code' => 1]);
+
+        } else {
+            return json(['code' => -1]);
+        }
+    }
 }
