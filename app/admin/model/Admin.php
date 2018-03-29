@@ -140,14 +140,55 @@ class Admin extends Model
         }
 
         //把处理过得数据重新插入数组中
-        $result = $this->allowField(true)->save(['admin_cate_id'=>$str],['id' => $param['admin_id']]);
+        $result = $this->allowField(true)->update(['admin_cate_id'=>$str],['id' => $param['admin_id']]);
 
         if($result)
         {
-            return ['code' => 1,'msg' => "添加成功"];
+            return ['code' => 1,'msg' => "删除成功"];
         }else{
-            return ['code' => -1,'msg' => "添加失败"];
+            return ['code' => -1,'msg' => "删除失败"];
         }
+
+    }
+
+    /**
+     * 根据传过来的admin_cate表中的id,删除admin表中的admin_cate_id中的所有的id
+     */
+
+    public function deladmincate($param)
+    {
+        //id为cate表id
+        //先删除admin表中的所有的包含有当前传过来cate表id
+        try {
+            $admin_cate_id = $this->field("id,name,admin_cate_id")->select();
+            if ($admin_cate_id) {
+                foreach ($admin_cate_id as $k => $v) {
+
+                    $cate_id = explode(",", $v['admin_cate_id']);
+
+                    foreach ((array)$cate_id as $key => $val) {
+                        if ($val == $param['id']) {
+                            unset($cate_id[$key]);
+                        }
+                    }
+
+
+                    $v['admin_cate_id'] = implode(",", $cate_id);
+
+                    //把新筛选的admin_cate_id重新插入数据库
+
+                    $this->allowField(true)->update(['admin_cate_id' => $v['admin_cate_id']], ['id' => $v['id']]);
+
+
+                }
+
+
+            }
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+
+
 
     }
 

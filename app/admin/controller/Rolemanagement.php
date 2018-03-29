@@ -185,10 +185,12 @@ class Rolemanagement extends Permissions
             // 先删除节点下的用户
             $user = new AdminModel();
             $res = $user->delUserByCateId($param['id']);
+            //删除admin表中的admin_cate_id
+            $flag1 = $user->deladmincate($param);
             // 最后删除此节点
             $flag = $model->delCate($param['id']);
 
-            if ($res || $flag) {
+            if ($res || $flag || $flag1) {
                 return json($flag);
             }
         }
