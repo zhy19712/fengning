@@ -16,7 +16,7 @@
     <style type="text/css">
         body{
             height: 834px;
-            border: 1px dotted #cecece;
+            /*border: 1px dotted #cecece;*/
             background: #ffffff;
         }
         #secTable #path{
@@ -70,22 +70,27 @@
         }
         #secTable .dataTables_wrapper .dataTables_paginate {
             position: fixed;
-            bottom: 8px;
-            right: 0;
+            bottom: 2px;
+            left: 260px;
             z-index: 4;
         }
         #secTable .dataTables_wrapper .dataTables_info {
             position: fixed;
-            bottom: 10px;
-            left: 25px;
+            bottom: 8px;
+            left: 94px;
             z-index: 4;
         }
         #secTable .dataTables_length{
             height: 8px;
             position: fixed;
             bottom: 19px;
-            left: 175px;
+            left: 19px;
             z-index: 4;
+        }
+        #secTable .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            color: #333 !important;
+            border: none;
+            background: white;
         }
         #secTable #admin_table .odd{
             background-color: #f9f9f9;
@@ -107,6 +112,7 @@
             position: fixed;
             bottom: 0;
             left: 0;
+            padding-top: -3px;
         }
         #secTable .dataTables_scroll{
             border: 1px dotted #cecece;
@@ -152,9 +158,11 @@
 
     var adminId;
     var admin_table = $('#admin_table').DataTable({
+        pagingType: "full_numbers",
         processing: true,
         serverSide: true,
         sScrollY:'710px',
+        // sScrollX:'960px',
         ajax: {
             url:"{:url('contract/common/datatablesPre?tableName=section')}"
         },
@@ -191,25 +199,26 @@
                 orderable: false,
                 targets: [7],
                 render :  function(data,type,row) {
-                    adminId = data;
                     // console.log(adminId)
                     // console.log(row.pop())
-                    var html =  "<a type='button' class='tt' style='margin-left: 5px;' onclick='secEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a >" ;
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='secDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
+                    var html =  "<a class='tt' style='margin-left: 5px;' onclick='secEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a >" ;
+                    html += "<a  class='' style='margin-left: 5px;' onclick='secDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
                     return html;
                 }
             },
         ],
         language: {
-            "lengthMenu": "每页_MENU_ 条记录",
+            "lengthMenu": "_MENU_ ",
             "zeroRecords": "没有找到记录",
             "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
             "infoEmpty": "无记录",
             "search": "搜索：",
             "infoFiltered": "(从 _MAX_ 条记录过滤)",
             "paginate": {
-                "previous": "上一页",
-                "next": "下一页"
+                "sFirst": "<<",
+                "sPrevious": "<",
+                "sNext": ">",
+                "sLast": ">>"
             }
         }
     });
@@ -234,7 +243,9 @@
     })
     //编辑
     function secEdit(that){
-        var id = adminId;
+        console.log(admin_table.row(".highlight").data()[7]);
+
+        var id = admin_table.row(".highlight").data()[7];
         console.log(id)
         $.ajax({
             url: "{:url('./contract/section/getOne')}?id="+id,
@@ -260,15 +271,20 @@
                             // console.log(jsOrgs[i].id + 'id')
                             // console.log(res.builderId +'builderId')
                             if(jsOrgs[i].id == res.builderId){
-                                body.find('select[name="builderId"] option').text(jsOrgs[i].name);
+                                body.find('select[name="builderId"] option:selected').text(jsOrgs[i].name);
+                                body.find('select[name="builderId"] option:selected').val(jsOrgs[i].id);
                             }else if(jsOrgs[i].id == res.supervisorId){
-                                body.find('select[name="supervisorId"] option').text(jsOrgs[i].name);
+                                body.find('select[name="supervisorId"] option:selected').text(jsOrgs[i].name);
+                                body.find('select[name="supervisorId"] option:selected').val(jsOrgs[i].id);
                             }else if(jsOrgs[i].id == res.designerId){
-                                body.find('select[name="designerId"] option').text(jsOrgs[i].name);
+                                body.find('select[name="designerId"] option:selected').text(jsOrgs[i].name);
+                                body.find('select[name="designerId"] option:selected').val(jsOrgs[i].id);
                             }else if(jsOrgs[i].id == res.constructorId){
-                                body.find('#constructorId option').text(jsOrgs[i].name);
+                                body.find('#constructorId option:selected').text(jsOrgs[i].name);
+                                body.find('#constructorId option:selected').val(jsOrgs[i].id);
                             }else if(jsOrgs[i].id == res.otherId){
-                                body.find('select[name="otherId"] option').text(jsOrgs[i].name);
+                                body.find('select[name="otherId"] option:selected').text(jsOrgs[i].name);
+                                body.find('select[name="otherId"] option:selected').val(jsOrgs[i].id);
                             }
                         }
                         body.find('input[name="id"]').val(res.id);
@@ -284,9 +300,8 @@
     }
     //删除
     function secDel(that){
+        var id = admin_table.row(".highlight").data()[7];
         layer.confirm('是否删除该合同?', function(index){
-            var id = adminId;
-            console.log(id)
             $.ajax({
                 url: "{:url('./contract/section/del')}",
                 type: "post",

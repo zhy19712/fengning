@@ -180,7 +180,7 @@ function addNodetree() {
             success: function (res) {
                 if(res.code===1){
                     if(sNodes){
-                        zTreeObj.addNodes(sNodes[0],newNode);
+                        zTreeObj.addNodes(sNodes[0],res.data);
                     }else{
                         zTreeObj.addNodes(null,res.data);
                     }
@@ -258,36 +258,36 @@ $('#closeNode').click(function(){
     zTreeObj.expandAll(false);
 });
 
-//上移
-$('#upMoveNode').click(function () {
-    if (!selfid){
-        layer.msg('请选择节点');
-        return false;
-    }
-
-    var node = sNodes[0].getPreNode();
-    if (node===null){
-        layer.msg('已经移到顶啦');
-        return false;
-    }
-    zTreeObj.moveNode(node, sNodes[0], "prev");
-});
-
-//下移
-$('#downMoveNode').click(function () {
-
-    if (!selfid){
-        layer.msg('请选择节点');
-        return false;
-    }
-
-    var node = sNodes[0].getNextNode();
-    if (node===null){
-        layer.msg('已经移到底啦');
-        return false;
-    }
-    zTreeObj.moveNode(node, sNodes[0], "next");
-});
+// //上移
+// $('#upMoveNode').click(function () {
+//     if (!selfid){
+//         layer.msg('请选择节点');
+//         return false;
+//     }
+//
+//     var node = sNodes[0].getPreNode();
+//     if (node===null){
+//         layer.msg('已经移到顶啦');
+//         return false;
+//     }
+//     zTreeObj.moveNode(node, sNodes[0], "prev");
+// });
+//
+// //下移
+// $('#downMoveNode').click(function () {
+//
+//     if (!selfid){
+//         layer.msg('请选择节点');
+//         return false;
+//     }
+//
+//     var node = sNodes[0].getNextNode();
+//     if (node===null){
+//         layer.msg('已经移到底啦');
+//         return false;
+//     }
+//     zTreeObj.moveNode(node, sNodes[0], "next");
+// });
 //表格编辑
 function conEdit(id){
     $.ajax({
@@ -344,6 +344,7 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
     $(this).addClass("select-color").siblings().removeClass("select-color");
     selectData = tableItem.row(".select-color").data();//获取选中行数据
     $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[1]);
+    $("#catepublish").parent("div").show();
     $("#catepublish").attr('src','/admin/rolemanagement/catepublish.shtml?roleId='+selectData[5]+'&path='+$(".path").html());
     getAdminname(selectData[5]);
 });
@@ -354,7 +355,6 @@ function getAdminname(id) {
         url:"./getAdminname",
         data:{id:id,name:''},
         success: function (res) {
-            console.log(res)
             userList = res;
             showUser();
         },
@@ -389,7 +389,6 @@ function showUser() {
     for(var i=0 ; i<userList.length;i++){
         str += '<p id="p'+userList[i].id+'">'+userList[i].name+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
     }
-    console.log(str)
     $(".userContainer").html(str);
 }
 //筛选
