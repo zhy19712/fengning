@@ -413,14 +413,10 @@
         $('#groupId').val(treeNode.id);
         admin_group_id = treeNode.id;
         admin_group_name = treeNode.name;
-        /*$('input[type="hidden"][name="currentNodeName"]').val(treeNode.name);
-        $('input[type="hidden"][name="groupId"]').val(treeNode.id);
-        $('input[type="hidden"][name="dataCount"]').val(treeNode.id);*/
 
-        if(treeNode.level==1){
-            tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ treeNode.id).load();
-            console.log(tableItem.rows().count());
-        }
+        $('#tableItem_wrapper').show();
+        tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ treeNode.id).load();
+        console.log(tableItem.rows().count());
 
         //获取路径
         $.ajax({
@@ -434,84 +430,76 @@
                 }
             }
         });
-
-        //构建按版本查询
-        //viewHistoryVer(treeNode.id);
-
     };
 
     zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
     //组织结构表格
-    var tableItem = $('#tableItem').DataTable( {
-        processing: true,
-        serverSide: true,
-       /* data : [
-            ['Trident','Internet Explorer 4.0','Win 95+','4','X','Y','Z'],
-        ],*/
-        ajax: {
-            "url":"/admin/common/datatablesPre?tableName=admin"
-        },
-        columns: [
-            {
-                name: "order"
-            },
-            {
-                name: "g_name"
-            },
-            {
-                name: "nickname"
-            },
-            {
-                name: "name"
-            },
-            {
-                name: "mobile"
-            },
-            {
-                name: "position"
-            },
-            {
-                name: "status"
-            },
-            {
-                name: "id"
-            }
-
-        ],
-        columnDefs: [
-            {
-                "searchable": false,
-                "orderable": false,
-                "targets": [7],
-                "render" :  function(data,type,row) {
-                    var status = row[6];    //后台返回的是否禁用用户状态
-                    var html = "<i class='fa fa-search' id="+ data +" title='查看' onclick='view(this)'></i>" ;
-                        html += "<i class='fa fa-pencil' id="+ data +" title='编辑' onclick='editor(this)'></i>" ;
-                        html += "<i class='fa fa-cog' id="+ data +" title='重置密码' onclick='reset(this)'></i>" ;
-                        if(status==1){
-                            html += "<i class='fa fa-user-secret' id="+ data +" status="+ status +" title='置为无效' onclick='audit(this)'></i>" ;
-                        }else if(status==0){
-                            html += "<i class='fa fa-user-times' id="+ data +" status="+ status +" title='置为有效' onclick='audit(this)'></i>" ;
-                        }
-                    return html;
-                }
-            }
-        ],
-        language: {
-            "sProcessing":"数据加载中...",
-            "lengthMenu": "每页_MENU_ 条记录",
-            "zeroRecords": "没有找到记录",
-            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            "infoEmpty": "无记录",
-            "search": "搜索：",
-            "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            "paginate": {
-                "previous": "上一页",
-                "next": "下一页"
-            }
-        }
-    });
+       var tableItem = $('#tableItem').DataTable( {
+           processing: true,
+           serverSide: true,
+           ajax: {
+               "url":"/admin/common/datatablesPre?tableName=admin"
+           },
+           columns: [
+               {
+                   name: "g_order"
+               },
+               {
+                   name: "g_name"
+               },
+               {
+                   name: "nickname"
+               },
+               {
+                   name: "name"
+               },
+               {
+                   name: "mobile"
+               },
+               {
+                   name: "position"
+               },
+               {
+                   name: "status"
+               },
+               {
+                   name: "id"
+               }
+           ],
+           columnDefs: [
+               {
+                   "searchable": false,
+                   "orderable": false,
+                   "targets": [7],
+                   "render" :  function(data,type,row) {
+                       var status = row[6];    //后台返回的是否禁用用户状态
+                       var html = "<i class='fa fa-search' uid="+ data +" title='查看' onclick='view(this)'></i>" ;
+                       html += "<i class='fa fa-pencil' uid="+ data +" title='编辑' onclick='editor(this)'></i>" ;
+                       html += "<i class='fa fa-cog' uid="+ data +" title='重置密码' onclick='reset(this)'></i>" ;
+                       if(status==1){
+                           html += "<i class='fa fa-user-secret' uid="+ data +" status="+ status +" title='置为无效' onclick='audit(this)'></i>" ;
+                       }else if(status==0){
+                           html += "<i class='fa fa-user-times' uid="+ data +" status="+ status +" title='置为有效' onclick='audit(this)'></i>" ;
+                       }
+                       return html;
+                   }
+               }
+           ],
+           language: {
+               "sProcessing":"数据加载中...",
+               "lengthMenu": "每页_MENU_ 条记录",
+               "zeroRecords": "没有找到记录",
+               "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+               "infoEmpty": "无记录",
+               "search": "搜索：",
+               "infoFiltered": "(从 _MAX_ 条记录过滤)",
+               "paginate": {
+                   "previous": "上一页",
+                   "next": "下一页"
+               }
+           }
+       });
 
     //新增上传电子签名
     uploader = WebUploader.create({
@@ -548,6 +536,41 @@
 
     });
 
+    //编辑上传电子签名
+    editorUpload = WebUploader.create({
+        auto: true,
+        // swf文件路径
+        swf:  '/static/public/webupload/Uploader.swf',
+
+        // 文件接收服务端。
+        server: "/admin/common/upload",
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: {
+            multiple: false,
+            id: "#editorUpload",
+            innerHTML: "上传"
+        },
+        formData:{
+            major_key:'',
+            group_id:'',
+            number:'',
+            go_date:'',
+            standard:'',
+            evaluation:'',
+            sdi_user:'',
+        },
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/jpg,image/jpeg,image/png'
+        },
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false
+
+    });
+
     $('.webuploader-pick').next().css({
         width:'58px',
         height:'39px'
@@ -561,13 +584,22 @@
         console.log(res.id);
     });
 
+    editorUpload.on( 'uploadSuccess', function( file ,res) {
+        layer.msg(file.name+'已上传成功');
+        $('input[name="signature"]').val(file.name);
+        $('#signatureId').val(res.id);
+
+        console.log(res.id);
+    });
+
+    //确认密码
     $('input[name="password"]').keyup(function(){
         var val = $(this).val();
         $('input[name="password_confirm"]').val(val);
         console.log($('input[name="password_confirm"]').val());
     });
 
-    //管理员分组弹层
+    /*    //管理员分组弹层
     $('.manageZtreeBtn').click(function () {
         layer.open({
             id:'6',
@@ -619,6 +651,7 @@
     }
 
     $.fn.zTree.init($("#manageZtree"), manageSetting, null);
+    */
 
     //所属部门树弹层
     $('.groupZtreeBtn').click(function () {
@@ -675,7 +708,7 @@
     $.fn.zTree.init($("#groupZtree"), groupSetting, null);
 
     //新增弹层
-    $('#add').click(function(){
+    $('#add').on('click',function(){
         if(!admin_group_id){
             layer.msg('请选择节点');
             return false;
@@ -778,7 +811,7 @@
 
     //查看弹层
     function view(that) {
-        var id = $(that).attr('id');
+        var id = $(that).attr('uid');
         layer.open({
             id:'2',
             type:'1',
@@ -801,7 +834,7 @@
 
     //编辑弹层
     function editor(that) {
-        var id = $(that).attr('id');
+        var id = $(that).attr('uid');
         $('input[name="editId"]').val(id);
 
         layer.open({
@@ -821,7 +854,7 @@
 
     //重置密码
     function reset(that) {
-        var id = $(that).attr('id');
+        var id = $(that).attr('uid');
         $.ajax({
             url:'./editPwd',
             dataType:'JSON',
@@ -838,7 +871,7 @@
     //用户禁用/解禁
     function audit(that) {
         var status = $(that).attr('status');
-        var id = $(that).attr('id');
+        var id = $(that).attr('uid');
         var groupId = $('#groupId').val();
 
         $.ajax({
@@ -866,22 +899,3 @@
             }
         });
     }
-
-
-    //数据返回
-    /*function complete(data){
-        var groupid = $('input[type="hidden"][name="groupId"]').val();
-        console.log(data);
-        if(data.code==1){
-            layer.msg(data.msg);
-            tableItem.ajax.url("__SCRIPT__/safety_statutesdi.php?pid=" + groupid).load();
-            importExcel.reset();
-            viewHistoryVer(groupid);
-            $("#addRules_modal").modal('hide');
-
-        }else{
-            layer.msg(data.info,{icon: 5});
-            importExcel.reset();
-            return false;
-        }
-    }*/

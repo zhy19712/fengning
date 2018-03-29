@@ -45,5 +45,8 @@
     cursor: no-drop;
     background: #ccc;
 }
+.dataTables_wrapper{
+    display: none;
+}
 .dataTables_wrapper .dataTables_paginate .paginate_button{}
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover{}
