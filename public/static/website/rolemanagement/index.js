@@ -180,7 +180,7 @@ function addNodetree() {
             success: function (res) {
                 if(res.code===1){
                     if(sNodes){
-                        zTreeObj.addNodes(sNodes[0],newNode);
+                        zTreeObj.addNodes(sNodes[0],res.data);
                     }else{
                         zTreeObj.addNodes(null,res.data);
                     }
