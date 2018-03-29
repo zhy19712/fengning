@@ -5,19 +5,40 @@
  * Date: 2018/3/29
  * Time: 9:32
  */
+
 namespace app\archive\model;
+
 use think\Model;
 
-class DocumentTypeModel extends Model{
-    protected $name='archive_documenttype';
+class DocumentTypeModel extends Model
+{
+    protected $name = 'archive_documenttype';
 
     public function addOrEdit($mod)
     {
         if (empty($mod['id'])) {
             $res = $this->allowField(true)->save($mod);
         } else {
-            $res= $this->allowField(true)->save($mod, ['id' => $mod['id']]);
+            $res = $this->allowField(true)->save($mod, ['id' => $mod['id']]);
         }
-        return $res?true:false;
+        return $res ? true : false;
+    }
+
+    /**
+     * 删除节点
+     * @param $id
+     * @return \think\response\Json
+     */
+    public function del($id)
+    {
+        $count = $this->where(['pid' => $id])->count();
+        if ($count) {
+            return json(['code' => -1, 'msg' => '请先删除子节点']);
+        }
+        if (DocumentTypeModel::destroy($id)) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
     }
 }
