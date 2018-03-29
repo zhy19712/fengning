@@ -193,11 +193,10 @@
                 orderable: false,
                 targets: [7],
                 render :  function(data,type,row) {
-                    adminId = data;
                     // console.log(adminId)
                     // console.log(row.pop())
-                    var html =  "<a type='button' class='tt' style='margin-left: 5px;' onclick='secEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a >" ;
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='secDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
+                    var html =  "<a class='tt' style='margin-left: 5px;' onclick='secEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a >" ;
+                    html += "<a  class='' style='margin-left: 5px;' onclick='secDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
                     return html;
                 }
             },
@@ -236,7 +235,9 @@
     })
     //编辑
     function secEdit(that){
-        var id = adminId;
+        console.log(admin_table.row(".highlight").data()[7]);
+
+        var id = admin_table.row(".highlight").data()[7];
         console.log(id)
         $.ajax({
             url: "{:url('./contract/section/getOne')}?id="+id,
@@ -262,15 +263,20 @@
                             // console.log(jsOrgs[i].id + 'id')
                             // console.log(res.builderId +'builderId')
                             if(jsOrgs[i].id == res.builderId){
-                                body.find('select[name="builderId"] option').text(jsOrgs[i].name);
+                                body.find('select[name="builderId"] option:selected').text(jsOrgs[i].name);
+                                body.find('select[name="builderId"] option:selected').val(jsOrgs[i].id);
                             }else if(jsOrgs[i].id == res.supervisorId){
-                                body.find('select[name="supervisorId"] option').text(jsOrgs[i].name);
+                                body.find('select[name="supervisorId"] option:selected').text(jsOrgs[i].name);
+                                body.find('select[name="supervisorId"] option:selected').val(jsOrgs[i].id);
                             }else if(jsOrgs[i].id == res.designerId){
-                                body.find('select[name="designerId"] option').text(jsOrgs[i].name);
+                                body.find('select[name="designerId"] option:selected').text(jsOrgs[i].name);
+                                body.find('select[name="designerId"] option:selected').val(jsOrgs[i].id);
                             }else if(jsOrgs[i].id == res.constructorId){
-                                body.find('#constructorId option').text(jsOrgs[i].name);
+                                body.find('#constructorId option:selected').text(jsOrgs[i].name);
+                                body.find('#constructorId option:selected').val(jsOrgs[i].id);
                             }else if(jsOrgs[i].id == res.otherId){
-                                body.find('select[name="otherId"] option').text(jsOrgs[i].name);
+                                body.find('select[name="otherId"] option:selected').text(jsOrgs[i].name);
+                                body.find('select[name="otherId"] option:selected').val(jsOrgs[i].id);
                             }
                         }
                         body.find('input[name="id"]').val(res.id);
@@ -286,9 +292,8 @@
     }
     //删除
     function secDel(that){
+        var id = admin_table.row(".highlight").data()[7];
         layer.confirm('是否删除该合同?', function(index){
-            var id = adminId;
-            console.log(id)
             $.ajax({
                 url: "{:url('./contract/section/del')}",
                 type: "post",
