@@ -110,20 +110,38 @@ class Admin extends Model
     }
 
     /**
-     * 根据传过来的admin_cate表中的id,admin表中的id，添加到admin_cate用户表中的admin_id
+     * 根据传过来的admin_cate表中的id,admin表中的id,修改admin_cate_id中的值
      */
 
-    public function editAdminid($param)
+    public function deladmincateid($param)
     {
-        //定义一个空的字符串
-        $str = "";
-        if($param['admin_id'])
+        //admin_id是admin表id，id为cate表id
+
+        $admin_cate_id = $this->field("admin_cate_id")->where("id",$param['admin_id'])->find();
+
+
+
+        if($admin_cate_id["admin_cate_id"])
         {
-            //拆分传过来的用户id数组为字符串
-            $str = implode(",",$param['admin_id']);
+            $cate_id = explode(",",$admin_cate_id["admin_cate_id"]);
+
+            foreach($cate_id as $k=>$v)
+            {
+                if($v == $param['id'])
+                {
+                    unset($cate_id[$k]);
+                }
+            }
         }
+        if($cate_id)
+        {
+            $str = implode(",",$cate_id);
+
+        }
+
         //把处理过得数据重新插入数组中
-        $result = $this->allowField(true)->save(['admin_id'=>$str],['id' => $param['id']]);
+        $result = $this->allowField(true)->save(['admin_cate_id'=>$str],['id' => $param['admin_id']]);
+
         if($result)
         {
             return ['code' => 1,'msg' => "添加成功"];
@@ -144,6 +162,74 @@ class Admin extends Model
         return $data;
     }
 
+    /*
+     * 根据传过来的admin_id用户数组，cate表中的id
+     */
 
+    public function insertAdminid($param)
+    {
+        //先删除admin表中的所有的包含有当前传过来cate表id
+        $admin_cate_id = $this->field("id,name,admin_cate_id")->select();
+
+
+        try {
+
+
+            if ($admin_cate_id) {
+                foreach ($admin_cate_id as $k => $v) {
+
+                    $cate_id = explode(",", $v['admin_cate_id']);
+
+                    foreach ((array)$cate_id as $key => $val) {
+                        if ($val == $param['id']) {
+                            unset($cate_id[$key]);
+                        }
+                    }
+
+
+                    $v['admin_cate_id'] = implode(",", $cate_id);
+
+                    //把新筛选的admin_cate_id重新插入数据库
+
+                    $this->allowField(true)->update(['admin_cate_id' => $v['admin_cate_id']], ['id' => $v['id']]);
+
+
+                }
+
+
+            }
+
+
+            //再添加传过来的cate表中的id到admin_cate_id字段中
+
+
+            if ($param["admin_id"]) {
+                foreach ($param["admin_id"] as $ke => $va) {
+
+                    //根据admin_id查询admin表中的admin_cate_id,并插入传过来的id
+                    $admin_cate_id_info = $this->field("admin_cate_id")->where("id", $va)->find();
+
+                    if ($admin_cate_id_info["admin_cate_id"]) {
+                        $admin_cate_id_info_data = explode(",", $admin_cate_id_info["admin_cate_id"]);
+
+                        array_push($admin_cate_id_info_data, $param['id']);
+
+                    }
+
+                    $str = implode(",", $admin_cate_id_info_data);
+
+
+                    //把重新修改的admin_cate_id重新插入数据库
+
+                    $this->allowField(true)->update(['admin_cate_id' => $str], ['id' => $va]);
+                }
+            }
+            return ['code' => 1, 'msg' => '添加成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+
+
+    }
 
 }
