@@ -45,7 +45,7 @@
 
         .layui-col-md4 {
             width: 32.4%;
-            height: 600px;
+            height: 400px;
             float: left;
             border: 1px solid #CECECE;
             margin: 5px;
@@ -54,7 +54,7 @@
 
         .layui-col-md6 {
             width: 62.8%;
-            height: 600px;
+            height: 400px;
             float: right;
             border: 1px solid #CECECE;
             margin: 5px -4px 5px 5px;
@@ -68,7 +68,12 @@
             margin: 5px;
             margin-bottom: 3px;
         }
+        .layui-col-md7 p,.layui-col-md6 p{
+            padding-left: 10px;
+        }
+        .ztree{
 
+        }
         .fa-times {
             color: white;
             font-size: 12px;
@@ -111,7 +116,7 @@
 </head>
 <body>
 <input type="hidden" id="roleId"/>
-<div style="margin: 30px;" class="layui-container">
+<div style="margin: 20px;margin-bottom: 0;" class="layui-container">
         <div class="layui-row">
             <div class="layui-col-md7 " ><p id="path">已选角色&nbsp;>&nbsp;系统管理dfd ─ 维护测试专用角色</p></div>
         </div>
@@ -124,7 +129,9 @@
                     </div>
                 </div>
                 <hr>
-                <ul id="treeDemo" class="ztree" style="overflow: auto; height: 80%; width: 100%;"></ul>
+                <div style="overflow: auto; width: 100%;height: 324px;">
+                    <ul id="treeDemo" class="ztree" style=" height: 80%; padding-left: 20px;"></ul>
+                </div>
             </div>
                 <div class="layui-col-md6 ">
                     <div style="margin-top: 15px;">

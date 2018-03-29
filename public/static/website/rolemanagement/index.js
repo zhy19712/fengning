@@ -420,7 +420,7 @@ $(".ibox-tools i").click(function () {
         return;
     }
     var path = $(".path").html();//获取角色类型+角色名称的路径信息
-    window.open("./addpeople?path=" + path + "&roleId=" + selectData[5], "授权", "height=500, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+    window.open("./addpeople?path=" + path + "&roleId=" + selectData[5], "授权", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
 
 });
 //
