@@ -108,9 +108,10 @@ class Rolemanagement extends Permissions
         }
 
         // 最后删除此节点
+        $flag2 = $user->deladmincate($param);
         $flag = $model->delCatetype($param['id']);
         $flag1 = $cate->delPidCate($param['id']);
-        if($flag || $flag1)
+        if($flag || $flag1 ||$flag2)
         {
             return json($flag);
         }
@@ -185,10 +186,12 @@ class Rolemanagement extends Permissions
             // 先删除节点下的用户
             $user = new AdminModel();
             $res = $user->delUserByCateId($param['id']);
+            //删除admin表中的admin_cate_id
+            $flag1 = $user->deladmincate($param);
             // 最后删除此节点
             $flag = $model->delCate($param['id']);
 
-            if ($res || $flag) {
+            if ($res || $flag || $flag1) {
                 return json($flag);
             }
         }
@@ -215,21 +218,47 @@ class Rolemanagement extends Permissions
             {
                 foreach ($datainfo as $k=>$v)
                 {
+                    //定义一个空数组
+                    $res_info = array();
                     $admincateid = explode(",",$v['admin_cate_id']);
                     //判断传过来的admin_cate_id中的id是否存在admin表中的admin_cate_id字段中
                     if(in_array($param["id"],$admincateid))
                     {
-                        $res[] = $v["id"];
-                        $res[] = $v["name"];
+                        $res_info["id"] = $v["id"];
+                        $res_info["name"] = $v["name"];
+                        $data = $res_info;
+                        $res[]=$data;
 
                     }
                 }
-                return json($res);//返回json数据
+
+                return $res;//返回json数据
             }else
             {
                 return $this->fetch();
             }
 
+        }
+    }
+
+    /**
+     * 根据角色类型删除角色类型下的用户
+     * @return \think\response\Json
+     */
+    public function delAdminname()
+    {
+        if(request()->isAjax()) {
+            $param = input('post.');
+            //实例化model类型
+            $model = new AdminModel();
+
+            $flag = $model->deladmincateid($param);
+
+            return $flag;
+
+        }else
+        {
+            return $this->fetch();
         }
     }
 
@@ -249,9 +278,9 @@ class Rolemanagement extends Permissions
     {
 
         if(request()->isAjax()) {
-            $model = new AdminCate();
-            $param = input('post.');//需要前台传过来用户表admin的id，admin_cate表的id,数组admin_id为添加的用户表中的id
-            $data = $model->editAdminid($param);
+            $model = new AdminModel();
+            $param = input('post.');//需要前台传过来用户数组admin_id,cate表中的id
+            $data = $model->insertAdminid($param);
             return json($data);
         }
     }

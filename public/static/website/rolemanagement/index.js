@@ -257,36 +257,6 @@ $('#closeNode').click(function(){
     zTreeObj.expandAll(false);
 });
 
-// //上移
-// $('#upMoveNode').click(function () {
-//     if (!selfid){
-//         layer.msg('请选择节点');
-//         return false;
-//     }
-//
-//     var node = sNodes[0].getPreNode();
-//     if (node===null){
-//         layer.msg('已经移到顶啦');
-//         return false;
-//     }
-//     zTreeObj.moveNode(node, sNodes[0], "prev");
-// });
-//
-// //下移
-// $('#downMoveNode').click(function () {
-//
-//     if (!selfid){
-//         layer.msg('请选择节点');
-//         return false;
-//     }
-//
-//     var node = sNodes[0].getNextNode();
-//     if (node===null){
-//         layer.msg('已经移到底啦');
-//         return false;
-//     }
-//     zTreeObj.moveNode(node, sNodes[0], "next");
-// });
 //表格编辑
 function conEdit(id){
     $.ajax({
