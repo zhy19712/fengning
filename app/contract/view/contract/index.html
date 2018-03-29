@@ -15,19 +15,23 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <style type="text/css">
         body{
-            height: 834px;
+            height: 100%;
             /*border: 1px dotted #cecece;*/
             background: #ffffff;
+            /*border-bottom: none;*/
         }
         #conTable #path{
             line-height: 30px;
             font-weight: 800;
-            font-size: 17px;
+            font-size: 14px;
             border-bottom: 1px dotted #cecece;
         }
         #conTable .dataTables_filter label{
-            font-size: 15px;
+            font-size: 12px;
             font-weight: 800;
+        }
+        #conTable #mytable1_wrapper th{
+            font-size: 12px;
         }
         #conTable #spanPath{
             display: inline-block;
@@ -76,27 +80,27 @@
         }
         #conTable .dataTables_wrapper .dataTables_paginate {
             position: fixed;
-            bottom: 2px;
+            bottom: -5px;
             left: 260px;
             z-index: 4;
         }
         #conTable .dataTables_wrapper .dataTables_info {
             position: fixed;
-            bottom: 8px;
+            bottom: 4px;
             left: 94px;
             z-index: 4;
         }
         #conTable .dataTables_length{
             height: 8px;
             position: fixed;
-            bottom: 19px;
+            bottom: 14px;
             left: 19px;
             z-index: 4;
         }
         #conTable .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
             color: #333 !important;
             border: none;
-            background: white;
+            background: #c0c0c0;
         }
         #conTable #admin_table .odd{
             background-color: #f9f9f9;
@@ -112,15 +116,18 @@
         }
         #conTable .xia{
             width: 100%;
-            height: 40px;
-            background: white;
+            height: 26px;
+            background-color: #c0c0c0;
             position: fixed;
             bottom: 0;
             left: 0;
-            /*border-top: 1px dotted #cecece;*/
+            padding-top: -3px;
+        }
+        #conTable #mytable1_wrapper thead th{
+            border-top: 1px dotted #cecece;
         }
         #conTable .dataTables_scroll{
-            border: 1px dotted #cecece;
+            /*border: 1px dotted #cecece;*/
         }
         #conTable .layui-btn-sm {
             height: 28px;
@@ -164,7 +171,7 @@
             pagingType: "full_numbers",
             processing: true,
             serverSide: true,
-            sScrollY:'710px',
+            // sScrollY:'710px',
             // sScrollX:'960px',
             ajax: {
                 url:"{:url('contract/common/datatablesPre?tableName=contract')}"
