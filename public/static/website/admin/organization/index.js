@@ -424,6 +424,7 @@
 
     //组织结构表格
    var tableItem = $('#tableItem').DataTable( {
+       pagingType: "full_numbers",
        processing: true,
        serverSide: true,
        ajax: {
@@ -476,15 +477,17 @@
        ],
        language: {
            "sProcessing":"数据加载中...",
-           "lengthMenu": "每页_MENU_ 条记录",
+           "lengthMenu": "_MENU_",
            "zeroRecords": "没有找到记录",
-           "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+           "info": "第 _PAGE_ 页 ( 共 _PAGES_ 页, _TOTAL_ 项 )",
            "infoEmpty": "无记录",
            "search": "搜索：",
            "infoFiltered": "(从 _MAX_ 条记录过滤)",
            "paginate": {
-               "previous": "上一页",
-               "next": "下一页"
+               "sFirst": "<<",
+               "sPrevious": "<",
+               "sNext": ">",
+               "sLast": ">>"
            }
        },
        fnInitComplete: function (oSettings, json) {
