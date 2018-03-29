@@ -93,17 +93,4 @@ function format_bytes($size, $delimiter = '') {
     return round($size, 2) . $delimiter . $units[$i];
 }
 
-/**
- * 分类树function
- * @return [type] [description]
- */
-function tree($data,$pid=0){
-    static $treeList = array();
-    foreach($data as $v){
-        if($v['pid']==$pid){
-            $treeList[]=$v;//将结果装到$treeList中
-            tree($data,$v['id']);
-        }
-    }
-    return $treeList;
-}
+
