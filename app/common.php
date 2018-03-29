@@ -151,3 +151,18 @@ function hide_phone($str){
     $resstr = substr_replace($str,'****',3,4);  
     return $resstr;  
 }
+
+/**
+ * 分类树function
+ * @return [type] [description]
+ */
+function tree($data,$pid=0){
+    static $treeList = array();
+    foreach($data as $v){
+        if($v['pid']==$pid){
+            $treeList[]=$v;//将结果装到$treeList中
+            tree($data,$v['id']);
+        }
+    }
+    return $treeList;
+}

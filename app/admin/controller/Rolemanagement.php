@@ -24,7 +24,7 @@ class Rolemanagement extends Permissions
      */
     public function index()
     {
-        $current_name =Session::get('current_name');
+        $current_name =Session::get('current_nickname');
         $this->assign("current_name",$current_name);
 
         return $this->fetch();
@@ -109,7 +109,12 @@ class Rolemanagement extends Permissions
 
         // 最后删除此节点
         $flag = $model->delCatetype($param['id']);
-        return json($flag);
+        $flag1 = $cate->delCate($param['id']);
+        if($flag || $flag1)
+        {
+            return json($flag);
+        }
+
     }
 
     /*
