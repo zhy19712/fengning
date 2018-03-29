@@ -30,22 +30,11 @@
     width: 58px;
     height: 39px;
 }
-.layui-form-item .autograph .layui-form-mid{
-    padding: 0 !important;
-    margin: 0 !important;
-}
-.layui-form-item .autograph .webuploader-pick{
-    padding: 9px 15px;
-}
-.layui-form-item .autograph .layui-input-inline{
-    margin-right: 0;
-    width: 70%;
-}
 .layui-input[name="pname"]{
     cursor: no-drop;
     background: #ccc;
 }
-.dataTables_wrapper{
+.dataTables_wrapper,.tbcontainer{
     display: none;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button{}

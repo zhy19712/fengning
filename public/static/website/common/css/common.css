@@ -32,6 +32,31 @@ i.fa:hover:before{
 table.table i.fa{
     margin-left: 10px;
 }
+.dataTables_wrapper .dataTables_filter{
+    float: left;
+}
+.dataTables_wrapper .dataTables_filter input{
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+.dataTables_length{
+    float: left;
+}
+.dataTables_paginate{
+    float: right;
+}
 .layui-input[disabled],.layui-textarea[disabled]{
     cursor: not-allowed;
+}
+.layui-form-item .autograph .layui-form-mid{
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.layui-form-item .autograph .webuploader-pick{
+    padding: 9px 15px;
+}
+.layui-form-item .autograph .layui-input-inline{
+    margin-right: 0;
+    width: 70%;
 }
