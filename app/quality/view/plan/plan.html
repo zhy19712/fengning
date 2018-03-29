@@ -1,10 +1,202 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{include file="public/common_header"}
 
+
+
+{include file="public/common_footer"}
+<script src="__WEBSITE__/plan/plan.js"></script>
+<script>
+    //组织结构表格
+    var tableItem = $('#tableItem').DataTable( {
+        pagingType: "full_numbers",
+        processing: true,
+        serverSide: true,
+        ajax: {
+            "url":"{:url('admin/common/datatablesPre?tableName=admin_cate&id=')}"
+        },
+        dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
+        columns:[
+            {
+                name: "number_id"
+            },
+            {
+                name: "role_name"
+            },
+            {
+                name: "create_owner"
+            },
+            {
+                name: "create_time"
+            },
+            {
+                name: "desc"
+            },
+            {
+                name: "id"
+            }
+        ],
+        columnDefs: [
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [5],
+                "render" :  function(data,type,row) {
+                    var a = data;
+                    var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+data+")'><i class='fa fa-pencil'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
+                    return html;
+                }
+            }
+        ],
+        language: {
+            "lengthMenu": "_MENU_",
+            "zeroRecords": "没有找到记录",
+            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+            "infoEmpty": "无记录",
+            "search": "搜索：",
+            "infoFiltered": "(从 _MAX_ 条记录过滤)",
+            "paginate": {
+                "previous": "<",
+                "next": ">"
+            }
+        }
+    });
+    //新增
+    $(".mybtn").html("新增");
+
+    $("#tableItem_wrapper .mybtn").click(function () {
+        if(!selfid){
+            layer.msg("请先选择角色分类");
+            return;
+        }
+        var nowtime = new Date().Format("yyyy-MM-dd");
+        layer.open({
+            type: 1,
+            title: '角色管理—新增',
+            area: ['690px', '440px'],
+            content:dom
+        });
+        $("#roleform input").val("");
+        $("#roleform textarea").val("");
+        $("#pid").val(selfid);
+        $('#create_owner').val($("#current_name").html());
+        $('#create_time').val(nowtime);
+    });
+
+    $(function () {
+        $("#btnSaveRolePermission").click(function () { saveRolePermission(); });
+        initPermissionTree();
+    });
+    //加载功能菜单树
+    function initPermissionTree() {
+        var setting = {
+            check: {
+                enable: true
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            view: {
+                selectedMulti: false
+            }
+        };
+        $.ajax({
+            type: "Get",
+            url: "./",
+            success: function (data) {
+                $.fn.zTree.init($("#treeRight"), setting, data.result);
+            }
+        });
+    };
+    //保存角色与功能关联关系
+    function saveRolePermission() {
+        var menuIds = [];
+        var permissionTree = $.fn.zTree.getZTreeObj("treeRight");
+        if (window.parent.selectedRow) {
+            var nodes = permissionTree.getCheckedNodes(true);
+            $.each(nodes, function (i, item) {
+                menuIds.push(item.id);
+            });
+            var sendData = { "dto": { "RoleId": window.parent.selectedRow.id, "MenuIds": menuIds } }
+            $.ajax({
+                type: "Post",
+                url: "/Role/SaveRoleMenu",
+                data: sendData,
+                success: function (data) {
+                    if (data.result == "Success")
+                        layerAlert("保存成功。")
+                    else
+                        layerAlert("保存失败。")
+                }
+            });
+        }
+        else {
+            layerAlert("请选择角色。")
+        }
+    };
+    //根据角色关联的功能菜单数据更改选中状态。
+    function initMenuDataByRole(roleId) {
+        var permissionTree = $.fn.zTree.getZTreeObj("treeRight");
+        permissionTree.checkAllNodes(false);
+        $.ajax({
+            type: "Get",
+            url: "/Role/GetMenusByRole?roleId=" + roleId + "&_t=" + new Date(),
+            success: function (data) {
+                $.each(data.result.menus, function (i, item) {
+                    var node = permissionTree.getNodeByParam("id", item.id, null);
+                    if (node)
+                        permissionTree.checkNode(node, true, false);
+                });
+            }
+        });
+    };
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->
+    <!--<title>fengning_plan</title>-->
+    <!--<meta name="renderer" content="webkit">-->
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">-->
+    <!--<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">-->
+    <!--<link rel="stylesheet" href="__PUBLIC__/layui/css/modules/layer/default/layer.css" media="all">-->
+    <!--<link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all">-->
+    <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">-->
+    <!--<script type="text/javascript" charset="utf8" src="__PUBLIC__/jquery/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" charset="utf8" src="__PUBLIC__/layui/lay/modules/layer.js"></script>-->
+    <!--<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+    <!--22222-->
+<!--</body>-->
+<!--</html>-->

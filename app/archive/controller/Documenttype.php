@@ -10,6 +10,7 @@ namespace app\archive\controller;
 
 use app\admin\controller\Permissions;
 use app\archive\model\DocumentTypeModel;
+use think\Request;
 
 class Documenttype extends Permissions
 {
@@ -23,19 +24,34 @@ class Documenttype extends Permissions
         return json(DocumentTypeModel::all());
     }
 
+    protected $documentTypeService;
+
+    public function __construct(Request $request = null)
+    {
+        parent::__construct($request);
+        $this->documentTypeService = new DocumentTypeModel();
+    }
+
     /**
      * 添加或修改
      * @return \think\response\Json
      */
     public function addOrEdit()
     {
-        $m=input('psot.');
-        $s=new DocumentTypeModel();
-        if ($s->addOrEdit($m))
-        {
-            return json(['code'=>1]);
-        }else{
-            return json(['code'=>-1]);
+        $m = input('post.');
+        if ($this->documentTypeService->addOrEdit($m)) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
         }
+    }
+
+    /**
+     * 删除节点
+     * @return \think\response\Json
+     */
+    public function del()
+    {
+        return $this->documentTypeService->del(input('id'));
     }
 }

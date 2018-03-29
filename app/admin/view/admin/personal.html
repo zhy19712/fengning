@@ -22,8 +22,13 @@
           <label class="layui-form-label">性别</label>
           <div class="layui-input-inline">
             <select name="gender" lay-verify="">
-              <option value="1" {eq name="$info.admin.gender" value="1" }selected{/eq} >男</option>
-              <option value="0" {eq name="$info.admin.gender" value="0" }selected{/eq} >女</option>
+              {if condition="$info.admin.gender eq 1" }
+                <option value="1"  selected>男</option>
+                <option value="0" >女</option>
+              {else/}
+                <option value="1" >男</option>
+                <option value="0" selected>女</option>
+              {/if}
             </select>
           </div>
         </div>
@@ -74,7 +79,7 @@
         <div class="autograph">
           <label class="layui-form-label">电子签名</label>
           <div class="layui-input-inline">
-            <input type="text" name="signature" placeholder="请上传电子签名" autocomplete="off" class="layui-input">
+            <img class="layui-upload-img" id="demo2" width="150" height="150" {notempty name="$info.admin.filepath"}src="{$info.admin.filepath}"{/notempty}>
           </div>
           <div class="layui-form-mid layui-word-aux">
             <div id="upload" class="upload"></div>

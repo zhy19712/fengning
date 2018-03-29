@@ -109,6 +109,41 @@ class Admin extends Model
         return $data;
     }
 
+    /**
+     * 根据传过来的admin_cate表中的id,admin表中的id，添加到admin_cate用户表中的admin_id
+     */
+
+    public function editAdminid($param)
+    {
+        //定义一个空的字符串
+        $str = "";
+        if($param['admin_id'])
+        {
+            //拆分传过来的用户id数组为字符串
+            $str = implode(",",$param['admin_id']);
+        }
+        //把处理过得数据重新插入数组中
+        $result = $this->allowField(true)->save(['admin_id'=>$str],['id' => $param['id']]);
+        if($result)
+        {
+            return ['code' => 1,'msg' => "添加成功"];
+        }else{
+            return ['code' => -1,'msg' => "添加失败"];
+        }
+
+    }
+
+    /*
+     * 根据admin_cate表的id，查询admin表中的admin_cate_id字段
+     */
+
+    public function getAdmincateid()
+    {
+        $data = $this->field("id,nickname,name,admin_cate_id")->select();
+
+        return $data;
+    }
+
 
 
 }
