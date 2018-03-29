@@ -11,7 +11,7 @@ use think\Model;
 class DocumentTypeModel extends Model{
     protected $name='archive_documenttype';
 
-    public function addOrEdit()
+    public function addOrEdit($mod)
     {
         if (empty($mod['id'])) {
             $res = $this->allowField(true)->insert($mod);
