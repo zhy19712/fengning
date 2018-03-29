@@ -10,6 +10,7 @@ namespace app\archive\controller;
 
 use app\admin\controller\Permissions;
 use app\archive\model\DocumentModel;
+use think\Request;
 
 /**
  * 文档管理
@@ -18,6 +19,14 @@ use app\archive\model\DocumentModel;
  */
 class Document extends Permissions
 {
+    public function __construct(Request $request = null)
+    {
+        parent::__construct($request);
+        $this->documentService = new DocumentModel();
+    }
+
+    protected $documentService;
+
     /**
      * 首页
      * @return mixed
@@ -27,6 +36,16 @@ class Document extends Permissions
         return $this->fetch();
     }
 
+    public function add()
+    {
+        $mod = input('post.');
+        if ($this->documentService->add($mod)) {
+            return ['code' => 1];
+        } else {
+            return ['code' => -1];
+        }
+    }
+
     /**
      * 移动文档
      * @return \think\response\Json
@@ -34,8 +53,7 @@ class Document extends Permissions
     public function move()
     {
         $mod = input('post.');
-        $s = new DocumentModel();
-        if ($s->move($mod)) {
+        if ($this->documentService->move($mod)) {
             return json(['code' => 1]);
         } else {
             return json(['code' => -1]);
