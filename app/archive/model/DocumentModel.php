@@ -13,9 +13,10 @@ use think\Model;
 Class DocumentModel extends Model
 {
     protected $name = 'archive_document';
-    function documentType()
+
+    public function documentType()
     {
-        return $this->hasOne("DocumentType",'id','type');
+        return $this->hasOne("DocumentType", 'id', 'type');
     }
 
     /**
@@ -23,15 +24,23 @@ Class DocumentModel extends Model
      * @param $mod
      * @return array
      */
-    function add($mod)
+    public function add($mod)
     {
-        $res=$this->allowField(true)->save($mod);
-        if ($res)
-        {
-            return ['code'=>1];
+        $res = $this->allowField(true)->save($mod);
+        if ($res) {
+            return ['code' => 1];
+        } else {
+            return ['code' => -1];
         }
-        else{
-            return['code'=>-1];
-        }
+    }
+
+    /**
+     * 移动文档
+     * @param $parms
+     * @return $this
+     */
+    public function move($parms)
+    {
+       return DocumentModel::update(['type'=>$parms['type']],['id'=>$parms['id']]);
     }
 }

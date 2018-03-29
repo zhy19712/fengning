@@ -119,14 +119,11 @@ layui.use(['element',"layer",'form'], function(){
 
     //监听提交
     form.on('submit(demo1)', function(data){
-            console.log(selfid);
-            console.log(data.field);
             $.ajax({
                 type: "post",
                 url:"./editCate",
                 data:data.field,
                 success: function (res) {
-                    console.log(res)
                     if(res.code == 1) {
                         var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
                         tableItem.ajax.url(url).load();
@@ -235,6 +232,8 @@ function delNodetree() {
                 success: function (res) {
                     if(res.code===1){
                         layer.msg("删除节点成功",{time:1500,shade: 0.1});
+                        var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
+                        tableItem.ajax.url(url).load();
                         zTreeObj.removeNode(sNodes[0]);
                         selfid = "";
                     }
@@ -375,7 +374,7 @@ $(".userContainer").delegate("p a","click",function () {
             if(res.code===1){
                 layer.msg("删除成功");
                 console.log(that.parent("p"))
-                that.parent("p").remove()
+                that.parent("p").remove();
             }
         },
         error: function (data) {
@@ -421,7 +420,7 @@ $(".ibox-tools i").click(function () {
         return;
     }
     var path = $(".path").html();//获取角色类型+角色名称的路径信息
-    window.open("./addpeople?path=" + path + "&roleId=" + selectData[5], "授权", "height=500, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+    window.open("./addpeople?path=" + path + "&roleId=" + selectData[5], "授权", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
 
 });
 //
