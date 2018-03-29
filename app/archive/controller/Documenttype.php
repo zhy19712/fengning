@@ -29,7 +29,7 @@ class Documenttype extends Permissions
      */
     public function addOrEdit()
     {
-        $m=input('psot.');
+        $m=input('post.');
         $s=new DocumentTypeModel();
         if ($s->addOrEdit($m))
         {
