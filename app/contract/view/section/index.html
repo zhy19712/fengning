@@ -70,7 +70,7 @@
         }
         #secTable .dataTables_wrapper .dataTables_paginate {
             position: fixed;
-            bottom: 8px;
+            bottom: 2px;
             right: 0;
             z-index: 4;
         }
@@ -107,6 +107,7 @@
             position: fixed;
             bottom: 0;
             left: 0;
+            padding-top: -3px;
         }
         #secTable .dataTables_scroll{
             border: 1px dotted #cecece;
@@ -120,7 +121,7 @@
     </style>
 <body class="easyui-layout" style="overflow-y:hidden;">
 <!--表格-->
-<div id="secTable" class="wrapper wrapper-content animated fadeInRight" style="width: 100%;vertical-align: top;padding: 0;margin-left: 4px;text-align: center">
+<div id="secTable" class="wrapper wrapper-content animated fadeInRight" style="width: 99.5%;vertical-align: top;padding: 0;margin-left: 4px;text-align: center">
     <div class="ibox float-e-margins">
         <div class="ibox-content">
             <div class="row">
@@ -155,7 +156,7 @@
         processing: true,
         serverSide: true,
         sScrollY:'710px',
-        sScrollX:'960px',
+        // sScrollX:'960px',
         ajax: {
             url:"{:url('contract/common/datatablesPre?tableName=section')}"
         },

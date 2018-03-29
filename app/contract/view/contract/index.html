@@ -76,7 +76,7 @@
         }
         #conTable .dataTables_wrapper .dataTables_paginate {
             position: fixed;
-            bottom: 8px;
+            bottom: 2px;
             right: 0;
             z-index: 4;
         }
@@ -126,7 +126,7 @@
     </style>
 <body class="easyui-layout" style="overflow-y:hidden;">
     <!--表格-->
-    <div id="conTable" class="wrapper wrapper-content animated fadeInRight" style="width: 100%;vertical-align: top;padding: 0;margin-left: 4px;text-align: center">
+    <div id="conTable" class="wrapper wrapper-content animated fadeInRight" style="width: 99.5%;vertical-align: top;padding: 0;margin-left: 4px;text-align: center">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
                 <div class="row">
@@ -158,8 +158,8 @@
      var admin_table = $('#admin_table').DataTable({
             processing: true,
             serverSide: true,
-            sScrollY:'720px',
-            sScrollX:'960px',
+            sScrollY:'710px',
+            // sScrollX:'960px',
             ajax: {
                 url:"{:url('contract/common/datatablesPre?tableName=contract')}"
             },
