@@ -336,25 +336,18 @@
         }
 
         var prevId = prevNode.id;
-        var prev_idv = prevNode.idv;
-        var prev_pidv = prevNode.pidv;
+        var prev_sort_id = prevNode.sort_id;
         var id = treeNode.id;
-        var idv = treeNode.idv;
-        var pidv = treeNode.pidv;
+        var sort_id = treeNode.sort_id;
 
         $.ajax({
             url: "./sortNode",
             type: "post",
             data: {
                 prev_id:prevId,
-                prev_idv:prev_idv,
-                prev_pidv:prev_pidv,
-                next_id:0,
-                next_idv:0,
-                next_pidv:0,
+                prev_sort_id:prev_sort_id,
                 id:id,
-                idv:idv,
-                pidv:pidv
+                id_sort_id:sort_id,
             },
             dataType: "json",
             success: function (res) {
@@ -384,25 +377,18 @@
         }
 
         var nextId = nextNode.id;
-        var next_idv = nextNode.idv;
-        var next_pidv = nextNode.pidv;
+        var next_sort_id = nextNode.sort_id;
         var id = treeNode.id;
-        var idv = treeNode.idv;
-        var pidv = treeNode.pidv;
+        var sort_id = treeNode.sort_id;
 
         $.ajax({
             url: "./sortNode",
             type: "post",
             data: {
-                prev_id:0,
-                prev_idv:0,
-                prev_pidv:0,
                 next_id:nextId,
-                next_idv:next_idv,
-                next_pidv:next_pidv,
+                next_sort_id:next_sort_id,
                 id:id,
-                idv:idv,
-                pidv:pidv
+                id_sort_id:sort_id,
             },
             dataType: "json",
             success: function (res) {

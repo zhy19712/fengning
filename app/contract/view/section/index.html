@@ -13,28 +13,9 @@
     <script type="text/javascript" charset="utf8" src="__PUBLIC__/jquery/jquery.min.js"></script>
     <script type="text/javascript" charset="utf8" src="__PUBLIC__/layui/lay/modules/layer.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-    <!--<link rel="stylesheet" href="__COMMONCSS__/app.css" media="all" />-->
-    <!--<link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />-->
-    <!--<link rel="stylesheet" href="__PUBLIC__/ztree/css/metroStyle/metroStyle.css" />-->
-    <!--<link rel="stylesheet" href="__PUBLIC__/easyui/easyui.css">-->
-    <!--<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all" />-->
-    <!--<link rel="stylesheet" href="__COMMONCSS__/admin.css" />-->
-    <!--<link rel="stylesheet" href="__COMMONCSS__/themes/blue.css" media="all" id="skin" kit-skin />-->
-    <!--<link rel="stylesheet" href="__PUBLIC__/datatables/css/jquery.dataTables.min.css" media="all" />-->
-    <!--<link rel="stylesheet" href="__PUBLIC__/datatables/css/buttons.dataTables.min.css" media="all" />-->
-    <!--<link rel="stylesheet" href="__PUBLIC__/webupload/webuploader.css" media="all" />-->
-    <!--<link rel="stylesheet" href="__COMMONCSS__/common.css" />-->
-    <!--<script src="__PUBLIC__/jquery/jquery.min.js"></script>-->
-    <!--<script src="__PUBLIC__/layui/layui.js"></script>-->
-    <!--<script src="__PUBLIC__/ztree/js/jquery.ztree.all.min.js"></script>-->
-    <!--<script src="__PUBLIC__/easyui/jquery.easyui.min.js"></script>-->
-    <!--<script src="__PUBLIC__/datatables/js/jquery.dataTables.min.js"></script>-->
-    <!--<script src="__PUBLIC__/datatables/js/dataTables.buttons.min.js"></script>-->
-    <!--<script src="__PUBLIC__/datatables/js/dataTables.bootstrap.js"></script>-->
-    <!--<script src="__PUBLIC__/webupload/webuploader.min.js"></script>-->
     <style type="text/css">
         body{
-            height: 870px;
+            height: 834px;
             border: 1px dotted #cecece;
             background: #ffffff;
         }
@@ -54,15 +35,16 @@
         }
         #secTable #mytable1_wrapper{
             position: relative;
-            margin-top: 5px;
+            margin-top: 10px;
         }
         #secTable .mybtn{
             position: absolute;
             right: 1%;
-            top: 0;
+            top: -5px;
         }
         #secTable .float_left{
             float: left;
+            margin-bottom: 4px;
         }
         #secTable .float_left input:focus{
             border-color: #9ac6ff;
@@ -126,11 +108,19 @@
             bottom: 0;
             left: 0;
         }
-
+        #secTable .dataTables_scroll{
+            border: 1px dotted #cecece;
+        }
+        #secTable .layui-btn-sm {
+            height: 28px;
+            line-height: 34px;
+            padding: 0 10px;
+            font-size: 12px;
+        }
     </style>
 <body class="easyui-layout" style="overflow-y:hidden;">
 <!--表格-->
-<div id="secTable" class="wrapper wrapper-content animated fadeInRight" style="width: 98%;vertical-align: top;padding: 0;margin-left: 20px;text-align: center">
+<div id="secTable" class="wrapper wrapper-content animated fadeInRight" style="width: 99.5%;vertical-align: top;padding: 0;margin-left: 4px;text-align: center">
     <div class="ibox float-e-margins">
         <div class="ibox-content">
             <div class="row">
@@ -150,9 +140,9 @@
                             </tr>
                         </thead>
                     </table>
-                    <div class="xia"></div>
                 </div>
             </div>
+            <div class="xia"></div>
         </div>
     </div>
 </div>
@@ -202,7 +192,9 @@
                 targets: [7],
                 render :  function(data,type,row) {
                     adminId = data;
-                    var html =  "<a type='button' class='' style='margin-left: 5px;' onclick='secEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a >" ;
+                    // console.log(adminId)
+                    // console.log(row.pop())
+                    var html =  "<a type='button' class='tt' style='margin-left: 5px;' onclick='secEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a >" ;
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='secDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
                     return html;
                 }
@@ -221,6 +213,8 @@
             }
         }
     });
+    // console.log(admin_table.row('.tt').data());
+    // adminId = admin_table.row
     $("div.mybtn").html('<div><i class="fa fa-plus"></i>&nbsp;新增</div>');
     //变色
     $('#admin_table tbody').on( 'mouseover', 'td', function () {
@@ -259,19 +253,30 @@
                         var laysrc = layer.getChildFrame('#nameLay', index);
                         var body = layer.getChildFrame('body', index);
                         var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                        // console.log(body.html()) //得到iframe页的body内容
-                        // console.log(laysrc.html())
+                        var bodyOrgs = body.find('#_orgs').val();
+                        var jsOrgs=JSON.parse(bodyOrgs);
+                        // console.log(jsOrgs)
+                        for(var i=0;i<jsOrgs.length;i++){
+                            // console.log(jsOrgs[i].id + 'id')
+                            // console.log(res.builderId +'builderId')
+                            if(jsOrgs[i].id == res.builderId){
+                                body.find('select[name="builderId"] option').text(jsOrgs[i].name);
+                            }else if(jsOrgs[i].id == res.supervisorId){
+                                body.find('select[name="supervisorId"] option').text(jsOrgs[i].name);
+                            }else if(jsOrgs[i].id == res.designerId){
+                                body.find('select[name="designerId"] option').text(jsOrgs[i].name);
+                            }else if(jsOrgs[i].id == res.constructorId){
+                                body.find('#constructorId option').text(jsOrgs[i].name);
+                            }else if(jsOrgs[i].id == res.otherId){
+                                body.find('select[name="otherId"] option').text(jsOrgs[i].name);
+                            }
+                        }
                         body.find('input[name="id"]').val(res.id);
                         body.find('input[name="code"]').val(res.code);
                         body.find('input[name="shortName"]').val(res.shortName);
                         body.find('input[name="money"]').val(res.money);
                         body.find('input[name="name"]').val(res.name);
                         body.find('input[name="contractId"]').val(res.contractId);
-                        body.find('input[name="builderId"]').val(res.builderId);
-                        body.find('input[name="supervisorId"]').val(res.supervisorId);
-                        body.find('input[name="designerId"]').val(res.designerId);
-                        body.find('input[name="constructorId"]').val(res.constructorId);
-                        body.find('input[name="otherId"]').val(res.otherId);
                     },
                 });
             }
