@@ -258,36 +258,36 @@ $('#closeNode').click(function(){
     zTreeObj.expandAll(false);
 });
 
-//上移
-$('#upMoveNode').click(function () {
-    if (!selfid){
-        layer.msg('请选择节点');
-        return false;
-    }
-
-    var node = sNodes[0].getPreNode();
-    if (node===null){
-        layer.msg('已经移到顶啦');
-        return false;
-    }
-    zTreeObj.moveNode(node, sNodes[0], "prev");
-});
-
-//下移
-$('#downMoveNode').click(function () {
-
-    if (!selfid){
-        layer.msg('请选择节点');
-        return false;
-    }
-
-    var node = sNodes[0].getNextNode();
-    if (node===null){
-        layer.msg('已经移到底啦');
-        return false;
-    }
-    zTreeObj.moveNode(node, sNodes[0], "next");
-});
+// //上移
+// $('#upMoveNode').click(function () {
+//     if (!selfid){
+//         layer.msg('请选择节点');
+//         return false;
+//     }
+//
+//     var node = sNodes[0].getPreNode();
+//     if (node===null){
+//         layer.msg('已经移到顶啦');
+//         return false;
+//     }
+//     zTreeObj.moveNode(node, sNodes[0], "prev");
+// });
+//
+// //下移
+// $('#downMoveNode').click(function () {
+//
+//     if (!selfid){
+//         layer.msg('请选择节点');
+//         return false;
+//     }
+//
+//     var node = sNodes[0].getNextNode();
+//     if (node===null){
+//         layer.msg('已经移到底啦');
+//         return false;
+//     }
+//     zTreeObj.moveNode(node, sNodes[0], "next");
+// });
 //表格编辑
 function conEdit(id){
     $.ajax({
@@ -344,6 +344,7 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
     $(this).addClass("select-color").siblings().removeClass("select-color");
     selectData = tableItem.row(".select-color").data();//获取选中行数据
     $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[1]);
+    $("#catepublish").parent("div").show();
     $("#catepublish").attr('src','/admin/rolemanagement/catepublish.shtml?roleId='+selectData[5]+'&path='+$(".path").html());
     getAdminname(selectData[5]);
 });
