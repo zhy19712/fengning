@@ -61,7 +61,7 @@ class AdminGroup extends Model
         try{
             $id = $this->allowField(true)->insertGetId($param);
             $result = $this->where('id',$id)->update(['sort_id' => $id]);
-            $data = $this->getOne(id);
+            $data = $this->getOne($id);
             if(1 == $result){
                 return ['code' => 1,'data' => $data,'msg' => '添加成功'];
             }else{
