@@ -234,9 +234,10 @@ class Admin extends Permissions
                     return $this->success('修改个人信息成功','admin/admin/personal');
                 }
             } else {
-                //非提交操作$info['admin'] = $model->where('id',$id)->find();
-                $info = Db::name('admin')->alias('a')->join('attachment t','a.signature = t.id')->field('a.*,t.filepath')->where('a.id',$id)->select();
-                $info['admin'] = $info[0];
+                //非提交操作
+                $info['admin'] = $model->where('id',$id)->find();
+                $info['thumb'] = Db::name('attachment')->where('id',$info['admin']['thumb'])->column('filepath');
+                $info['signature'] = Db::name('attachment')->where('id',$info['admin']['signature'])->column('filepath');
                 $this->assign('info',$info);
                 return $this->fetch();
             }
