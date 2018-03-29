@@ -91,12 +91,13 @@ class Atlas extends Permissions
             //实例化图册类型AtlasCateTypeModel
             $model = new AtlasCateTypeModel();
             $param = input('post.');
-            //最开始只做删除图册类型树节点
+            //删除图册分类
 
 
+            //删除上传的图片
 
 
-            // 最后删除此节点
+            //删除图册类型树节点
             $flag = $model->delCatetype($param['id']);
             return json($flag);
         }else

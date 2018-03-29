@@ -20,18 +20,4 @@ class DocumentTypeModel extends Model{
         }
         return $res?true:false;
     }
-    /**
-     * 删除
-     * @param $id
-     * @return int
-     */
-    public function del($id)
-    {
-        return DocumentTypeModel::destroy($id);
-    }
-
-    public function getAll()
-    {
-        return DocumentTypeModel::all();
-    }
 }
