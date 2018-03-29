@@ -41,21 +41,12 @@ var setting = {
         dataFilter: ajaxDataFilter
     },
     data:{
-        keep: {
-            leaf : true,
-            parent : true
-        },
         simpleData : {
             enable:true,
             idkey: "id",
             pIdKey: "pid",
             rootPId:0
         }
-    },
-    edit: {
-        enable: true,
-        showRemoveBtn: false,
-        showRenameBtn: false
     },
     callback: {
         onClick: this.onClick
@@ -182,21 +173,16 @@ function addNodetree() {
     layer.prompt({
         title: '请输入节点名称',
     },function(value, index, elem){
-        var newNode = {
-                name: value
-        };
         $.ajax({
             url:'./editCatetype',
             type:"post",
             data:{pid:pid,name:value},
             success: function (res) {
                 if(res.code===1){
-                    if(sNodes[0]){
-                        zTreeObj.addNodes(sNodes[0], res.data);
+                    if(sNodes){
+                        zTreeObj.addNodes(sNodes[0],newNode);
                     }else{
                         zTreeObj.addNodes(null,res.data);
-                        // zTreeObj.reAsyncChildNodes(sNodes[0], "refresh", false);
-                        // zTreeObj.reAsyncChildNodes(sNodes[0].getParentNode()[0], "refresh", true);
                     }
 
                 }
@@ -250,8 +236,6 @@ function delNodetree() {
                     if(res.code===1){
                         layer.msg("删除节点成功",{time:1500,shade: 0.1});
                         zTreeObj.removeNode(sNodes[0]);
-                        zTreeObj.reAsyncChildNodes(sNodes[0], "refresh", false);
-                        zTreeObj.reAsyncChildNodes(sNodes[0].getParentNode()[0], "refresh", true);
                         selfid = "";
                     }
                 }

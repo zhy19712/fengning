@@ -181,23 +181,22 @@ class Admin extends Permissions
     public function sortNode()
     {
         if(request()->isAjax()){
-            $prev_id = input('post.prev_id'); // 前一个节点的排序编号 没有默认0
-            $prev_idv = input('post.prev_idv'); // 前一个节点的编号 没有默认0
-            $id = input('post.id'); // 当前节点的排序编号
-            $idv = input('post.idv'); // 当前节点的编号
-            $next_id = input('post.next_id'); // 后一个节点的排序编号 没有默认0
-            $next_idv = input('post.next_idv'); // 后一个节点的编号 没有默认0
-            $node = new AdminGroup();
-            $id_node = $node->getOne($id);
+            $prev_id = $this->request->has('prev_id') ? $this->request->param('prev_id', 0, 'intval') : 0; // 前一个节点的编号 没有默认0
+            $prev_sort_id = $this->request->has('prev_sort_id') ? $this->request->param('prev_sort_id', 0, 'intval') : 0; // 前一个节点的排序编号 没有默认0
+
+            $id = input('post.id'); // 当前节点的编号
+            $id_sort_id = input('post.id_sort_id'); // 当前节点的排序编号
+
+            $next_id = $this->request->has('next_id') ? $this->request->param('next_id', 0, 'intval') : 0; // 后一个节点的编号 没有默认0
+            $next_sort_id = $this->request->has('next_sort_id') ? $this->request->param('next_sort_id', 0, 'intval') : 0; // 后一个节点的排序编号 没有默认0
+
             // 下移
-            if(empty($prev_id) && !empty($next_id) && ($id < $next_id)){
-                $next_node = $node->getOne($next_id);
-                Db::name('admin_group')->where('id',$next_idv)->update(['idv' => $id,'pidv' => $id_node['pidv']]);
-                Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $next_node['pidv']]);
-            }else if(empty($next_id) && !empty($prev_id) && ($id < $prev_id)){
-                $prev_node = $node->getOne($prev_id);
-                Db::name('admin_group')->where('id',$idv)->update(['idv' => $next_id,'pidv' => $prev_node['pidv']]);
-                Db::name('admin_group')->where('id',$prev_idv)->update(['idv' => $id,'pidv' => $id_node['pidv']]);
+            if(empty($prev_id)){
+                Db::name('admin_group')->where('id',$next_id)->update(['sort_id' => $id_sort_id]);
+                Db::name('admin_group')->where('id',$id)->update(['sort_id' => $next_sort_id]);
+            }else if(empty($next_id)){
+                Db::name('admin_group')->where('id',$id)->update(['sort_id' => $prev_sort_id]);
+                Db::name('admin_group')->where('id',$prev_id)->update(['sort_id' => $id_sort_id]);
             }
 
             return json(['code' => 1,'msg' => '成功']);
