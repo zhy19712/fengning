@@ -8,9 +8,6 @@
     #tableItem_filter{
         float: left;
     }
-    #tableItem_length{
-
-    }
     .ztree-title i.fa{
         width: 18%;
     }
@@ -52,7 +49,7 @@
         color: #fff;
     }
     .dataTables_wrapper{
-        margin-bottom: 10px;
+        margin-bottom: 20px;
     }
     #tableItem_length{
         float: left;
@@ -61,15 +58,21 @@
         margin-left: 10px;
         float: left;
     }
+    #tableItem_paginate ul li{
+        line-height: 18px;
+    }
     #tableItem_info{
-        float: right;
+        float: left;
+        margin-left: 20px;
     }
     .tbcontainer{
-        margin-top: 10px;
+        font-weight: bold;
+        margin-left: -2px;
         background-color: #c0c0c0;
         position: fixed;
-        width: 99%;
+        width: 100%;
         bottom: 0;
+
     }
 </style>
 <div data-options="region:'west',title:'角色分类树',split:true" style="width:240px;">
@@ -99,9 +102,10 @@
         </tr>
         </thead>
     </table>
-    <div class="tbcontainer">
-        <div class="mark"></div>
-    </div>
+        <div class="tbcontainer">
+            <div class="mark"></div>
+        </div>
+
     <!--<form  id="roleform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">-->
         <!--<input type="hidden" name="id" id="addId" style="display: none;">-->
         <!--<div class="layui-form-item">-->
@@ -233,7 +237,7 @@
         language: {
             "lengthMenu": "_MENU_",
             "zeroRecords": "没有找到记录",
-            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 ),显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
             "infoEmpty": "无记录",
             "search": "搜索：",
             "infoFiltered": "(从 _MAX_ 条记录过滤)",
