@@ -22,18 +22,18 @@ class AdminGroup extends Model
     public function getNodeInfo($type = 'group')
     {
         if($type == 'group'){
-            $result = $this->column('id,pid,name,category,idv,pidv');
+            $result = $this->column('id,pid,name,category,sort_id');
 
             $sortArr = [];
             foreach ($result as $v){
-                $sortArr[] = $v['idv'];
+                $sortArr[] = $v['sort_id'];
             }
             asort($sortArr);
             $str = "";
             foreach ($sortArr as $v){
                 foreach($result as $key=>$vo){
-                    if($v == $vo['idv']){
-                        $str .= '{ "id": "' . $vo['idv'] . '", "pId":"' . $vo['pidv'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"'.',"idv":"'.$vo['id'].'"'.',"pidv":"'.$vo['pid'].'"';
+                    if($v == $vo['sort_id']){
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"'.',"category":"'.$vo['category'].'"'.',"sort_id":"'.$vo['sort_id'].'"';
                         $str .= '},';
                     }
                 }
@@ -60,8 +60,7 @@ class AdminGroup extends Model
     {
         try{
             $id = $this->allowField(true)->insertGetId($param);
-            $node = $this->getOne($id);
-            $result = $this->where('id',$id)->update(['idv' => $id,'pidv' => $node['pid']]);
+            $result = $this->where('id',$id)->update(['sort_id' => $id]);
             if(1 == $result){
                 return ['code' => 1,'msg' => '添加成功'];
             }else{
