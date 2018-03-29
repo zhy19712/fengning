@@ -355,7 +355,6 @@ function getAdminname(id) {
         url:"./getAdminname",
         data:{id:id,name:''},
         success: function (res) {
-            console.log(res)
             userList = res;
             showUser();
         },
@@ -390,7 +389,6 @@ function showUser() {
     for(var i=0 ; i<userList.length;i++){
         str += '<p id="p'+userList[i].id+'">'+userList[i].name+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
     }
-    console.log(str)
     $(".userContainer").html(str);
 }
 //筛选
