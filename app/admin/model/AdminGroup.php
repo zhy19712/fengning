@@ -61,8 +61,9 @@ class AdminGroup extends Model
         try{
             $id = $this->allowField(true)->insertGetId($param);
             $result = $this->where('id',$id)->update(['sort_id' => $id]);
+            $data = $this->getOne(id);
             if(1 == $result){
-                return ['code' => 1,'msg' => '添加成功'];
+                return ['code' => 1,'data' => $data,'msg' => '添加成功'];
             }else{
                 return ['code' => -1,'msg' => $this->getError()];
             }
@@ -108,5 +109,24 @@ class AdminGroup extends Model
     public function getall()
     {
         return $this->field("id,pid,name")->select();
+    }
+
+    //递归获取当前节点的所有子节点
+    public function cateTree($id){
+        $res=$this->getall();
+        if($res){
+            $result=$this->sort($res, $id);
+            return $result;
+        }
+    }
+    public function sort($data,$id){
+        static $arr=array();
+        foreach ($data as $key=>$value){
+            if($value['pid'] == $id){
+                $arr[]=$value['id'];
+                $this->sort($data,$value['id']);
+            }
+        }
+        return $arr;
     }
 }

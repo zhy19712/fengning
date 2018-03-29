@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\AdminGroup;
 use app\admin\model\DatatablesExample;
 use \think\Cache;
 use \think\Controller;
@@ -110,6 +111,10 @@ class Common extends Controller
         //表的总记录数 必要
         $recordsTotal = Db::name($table)->count(0);
         $recordsFilteredResult = array();
+
+        $node = new AdminGroup();
+        $idArr = $node->cateTree($id);
+        $idArr[] = $id;
         if(strlen($search)>0){
             //有搜索条件的情况
             if($limitFlag){
@@ -117,7 +122,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('admin_group g','a.admin_group_id = g.id')
                     ->field('a.id,a.order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')
-                    ->where('a.admin_group_id',$id)
+                    ->whereIn('a.admin_group_id',$idArr)
                     ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -127,7 +132,7 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name('admin')->alias('a')
                     ->join('admin_group g','a.admin_group_id = g.id')
-                    ->field('a.id,a.order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')->where('a.admin_group_id',$id)->select();
+                    ->field('a.id,a.order,a.name,a.nickname,g.name as g_name,a.mobile,a.position,a.status')->whereIn('a.admin_group_id',$idArr)->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
