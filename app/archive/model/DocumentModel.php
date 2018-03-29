@@ -17,4 +17,21 @@ Class DocumentModel extends Model
     {
         return $this->hasOne("DocumentType",'id','type');
     }
+
+    /**
+     * 新增
+     * @param $mod
+     * @return array
+     */
+    function add($mod)
+    {
+        $res=$this->allowField(true)->save($mod);
+        if ($res)
+        {
+            return ['code'=>1];
+        }
+        else{
+            return['code'=>-1];
+        }
+    }
 }
