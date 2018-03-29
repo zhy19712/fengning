@@ -1,5 +1,8 @@
 {include file="public/common_header"}
 <style>
+    body .panel-title{
+        font-size: 14px;
+    }
     .mybtn {
         position: absolute;
         right: 1%;
@@ -58,12 +61,18 @@
         margin-left: 10px;
         float: left;
     }
+    #tableItem{
+        padding-top: 10px           ;
+    }
     #tableItem_paginate ul li{
         line-height: 18px;
     }
     #tableItem_info{
         float: left;
         margin-left: 20px;
+    }
+    #tableItem_filter{
+        font-weight: bold;
     }
     .tbcontainer{
         font-weight: bold;
@@ -72,8 +81,22 @@
         position: fixed;
         width: 100%;
         bottom: 0;
-
     }
+     .dataTables_wrapper .dataTables_scroll {
+        position: relative;
+        top: 15px;
+        border-top: 1px dotted #cecece;
+    }
+
+     .dataTables_scrollBody{
+        position: relative;
+        overflow: auto;
+        width: 100%;
+        top: 11px;
+    }
+
+
+
 </style>
 <div data-options="region:'west',title:'角色分类树',split:true" style="width:240px;">
     <div class="ztree-title">
@@ -88,9 +111,9 @@
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div style="display: none;" id="current_name">{$current_name}</div>
-<div data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#eee;">
+<div data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#fff;">
 
-    <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
+    <table id="tableItem" class="table table-striped table-bordered cell-border" cellspacing="0"  width="100%">
         <thead>
         <tr>
             <th>编号</th>
@@ -237,7 +260,7 @@
         language: {
             "lengthMenu": "_MENU_",
             "zeroRecords": "没有找到记录",
-            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 ),显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+            "info": "第 _PAGE_ 页 ( 共 _PAGES_ 页, _TOTAL_ 项 )",
             "infoEmpty": "无记录",
             "search": "搜索：",
             "infoFiltered": "(从 _MAX_ 条记录过滤)",
@@ -250,8 +273,8 @@
         },
         "fnInitComplete": function (oSettings, json) {
             $('#tableItem_length').insertBefore(".mark");
-            $('#tableItem_paginate').insertBefore(".mark");
             $('#tableItem_info').insertBefore(".mark");
+            $('#tableItem_paginate').insertBefore(".mark");
         }
     });
     //新增
