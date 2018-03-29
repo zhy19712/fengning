@@ -15,8 +15,7 @@ use think\Db;
 
 class AdminGroup extends Model
 {
-    protected $table='fengning_admin_group';
-    //自动写入创建、更新时间
+    //自动写入创建、更新时间 insertGetId和update方法中无效，只能用于save方法
     protected $autoWriteTimestamp = true;
 
     public function getNodeInfo($type = 'group')
@@ -59,7 +58,8 @@ class AdminGroup extends Model
     public function insertTb($param)
     {
         try{
-            $id = $this->allowField(true)->insertGetId($param);
+            $result = $this->allowField(true)->save($param);
+            $id = $this->getLastInsID();
             $result = $this->where('id',$id)->update(['sort_id' => $id]);
             $data = $this->getOne($id);
             if(1 == $result){
