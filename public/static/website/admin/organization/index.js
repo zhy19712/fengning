@@ -101,12 +101,7 @@
                         },
                         success:function(data){
                             $('input[type="hidden"][name="treeId"]').val(data.data);
-                            var newNode = {
-                                id:data.data.id,
-                                pId:data.data.pid,
-                                name:data.data.name
-                            }
-                            treeObj.addNodes(nodes[0], newNode);
+                            treeObj.addNodes(nodes[0], data.data);
                         }
                     });
                     $('#addOfficeForm')[0].reset();
@@ -124,7 +119,6 @@
                 btn: ['保存', '关闭'],
                 content: $('#addNodeForm'),
                 yes: function(index, layero){
-                    console.log(index, layero);
                     var newName = $(layero).find('input[name="name"]').val();
                     $.ajax({
                         url:'./editNode',
@@ -136,13 +130,8 @@
                         },
                         success:function(data){
                             $('input[type="hidden"][name="treeId"]').val(data.data);
-                            var newNode = {
-                                id:data.data.id,
-                                pId:data.data.pid,
-                                name:data.data.name
-                            }
                             //var id = $('input[type="hidden"][name="treeId"]').val();
-                            treeObj.addNodes(nodes[0], newNode);
+                            treeObj.addNodes(nodes[0], data.data);
                             //treeObj.reAsyncChildNodes(null, "refresh",false);
                         }
                     });
@@ -208,7 +197,6 @@
             btn: ['保存', '关闭'],
             content: $('#'+formName),
             yes: function(index, layero){
-                console.log(index, layero);
                 var newName = $(layero).find('input[name='+ name +']').val();
                 $.ajax({
                     url:'./editNode',
@@ -417,7 +405,6 @@
         $('#tableItem_wrapper').show();
         $('.tbcontainer').show();
         tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ treeNode.id).load();
-        console.log(tableItem.rows().count());
 
         //获取路径
         $.ajax({
@@ -586,23 +573,18 @@
         layer.msg(file.name+'已上传成功');
         $('input[name="signature"]').val(file.name);
         $('#signatureId').val(res.id);
-
-        console.log(res.id);
     });
 
     editorUpload.on( 'uploadSuccess', function( file ,res) {
         layer.msg(file.name+'已上传成功');
         $('input[name="signature"]').val(file.name);
         $('#signatureId').val(res.id);
-
-        console.log(res.id);
     });
 
     //确认密码
     $('input[name="password"]').keyup(function(){
         var val = $(this).val();
         $('input[name="password_confirm"]').val(val);
-        console.log($('input[name="password_confirm"]').val());
     });
 
     /*    //管理员分组弹层
@@ -740,7 +722,6 @@
         data.field.admin_cate_id = admin_cate_id;
         data.field.id = $('input[name="editId"]').val();
         data.field.signature = $('#signatureId').val();
-        console.log(data.field);
         $.ajax({
             url:'./publish',
             dataType:'JSON',
@@ -753,6 +734,7 @@
                     layer.closeAll('page');
                 }
                 $('#org')[0].reset();
+                $('input[name="editId"]').val('');
                 layer.msg(res.msg);
                 tableItem.ajax.url("/admin/common/datatablesPre?tableName=admin&id="+ groupId).load();
             }
@@ -764,7 +746,6 @@
         var form = layui.form;
         //表单提交
         form.on('submit(save)', function(data){
-            console.log(data);
             submitForm(data);
             return false;
         });
@@ -777,6 +758,7 @@
     //关闭弹层
     $('.close').click(function () {
         $('#org')[0].reset();
+        $('input[name="editId"]').val('');
         layer.closeAll('page');
     });
 
