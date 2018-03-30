@@ -141,7 +141,7 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->whereIn('a.selfid', $idArr)
-                    ->where($columnString, 'like', '%' . $search . '%')->order("order by cate_number asc")->limit(intval($start), intval($length))->select();
+                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
