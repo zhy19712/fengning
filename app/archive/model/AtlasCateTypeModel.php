@@ -27,6 +27,37 @@ class AtlasCateTypeModel extends Model
         return $this->select();
     }
 
+    /**
+     * @param string $type
+     * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+
+    public function getNodeInfo()
+    {
+
+            $result = $this->column('id,pid,name,sort_id');
+
+            $sortArr = [];
+            foreach ($result as $v){
+                $sortArr[] = $v['sort_id'];
+            }
+            asort($sortArr);
+            $str = "";
+            foreach ($sortArr as $v){
+                foreach($result as $key=>$vo){
+                    if($v == $vo['sort_id']){
+                        $str .= '{ "id": "' . $vo['id'] . '", "pid":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"'.',"sort_id":"'.$vo['sort_id'].'"';
+                        $str .= '},';
+                    }
+                }
+            }
+
+        return "[" . substr($str, 0, -1) . "]";
+    }
+
     /*
      * 添加图册类型节点
      */
@@ -38,8 +69,17 @@ class AtlasCateTypeModel extends Model
                 return ['code' => -1,'msg' => $this->getError()];
             }else{
                 $last_id = $this-> getLastInsID();
+
+                $res = $this->where('id',$last_id)->update(['sort_id' => $last_id]);
+
                 $data = $this->where("id",$last_id)->find();
-                return ['code' => 1,'msg' => '添加成功','data'=>$data];
+
+                if($res){
+                    return ['code' => 1,'msg' => '添加成功','data'=>$data];
+                }else{
+                    return ['code' => -1,'msg' => $this->getError()];
+                }
+
             }
         }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
@@ -52,7 +92,7 @@ class AtlasCateTypeModel extends Model
     public function editCatetype($param)
     {
         try{
-            $result = $this->allowField(true)->save($param,['id' => $param['id']]);
+            $result = $this->allowField(true)->update($param,['id' => $param['id']]);
             if(false === $result){
                 return ['code' => -1,'msg' => $this->getError()];
             }else{

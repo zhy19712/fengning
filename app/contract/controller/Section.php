@@ -28,8 +28,14 @@ class Section extends Permissions
      */
     public function add()
     {
+        if (empty(input('id'))) {
+            $id = "";
+        } else {
+            $id = input('id');
+        }
         $orgs = AdminGroup::all(['category' => 1]);
         $this->assign('orgs', json_encode($orgs));
+        $this->assign('id', $id);
         return $this->fetch();
     }
 
@@ -40,9 +46,10 @@ class Section extends Permissions
      */
     public function getOne()
     {
-        $m=SectionModel::get(input('id'));
+        $m = SectionModel::get(input('id'));
         return json($m);
     }
+
     /**
      * 标段——新增或修改
      * @return array
@@ -64,6 +71,7 @@ class Section extends Permissions
             }
         }
     }
+
     /**
      * 标段——删除
      * @return array
