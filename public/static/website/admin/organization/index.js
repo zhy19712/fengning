@@ -404,9 +404,18 @@
 
     //点击节点
     function zTreeOnClick(event, treeId, treeNode) {
-        console.log(treeNode);
+        admin_group_id = treeNode.id;
+        admin_group_name = treeNode.name;
         $('#groupId').val(treeNode.id);
-        window.admin_group_id = treeNode.id;
+        $.clicknode({
+            treeNode:treeNode,
+            tableItem:tableItem,
+            parentShow:true,
+            tablePath:'/admin/common/datatablesPre?tableName=admin'
+        });
+        /*console.log(treeNode);
+        $('#groupId').val(treeNode.id);
+        admin_group_id = treeNode.id;
         admin_group_name = treeNode.name;
 
         $('#tableItem_wrapper').show();
@@ -424,11 +433,12 @@
                     $("#path").text("当前路径:" + res.path)
                 }
             }
-        });
+        });*/
     };
 
     //组织结构表格
    var tableItem = $('#tableItem').DataTable( {
+       select: true,
        pagingType: "full_numbers",
        processing: true,
        serverSide: true,
@@ -501,6 +511,10 @@
            $('#tableItem_paginate').insertBefore(".mark");
        }
    });
+
+    $('#tableItem tbody').on( 'click', 'tr', function () {
+        $(this).toggleClass('active').siblings().removeClass('active');
+    } );
 
     //新增上传电子签名
     uploader = WebUploader.create({
