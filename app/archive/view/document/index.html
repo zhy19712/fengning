@@ -1,13 +1,13 @@
 {include file="../../admin/view/public/common_header"}
 <style>
-    <!--
-    左边的树-- >
+
     #nodeZtree .ztree-title i.fa {
         width: 12%;
     }
+    #nodeZtree .ztree-title #add {
+        margin-left: 6px;
+    }
 
-    <!--
-    中间的table-- >
     #tableContent .mybtn i.fa:before {
         background: #00c0ef;
         color: #ffffff;
@@ -52,15 +52,10 @@
         border-top: 1px dotted #cecece;
     }
 
-    #tableContent .dataTables_scrollBody {
-        position: relative;
-        overflow: auto;
+    #information .layui-tab-content .tt{
         width: 100%;
-        top: 11px;
+        border: 1px solid red;
     }
-
-    <!--
-    右边的管理信息-- >
 
 </style>
 
@@ -103,17 +98,18 @@
         </ul>
         <div class="layui-tab-content">
             <!--属性-->
-            <div class="layui-tab-item layui-show">
-                <div style="width: 100%; height: 30px;">
-                    <h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>
-                    <div class="ibox-tools">
-                        <i title="添加" class="fa fa-lg fa-plus-square"></i>
-                    </div>
+            <div class="layui-tab-item layui-show tt">
+                <div>
+
+                    <!--<h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>-->
+                    <!--<div class="ibox-tools">-->
+                        <!--<i title="添加" class="fa fa-lg fa-plus-square"></i>-->
+                    <!--</div>-->
                 </div>
-                <div class="searchName" style="margin-top: 10px;">
-                    <input type="text" id="usernameSearch" class="layui-input" placeholder="用户名称"/>
+                <div class="searchName">
+                    <!--<input type="text" id="usernameSearch" class="layui-input" placeholder="用户名称"/>-->
                 </div>
-                <div class="userContainer" style="width: 100%;"></div>
+                <div class="userContainer"></div>
             </div>
             <!--共享-->
             <div class="layui-tab-item">
@@ -220,7 +216,138 @@
     });
 
     //点击上传文件
-    $(".mybtn").html("<div><i class='fa fa-plus'></i>上传文件</div>");
+    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
+
+    var upload ;
+    var uploadId ;
+    var uploadName ;
+    // $("#test3").click(function () {
+    //     if (!selfid) {
+    //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
+    //         return;
+    //     }else if(selfid){
+    //         layui.upload.render({
+    //             elem: '#test3',
+    //             url: "{:url('admin/common/upload?module=document&use=archive')}",
+    //             accept: 'file',//普通文件
+    //             exts: 'doc|docx|pdf',
+    //             before: function(obj){
+    //                 obj.preview(function(index, file, result){
+    //                     uploadName = file.name;
+    //                     console.log(file.name);//获取文件名，result就是base64
+    //                 })
+    //             },
+    //             done: function(res){
+    //                 console.log(res)
+    //                 if(res.code == 2){
+    //                     uploadId = res.id;
+    //                     $.ajax({
+    //                         url:"{:url('documenttype/add')}",
+    //                         data:{
+    //                             name: uploadName, //名称
+    //                             attachmentId: uploadId,  //文档关联Id
+    //                             type:selfid,
+    //                         },
+    //                         type:'post',
+    //                         success:function(res) {
+    //                             console.log(res)
+    //                             // if(res.code == 1) {
+    //                             //     layer.alert(res.msg, function(index){
+    //                             //         location.href = res.url;
+    //                             //     })
+    //                             // } else {
+    //                             //     layer.msg(res.msg);
+    //                             // }
+    //                         }
+    //                     })
+    //                     layer.msg("上传成功！",{time:1500})
+    //                 }else{
+    //                     layer.msg("上传失败！",{time:1500})
+    //                 }
+    //             },
+    //         });
+    //
+    //     }
+    // })
+
+
+    //管理信息的tab 切换
+    layui.use(['element', "layer", 'form', 'upload'], function () {
+        var $ = layui.jquery
+            , element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
+            , upload = layui.upload;
+
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+        //监听提交
+        form.on('submit(demo1)', function (data) {
+            $.ajax({
+                type: "post",
+                url: "./editCate",
+                data: data.field,
+                success: function (res) {
+                    if (res.code == 1) {
+                        var url = "/admin/common/datatablespre/tableName/admin_cate/id/" + selfid + ".shtml";
+                        tableItem.ajax.url(url).load();
+                        parent.layer.msg('保存成功！');
+                        layer.closeAll();
+                    }
+                },
+                error: function (data) {
+                    debugger;
+                }
+            });
+            return false;
+        });
+        upload.render({
+            elem: '#test3',
+            url: "{:url('admin/common/upload?module=document&use=archive')}",
+            accept: 'file',//普通文件
+            exts: 'doc|docx|pdf',
+            before: function(obj){
+                obj.preview(function(index, file, result){
+                    uploadName = file.name;
+                    console.log(file.name);//获取文件名，result就是base64
+                })
+            },
+            done: function(res){
+                console.log(res)
+                if(res.code == 2){
+                    uploadId = res.id;
+                    $.ajax({
+                        url:"{:url('document/add')}",
+                        data:{
+                            name: uploadName, //名称
+                            attachmentId: uploadId,  //文档关联Id
+                            type:selfid,
+                        },
+                        type:'post',
+                        success:function(res) {
+                            console.log(res)
+                            if(res.code == 1) {
+
+                                // layer.alert(res.msg, function(index){
+                                //     location.href = res.url;
+                                // })
+                            } else {
+                                layer.msg('保存失败！');
+                            }
+                        }
+                    })
+                    layer.msg("上传成功！",{time:1500})
+                }else{
+                    layer.msg("上传失败！",{time:1500})
+                }
+            },
+        });
+    });
+
+
+
+
 
     $(function () {
         initPermissionTree();
@@ -285,37 +412,7 @@
     };
     zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
-    //管理信息的tab 切换
-    layui.use(['element', "layer", 'form'], function () {
-        var $ = layui.jquery
-            , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
 
-        var form = layui.form
-            , layer = layui.layer
-            , layedit = layui.layedit
-            , laydate = layui.laydate;
-
-        //监听提交
-        form.on('submit(demo1)', function (data) {
-            $.ajax({
-                type: "post",
-                url: "./editCate",
-                data: data.field,
-                success: function (res) {
-                    if (res.code == 1) {
-                        var url = "/admin/common/datatablespre/tableName/admin_cate/id/" + selfid + ".shtml";
-                        tableItem.ajax.url(url).load();
-                        parent.layer.msg('保存成功！');
-                        layer.closeAll();
-                    }
-                },
-                error: function (data) {
-                    debugger;
-                }
-            });
-            return false;
-        });
-    });
 
     //点击获取路径
     function nodeClick(e, treeId, node) {
@@ -354,7 +451,7 @@
             $.ajax({
                 url: "{:url('documenttype/addOrEdit')}",
                 type: "post",
-                data: {pid: pid, name: value, id: ''},
+                data: {pid: pid, name: value},
                 success: function (res) {
                     console.log(res)
                     if (res.code === 1) {
@@ -363,13 +460,11 @@
                         } else {
                             zTreeObj.addNodes(null, res.data);
                         }
-
                     }
                 }
             });
             layer.close(index);
         });
-
     };
 
     //编辑节点
