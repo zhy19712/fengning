@@ -130,9 +130,9 @@
                                 <input type="text" name="name" id="name" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-form-item" id="fffff">
+                        <div class="layui-form-item">
                             <label class="layui-form-label">所属合同</label>
-                            <select name="contractId" id="contractId" lay-ignore style="width: 545px;height: 36px;"></select>
+                            <select name="contractId" id="contractId"></select>
                         </div>
                     </div>
                     <!--业主现场管理机构-->
@@ -282,12 +282,6 @@
         function refreshSub() {
             parent.admin_table.ajax.url("{:url('contract/common/datatablesPre?tableName=section')}").load();
         }
-
-        form.on('select(filter)', function (data) {
-            console.log(data.elem); //得到select原始DOM对象
-            console.log(data.value); //得到被选中的值
-            console.log(data.othis); //得到美化后的DOM对象
-        });
         //监听提交
         form.on('submit(demo1)', function (data) {
             console.log($("#addId").val())
