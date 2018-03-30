@@ -269,8 +269,6 @@
                 orderable: false,
                 targets: [7],
                 render :  function(data,type,row) {
-                    // console.log(adminId)
-                    // console.log(row.pop())
                     var html =  "<a class='tt' style='margin-left: 5px;' onclick='secEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a >" ;
                     html += "<a  class='' style='margin-left: 5px;' onclick='secDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
                     return html;
@@ -292,8 +290,6 @@
             }
         }
     });
-    // console.log(admin_table.row('.tt').data());
-    // adminId = admin_table.row
     $("div.mybtn").html('<div><i class="fa fa-plus"></i>&nbsp;新增</div>');
     //变色
     $('#admin_table tbody').on( 'mouseover', 'td', function () {
@@ -313,7 +309,6 @@
     })
     //编辑
     function secEdit(that){
-        // console.log(admin_table.row(".highlight").data()[7]);
         var id = admin_table.row(".highlight").data()[7];
         console.log(id);
         layer.open({
