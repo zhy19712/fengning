@@ -200,6 +200,7 @@ class Common extends Controller
             $res['id'] = Db::name('attachment')->insertGetId($data);
             $res['src'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();
             $res['code'] = 2;
+            $res['filename']=$data['filename'];
             addlog($res['id']);//记录日志
             return json($res);
         } else {
