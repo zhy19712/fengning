@@ -1,6 +1,7 @@
 body{
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
+/* 图标 */
 .layout-body{
     position: relative;
 }
@@ -10,12 +11,11 @@ i.fa{
 }
 i.fa:before{
     color: #00c0ef;
-    background: #FFF;
-    border-color: #FFF;
 }
 i.fa:hover:before{
     color: #009dc3;
 }
+/* 树 */
 .ztree-title{
     position: absolute;
     top: 0;
@@ -32,8 +32,28 @@ i.fa:hover:before{
 .ztree{
     margin-top: 30px;
 }
+/* 当前路径 */
+.current-path{
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #cecece;
+}
+.current-path h3{
+    float: left;
+    color: #0E2D5F;
+    font-weight: bold;
+}
+/* 表格 */
 table.table i.fa{
     margin-left: 10px;
+}
+table.dataTable tbody tr.odd{
+    background: #ddd;
+}
+table.dataTable tbody tr:hover{
+    background: #ccc;
 }
 .dataTables_wrapper .dataTables_filter{
     float: left;
@@ -77,6 +97,7 @@ table.table i.fa{
     position: absolute;
     bottom: 0;
     left: 0;
+    width: 100%;
     line-height: 34px;
     background: #FFF;
 }
@@ -116,4 +137,8 @@ select.form-control {
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+/* 面板 */
+.panel-body{
+    background-color: #FFF;
 }
