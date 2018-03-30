@@ -129,7 +129,7 @@ class Common extends Controller
         $recordsFiltered = 0;
         //表的总记录数 必要
         $id = input('selfid');
-        $order = input("cate_number");
+        $order = input("order");
         $model = new AtlasCateTypeModel();
         $idArr = $model->cateTree($id);
         $idArr[] = $id;
