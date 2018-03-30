@@ -8,7 +8,8 @@
 namespace app\archive\controller;
 
 use app\admin\controller\Permissions;
-use app\archive\model\AtlasCateTypeModel;
+use app\archive\model\AtlasCateTypeModel;//左侧节点树
+use app\archive\model\AtlasCateModel;//右侧图册类型
 use \think\Db;
 use \think\Session;
 /**
@@ -26,7 +27,7 @@ class Atlas extends Permissions
     {
         return $this->fetch();
     }
-
+    /**********************************左侧图册类型树************************/
     /**
      * 图册分类树
      * @return mixed|\think\response\Json
@@ -130,4 +131,68 @@ class Atlas extends Permissions
         }
         return $this->fetch();
     }
+    /**********************************右侧图册表************************/
+    /**
+     * 新增/编辑图册
+     * @return mixed|\think\response\Json
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+
+    public function editAtlasCate()
+    {
+        if(request()->isAjax()){
+            $model = new AtlasCateModel();
+            $param = input('post.');
+            $param["selfid"] = 11;
+            //首先查询选择的图册节点树的id，在此分类下的最大的序号cate_number
+            //然后在此基础上自动加1
+            $max_cate_number = $model->maxcatenumber($param['selfid']);
+
+            //前台传过来的角色类型id
+            if(empty($param['id']))//id为空时表示新增图册类型
+            {
+                $data = [
+                    'selfid' => $param['selfid'],//admin_cate_type表中的id,区分图册节点树
+                    'cate_number' => $max_cate_number + 1,//序号
+                    'picture_number' => $param['picture_number'],//图号
+                    'picture_name' => $param['picture_name'],//图名
+                    'picture_papaer_num' => $param['picture_papaer_num'],//图纸张数(输入数字)
+                    'a1_picture' => $param['a1_picture'],//折合A1图纸
+                    'design_name' => $param['design_name'],//设计
+                    'check_name' => $param['check_name'],//校验
+                    'examination_name' => $param['examination_name'],//审查
+                    'completion_date' => $param['completion_date'],//完成日期
+                    'section' => $param['section'],//标段
+                    'paper_category' => $param['paper_category'],//图纸类别
+                    'owner' => Session::get('current_nickname'),//上传人
+                    'date' => date("Y-m-d H:i:s")//上传日期
+                ];
+                $flag = $model->insertCate($data);
+                return json($flag);
+            }else{
+                $data = [
+                    'id' => $param['id'],//图册类型表自增id
+//                    'selfid' => $param['selfid'],//admin_cate_type表中的id,区分图册节点树
+//                    'cate_number' => $max_cate_number + 1,//序号
+                    'picture_number' => $param['picture_number'],//图号
+                    'picture_name' => $param['picture_name'],//图名
+                    'picture_papaer_num' => $param['picture_papaer_num'],//图纸张数(输入数字)
+                    'a1_picture' => $param['a1_picture'],//折合A1图纸
+                    'design_name' => $param['design_name'],//设计
+                    'check_name' => $param['check_name'],//校验
+                    'examination_name' => $param['examination_name'],//审查
+                    'completion_date' => $param['completion_date'],//完成日期
+                    'section' => $param['section'],//标段
+                    'paper_category' => $param['paper_category']//图纸类别
+//                    'owner' => Session::get('current_nickname'),//上传人
+//                    'date' => date("Y-m-d H:i:s")//上传日期
+                ];
+                $flag = $model->editCate($data);
+                return json($flag);
+            }
+        }
+
+    }
+
 }
