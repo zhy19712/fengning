@@ -9,24 +9,20 @@
 namespace app\archive\controller;
 
 use app\archive\model\DocumentTypeModel;
-use \think\Cache;
 use \think\Controller;
-use think\Loader;
 use think\Db;
-use \think\Cookie;
-use think\Model;
 use think\Request;
-use \think\Session;
 
 class Common extends Controller
 {
+    protected $documentTypeService;
+
     public function __construct(Request $request = null)
     {
         parent::__construct($request);
-        $documentTypeService = new DocumentTypeModel();
+        $this->documentTypeService = new DocumentTypeModel();
     }
 
-    protected $documentTypeService;
 
     /**
      * datatables单表查询搜索排序分页
@@ -75,14 +71,14 @@ class Common extends Controller
         return $this->$table($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString);
     }
 
-    function document($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    function archive_document($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
         $id = input('id');
-        $idArr[] = $this->documentTypeService->getChilds($id);
+        $idArr = $this->documentTypeService->getChilds($id);
         $idArr[] = $id;
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->count(0);
