@@ -37,9 +37,9 @@ class AtlasCateModel extends Model
     /**
      * 查询同一类别，同一selfid下的最大序号cate_number
      */
-    public function maxcatenumber()
+    public function maxcatenumber($selfid)
     {
-        $catenumber = $this->max("cate_number");
+        $catenumber = $this->where("selfid",$selfid)->max("cate_number");
         return $catenumber;
     }
     /**
@@ -69,6 +69,14 @@ class AtlasCateModel extends Model
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
+    }
+    /**
+    * 获取一条图册类型信息
+    */
+    public function getOne($id)
+    {
+        $data = $this->where("id",$id)->find();
+        return $data;
     }
 
 

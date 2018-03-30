@@ -41,4 +41,32 @@ class DocumentTypeModel extends Model
             return json(['code' => -1]);
         }
     }
+
+
+    /**
+     * 获取节点下所有子节点
+     * @param $id
+     * @return array
+     * @throws \think\exception\DbException
+     */
+    public function getChilds($id)
+    {
+        $list=DocumentTypeModel::all();
+        if ($list)
+        {
+            return $this->_getChilds($list,$id);
+        }
+    }
+    function _getChilds($list,$id)
+    {
+        $nodeArray=array();
+        foreach ($list as $item)
+        {
+            if ($item['pid']==$id){
+                $nodeArray[]=$item['id'];
+                $this->_getChilds($list,$item['id']);
+            }
+        }
+        return $nodeArray;
+    }
 }

@@ -1,11 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-    <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->
-    <!--<title>fengning_main</title>-->
-    <!--<meta name="renderer" content="webkit">-->
-    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">-->
 {include file="../../admin/view/public/common_header"}
     <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="__PUBLIC__/layui/css/modules/layer/default/layer.css" media="all">
@@ -17,9 +9,7 @@
     <style type="text/css">
         body{
             height: 100%;
-            /*border: 1px dotted #cecece;*/
             background: #ffffff;
-            /*border-bottom: none;*/
         }
         #conTable #path{
             line-height: 30px;
@@ -67,7 +57,6 @@
             overflow-x: auto;
         }
         #conTable #mytable1_wrapper table{
-            /*border-top: 1px solid #00c0ef;*/
             margin-top: 12px;
         }
         #conTable table {
@@ -82,27 +71,22 @@
         #conTable .dataTables_wrapper .dataTables_paginate {
             position: fixed;
             bottom: -5px;
-            left: 260px;
+            left: 98px;
             z-index: 4;
         }
         #conTable .dataTables_wrapper .dataTables_info {
             position: fixed;
             bottom: 8px;
-            left: 94px;
+            left: 348px;
             z-index: 4;
         }
         #conTable .dataTables_length{
             height: 8px;
             position: fixed;
-            bottom: 25px;
+            bottom: 26px;
             left: 19px;
             z-index: 4;
         }
-        /*#conTable .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {*/
-            /*color: #333 !important;*/
-            /*border: none;*/
-            /*background: #c0c0c0;*/
-        /*}*/
         #conTable #admin_table .odd{
             background-color: #f9f9f9;
         }
@@ -112,9 +96,6 @@
         #conTable .layui-btn{
             background-color: #00c0ef;
         }
-        /*.fa-pencil:before, .fa-trash:before {*/
-            /*color: #00c0ef;*/
-        /*}*/
         #conTable .xia{
             width: 100%;
             height: 26px;
@@ -127,12 +108,9 @@
         #conTable #mytable1_wrapper thead th{
             border-top: 1px dotted #cecece;
         }
-        #conTable .dataTables_scroll{
-            /*border: 1px dotted #cecece;*/
-        }
         #conTable .layui-btn-sm {
             height: 28px;
-            line-height: 34px;
+            line-height: 30px;
             padding: 0 10px;
             font-size: 12px;
         }
@@ -162,7 +140,6 @@
                                 </tr>
                             </thead>
                         </table>
-
                     </div>
                 </div>
                 <div class="xia"></div>
@@ -177,8 +154,6 @@
             pagingType: "full_numbers",
             processing: true,
             serverSide: true,
-            // sScrollY:'710px',
-            // sScrollX:'960px',
             ajax: {
                 url:"{:url('contract/common/datatablesPre?tableName=contract')}"
             },
@@ -233,7 +208,7 @@
                 }
             }
         });
-    $("div.mybtn").html('<div><i class="fa fa-plus"></i>&nbsp;新增</div>');
+    $("div.mybtn").html('<div><span style="font-size: 22px">+</span>&nbsp;新增</div>');
      //变色
      $('#admin_table tbody').on( 'mouseover', 'td', function () {
          $(this).parent("tr").addClass('highlight');
