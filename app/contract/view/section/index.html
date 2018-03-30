@@ -269,8 +269,6 @@
                 orderable: false,
                 targets: [7],
                 render :  function(data,type,row) {
-                    // console.log(adminId)
-                    // console.log(row.pop())
                     var html =  "<a class='tt' style='margin-left: 5px;' onclick='secEdit(this)'><i class='fa fa-pencil' title='编辑'></i></a >" ;
                     html += "<a  class='' style='margin-left: 5px;' onclick='secDel(this)'><i class='fa fa-trash' title='删除'></i></a>" ;
                     return html;
@@ -292,8 +290,6 @@
             }
         }
     });
-    // console.log(admin_table.row('.tt').data());
-    // adminId = admin_table.row
     $("div.mybtn").html('<div><i class="fa fa-plus"></i>&nbsp;新增</div>');
     //变色
     $('#admin_table tbody').on( 'mouseover', 'td', function () {
@@ -313,288 +309,16 @@
     })
     //编辑
     function secEdit(that){
-        // console.log(admin_table.row(".highlight").data()[7]);
         var id = admin_table.row(".highlight").data()[7];
-        console.log(id)
+        console.log(id);
         layer.open({
             type: 2,
             title: '编辑标段',
             shadeClose: true,
             area: ['780px', '560px'],
-            content: '{:url("add")}',
-            success:function (layero,index) {
-                var body = layer.getChildFrame('body', index);
-                body.find("#addId").val(id);
-            }
-            // success: function(layero, index){
-            //     var laysrc = layer.getChildFrame('#nameLay', index);
-            //     var body = layer.getChildFrame('body', index);
-            //     var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-            //     console.log(iframeWin);
-            //     debugger;
-            //     // $(select).val(option[value]);
-            //     // layui.form().render('select');
-            //     var bodyOrgs = body.find('#_orgs').val();
-            //     var jsOrgs=JSON.parse(bodyOrgs);
-            //     console.log(jsOrgs);
-            //     for(var i=0;i<jsOrgs.length;i++){
-            //         // console.log(jsOrgs[i].id + 'id')
-            //         // console.log(res.builderId +'builderId')
-            //         if(jsOrgs[i].id == res.builderId){
-            //             // body.find('select[name="builderId"] option:selected').text(jsOrgs[i].name);
-            //             // body.find('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
-            //             // body.find('select[name="builderId"]').val(jsOrgs[i].name);
-            //             // body.find('.layui-select-tips').after($("<dd/>").text(jsOrgs[i].name).attr({"lay-value": jsOrgs[i].id}));
-            //             body.find('.layui-select-tips').append($("<option/>").text(jsOrgs[i].name).attr({"lay-value": jsOrgs[i].id}));
-            //         }else if(jsOrgs[i].id == res.supervisorId){
-            //             body.find('select[name="supervisorId"]').next().find("input").val(jsOrgs[i].name);
-            //             // body.find('select[name="supervisorId"]').val(jsOrgs[i].id);
-            //             body.find('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
-            //             // debugger;
-            //             // body.find("#supervisorId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
-            //         }else if(jsOrgs[i].id == res.designerId){
-            //             body.find('select[name="designerId"]').next().find("input").val(jsOrgs[i].name);
-            //             // body.find('select[name="designerId"]').val(jsOrgs[i].id);
-            //             body.find('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
-            //             // body.find("#designerId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
-            //         }else if(jsOrgs[i].id == res.constructorId){
-            //             body.find('#constructorId').next().find("input").val(jsOrgs[i].name);
-            //             // body.find('#constructorId').val(jsOrgs[i].id);
-            //             body.find('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
-            //             // body.find("#constructorId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
-            //         }else if(jsOrgs[i].id == res.otherId){
-            //             body.find('select[name="otherId"]').next().find("input").val(jsOrgs[i].name);
-            //             // body.find('select[name="otherId"]').val(jsOrgs[i].id);
-            //             body.find('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
-            //             // body.find("#otherId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
-            //         }
-            //     }
-            //     body.find('input[name="id"]').val(res.id);
-            //     body.find('input[name="code"]').val(res.code);
-            //     body.find('input[name="shortName"]').val(res.shortName);
-            //     body.find('input[name="money"]').val(res.money);
-            //     body.find('input[name="name"]').val(res.name);
-            //     body.find('input[name="contractId"]').val(res.contractId);
-            // },
-            // // content:'<form class="layui-form" name="memberAdd" id="memberAdd" method="post"  action="#" onsubmit="return false">\n' +
-            // // '                    <input type="hidden" name="id" id="addId" style="display: none;">\n' +
-            // // '                    <div class="borForm">\n' +
-            // // '                        <span class="bgSpan">基础信息</span>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <label class="layui-form-label">标段编码</label>\n' +
-            // // '                            <div class="layui-input-inline">\n' +
-            // // '                                <input type="text" name="code" placeholder="合同名称" lay-verify="required" autocomplete="off" class="layui-input">\n' +
-            // // '                            </div>\n' +
-            // // '                        </div>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <div class="layui-inline">\n' +
-            // // '                                <label class="layui-form-label">标段简称</label>\n' +
-            // // '                                <div class="layui-input-inline">\n' +
-            // // '                                    <input type="text" name="shortName" placeholder="合同编号" lay-verify="required" autocomplete="off" class="layui-input">\n' +
-            // // '                                </div>\n' +
-            // // '                            </div>\n' +
-            // // '                            <div class="layui-inline">\n' +
-            // // '                                <label class="layui-form-label">合同金额</label>\n' +
-            // // '                                <div class="layui-input-inline">\n' +
-            // // '                                    <input type="text" name="money" placeholder="合同名称" lay-verify="required" autocomplete="off" class="layui-input">\n' +
-            // // '                                </div>\n' +
-            // // '                            </div>\n' +
-            // // '                        </div>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <label class="layui-form-label">标段名称</label>\n' +
-            // // '                            <div class="layui-input-block" class="inpLength">\n' +
-            // // '                                <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">\n' +
-            // // '                            </div>\n' +
-            // // '                        </div>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <label class="layui-form-label">所属合同</label>\n' +
-            // // '                            <select name="contractId" id="contractId">\n' +
-            // // '                            </select>\n' +
-            // // '                        </div>\n' +
-            // // '                    </div>\n' +
-            // // '                    <!--业主现场管理机构-->\n' +
-            // // '                    <div class="borForm">\n' +
-            // // '                        <span class="bgSpan">管理配置</span>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <label class="layui-form-label">业主现场管理机构</label>\n' +
-            // // '                            <select name="builderId" id="builderId">\n' +
-            // // '                                <option value="">请选择</option>\n' +
-            // // '                            </select>\n' +
-            // // '                        </div>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <label class="layui-form-label">监理现场管理机构</label>\n' +
-            // // '                            <select name="supervisorId" id="supervisorId">\n' +
-            // // '                                <option value="" >请选择</option>\n' +
-            // // '                            </select>\n' +
-            // // '                        </div>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <label class="layui-form-label">设计现场管理机构</label>\n' +
-            // // '                            <select name="designerId" id="designerId">\n' +
-            // // '                                <option value="">请选择</option>\n' +
-            // // '                            </select>\n' +
-            // // '                        </div>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <label class="layui-form-label">施工现场管理机构</label>\n' +
-            // // '                            <select name="constructorId" id="constructorId">\n' +
-            // // '                                <option value="">请选择</option>\n' +
-            // // '                            </select>\n' +
-            // // '                        </div>\n' +
-            // // '                        <div class="layui-form-item">\n' +
-            // // '                            <label class="layui-form-label">其他现场管理机构</label>\n' +
-            // // '                            <select name="otherId" id="otherId">\n' +
-            // // '                                <option value="">请选择</option>\n' +
-            // // '                            </select>\n' +
-            // // '                        </div>\n' +
-            // // '                    </div>\n' +
-            // // '                    <div class="layui-form-item">\n' +
-            // // '                        <div class="col-xs-12" style="text-align: center;">\n' +
-            // // '                            <button class="layui-btn" lay-submit="" lay-filter="demo1"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;\n' +
-            // // '                            <button type="reset" class="layui-btn layui-btn-danger"><i class="fa fa-close"></i> 返回</button>\n' +
-            // // '                        </div>\n' +
-            // // '                    </div>\n' +
-            // // '                </form>' +
-            // // '',
-            // //
-            // // yes: function(index, layero){
-            // //     var locSel =$("#locSel").val();
-            // //     var localeCode =$("#localeCode").val();
-            // //     var localeName =$("#localeName").val();
-            // //     var localeadd =$("#localeadd").val();
-            // //     alert(locSel);
-            // //     addlcoale(localeType);
-            // // }
-            // // ,btn2: function(index, layero){
-            // //     layer.close(index);
-            // // }
-
+            content: '{:url("add")}?id='+id+'&time='+new Date()
         });
-
-
-
-
     }
-    // var orgs=JSON.parse($("#_orgs").val());
-    // // console.log(orgs)
-    // for(var i=0;i<orgs.length;i++){
-    //     //(业主)建设单位1
-    //     //监理单位2
-    //     //设计单位4
-    //     // 施工单位5
-    //     //其他单位12
-    //     if(orgs[i].type == 1){
-    //         $("#builderId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
-    //     }else if(orgs[i].type == 2){
-    //         $("#supervisorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
-    //     }else if(orgs[i].type == 4){
-    //         $("#designerId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
-    //     }else if(orgs[i].type == 5){
-    //         $("#constructorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
-    //     }else if(orgs[i].type == 12){
-    //         $("#otherId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
-    //     }
-    // }
-    // layui.use(['form', 'layedit', 'laydate'], function(){
-    //     var form = layui.form
-    //         ,layer = layui.layer
-    //         ,layedit = layui.layedit
-    //         ,laydate = layui.laydate;
-    //
-    //     //日期
-    //     laydate.render({
-    //         elem: '#date'
-    //     });
-    //     laydate.render({
-    //         elem: '#date1'
-    //     });
-    //     laydate.render({
-    //         elem: '#date2'
-    //     });
-    //
-    //     //创建一个编辑器
-    //     var editIndex = layedit.build('LAY_demo_editor');
-    //
-    //     function closWin() {
-    //         var index = parent.layer.getFrameIndex(window.name);
-    //         parent.layer.close(index);
-    //     };
-    //     function refreshSub() {
-    //         parent.admin_table.ajax.url("{:url('contract/common/datatablesPre?tableName=section')}").load();
-    //     }
-    //     form.on('select(filter)', function(data){
-    //         console.log(data.elem); //得到select原始DOM对象
-    //         console.log(data.value); //得到被选中的值
-    //         console.log(data.othis); //得到美化后的DOM对象
-    //     });
-    //     //监听提交
-    //     form.on('submit(demo1)', function(data){
-    //         console.log($("#addId").val())
-    //         console.log(data);
-    //         if($("#addId").val() == ''){
-    //             console.log($("#addId").val())
-    //             $.ajax({
-    //                 type: "Post",
-    //                 url:"{:url('addoredit')}",
-    //                 data:data.field,
-    //                 success: function (res) {
-    //                     console.log(res)
-    //                     if(res.code == 1) {
-    //                         refreshSub();
-    //                         parent.layer.msg('保存成功！');
-    //                         closWin();
-    //                     }
-    //                 },
-    //                 error: function (data) {
-    //                     debugger;
-    //                 }
-    //             })
-    //         }else if($("#addId").val() != ''){
-    //             $.ajax({
-    //                 type: "Post",
-    //                 url:"{:url('addoredit')}",
-    //                 data:data.field,
-    //                 success: function (res) {
-    //                     console.log(res)
-    //                     if(res.code == 1) {
-    //                         refreshSub();
-    //                         parent.layer.msg('编辑成功！');
-    //                         closWin();
-    //                     }
-    //                 },
-    //                 error: function (data) {
-    //                     debugger;
-    //                 }
-    //             })
-    //         }
-    //         return false;
-    //     });
-    //     $('button[type="reset"]').click(function () {
-    //         closWin();
-    //     })
-    // });
-    // $.ajax({
-    //     type: "GET",
-    //     url:"{:url('Contract/getAll')}",
-    //     success: function (data) {
-    //         $("#contractId").empty();
-    //         $(data).each(function () {
-    //             // if (secton.ContractId !== null) {
-    //             //     if (secton.ContractId === this.id) {
-    //             //         $("#contractId").append($("<option/>").text(this.contractName).attr("value", this.id).attr("selected", true));
-    //             //     }
-    //             //     else {
-    //             //         $("#contractId").append($("<option/>").text(this.contractName).attr("value", this.id));
-    //             //     }
-    //             // }
-    //             // else {
-    //             $("#contractId").append($("<option/>").text(this.contractName).attr({"value": this.id}));
-    //             // }
-    //         });
-    //     },
-    //     error: function (res) {
-    //         console.log(res)
-    //         debugger;
-    //     }
-    // })
     //删除
     function secDel(that){
         var id = admin_table.row(".highlight").data()[7];
