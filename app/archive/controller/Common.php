@@ -129,6 +129,7 @@ class Common extends Controller
         $recordsFiltered = 0;
         //表的总记录数 必要
         $id = input('selfid');
+        $order = input("cate_number");
         $model = new AtlasCateTypeModel();
         $idArr = $model->cateTree($id);
         $idArr[] = $id;
@@ -141,7 +142,7 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->whereIn('a.selfid', $idArr)
-                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                    ->where($columnString, 'like', '%' . $search . '%')->order($order,'asc')->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
