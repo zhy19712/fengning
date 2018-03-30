@@ -65,22 +65,12 @@
     .dataTables_wrapper{
         margin-bottom: 20px;
     }
-    #tableItem_length{
-        float: left;
-    }
-    #tableItem_paginate,#tableItem_paginate ul li{
-        margin-left: 10px;
-        float: left;
-    }
+
     #tableItem{
         padding-top: 10px           ;
     }
     #tableItem_paginate ul li{
         line-height: 18px;
-    }
-    #tableItem_info{
-        float: left;
-        margin-left: 20px;
     }
     #tableItem_filter{
         font-weight: bold;
@@ -94,27 +84,6 @@
     #tableItem .even{
         background-color: white;
     }
-    .tbcontainer{
-        font-weight: bold;
-        margin-left: -2px;
-        background-color: #c0c0c0;
-        position: fixed;
-        width: 100%;
-        bottom: 0;
-    }
-    .dataTables_wrapper .dataTables_scroll {
-        position: relative;
-        top: 15px;
-        border-top: 1px dotted #cecece;
-    }
-
-    .dataTables_scrollBody{
-        position: relative;
-        overflow: auto;
-        width: 100%;
-        top: 11px;
-    }
-
     .layui-form-item{
         margin-top: 10px;
         margin-bottom: 10px;
@@ -128,8 +97,8 @@
         <i title="新增节点" class="fa fa-lg fa-sitemap" onclick="addNodetree()"></i>
         <i title="编辑节点" class="fa fa-lg fa-pencil" onclick="editNodetree()"></i>
         <i title="删除节点" class="fa fa-lg fa-trash" onclick="delNodetree()"></i>
-        <i title="下移" class="fa fa-lg fa-arrow-circle-down" onclick="getmoveNode('dowm')"></i>
-        <i title="上移" class="fa fa-lg fa-arrow-circle-up" onclick="getmoveNode('up')"></i>
+        <i title="下移" class="fa fa-lg fa-arrow-circle-down" onclick="getmoveNode('next')"></i>
+        <i title="上移" class="fa fa-lg fa-arrow-circle-up" onclick="getmoveNode('prev')"></i>
         <i title="展开所有" class="fa fa-lg fa-plus-square" id="openNode"></i>
         <i title="收起所有" class="fa fa-lg fa-minus-square" id="closeNode"></i>
     </div>
@@ -257,9 +226,9 @@
             <!--</div>-->
         <!--</div>-->
     <!--</form>-->
-    <!--<div class="tbcontainer">-->
-        <!--<div class="mark"></div>-->
-    <!--</div>-->
+    <div class="tbcontainer">
+        <div class="mark"></div>
+    </div>
 </div>
 <div data-options="region:'east',title:'管理信息',split:true" style="width:330px;">
     <div class="layui-tab">
