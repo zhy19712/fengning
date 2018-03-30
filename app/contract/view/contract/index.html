@@ -17,20 +17,15 @@
             font-size: 14px;
             border-bottom: 1px dotted #cecece;
         }
+        #conTable .highlight {
+            background: #FDD5B5 !important;
+        }
         #conTable .dataTables_filter label{
             font-size: 12px;
             font-weight: 800;
         }
         #conTable #mytable1_wrapper th{
             font-size: 12px;
-        }
-        #conTable #spanPath{
-            display: inline-block;
-            float: left;
-        }
-        #conTable #mytable1_wrapper{
-            position: relative;
-            margin-top: 10px;
         }
         #conTable .mybtn{
             position: absolute;
@@ -44,48 +39,12 @@
         #conTable .float_left input:focus{
             border-color: #9ac6ff;
         }
-        #conTable .dataTables_length{
-            height: 8px;
-            position:absolute;
-            bottom: 18px;
-            left: 175px;
-        }
-        #conTable #mytable1_wrapper .dataTables_wrapper {
-            position: relative;
-            clear: both;
-            zoom: 1;
-            overflow-x: auto;
+        #conTable #spanPath{
+            display: inline-block;
+            float: left;
         }
         #conTable #mytable1_wrapper table{
             margin-top: 12px;
-        }
-        #conTable table {
-            table-layout:fixed;
-        }
-        #conTable table td{
-            word-break:break-all;
-        }
-        #conTable .highlight {
-            background: #FDD5B5 !important;
-        }
-        #conTable .dataTables_wrapper .dataTables_paginate {
-            position: fixed;
-            bottom: -5px;
-            left: 98px;
-            z-index: 4;
-        }
-        #conTable .dataTables_wrapper .dataTables_info {
-            position: fixed;
-            bottom: 8px;
-            left: 348px;
-            z-index: 4;
-        }
-        #conTable .dataTables_length{
-            height: 8px;
-            position: fixed;
-            bottom: 26px;
-            left: 19px;
-            z-index: 4;
         }
         #conTable #admin_table .odd{
             background-color: #f9f9f9;
@@ -96,15 +55,6 @@
         #conTable .layui-btn{
             background-color: #00c0ef;
         }
-        #conTable .xia{
-            width: 100%;
-            height: 26px;
-            background-color: white;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            padding-top: -3px;
-        }
         #conTable #mytable1_wrapper thead th{
             border-top: 1px dotted #cecece;
         }
@@ -114,12 +64,61 @@
             padding: 0 10px;
             font-size: 12px;
         }
+
+        #conTable #mytable1_wrapper{
+            position: relative;
+            margin-top: 10px;
+        }
+        #conTable #mytable1_wrapper .dataTables_wrapper {
+            position: relative;
+            clear: both;
+            zoom: 1;
+            overflow-x: auto;
+        }
+        #conTable table {
+            table-layout:fixed;
+        }
+        #conTable table td{
+            word-break:break-all;
+        }
+
+        #conTable .dataTables_wrapper .dataTables_paginate {
+            position: fixed;
+            bottom: -5px;
+            left: 98px;
+            z-index: 4;
+        }
+        #conTable .dataTables_wrapper .dataTables_info {
+            position: fixed;
+            bottom: 8px;
+            right: 0px;
+            z-index: 4;
+        }
+        #conTable .dataTables_length{
+            height: 8px;
+            position: fixed;
+            bottom: 26px;
+            left: 19px;
+            z-index: 4;
+        }
+        #conTable .xia{
+            width: 100%;
+            height: 26px;
+            background-color: white;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            padding-top: -3px;
+        }
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             padding: 0;
         }
+        #conTable .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border: none;
+        }
 
     </style>
-<body class="easyui-layout" style="overflow-y:hidden;">
+<!--<body class="easyui-layout" style="overflow-y:hidden;">-->
     <!--表格-->
     <div id="conTable" class="wrapper wrapper-content animated fadeInRight" style="width: 99.5%;vertical-align: top;padding: 0;margin-left: 4px;text-align: center">
         <div class="ibox float-e-margins">
@@ -140,16 +139,16 @@
                                 </tr>
                             </thead>
                         </table>
+
                     </div>
                 </div>
                 <div class="xia"></div>
             </div>
         </div>
     </div>
-</body>
+<!--</body>-->
 {include file="../../admin/view/public/common_footer"}
 <script type="text/javascript">
-     var adminId;//每一行的id
      var admin_table = $('#admin_table').DataTable({
             pagingType: "full_numbers",
             processing: true,
@@ -208,15 +207,15 @@
                 }
             }
         });
-    $("div.mybtn").html('<div><span style="font-size: 22px">+</span>&nbsp;新增</div>');
+     $("div.mybtn").html('<div><span style="font-size: 22px">+</span>&nbsp;新增</div>');
      //变色
      $('#admin_table tbody').on( 'mouseover', 'td', function () {
          $(this).parent("tr").addClass('highlight');
      }).on( 'mouseleave', 'td', function () {
          $(this).parent("tr").removeClass( 'highlight' );
      });
-    //新增
-    $("#admin_table_wrapper .mybtn").click(function () {
+     //新增
+     $("#admin_table_wrapper .mybtn").click(function () {
         layer.open({
             type: 2,
             title: '新增合同',
@@ -228,8 +227,8 @@
             }
         });
     })
-    //编辑
-    function conEdit(that){
+     //编辑
+     function conEdit(that){
         var id = admin_table.row(".highlight").data()[6];
         console.log(id)
         $.ajax({
@@ -273,8 +272,8 @@
             }
         })
     }
-    //删除
-    function conDel(that){
+     //删除
+     function conDel(that){
         var id = admin_table.row(".highlight").data()[6];
         console.log(id)
         layer.confirm('是否删除该合同?', function(index){
@@ -294,7 +293,7 @@
             layer.close(index);
         });
     }
-    $(".float_left input").click(function () {
+     $(".float_left input").click(function () {
         $(".float_left input").attr({'border':'1px solid #9ac6ff'});
     })
 </script>

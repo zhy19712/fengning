@@ -59,6 +59,29 @@
             /*border-top: 1px solid #00c0ef;*/
             margin-top: 12px;
         }
+        #secTable .layui-btn-sm {
+            height: 28px;
+            line-height: 30px;
+            padding: 0 10px;
+            font-size: 12px;
+        }
+        #secTable #mytable1_wrapper thead th{
+            border-top: 1px dotted #cecece;
+        }
+        #secTable #admin_table .odd{
+            background-color: #f9f9f9;
+        }
+        #secTable #admin_table .even{
+            background-color: white;
+        }
+        #secTable .layui-btn{
+            background-color: #00c0ef;
+        }
+        i.fa:before {
+            color: #00c0ef;
+            background: none;
+        }
+
         #secTable table {
             table-layout:fixed;
         }
@@ -70,14 +93,14 @@
         }
         #secTable .dataTables_wrapper .dataTables_paginate {
             position: fixed;
-            bottom: -5px;
+            bottom: -3px;
             left: 98px;
             z-index: 4;
         }
         #secTable .dataTables_wrapper .dataTables_info {
             position: fixed;
             bottom:8px;
-            left: 348px;
+            right: 0px;
             z-index: 4;
         }
         #secTable .dataTables_length{
@@ -91,43 +114,25 @@
             padding: 6px 12px;
             border-radius: 4px;
         }
-        #secTable #admin_table .odd{
-            background-color: #f9f9f9;
-        }
-        #secTable #admin_table .even{
-            background-color: white;
-        }
-        #secTable .layui-btn{
-            background-color: #00c0ef;
-        }
-        i.fa:before {
-            color: #00c0ef;
-             background: none;
-        }
+
         #secTable .xia{
             width: 100%;
-            height: 26px;
+            height: 34px;
             background: white;
             position: fixed;
             bottom: 0;
             left: 0;
             padding-top: -3px;
         }
-        #secTable .layui-btn-sm {
-            height: 28px;
-            line-height: 30px;
-            padding: 0 10px;
-            font-size: 12px;
-        }
-        #secTable #mytable1_wrapper thead th{
-            border-top: 1px dotted #cecece;
-        }
+
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             padding: 0;
         }
-
+        #secTable .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border: none;
+        }
     </style>
-<body class="easyui-layout" style="overflow-y:hidden;">
+<!--<body class="easyui-layout" style="overflow-y:hidden;">-->
 <!--表格-->
 <div id="secTable" class="wrapper wrapper-content animated fadeInRight" style="width: 99.5%;vertical-align: top;padding: 0;margin-left: 4px;text-align: center">
     <div class="ibox float-e-margins">
@@ -149,17 +154,14 @@
                             </tr>
                         </thead>
                     </table>
-                    <div class="tbcontainer">
-                        <div class="mark"></div>
-                    </div>
                 </div>
             </div>
-            <!--<div class="xia"></div>-->
+            <div class="xia"></div>
         </div>
     </div>
 </div>
 
-</body>
+<!--</body>-->
 {include file="../../admin/view/public/common_footer"}
 <script type="text/javascript">
 
@@ -221,11 +223,6 @@
                 "sPrevious": "<",
                 "sNext": ">",
                 "sLast": ">>"
-            },
-            "fnInitComplete": function (oSettings, json) {
-                $('#tableItem_length').insertBefore(".mark");
-                $('#tableItem_info').insertBefore(".mark");
-                $('#tableItem_paginate').insertBefore(".mark");
             }
         }
     });
