@@ -28,7 +28,9 @@
         console.log(options.treeNode);
 
         var option = {
-            tablePath:'/admin/common/datatablesPre?tableName=admin'
+            tablePath:'/admin/common/datatablesPre?tableName=admin',
+            parentShow:true,
+            tableItem:tableItem
         }
 
         $.extend(option,options);
@@ -37,7 +39,7 @@
         function loadData() {
             $('#tableItem_wrapper').show();
             $('.tbcontainer').show();
-            options.tableItem.ajax.url(option.tablePath+"&id="+ options.treeNode.id).load();
+            option.tableItem.ajax.url(option.tablePath+"&id="+ options.treeNode.id).load();
             getPath();
         }
 
@@ -58,7 +60,7 @@
 
         //是否允许父节点加载表格数据
         if(options.treeNode.isParent){
-            if(options.parentShow){
+            if(option.parentShow){
                 loadData();
             }else{
                 $('#tableItem_wrapper').hide();

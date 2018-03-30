@@ -407,10 +407,9 @@
         admin_group_id = treeNode.id;
         admin_group_name = treeNode.name;
         $('#groupId').val(treeNode.id);
+
         $.clicknode({
             treeNode:treeNode,
-            tableItem:tableItem,
-            parentShow:true,
             tablePath:'/admin/common/datatablesPre?tableName=admin'
         });
         /*console.log(treeNode);
