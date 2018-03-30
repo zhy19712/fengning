@@ -177,7 +177,8 @@ class Division extends Permissions{
      */
     public function excelDownload()
     {
-        $filePath = '/uploads/工程划分导入模板.xlsx';
+        $filePath = './static/division/工程划分导入模板.xlsx';
+//        halt($filePath);
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){
