@@ -117,8 +117,8 @@ class Atlas extends Permissions
                 $select_id = input('post.select_id'); // 当前节点的编号
                 $select_sort_id = input('post.select_sort_id'); // 当前节点的排序编号
 
-                Db::name('admin_group')->where('id', $select_id)->update(['sort_id' => $change_sort_id]);
-                Db::name('admin_group')->where('id', $change_id)->update(['sort_id' => $select_sort_id]);
+                Db::name('atlas_cate_type')->where('id', $select_id)->update(['sort_id' => $change_sort_id]);
+                Db::name('atlas_cate_type')->where('id', $change_id)->update(['sort_id' => $select_sort_id]);
 
                 return json(['code' => 1,'msg' => '移动成功']);
 
