@@ -39,6 +39,8 @@
         showIcon:true
     }
 
+    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
+
     //添加节点
     $('#addNode').click(function () {
         //TODO 重构
@@ -244,7 +246,7 @@
     });
 
     //删除节点
-    $('#delNode').click(function () {
+    /*$('#delNode').click(function () {
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var nodes = treeObj.getSelectedNodes();
         var isParent;
@@ -283,6 +285,11 @@
             });
             layer.close(index);
         });
+    });*/
+
+    //删除节点
+    $('#delNode').click(function () {
+        $.delnode();
     });
 
     //全部展开
@@ -399,7 +406,7 @@
     function zTreeOnClick(event, treeId, treeNode) {
         console.log(treeNode);
         $('#groupId').val(treeNode.id);
-        admin_group_id = treeNode.id;
+        window.admin_group_id = treeNode.id;
         admin_group_name = treeNode.name;
 
         $('#tableItem_wrapper').show();
@@ -419,8 +426,6 @@
             }
         });
     };
-
-    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
     //组织结构表格
    var tableItem = $('#tableItem').DataTable( {
