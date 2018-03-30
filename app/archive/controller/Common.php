@@ -90,7 +90,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('attachment f', 'a.attachmentId = f.id', 'left')
                     ->join('admin u', 'f.user_id=u.id', 'left')
-                    ->field('a.id,a.name,u.nickname,f.create_time,a.status')
+                    ->field('a.id,a.name as name,u.nickname,FROM_UNIXTIME(f.create_time) as create_time,a.status')
                     ->whereIn('a.type', $idArr)
                     ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -101,7 +101,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('attachment f', 'a.attachmentId = f.id', 'left')
                     ->join('admin u', 'f.user_id=u.id', 'left')
-                    ->field('a.id,a.name,u.nickname,f.create_time,a.status')
+                    ->field('a.id,a.name as name,u.nickname,FROM_UNIXTIME(f.create_time) as create_time,a.status')
                     ->whereIn('a.type', $idArr)
                     ->select();
                 $recordsFiltered = $recordsTotal;
