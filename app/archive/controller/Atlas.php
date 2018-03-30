@@ -9,6 +9,8 @@ namespace app\archive\controller;
 
 use app\admin\controller\Permissions;
 use app\archive\model\AtlasCateTypeModel;
+use \think\Db;
+use \think\Session;
 /**
  * 图纸文档管理，图册管理
  * Class Atlas
@@ -107,25 +109,24 @@ class Atlas extends Permissions
     public function sortNode()
     {
         if(request()->isAjax()){
-            $prev_id = $this->request->has('prev_id') ? $this->request->param('prev_id', 0, 'intval') : 0; // 前一个节点的编号 没有默认0
-            $prev_sort_id = $this->request->has('prev_sort_id') ? $this->request->param('prev_sort_id', 0, 'intval') : 0; // 前一个节点的排序编号 没有默认0
+            try {
 
-            $id = input('post.id'); // 当前节点的编号
-            $id_sort_id = input('post.id_sort_id'); // 当前节点的排序编号
+                $change_id = $this->request->has('change_id') ? $this->request->param('change_id', 0, 'intval') : 0; //影响节点id,包括上移下移,没有默认0
+                $change_sort_id = $this->request->has('change_sort_id') ? $this->request->param('change_sort_id', 0, 'intval') : 0; //影响节点的排序编号sort_id 没有默认0
 
-            $next_id = $this->request->has('next_id') ? $this->request->param('next_id', 0, 'intval') : 0; // 后一个节点的编号 没有默认0
-            $next_sort_id = $this->request->has('next_sort_id') ? $this->request->param('next_sort_id', 0, 'intval') : 0; // 后一个节点的排序编号 没有默认0
+                $select_id = input('post.select_id'); // 当前节点的编号
+                $select_sort_id = input('post.select_sort_id'); // 当前节点的排序编号
 
-            // 下移
-            if(empty($prev_id)){
-                Db::name('admin_group')->where('id',$next_id)->update(['sort_id' => $id_sort_id]);
-                Db::name('admin_group')->where('id',$id)->update(['sort_id' => $next_sort_id]);
-            }else if(empty($next_id)){
-                Db::name('admin_group')->where('id',$id)->update(['sort_id' => $prev_sort_id]);
-                Db::name('admin_group')->where('id',$prev_id)->update(['sort_id' => $id_sort_id]);
+                Db::name('atlas_cate_type')->where('id', $select_id)->update(['sort_id' => $change_sort_id]);
+                Db::name('atlas_cate_type')->where('id', $change_id)->update(['sort_id' => $select_sort_id]);
+
+                return json(['code' => 1,'msg' => '移动成功']);
+
+            }catch (PDOException $e){
+                return ['code' => -1,'msg' => $e->getMessage()];
             }
 
-            return json(['code' => 1,'msg' => '成功']);
+
         }
         return $this->fetch();
     }
