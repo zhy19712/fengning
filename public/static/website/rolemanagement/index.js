@@ -234,6 +234,9 @@ function delNodetree() {
                         layer.msg("删除节点成功",{time:1500,shade: 0.1});
                         var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
                         tableItem.ajax.url(url).load();
+                        $("#catepublish").parent("div").css("display",'none');
+                        $(".userContainer").html('');
+                        $(".path").html("");
                         zTreeObj.removeNode(sNodes[0]);
                         selfid = "";
                     }
