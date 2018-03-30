@@ -9,9 +9,6 @@
     #tableContent #tableItem_filter{
         float: left;
     }
-    #tableContent #tableItem_length{
-
-    }
     #nodeZtree .ztree-title i.fa{
         width: 12%;
     }
@@ -62,7 +59,6 @@
         width: 100%;
         top: 11px;
     }
-
 </style>
 <div id="nodeZtree" data-options="region:'west',title:'文档目录树',split:true" style="width:180px;">
     <div class="ztree-title">
@@ -90,6 +86,9 @@
         </thead>
     </table>
     <div class="info"></div>
+    <div class="tbcontainer">
+        <div class="mark"></div>
+    </div>
 </div>
 <div data-options="region:'east',title:'管理信息',split:true" style="width:330px;">
     <div class="layui-tab">
@@ -196,6 +195,11 @@
                 "sNext": ">",
                 "sLast": ">>"
             }
+        },
+        "fnInitComplete": function (oSettings, json) {
+            $('#tableItem_length').insertBefore(".mark");
+            $('#tableItem_info').insertBefore(".mark");
+            $('#tableItem_paginate').insertBefore(".mark");
         }
     });
 
@@ -229,6 +233,12 @@
     //     });
     // };
 
+    var selfid,
+        nodeName,
+        nodePid,
+        zTreeObj,
+        groupid,
+        sNodes;
     //初始化树节点
     var setting = {
         view: {
@@ -241,7 +251,7 @@
             autoParam: ["pid"],
             type : "post",
             url : "{:url('documenttype/getAll')}",
-            // dataType :"json",
+            dataType :"json",
             // dataFilter: ajaxDataFilter
         },
         data:{
@@ -289,9 +299,7 @@
             return false;
         });
     });
-    var selfid,
-        nodeName,
-        nodePid;
+
     //点击获取路径
     function nodeClick(e, treeId, node) {
         console.log(node);
@@ -317,8 +325,8 @@
             $(".layout-panel-center .panel-title").text(sNodes[0].name);
         }
         groupid = sNodes[0].pId //父节点的id
-        var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
-        tableItem.ajax.url(url).load();
+        // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
+        // tableItem.ajax.url(url).load();
         $(".layout-panel-center .panel-title").text("当前路径:"+path)
     }
 
@@ -332,14 +340,14 @@
                 data:{pid:pid,name:value,id:''},
                 success: function (res) {
                     console.log(res)
-                    // if(res.code===1){
-                    //     if(sNodes){
-                    //         zTreeObj.addNodes(sNodes[0],res.data);
-                    //     }else{
-                    //         zTreeObj.addNodes(null,res.data);
-                    //     }
-                    //
-                    // }
+                    if(res.code===1){
+                        if(sNodes){
+                            zTreeObj.addNodes(sNodes[0],res.data);
+                        }else{
+                            zTreeObj.addNodes(null,res.data);
+                        }
+
+                    }
                 }
             });
             layer.close(index);
@@ -359,7 +367,7 @@
             value:sNodes[0].name
         },function(value, index, elem){
             $.ajax({
-                url:'./editCatetype',
+                url:"{:url('documenttype/addOrEdit')}",
                 type:"post",
                 data:{id:selfid,name:value},
                 success: function (res) {
