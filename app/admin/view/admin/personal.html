@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {include file="public/common_header"}
+<link rel="stylesheet" href="__WEBSITE__/admin/personal/index.css">
   <div class="body-div">
     <div style="margin-top: 20px;">
     </div>
@@ -76,20 +77,18 @@
         </div>
       </div>
       <div class="layui-form-item">
-        <div class="autograph">
-          <label class="layui-form-label">电子签名</label>
-          <div class="layui-input-inline">
-            <img class="layui-upload-img" id="demo2" width="150" height="150" {notempty name="$info.admin.filepath"}src="{$info.admin.filepath}"{/notempty}>
-          </div>
-          <div class="layui-form-mid layui-word-aux">
-            <div id="upload" class="upload"></div>
-          </div>
-        </div>
-      </div>
-      <div class="layui-form-item">
         <label class="layui-form-label">备注</label>
         <div class="layui-input-block">
-          <textarea name="remark" placeholder="请输入内容" value="{$info.admin.remark}" class="layui-textarea"></textarea>
+          <textarea name="remark" placeholder="请输入内容" value="" class="layui-textarea">{$info.admin.remark}</textarea>
+        </div>
+      </div>
+      <div class="layui-form-item" id="uploadInline">
+        <label class="layui-form-label">电子签名</label>
+        <button type="button" class="layui-btn" id="upload">上传头像</button>
+        <div class="layui-upload-list">
+          <label class="layui-form-label"></label>
+          <img class="layui-upload-img" id="uploadImg" width="150" height="150" src="{$info['signature'][0]}">
+          <p id="uploadText"></p>
         </div>
       </div>
       <div class="layui-upload" id="upload-thumb">
@@ -97,7 +96,7 @@
         <button type="button" class="layui-btn" id="thumb">上传头像</button>
         <div class="layui-upload-list">
           <label class="layui-form-label"></label>
-          <img class="layui-upload-img" id="demo1" width="150" height="150" {notempty name="$info.admin.thumb"}src="{$info.admin.thumb|geturl}"{/notempty}>
+          <img class="layui-upload-img" id="demo1" width="150" height="150" src="{$info['thumb'][0]}" >
           <p id="demoText"></p>
         </div>
       </div>

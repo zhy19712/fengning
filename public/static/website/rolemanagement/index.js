@@ -234,6 +234,9 @@ function delNodetree() {
                         layer.msg("删除节点成功",{time:1500,shade: 0.1});
                         var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
                         tableItem.ajax.url(url).load();
+                        $("#catepublish").parent("div").css("display",'none');
+                        $(".userContainer").html('');
+                        $(".path").html("");
                         zTreeObj.removeNode(sNodes[0]);
                         selfid = "";
                     }
@@ -257,36 +260,6 @@ $('#closeNode').click(function(){
     zTreeObj.expandAll(false);
 });
 
-// //上移
-// $('#upMoveNode').click(function () {
-//     if (!selfid){
-//         layer.msg('请选择节点');
-//         return false;
-//     }
-//
-//     var node = sNodes[0].getPreNode();
-//     if (node===null){
-//         layer.msg('已经移到顶啦');
-//         return false;
-//     }
-//     zTreeObj.moveNode(node, sNodes[0], "prev");
-// });
-//
-// //下移
-// $('#downMoveNode').click(function () {
-//
-//     if (!selfid){
-//         layer.msg('请选择节点');
-//         return false;
-//     }
-//
-//     var node = sNodes[0].getNextNode();
-//     if (node===null){
-//         layer.msg('已经移到底啦');
-//         return false;
-//     }
-//     zTreeObj.moveNode(node, sNodes[0], "next");
-// });
 //表格编辑
 function conEdit(id){
     $.ajax({

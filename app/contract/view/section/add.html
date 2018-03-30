@@ -40,10 +40,10 @@
             left: 144px;
             min-width: 75%;
         }
-        #memberAdd .layui-form-select dl dd.layui-this {
-            background-color: white;
-            color: #000000;
-        }
+        /*#memberAdd .layui-form-select dl dd.layui-this {*/
+            /*background-color: white;*/
+            /*color: #000000;*/
+        /*}*/
         #memberAdd .borForm{
             border: 1px solid #0d77b6;
             position: relative;
@@ -60,8 +60,10 @@
             width: 114px;
         }
         #memberAdd #contractId option{
-            display: block;
-            height: 100px;
+            padding-top: 10px!important;
+            margin-top: 10px !important;
+            font-size: 14px !important;
+            line-height: 30px !important;
         }
         #memberAdd ul li{
             border: 1px solid;
@@ -75,7 +77,6 @@
             display: none;
             z-index: 7;
         }
-
 
     </style>
 <body>
@@ -117,9 +118,14 @@
                                 <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-form-item">
+                        <div class="layui-form-item" id="fffff">
                             <label class="layui-form-label">所属合同</label>
+                            <!--<select name="contractId" id="contractId" lay-ignore style="width: 545px;height: 36px;">-->
+                                <!--<option value="">请选择</option>-->
+                            <!--</select>-->
                             <select name="contractId" id="contractId" lay-ignore style="width: 545px;height: 36px;"></select>
+                            <!--<select name="contractId" id="contractId">-->
+                            <!--</select>-->
                         </div>
                     </div>
                     <!--业主现场管理机构-->
@@ -127,33 +133,41 @@
                         <span class="bgSpan">管理配置</span>
                         <div class="layui-form-item">
                             <label class="layui-form-label">业主现场管理机构</label>
-                            <select name="builderId" id="builderId" lay-ignore style="width: 545px;height: 36px;">
-                                <!--<option value="">请选择</option>-->
+                            <!--<select name="builderId" id="builderId" lay-ignore style="width: 545px;height: 36px;">-->
+                                <!--<option value="" style="width: 545px;height: 36px;padding: 5px !important;">请选择</option>-->
+                            <!--</select>-->
+                            <select name="builderId" id="builderId"  lay-filter="aihao">
+                                <option value="">请选择</option>
                             </select>
+                            <!--<input type="hidden" name="builderId">-->
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">监理现场管理机构</label>
-                            <select name="supervisorId" id="supervisorId" lay-ignore style="width: 545px;height: 36px;">
-                                <!--<option value="">请选择</option>-->
+                            <select name="supervisorId" id="supervisorId">
+                                <option value="" >请选择</option>
                             </select>
+                            <!--<input type="hidden" name="supervisorId">-->
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">设计现场管理机构</label>
-                            <select name="designerId" id="designerId" lay-ignore style="width: 545px;height: 36px;">
-                                <!--<option value="">请选择</option>-->
+                            <select name="designerId" id="designerId">
+                                <option value="">请选择</option>
                             </select>
+                            <!--<input type="hidden" name="designerId">-->
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">施工现场管理机构</label>
-                            <select name="constructorId" id="constructorId" lay-ignore style="width: 545px;height: 36px;">
-                                <!--<option value="">请选择</option>-->
+                            <select name="constructorId" id="constructorId">
+                                <option value="">请选择</option>
                             </select>
+                            <!--<input type="hidden" name="constructorId">-->
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">其他现场管理机构</label>
-                            <select name="otherId" id="otherId" lay-ignore style="width: 545px;height: 36px;">
-                                <!--<option value="">请选择</option>-->
+                            <select name="otherId" id="otherId">
+                                <option value="">请选择</option>
                             </select>
+                            <!--<input type="hidden" name="otherId">-->
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -168,7 +182,7 @@
         </div>
     </div>
 </div>
-<input type="hidden" value='{$orgs}' id="_orgs">
+<input name="hidOrgs" type="hidden" value='{$orgs}' id="_orgs">
 </body>
 <script id="nameLay">
     var orgs=JSON.parse($("#_orgs").val());
@@ -181,7 +195,6 @@
         //其他单位12
         if(orgs[i].type == 1){
             $("#builderId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
-            // $("#builderId").append($("<option  <s:if test=\"%{builderId==1}\">selected</s:if> ><option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
         }else if(orgs[i].type == 2){
             $("#supervisorId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
         }else if(orgs[i].type == 4){
@@ -192,9 +205,10 @@
             $("#otherId").append($("<option/>").text(orgs[i].name).attr({"value": orgs[i].id}));
         }
     }
+    var form;
     layui.use(['form', 'layedit', 'laydate'], function(){
-        var form = layui.form
-            ,layer = layui.layer
+        form = layui.form;
+        var layer = layui.layer
             ,layedit = layui.layedit
             ,laydate = layui.laydate;
 
@@ -219,6 +233,69 @@
         function refreshSub() {
             parent.admin_table.ajax.url("{:url('contract/common/datatablesPre?tableName=section')}").load();
         }
+        //编辑的渲染
+        setTimeout(function () {
+            var id = $("#addId").val();
+            $.ajax({
+                url: "{:url('./contract/section/getOne')}?id="+id,
+                type: "post",
+                data: {id:id},
+                dataType: "json",
+                success: function (res) {
+                    console.log(res);
+                    var bodyOrgs = $('#_orgs').val();
+                    var jsOrgs=JSON.parse(bodyOrgs);
+                    console.log(jsOrgs);
+                    for(var i=0;i<jsOrgs.length;i++){
+                        if(jsOrgs[i].id == res.builderId){
+                            // $('select[name="builderId"] option:selected').text(jsOrgs[i].name);
+                            // $('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
+                            // $('select[name="builderId"]').val(jsOrgs[i].name);
+                            // $('.layui-select-tips').after($("<dd/>").text(jsOrgs[i].name).attr({"lay-value": jsOrgs[i].id}));
+                            $("#builderId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                        }else if(jsOrgs[i].id == res.supervisorId){
+                            // $('select[name="supervisorId"]').next().find("input").val(jsOrgs[i].name);
+                            // $('select[name="supervisorId"]').val(jsOrgs[i].id);
+                            // $('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
+                            // debugger;
+                            // $("#supervisorId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                            $("#supervisorId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                        }else if(jsOrgs[i].id == res.designerId){
+                            // $('select[name="designerId"]').next().find("input").val(jsOrgs[i].name);
+                            // $('select[name="designerId"]').val(jsOrgs[i].id);
+                            // $('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
+                            // $("#designerId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                            $("#designerId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                        }else if(jsOrgs[i].id == res.constructorId){
+                            // $('#constructorId').next().find("input").val(jsOrgs[i].name);
+                            // $('#constructorId').val(jsOrgs[i].id);
+                            // $('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
+                            // $("#constructorId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                            $("#constructorId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                        }else if(jsOrgs[i].id == res.otherId){
+                            // $('select[name="otherId"]').next().find("input").val(jsOrgs[i].name);
+                            // $('select[name="otherId"]').val(jsOrgs[i].id);
+                            // $('.layui-select-tips').attr('lay-value',jsOrgs[i].id);
+                            // $("#otherId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                            $("#otherId").append($("<option/>").text(jsOrgs[i].name).attr({"value": jsOrgs[i].id}));
+                        }
+                    }
+                    form.render('select');
+                    $('input[name="id"]').val(res.id);
+                    $('input[name="code"]').val(res.code);
+                    $('input[name="shortName"]').val(res.shortName);
+                    $('input[name="money"]').val(res.money);
+                    $('input[name="name"]').val(res.name);
+                    $('input[name="contractId"]').val(res.contractId);
+                }
+            })
+        },2000)
+        form.render('select');
+        form.on('select(filter)', function(data){
+            console.log(data.elem); //得到select原始DOM对象
+            console.log(data.value); //得到被选中的值
+            console.log(data.othis); //得到美化后的DOM对象
+        });
         //监听提交
         form.on('submit(demo1)', function(data){
             console.log($("#addId").val())
@@ -242,6 +319,7 @@
                     }
                 })
             }else if($("#addId").val() != ''){
+
                 $.ajax({
                     type: "Post",
                     url:"{:url('addoredit')}",
@@ -252,12 +330,14 @@
                             refreshSub();
                             parent.layer.msg('编辑成功！');
                             closWin();
+                            form.render('select');
                         }
                     },
                     error: function (data) {
                         debugger;
                     }
                 })
+
             }
             return false;
         });
@@ -265,6 +345,9 @@
             closWin();
         })
     });
+
+
+    //所属合同的渲染
     $.ajax({
         type: "GET",
         url:"{:url('Contract/getAll')}",
@@ -280,7 +363,8 @@
                 //     }
                 // }
                 // else {
-                $("#contractId").append($("<option/>").text(this.contractName).attr({"value": this.id,"width": "545px","height": "100px"}));
+                $("#contractId").append($("<option/>").text(this.contractName).attr({"value": this.id}));
+                // $('.layui-select-tips').text(this.contractName).attr({"value": this.id});
                 // }
             });
         },

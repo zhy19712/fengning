@@ -40,7 +40,31 @@ layui.use('upload', function(){
             });
         }
     });
+
+    var uploadAuto = upload.render({
+        elem: '#upload' //绑定元素
+        ,url: "/admin/common/upload" //上传接口
+        ,done: function(res){
+            //上传完毕回调
+            if(res.code == 2) {
+                $('#uploadImg').attr('src',res.src);
+                $('#uploadInline').append('<input type="hidden" name="signature" value="'+ res.id +'">');
+            } else {
+                layer.msg(res.msg);
+            }
+        }
+        ,error: function(){
+            //请求异常回调
+            //演示失败状态，并实现重传
+            var demoText = $('#uploadText');
+            demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+            demoText.find('.demo-reload').on('click', function(){
+                uploadAuto.upload();
+            });
+        }
+    });
 });
+
 
 layui.use(['layer', 'form'], function() {
     var layer = layui.layer,
@@ -49,7 +73,7 @@ layui.use(['layer', 'form'], function() {
     $(window).on('load', function() {
         form.on('submit(admin)', function(data) {
             $.ajax({
-                url:"{:url('admin/admin/personal')}",
+                url:"/admin/admin/personal",
                 data:$('#admin').serialize(),
                 type:'post',
                 async: false,
