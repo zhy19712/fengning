@@ -9,6 +9,7 @@
 namespace app\archive\controller;
 
 use app\archive\model\DocumentTypeModel;
+use app\archive\model\AtlasCateTypeModel;
 use \think\Controller;
 use think\Db;
 use think\Request;
@@ -103,6 +104,51 @@ class Common extends Controller
                     ->join('admin u', 'f.user_id=u.id', 'left')
                     ->field('a.id,a.name as name,u.nickname,FROM_UNIXTIME(f.create_time) as create_time,a.status')
                     ->whereIn('a.type', $idArr)
+                    ->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            //计算列长度
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+    public function atlas_cate($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //表的总记录数 必要
+        $id = input('selfid');
+        $model = new AtlasCateTypeModel();
+        $idArr = $model->cateTree($id);
+        $idArr[] = $id;
+        $recordsTotal = 0;
+        $recordsTotal = Db::name($table)->count();
+        $recordsFilteredResult = array();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->whereIn('a.selfid', $idArr)
+                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->whereIn('a.selfid', $idArr)
                     ->select();
                 $recordsFiltered = $recordsTotal;
             }

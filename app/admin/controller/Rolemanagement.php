@@ -24,7 +24,7 @@ class Rolemanagement extends Permissions
      */
     public function index()
     {
-        $current_name =Session::get('current_nickname');
+        $current_name = Session::get('current_nickname');
         $this->assign("current_name",$current_name);
 
         return $this->fetch();
@@ -156,7 +156,7 @@ class Rolemanagement extends Permissions
             $model = new AdminCate();
             $param = input('post.');
             //前台传过来的角色类型id
-            if(empty($param['id']))//id为空时表示新增角色类型节点
+            if(empty($param['id']))//id为空时表示新增角色类型
             {
                 $data = [
                     'pid' => $param['pid'],//admin_cate_type表中的id_
