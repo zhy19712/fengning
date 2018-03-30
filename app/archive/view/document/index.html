@@ -172,8 +172,10 @@
                 "targets": [5],
                 "render": function (data, type, row) {
                     var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(" + data + ")'><i class='fa fa-pencil'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-trash'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(" + data + ")'><i class='fa fa-trash'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-pencil'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-chain'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-file-text'></i></a>";
                     return html;
                 }
             },
@@ -221,11 +223,12 @@
     var upload ;
     var uploadId ;
     var uploadName ;
-    // $("#test3").click(function () {
+    // $(".mybtn >div").click(function () {
     //     if (!selfid) {
     //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
     //         return;
     //     }else if(selfid){
+    //         $(".mybtn >div").attr("id","test3");
     //         layui.upload.render({
     //             elem: '#test3',
     //             url: "{:url('admin/common/upload?module=document&use=archive')}",
@@ -266,7 +269,6 @@
     //                 }
     //             },
     //         });
-    //
     //     }
     // })
 
@@ -328,12 +330,10 @@
                         success:function(res) {
                             console.log(res)
                             if(res.code == 1) {
-
-                                // layer.alert(res.msg, function(index){
-                                //     location.href = res.url;
-                                // })
+                                var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+                                tableItem.ajax.url(url).load();
                             } else {
-                                layer.msg('保存失败！');
+                                layer.msg('获取数据失败！');
                             }
                         }
                     })
@@ -455,10 +455,11 @@
                 success: function (res) {
                     console.log(res)
                     if (res.code === 1) {
+                        console.log(sNodes)
                         if (sNodes) {
-                            zTreeObj.addNodes(sNodes[0], res.data);
+                            zTreeObj.addNodes(sNodes[0], {"id":res.data,"pid":pid,"name":value});
                         } else {
-                            zTreeObj.addNodes(null, res.data);
+                            zTreeObj.addNodes(null, {"id":res.data,"pid":pid,"name":value});
                         }
                     }
                 }
