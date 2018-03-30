@@ -7,39 +7,7 @@
     //管理员分组id
     var admin_cate_id;
     //组织结构树
-    var setting = {
-        async: {
-            enable : true,
-            autoParam: ["pId","id"],
-            type : "post",
-            url : "./index",
-            dataType :"json"
-        },
-        dit:{
-            enable:true,
-            drag:{
-                isMove: true
-            }
-        },
-        data: {
-            simpleData: {
-                enable: true,
-                idKey: "id",
-                pIdKey: "pId"
-            }
-        },
-        view:{
-            selectedMulti: false
-        },
-        callback:{
-            onClick:zTreeOnClick,
-        },
-        showLine:true,
-        showTitle:true,
-        showIcon:true
-    }
-
-    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
+    $.ztree();
 
     //添加节点
     $('#addNode').click(function () {
