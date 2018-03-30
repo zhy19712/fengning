@@ -1,5 +1,14 @@
 {include file="../../admin/view/public/common_header"}
 <style>
+    <!--左边的树-->
+    #nodeZtree .ztree-title i.fa{
+        width: 12%;
+    }
+    <!--中间的table-->
+    #tableContent .mybtn i.fa:before{
+        background: #00c0ef;
+        color: #ffffff;
+    }
     #tableContent .mybtn {
         position: absolute;
         right: 1%;
@@ -8,13 +17,6 @@
     }
     #tableContent #tableItem_filter{
         float: left;
-    }
-    #nodeZtree .ztree-title i.fa{
-        width: 12%;
-    }
-    #tableContent .mybtn i.fa:before{
-        background: #00c0ef;
-        color: #ffffff;
     }
     #tableContent .select-color{
         background-color: #FDD5B5!important;
@@ -34,35 +36,24 @@
         float: right;
         margin-right:15px;
     }
-    p {
-        float: left;
-        margin: 4px;
-        background-color: #56ABE4;
-        text-align: center;
-        color: white;
-        font-size: 12px;
-        border: 1px solid #56ABE4;
-        border-radius: 20px;
-        float: left;
-        line-height: 0.1;
-        padding: 5px;
-    }
     #tableContent .dataTables_wrapper .dataTables_scroll {
         position: relative;
         top: 15px;
         border-top: 1px dotted #cecece;
     }
-
     #tableContent .dataTables_scrollBody{
         position: relative;
         overflow: auto;
         width: 100%;
         top: 11px;
     }
+    <!--右边的管理信息-->
+
 </style>
+
 <div id="nodeZtree" data-options="region:'west',title:'文档目录树',split:true" style="width:180px;">
     <div class="ztree-title">
-        <i title="新增节点" class="fa fa-lg fa-sitemap" onclick="addNodetree()"></i>
+        <i id="add" title="新增节点" class="fa fa-lg fa-sitemap" onclick="addNodetree()"></i>
         <i title="编辑节点" class="fa fa-lg fa-pencil" onclick="editNodetree()"></i>
         <i title="删除节点" class="fa fa-lg fa-trash" onclick="delNodetree()"></i>
         <!--<i title="下移" class="fa fa-lg fa-arrow-circle-down" id="downMoveNode"></i>-->
@@ -90,7 +81,7 @@
         <div class="mark"></div>
     </div>
 </div>
-<div data-options="region:'east',title:'管理信息',split:true" style="width:330px;">
+<div id="information" data-options="region:'east',title:'管理信息',split:true" style="width:330px;">
     <div class="layui-tab">
         <ul class="layui-tab-title">
             <li class="layui-this">属性</li>
@@ -132,7 +123,7 @@
 </div>
 
 {include file="../../admin/view/public/common_footer"}
-<!--<script src="__WEBSITE__/rolemanagement/index.js"></script>-->
+<script src="__WEBSITE__/archive/document/index.js"></script>
 <script>
 
     //组织结构表格
@@ -147,7 +138,7 @@
         dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
         columns:[
             {
-                name: "number_id"
+                name: "name"
             },
             {
                 name: "role_name"
@@ -206,40 +197,40 @@
     //点击上传文件
     $(".mybtn").html("<div><i class='fa fa-plus'></i>上传文件</div>");
 
-    // $(function () {
-    //     initPermissionTree();
-    // });
-    // //加载功能菜单树
-    // function initPermissionTree() {
-    //     var setting = {
-    //         check: {
-    //             enable: true
-    //         },
-    //         data: {
-    //             simpleData: {
-    //                 enable: true
-    //             }
-    //         },
-    //         view: {
-    //             selectedMulti: false
-    //         }
-    //     };
-    //     $.ajax({
-    //         type: "Get",
-    //         url: "{:url('documenttype/getAll')}",
-    //         success: function (data) {
-    //             $.fn.zTree.init($("#treeRight"), setting, data.result);
-    //         }
-    //     });
-    // };
+    $(function () {
+        initPermissionTree();
+    });
+    //加载功能菜单树
+    function initPermissionTree() {
+        var setting = {
+            check: {
+                enable: true
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            view: {
+                selectedMulti: false
+            }
+        };
+        $.ajax({
+            type: "Get",
+            url: "{:url('documenttype/getAll')}",
+            success: function (data) {
+                $.fn.zTree.init($("#treeRight"), setting, data.result);
+            }
+        });
+    };
 
+    //初始化树节点
     var selfid,
         nodeName,
         nodePid,
         zTreeObj,
         groupid,
         sNodes;
-    //初始化树节点
     var setting = {
         view: {
             showLine: true, //设置 zTree 是否显示节点之间的连线。
@@ -268,7 +259,7 @@
     };
     zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
-    //tab 切换
+    //管理信息的tab 切换
     layui.use(['element',"layer",'form'], function(){
         var $ = layui.jquery
             ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
@@ -391,14 +382,15 @@
         if(!sNodes[0].children){
             layer.confirm("该操作会将关联数据同步删除，是否确认删除？",function () {
                 $.ajax({
-                    url:'./delCatetype',
+                    url:"{:url('documenttype/del')}",
                     type:"post",
                     data:{id:selfid},
                     success: function (res) {
                         if(res.code===1){
                             layer.msg("删除节点成功",{time:1500,shade: 0.1});
-                            var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
-                            tableItem.ajax.url(url).load();
+                            //下面是更新列表
+                            // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
+                            // tableItem.ajax.url(url).load();
                             zTreeObj.removeNode(sNodes[0]);
                             selfid = "";
                         }
@@ -421,51 +413,6 @@
         zTreeObj.expandAll(false);
     });
 
-
-
-
-    //保存角色与功能关联关系
-    function saveRolePermission() {
-        var menuIds = [];
-        var permissionTree = $.fn.zTree.getZTreeObj("treeRight");
-        if (window.parent.selectedRow) {
-            var nodes = permissionTree.getCheckedNodes(true);
-            $.each(nodes, function (i, item) {
-                menuIds.push(item.id);
-            });
-            var sendData = { "dto": { "RoleId": window.parent.selectedRow.id, "MenuIds": menuIds } }
-            $.ajax({
-                type: "Post",
-                url: "/Role/SaveRoleMenu",
-                data: sendData,
-                success: function (data) {
-                    if (data.result == "Success")
-                        layerAlert("保存成功。")
-                    else
-                        layerAlert("保存失败。")
-                }
-            });
-        }
-        else {
-            layerAlert("请选择角色。")
-        }
-    };
-    //根据角色关联的功能菜单数据更改选中状态。
-    function initMenuDataByRole(roleId) {
-        var permissionTree = $.fn.zTree.getZTreeObj("treeRight");
-        permissionTree.checkAllNodes(false);
-        $.ajax({
-            type: "Get",
-            url: "/Role/GetMenusByRole?roleId=" + roleId + "&_t=" + new Date(),
-            success: function (data) {
-                $.each(data.result.menus, function (i, item) {
-                    var node = permissionTree.getNodeByParam("id", item.id, null);
-                    if (node)
-                        permissionTree.checkNode(node, true, false);
-                });
-            }
-        });
-    };
 </script>
 </body>
 </html>
