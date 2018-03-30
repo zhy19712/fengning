@@ -273,19 +273,19 @@
             1,1,1,1,1,1,1,1,1,1,1,1,1,1,[[1,2,3,1,1,1,14,4,4,4,4,4,4,4],[1,2,3,4,4,434,243,4,23,4,4,4,4,4]]
         ],
         [
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1
+            1,1,1,1,1,1,1,1,1,1,1,1,1,1,[]
         ]
     ];
     //组织结构表格
     var tableItem = $('#tableItem').DataTable( {
         // pagingType: "full_numbers",
         processing: true,
-        // data:dataset,
-        serverSide: true,
+        data:dataset,
+        // serverSide: true,
         // "order": [[ 0, "desc" ]],
-        ajax: {
-            "url":"{:url('archive/common/datatablesPre?tableName=atlas_cate&selfid=')}"
-        },
+        // ajax: {
+        //     "url":"{:url('archive/common/datatablesPre?tableName=atlas_cate&selfid=')}"
+        // },
         dom: 'lf<"mybtnDrawing mybtn layui-btn layui-btn-sm"><"mybtnAtlas mybtn layui-btn layui-btn-sm">rtip',
         columns:[
             {
@@ -349,9 +349,7 @@
                 "targets": [2],
                 "render": function (data,type,row) {
                     var a= data;
-                    console.log(row[14])
-                    var data = row[14];
-                    var html = '<button onclick="showDrawing(this,'+data+')">点击</button>'+data;
+                    var html = '<button class="showclick">点击</button>'+data;
                     return html;
                 }
             }
@@ -374,6 +372,13 @@
             $('#tableItem_length').insertBefore(".mark");
             $('#tableItem_info').insertBefore(".mark");
             $('#tableItem_paginate').insertBefore(".mark");
+            var that = this.api();
+            //
+            $("#tableItem tbody tr").each(function (idx,item) {
+                var data =  that.row($(item)).data();//数据
+                console.log(data[14]);
+                showDrawing($(item),data[14]);
+            })
         }
     });
     //新增图册 图纸
@@ -405,14 +410,18 @@
     }).on( 'mouseleave', 'td', function () {
         $(this).parent("tr").removeClass( 'highlight' );
     });
-
+//图片点击事件
+    $(".showclick").click(function () {
+       var data =  tableItem.row($(this).parents('tr')).data();//数据
+        console.log(data[14]);
+        showDrawing($(this),data[14]);
+    });
     function showDrawing(that,data){
+        console.log(that)
         if(data.length<=0){
             return;
         };
-        var that = $(that).parents("tr");
         for(let i = 0;i<data.length;i++){
-            console.log(data[i])
             loadDrawing(that,data[i]);
         }
 
