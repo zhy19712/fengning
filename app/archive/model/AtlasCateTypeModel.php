@@ -124,4 +124,28 @@ class AtlasCateTypeModel extends Model
         $data = $this->find($id);
         return $data;
     }
+
+
+    /**
+     * 采用递归方法获得所有的节点
+     * @param $id
+     * @return array
+     */
+    public function cateTree($id){
+        $res=$this->getall();
+        if($res){
+            $result=$this->sort($res, $id);
+            return $result;
+        }
+    }
+    public function sort($data,$id){
+        static $arr=array();
+        foreach ($data as $key=>$value){
+            if($value['pid'] == $id){
+                $arr[]=$value['id'];
+                $this->sort($data,$value['id']);
+            }
+        }
+        return $arr;
+    }
 }
