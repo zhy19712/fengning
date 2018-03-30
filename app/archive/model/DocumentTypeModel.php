@@ -17,7 +17,7 @@ class DocumentTypeModel extends Model
     public function addOrEdit($mod)
     {
         if (empty($mod['id'])) {
-            $res = $this->allowField(true)->save($mod);
+            $res = $this->allowField(true)->insertGetId($mod);
         } else {
             $res = $this->allowField(true)->save($mod, ['id' => $mod['id']]);
         }

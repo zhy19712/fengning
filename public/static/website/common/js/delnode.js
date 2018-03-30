@@ -1,6 +1,6 @@
 ;(function($){
     /**
-     * @param options[树ID，是否删除父节点，ajax请求地址，ajax参数]
+     * @param options[树ID,是否删除父节点,ajax请求地址,ajax参数]
      * @author wyang
      */
     $.delnode=function(options){
@@ -10,7 +10,7 @@
             url:'./delNode',
             data:{}
         }
-        
+
         var treeObj = $.fn.zTree.getZTreeObj(option.treeId);
         var nodes = treeObj.getSelectedNodes();
         var id = nodes[0].id;

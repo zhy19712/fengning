@@ -1,8 +1,11 @@
 body{
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
+.panel-title,.current-path h3{
+    font-size: 14px;
+}
 /* 图标 */
-.layout-body{
+.layout-panel-west .layout-body{
     position: relative;
 }
 i.fa{
@@ -45,31 +48,8 @@ i.fa:hover:before{
     color: #0E2D5F;
     font-weight: bold;
 }
-/* 表格 */
-table.table i.fa{
-    margin-left: 10px;
-}
-table.dataTable tbody tr.odd{
-    background: #ddd;
-}
-table.dataTable tbody tr:hover{
-    background: #ccc;
-}
-.dataTables_wrapper .dataTables_filter{
-    float: left;
-}
-.dataTables_wrapper .dataTables_filter input{
-    padding: 6px 12px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-.dataTables_length,.dataTables_info,.dataTables_paginate{
-    display: inline-block;
-    vertical-align: middle;
-}
-.dataTables_info{
-    margin: 0 10px;
-}
+/* layui表单 */
+
 .layui-input[disabled],.layui-textarea[disabled]{
     cursor: not-allowed;
 }
