@@ -93,4 +93,13 @@ class AdminCate extends Model
         return $data;
     }
 
+    /**
+     * 根据传过来的admin_cate_type表中的id查询admin_cate表中的pid,id
+     */
+    public function getadmincateid($param)
+    {
+        $data = $this->field("id")->where("pid",$param['id'])->select();
+        return $data;
+    }
+
 }
