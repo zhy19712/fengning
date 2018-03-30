@@ -315,17 +315,13 @@
     function secEdit(that){
         // console.log(admin_table.row(".highlight").data()[7]);
         var id = admin_table.row(".highlight").data()[7];
-        console.log(id)
+        console.log(id);
         layer.open({
             type: 2,
             title: '编辑标段',
             shadeClose: true,
             area: ['780px', '560px'],
-            content: '{:url("add")}',
-            success:function (layero,index) {
-                var body = layer.getChildFrame('body', index);
-                body.find("#addId").val(id);
-            }
+            content: '{:url("add")}?id='+id+'&time='+new Date()
             // success: function(layero, index){
             //     var laysrc = layer.getChildFrame('#nameLay', index);
             //     var body = layer.getChildFrame('body', index);
@@ -466,12 +462,7 @@
             // // ,btn2: function(index, layero){
             // //     layer.close(index);
             // // }
-
         });
-
-
-
-
     }
     // var orgs=JSON.parse($("#_orgs").val());
     // // console.log(orgs)
