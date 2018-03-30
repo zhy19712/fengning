@@ -31,22 +31,13 @@ class Atlas extends Permissions
      */
     public function atlastree()
     {
-        if ($this->request->isAjax()) {
-            //实例化图册类型AtlasCateTypeModel
-            $model = new AtlasCateTypeModel();
-            //查询fengning_atlas_cate_type图册类型表
-            $data = $model->getall();
-            $res = tree($data);
-            if($res)
-            {
-                foreach ((array)$res as $k => $v) {
-                    $v['id'] = strval($v['id']);
-                    $v['pid'] = strval($v['pid']);
-                    $res[$k] = json_encode($v);
-                }
-            }
-            return json($res);
+        // 获取左侧的树结构
+        if(request()->isAjax()){
+            $node = new AtlasCateTypeModel();
+            $nodeStr = $node->getNodeInfo();
+            return json($nodeStr);
         }
+        return $this->fetch();
     }
 
     /**
@@ -105,5 +96,37 @@ class Atlas extends Permissions
             return $this->fetch();
         }
 
+    }
+
+    /**
+     * 上移下移
+     * @return mixed|\think\response\Json
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function sortNode()
+    {
+        if(request()->isAjax()){
+            $prev_id = $this->request->has('prev_id') ? $this->request->param('prev_id', 0, 'intval') : 0; // 前一个节点的编号 没有默认0
+            $prev_sort_id = $this->request->has('prev_sort_id') ? $this->request->param('prev_sort_id', 0, 'intval') : 0; // 前一个节点的排序编号 没有默认0
+
+            $id = input('post.id'); // 当前节点的编号
+            $id_sort_id = input('post.id_sort_id'); // 当前节点的排序编号
+
+            $next_id = $this->request->has('next_id') ? $this->request->param('next_id', 0, 'intval') : 0; // 后一个节点的编号 没有默认0
+            $next_sort_id = $this->request->has('next_sort_id') ? $this->request->param('next_sort_id', 0, 'intval') : 0; // 后一个节点的排序编号 没有默认0
+
+            // 下移
+            if(empty($prev_id)){
+                Db::name('admin_group')->where('id',$next_id)->update(['sort_id' => $id_sort_id]);
+                Db::name('admin_group')->where('id',$id)->update(['sort_id' => $next_sort_id]);
+            }else if(empty($next_id)){
+                Db::name('admin_group')->where('id',$id)->update(['sort_id' => $prev_sort_id]);
+                Db::name('admin_group')->where('id',$prev_id)->update(['sort_id' => $id_sort_id]);
+            }
+
+            return json(['code' => 1,'msg' => '成功']);
+        }
+        return $this->fetch();
     }
 }
