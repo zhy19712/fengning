@@ -198,9 +198,18 @@ class Division extends Permissions{
         }
     }
 
-
+    /**
+     * 导入工程划分的节点
+     * @return \think\response\Json
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @author hutao
+     */
     public function importExcel(){
-        $section_id = input('param.$section_id');// 标段编号
+        $section_id = input('param.section_id');// 标段编号
         if(empty($section_id)){
             return  json(['code' => 0,'data' => '','msg' => '请选择标段']);
         }
@@ -287,50 +296,105 @@ class Division extends Permissions{
             $insert_subitem_data = []; // 分项工程名称
             $new_excel_array = $this->delArrayNull($excel_array); // 删除空数据
             $path = './uploads/quality/division/import/' . str_replace("\\","/",$exclePath);
+            $pid = $zpid = 0;
             foreach($new_excel_array as $k=>$v){
-                if($k > 0){
+                if($k > 1){ // 前两行都是标题和说明
                     // 单位工程
-                    $insert_unit_data[$k]['name'] = $v[$name_index];
-                    $insert_unit_data[$k]['code'] = $v[$code_index];
+                    $insert_unit_data['d_name'] = $v[$name_index];
+                    $insert_unit_data['d_code'] = $v[$code_index];
+                    $insert_unit_data['section_id'] = $section_id; // 标段编号
+                    $insert_unit_data['filepath'] = $path;
+                    $insert_unit_data['pid'] = $section_id;
+                    $insert_unit_data['type'] = '1';
+                    // 已经插入了，就不需要重复插入了
+                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$name_index],'d_code'=>$v[$code_index],'section_id'=>$section_id,'type'=>'1'])->find();
+                    if(empty($flag) && !empty($v[$name_index])){
+                        $node = new DivisionModel();
+                        $flag = $node->insertTb($insert_unit_data);
+                        if($flag['code'] == -1){
+                            return json(['code' => 0,'data' => '','msg' => '单位工程-导入失败']);
+                        }
+                        $pid = $flag['data']['id'];
+                    }else{
+                        $pid = $flag['id'];
+                    }
+
                     // 子单位工程名称
-                    $insert_subunit_data[$k]['name'] = $v[$z_name_index];
-                    $insert_subunit_data[$k]['code'] = $v[$z_code_index];
+                    $insert_subunit_data['d_name'] = $v[$z_name_index];
+                    $insert_subunit_data['d_code'] = $v[$z_code_index];
+                    $insert_subunit_data['section_id'] = $section_id; // 标段编号
+                    $insert_subunit_data['filepath'] = $path;
+                    $insert_subunit_data['type'] = '2';
+                    // 已经插入了，就不需要重复插入了
+                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$z_name_index],'d_code'=>$v[$z_code_index],'section_id'=>$section_id,'type'=>'2'])->find();
+                    if(empty($flag) && !empty($v[$z_name_index])){
+                        $insert_subunit_data['pid'] = $pid;
+                        $node = new DivisionModel();
+                        $flag = $node->insertTb($insert_subunit_data);
+                        if($flag['code'] == -1){
+                            return json(['code' => 0,'data' => '','msg' => '子单位工程-导入失败']);
+                        }
+                        $zpid = $flag['data']['id'];
+                    }else{
+                        $zpid = $flag['id'];
+                    }
+
                     // 分部工程名称
-                    $insert_parcel_data[$k]['name'] = $v[$fname_index];
-                    $insert_parcel_data[$k]['code'] = $v[$fcode_index];
+                    $insert_parcel_data['d_name'] = $v[$fname_index];
+                    $insert_parcel_data['d_code'] = $v[$fcode_index];
+                    $insert_parcel_data['section_id'] = $section_id; // 标段编号
+                    $insert_parcel_data['filepath'] = $path;
+                    $insert_parcel_data['type'] = '2';
+                    // 已经插入了，就不需要重复插入了
+                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$fname_index],'d_code'=>$v[$fcode_index],'section_id'=>$section_id,'type'=>'2'])->find();
+                    if(empty($flag) && !empty($v[$fname_index])){
+                        $insert_parcel_data['pid'] = $pid;
+                        $node = new DivisionModel();
+                        $flag = $node->insertTb($insert_parcel_data);
+                        if($flag['code'] == -1){
+                            return json(['code' => 0,'data' => '','msg' => '分部工程-导入失败']);
+                        }
+                        $zpid = $flag['data']['id'];
+                    }else{
+                        $zpid = $flag['id'];
+                    }
+
                     // 子分部工程名称
-                    $insert_subdivision_data[$k]['name'] = $v[$z_fname_index];
-                    $insert_subdivision_data[$k]['code'] = $v[$z_fcode_index];
+                    $insert_subdivision_data['d_name'] = $v[$z_fname_index];
+                    $insert_subdivision_data['d_code'] = $v[$z_fcode_index];
+                    $insert_subdivision_data['section_id'] = $section_id; // 标段编号
+                    $insert_subdivision_data['filepath'] = $path;
+                    $insert_subdivision_data['type'] = '3';
+                    // 已经插入了，就不需要重复插入了
+                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$z_fname_index],'d_code'=>$v[$z_fcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
+                    if(empty($flag) && !empty($v[$z_fname_index])){
+                        $insert_subdivision_data['pid'] = $zpid;
+                        $node = new DivisionModel();
+                        $flag = $node->insertTb($insert_subdivision_data);
+                        if($flag['code'] == -1){
+                            return json(['code' => 0,'data' => '','msg' => '子分部工程-导入失败']);
+                        }
+                    }
                     // 分项工程名称
-                    $insert_subitem_data[$k]['name'] = $v[$f_xname_index];
-                    $insert_subitem_data[$k]['code'] = $v[$code_index];
+                    $insert_subitem_data['d_name'] = $v[$f_xname_index];
+                    $insert_subitem_data['d_code'] = $v[$f_xcode_index];
+                    $insert_subitem_data['section_id'] = $section_id; // 标段编号
+                    $insert_subitem_data['filepath'] = $path;
+                    $insert_subitem_data['type'] = '3';
+                    // 已经插入了，就不需要重复插入了
+                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$f_xname_index],'d_code'=>$v[$f_xcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
+                    if(empty($flag) && !empty($v[$f_xname_index])){
+                        $insert_subitem_data['pid'] = $zpid;
+                        $node = new DivisionModel();
+                        $flag = $node->insertTb($insert_subitem_data);
+                        if($flag['code'] == -1){
+                            return json(['code' => 0,'data' => '','msg' => '分项工程-导入失败']);
+                        }
+                    }
                 }
             }
-            if($insert_unit_data){
-                // 非表格数据
-                $insert_unit_data[$k]['section_id'] = $section_id; // 标段编号
-                $insert_unit_data[$k]['filepath'] = $path;
-            }
 
-            // 插入前首先判断是否是 重复插入
-            $root_pid = Db::name('quality_division')->where(['d_code' => '','d_name' => ''])->value('id');
-            if($root_pid){
-                /**
-                 * (危险操作) ==》文件已经上传并被使用过，这时如果重复导入excel那么之前关联的数据都会丢失!!!
-                 * 虑到删除节点的影响，此处不允许重复上传
-                 * (如果非要重复上传，除非此文件没被使用过，或者同意删除所有关联数据，然后联系管理员)
-                 * (如果重复上传过于频繁，可以考虑新增对比和修改的操作)
-                 */
-                // 目前的解决方法是阻止重复上传
-                return json(['code'=>0,'info'=>'警告:文件已存在.重复上传会删除所有关联的单元工程数据，如确认上传,请联系管理员']);
-            }
-
-            $success = Db::name('quality_division')->insertAll($insert_unit_data);
-            if($success !== false){
-                return  json(['code' => 1,'data' => '','msg' => '导入成功']);
-            }else{
-                return json(['code' => 0,'data' => '','msg' => '导入失败']);
-            }
+            return  json(['code' => 1,'data' => '','msg' => '导入成功']);
         }
 
     }

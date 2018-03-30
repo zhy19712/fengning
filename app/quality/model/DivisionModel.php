@@ -22,20 +22,30 @@ class DivisionModel extends Model
     public function getNodeInfo()
     {
         $section = Db::name('section')->column('id,code,name'); // 标段列表
-        $division = $this->column('id,pid,d_name,section_id'); // 工程列表
+        $division = $this->column('id,pid,d_name,section_id,type'); // 工程列表
+        $num = $this->count() + 1000;
+//        halt($num);
+
         $str = "";
-        $str .= '{ "id": "' . 1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"';
+        $str .= '[{ "id": "' . 1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"';
         $str .= '},';
         foreach($section as $v){
-            $str .= '{ "id": "' . $v['id'] . '", "pId":"' . 1 . '", "name":"' . $v['name'].'"' . ',"code":"' . $v['code'] .'"';
-            $str .= '},';
-            foreach($division as $vo){
-                if($v['id'] == $vo['sectionId']){
-                    $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"';
-                    $str .= '},';
+            $pid =$v['id'] + $num;
+            $str .= '{ "tid": "' . $pid . '", "pId":"' . 1 . '", "name":"' . $v['name'].'"' . ',"code":"' . $v['code'] .'"';
+            $str .= ',children[';
+                foreach($division as $vo){
+                    if($v['id'] == $vo['section_id'] && $vo['type'] == 1){
+                        $pid =$vo['section_id'] + $num;
+                        $str .= '{ "uid": "' . $vo['id'] . '", "pId":"' . $pid . '", "name":"' . $vo['d_name'].'"';
+                        $str .= '},';
+                    }
                 }
-            }
+            $str .= ']';
+            $str .= '},';
+
         }
+        $str .= ']';
+//        halt($str);
         return "[" . substr($str, 0, -1) . "]";
     }
 
