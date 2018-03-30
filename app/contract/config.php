@@ -5,6 +5,7 @@ return [
 	'view_replace_str' => [
 		'__CSS__'      => '/static/contract/css',
 		'__PUBLIC__'   => '/static/public',
-		'__JS__'       => '/static/contract/js'
+		'__JS__'       => '/static/contract/js',
+        '__COMMONCSS__'=> '/static/webSite/common/css',
 	],
 ];
