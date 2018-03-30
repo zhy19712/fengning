@@ -56,6 +56,19 @@
         width: 100%;
         border: 1px solid red;
     }
+    #information .layui-tab-content #tableAttr tr td{
+        padding: 8px;
+        border-top: 1px solid #e7eaec;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+        font-size: 12px;
+        max-height: 40px;
+    }
+    #information .layui-tab-content #tableAttr tr:hover{
+        background: #FDD5B5;
+    }
 
 </style>
 
@@ -100,7 +113,30 @@
             <!--属性-->
             <div class="layui-tab-item layui-show tt">
                 <div>
-
+                    <table id="tableAttr" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <td>文件名称</td>
+                                <td id="fileName"></td>
+                            </tr>
+                            <tr>
+                                <td>文件类别</td>
+                                <td id="fileCategory"></td>
+                            </tr>
+                            <tr>
+                                <td>上传人</td>
+                                <td id="uploadPerson"></td>
+                            </tr>
+                            <tr>
+                                <td>上传时间</td>
+                                <td id="uploadTime"></td>
+                            </tr>
+                            <tr>
+                                <td>文件大小</td>
+                                <td id="fileSize"></td>
+                            </tr>
+                        </thead>
+                    </table>
                     <!--<h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>-->
                     <!--<div class="ibox-tools">-->
                         <!--<i title="添加" class="fa fa-lg fa-plus-square"></i>-->
@@ -271,7 +307,6 @@
     //         });
     //     }
     // })
-
 
     //管理信息的tab 切换
     layui.use(['element', "layer", 'form', 'upload'], function () {
