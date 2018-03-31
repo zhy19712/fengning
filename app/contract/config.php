@@ -7,5 +7,6 @@ return [
 		'__PUBLIC__'   => '/static/public',
 		'__JS__'       => '/static/contract/js',
         '__COMMONCSS__'=> '/static/webSite/common/css',
+        '__COMMONJS__' => '/static/webSite/common/js',
 	],
 ];

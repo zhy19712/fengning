@@ -39,8 +39,9 @@ class Documenttype extends Permissions
     public function addOrEdit()
     {
         $m = input('post.');
-        if ($this->documentTypeService->addOrEdit($m)) {
-            return json(['code' => 1]);
+        $res=$this->documentTypeService->addOrEdit($m);
+        if ($res) {
+            return json(['code' => 1,'data'=>$res]);
         } else {
             return json(['code' => -1]);
         }

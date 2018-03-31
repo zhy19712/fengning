@@ -149,11 +149,10 @@ var setting = {
     },
     async: {
         enable : true,
-        autoParam: ["pid"],
+        autoParam: ["pid","id"],
         type : "post",
         url : "./atlastree",
-        dataType :"json",
-        dataFilter: ajaxDataFilter
+        dataType :"json"
     },
     data:{
         simpleData : {
@@ -285,27 +284,39 @@ $('#closeNode').click(function(){
 //节点移动方法
 function moveNode(zTreeObj,selectNode,state) {
     var changeNode;
-    if(state === "down"){
-        changeNode = selectNode.getNextNode();
-    }else if(state === "up"){
-        changeNode = selectNode.getPreNode();
-    }
     var change_sort_id; //发生改变的排序id
     var change_id; //发生改变的id
+
     var select_sort_id = selectNode.sort_id;//选中的排序id
     var select_id = selectNode.id;//选中的id
+    if(state === "next"){
+        changeNode = selectNode.getNextNode();
+        if (!changeNode){
+            layer.msg('已经移到底啦');
+            return false;
+        }
+    }else if(state === "prev"){
+        changeNode = selectNode.getPreNode();
+        if (!changeNode){
+            layer.msg('已经移到顶啦');
+            return false;
+        }
+    }
+    change_id = changeNode.id;
+    change_sort_id = changeNode.sort_id;
+    console.log();
     $.ajax({
         url: "./sortNode",
         type: "post",
         data: {
-            change_id:change_id,
-            change_sort_id:change_sort_id,
-            select_id:select_id,
-            select_sort_id:select_sort_id,
+            change_id:change_id, //影响节点id
+            change_sort_id:change_sort_id, //影响节点sort_id
+            select_id:select_id,//移动节点id
+            select_sort_id:select_sort_id,//移动节点sort_id
         },
         dataType: "json",
         success: function (res) {
-            zTreeObj.moveNode(changeNode, selectNode, "prev");
+            zTreeObj.moveNode(changeNode, selectNode, state);
             changeNode.sort_id = select_sort_id;
             selectNode.sort_id = change_sort_id;
         }
@@ -317,5 +328,6 @@ function getmoveNode(state) {
         layer.msg("请选择节点");
         return;
     }
+
     moveNode(zTreeObj,sNodes[0],state);
 }
