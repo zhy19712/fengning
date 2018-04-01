@@ -3,6 +3,7 @@
 namespace app\admin\model;
 
 use think\Db;
+use think\exception\PDOException;
 use \think\Model;
 class Admin extends Model
 {
@@ -51,6 +52,35 @@ class Admin extends Model
             Db::name('admin')->whereIn('id',$idArr)->delete();
         }
         return ['code' => 1, 'msg' => '删除成功'];
+    }
+
+    /**
+     * 删除管理员
+     * @param $id
+     * @return array
+     * @author hutao
+     */
+    public function delUser($id)
+    {
+        try{
+            $user = $this->where('id',$id)->column('id,thumb,signature');
+            if(!empty($user)){
+                $thumbArr = [$user[$id]['thumb'],$user[$id]['signature']];
+                $thumbPath = Db::name('attachment')->whereIn('id',$thumbArr)->column('filepath');
+                if(count($thumbPath) > 0){
+                    // 删除每一个用户的头像 和 电子签名
+                    foreach($thumbPath as $k=>$v){
+                        if(file_exists($v)){
+                            unlink($v); //删除文件
+                        }
+                    }
+                }
+                $this->where('id',$id)->delete();
+            }
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
     }
 
     /**
