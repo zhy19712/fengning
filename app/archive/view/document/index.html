@@ -8,18 +8,47 @@
         margin-left: 6px;
     }
 
-    #tableContent .mybtn i.fa:before {
+    #tableContent .mybtn i.fa:before,#tableContent .assModel i.fa:before,#tableContent .move i.fa:before,#tableContent .file i.fa:before,#tableContent .oneKeyArchiv i.fa:before {
         background: #00c0ef;
         color: #ffffff;
     }
 
-    #tableContent .mybtn {
+    #tableContent .mybtn,#tableContent .assModel,#tableContent .move,#tableContent .file,#tableContent .oneKeyArchiv{
         position: absolute;
-        right: 1%;
         top: 0;
         background-color: #00c0ef;
     }
+    #tableContent .mybtn{
+        right: 37%;
+    }
+    #tableContent .assModel{
+        right: 28%;
+    }
+    #tableContent .move{
+        right: 19%;
+    }
+    #tableContent .file{
+        right: 10%;
+    }
+    #tableContent .oneKeyArchiv{
+        right: 1%;
+    }
 
+    #tableContent #funKuai{
+        width: 100%;
+        position: absolute;
+        left: 72%;
+
+    }
+    #tableContent #funKuai>span{
+        background-color: #00c0ef;
+        margin-left: 5px;
+        color: #FFFFFF;
+    }
+    #tableContent #funKuai>span i.fa:before {
+        padding-right: 3px;
+        color: #FFFFFF;
+    }
     #tableContent #tableItem_filter {
         float: left;
     }
@@ -52,7 +81,7 @@
         border-top: 1px dotted #cecece;
     }
 
-    #information .layui-tab-content .tt{
+    #information .layui-tab-content .attrBue{
         width: 100%;
         border: 1px solid red;
     }
@@ -69,6 +98,19 @@
     #information .layui-tab-content #tableAttr tr:hover{
         background: #FDD5B5;
     }
+    #information .attrBue #keyText:focus{
+        border: 1px solid dodgerblue;
+    }
+    #information .attrBue #keyText{
+        margin: 8px;
+        padding: 8px;
+        margin-top: 0;
+        min-height: 100px;
+        overflow: hidden;
+        height: 90px;
+        width: 255px;
+    }
+
 
 </style>
 
@@ -85,6 +127,12 @@
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div id="tableContent" data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#ffffff;">
+    <!--<div id="funKuai">-->
+        <!--<span class="assModel layui-btn layui-btn-sm"><i class='fa fa-plus'></i>关联模型</span>-->
+        <!--<span class="move layui-btn layui-btn-sm"><i class='fa fa-plus'></i>移动</span>-->
+        <!--<span class="file layui-btn layui-btn-sm"><i class='fa fa-plus'></i>归档</span>-->
+        <!--<span class="oneKeyArchiv layui-btn layui-btn-sm"><i class='fa fa-plus'></i>一键归档</span>-->
+    <!--</div>-->
     <table id="tableItem" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
         <tr>
@@ -111,7 +159,7 @@
         </ul>
         <div class="layui-tab-content">
             <!--属性-->
-            <div class="layui-tab-item layui-show tt">
+            <div class="layui-tab-item layui-show attrBue">
                 <div>
                     <table id="tableAttr" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
@@ -137,6 +185,8 @@
                             </tr>
                         </thead>
                     </table>
+                    <h2 style="margin-left:8px;font-size:14px; color:#676a6c; font-weight:bold; font-family:微软雅黑; ">关键词</h2>
+                    <textarea name="keyText" id="keyText" placeholder="关键词"></textarea>
                     <!--<h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>-->
                     <!--<div class="ibox-tools">-->
                         <!--<i title="添加" class="fa fa-lg fa-plus-square"></i>-->
@@ -180,7 +230,7 @@
         ajax: {
             "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
         },
-        dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
+        dom: 'lf<"mybtn layui-btn layui-btn-sm"><"assModel layui-btn layui-btn-sm"><"move layui-btn layui-btn-sm"><"file layui-btn layui-btn-sm"><"oneKeyArchiv layui-btn layui-btn-sm">rtip',
         columns: [
             {
                 name: "name"
@@ -255,6 +305,10 @@
 
     //点击上传文件
     $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
+    $(".assModel").html("<div id='test3'><i class='fa fa-plus'></i>上传文件1</div>");
+    $(".move").html("<div id='test3'><i class='fa fa-plus'></i>上传文件2</div>");
+    $(".file").html("<div id='test3'><i class='fa fa-plus'></i>上传文件3</div>");
+    $(".oneKeyArchiv").html("<div id='test3'><i class='fa fa-plus'></i>上传文件4</div>");
 
     var upload ;
     var uploadId ;
