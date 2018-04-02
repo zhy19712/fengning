@@ -30,7 +30,8 @@
         var option = {
             tablePath:'/admin/common/datatablesPre?tableName=admin',
             parentShow:true,
-            tableItem:tableItem
+            tableItem:tableItem,
+            isLoadPath:true
         }
 
         $.extend(option,options);
@@ -45,17 +46,19 @@
 
         //获取路径
         function getPath() {
-            $.ajax({
-                url: "./getParents",
-                type: "post",
-                data: {id:options.treeNode.id},
-                dataType: "json",
-                success: function (res) {
-                    if(res.msg === "success"){
-                        $("#path").text("当前路径:" + res.path)
+            if(option.isLoadPath){
+                $.ajax({
+                    url: "./getParents",
+                    type: "post",
+                    data: {id:options.treeNode.id},
+                    dataType: "json",
+                    success: function (res) {
+                        if(res.msg === "success"){
+                            $("#path").text("当前路径:" + res.path)
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         //是否允许父节点加载表格数据

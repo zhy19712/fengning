@@ -9,5 +9,7 @@ define('FENGNING_VERSION', '1.3.3');
 define('EXTEND_PATH', __DIR__ . '/../extend/');
 //重定义第三方类库目录
 define('VENDOR_PATH', __DIR__ . '/../vendor/');
+//
+define('SITE_URL', 'http://127.0.0.1/tp5');
 // 加载框架引导文件
 require __DIR__ . '/../thinkphp/start.php';
