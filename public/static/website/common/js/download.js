@@ -21,14 +21,14 @@
                     $("#form_container").empty();
                     var str = "";
                     str += ""
-                        + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
-                        + "<form id=download"+ id +" action="+ option.tablePath +" method='get' target=downloadFrame"+ id +">"
+                        + "<iframe name=downloadFrame"+ file_id +" style='display:none;'></iframe>"
+                        + "<form id=download"+ file_id +" action="+ option.submitPath +" method='get' target=downloadFrame"+ file_id +">"
                         + "<span class='file_name' style='color: #000;'>"+str+"</span>"
-                        + "<input class='file_url' style='display: none;' name='major_key' value="+ id +">"
-                        + "<button type='submit' class=btn" + id +"></button>"
+                        + "<input class='file_url' style='display: none;' name='file_id' value="+ file_id +">"
+                        + "<button type='submit' class=btn" + file_id +"></button>"
                         + "</form>"
                     $("#form_container").append(str);
-                    $("#form_container").find(".btn" + id).click();
+                    $("#form_container").find(".btn" + file_id).click();
                 }
             }
         })

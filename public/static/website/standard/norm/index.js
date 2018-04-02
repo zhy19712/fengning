@@ -15,7 +15,7 @@ $.datatable({
     ajax:{
         'url':'/standard/common/datatablesPre?tableName=norm_file'
     },
-    dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm"<".fa">>>tipr',
+    dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm"<".fa">>>tipr~',
     columns:[
         {
             name: "standard_number"
@@ -109,4 +109,27 @@ function download(that) {
         url:'./fileDownload',
         submitPath:'./fileDownload'
     });
+}
+
+//删除
+function del(that){
+    var id = $(that).parent("td").parent("tr").children("td:eq('0')").text();
+    var groupid = $('input[type="hidden"][name="groupId"]').val();
+    layer.confirm('确认删除此条记录吗?', {icon: 3, title:'提示'}, function(index){
+        $.ajax({
+            url: "{:url('Risksources/sourcesDel')}",
+            data: {'major_key' : id},
+            type: "get",
+            dataType: "json",
+            success: function (res) {
+                if(res.code == 1){
+                    layer.msg(res.msg,{icon:1,time:1500,shade: 0.1});
+                    tableItem.ajax.url("__SCRIPT__/safety_risksources.php?pid="+ groupid).load();
+                }else{
+                    layer.msg(res.msg,{icon:0,time:1500,shade: 0.1});
+                }
+            }
+        })
+        layer.close(index);
+    })
 }
