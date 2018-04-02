@@ -242,6 +242,7 @@ class Atlas extends Permissions
             $model = new AtlasCateModel();
             $param = input('post.');
                 $data = [
+                    'attachmentId'=>$param['attachmentId'],//文件关联attachment表中的id
                     'selfid' => $param['selfid'],//admin_cate_type表中的id,区分图册节点树
                     'picture_number' => $param['picture_number'],//图号
                     'picture_name' => $param['picture_name'],//图名
@@ -254,6 +255,34 @@ class Atlas extends Permissions
                 $flag = $model->insertCate($data);
                 return json($flag);
         }
+    }
+
+    /**
+     * 下载一条图册文件图片
+     * @return \think\response\Json
+     */
+    public function atlascateDownload()
+    {
+        if(request()->isAjax()){
+            return json(['code' => 1]);
+        }
+        $id = input('param.id');
+        $model = new AtlasCateModel();
+        $param = $model->getOne($id);
+        $filePath = $param['path'];
+        $fileName = $param['filename'];
+        $file = fopen($filePath, "r"); //   打开文件
+        //输入文件标签
+        $fileName = iconv("utf-8","gb2312",$fileName);
+        Header("Content-type:application/octet-stream ");
+        Header("Accept-Ranges:bytes ");
+        Header("Accept-Length:   " . filesize($filePath));
+        Header("Content-Disposition:   attachment;   filename= " . $fileName);
+
+        //   输出文件内容
+        echo fread($file, filesize($filePath));
+        fclose($file);
+        exit;
     }
 
 
