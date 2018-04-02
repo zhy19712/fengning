@@ -1,4 +1,4 @@
-{include file="../../admin/view/public/common_header"}
+{include file="../app/public/common_header.html"}
 <style>
     body .panel-title{
         font-size: 14px;
@@ -90,6 +90,9 @@
     }
     .fa.fa-save:before ,.fa.fa-close:before,.fa.fa-save:hover:before,.fa.fa-close:hover:before{
         color: white;
+    }
+    .showclick{
+        font-size: 14px;
     }
 </style>
 <div data-options="region:'west',title:'角色分类树',split:true" style="width:240px;">
@@ -234,7 +237,7 @@
     <div class="layui-tab">
         <ul class="layui-tab-title">
             <li class="layui-this">讨论</li>
-            <li>共享</li>
+            <li class="layui-this">共享</li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
@@ -246,7 +249,6 @@
             </div>
             <div class="layui-tab-item ">
                 <div style="width: 100%; height: 30px;">
-                    <!--<h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>-->
                     <ul class="layui-tab-title">
                         <li class="layui-this">共享人员</li>
                         <li>下载记录</li>
@@ -264,28 +266,18 @@
     </div>
 </div>
 
-{include file="../../admin/view/public/common_footer"}
+{include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/archive/atlas/index.js"></script>
 <script>
-
-    var dataset = [
-        [
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,[[1,2,3,1,1,1,14,4,4,4,4,4,4,4],[1,2,3,4,4,434,243,4,23,4,4,4,4,4]]
-        ],
-        [
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,[]
-        ]
-    ];
     //组织结构表格
     var tableItem = $('#tableItem').DataTable( {
         // pagingType: "full_numbers",
         processing: true,
-        data:dataset,
-        // serverSide: true,
-        // "order": [[ 0, "desc" ]],
-        // ajax: {
-        //     "url":"{:url('archive/common/datatablesPre?tableName=atlas_cate&selfid=')}"
-        // },
+        // data:dataset,
+        serverSide: true,
+        ajax: {
+            "url":"{:url('archive/common/datatablesPre?tableName=atlas_cate&selfid=')}"
+        },
         dom: 'lf<"mybtnDrawing mybtn layui-btn layui-btn-sm"><"mybtnAtlas mybtn layui-btn layui-btn-sm">rtip',
         columns:[
             {
@@ -339,8 +331,10 @@
                 "targets": [13],
                 "render" :  function(data,type,row) {
                     var a = data;
-                    var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+data+")'><i class='fa fa-pencil'></i></a>" ;
+                    var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+row[13]+")'><i class='fa fa-pencil'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-download'></i></a>" ;
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-search'></i></a>" ;
                     return html;
                 }
             },
@@ -349,7 +343,11 @@
                 "targets": [2],
                 "render": function (data,type,row) {
                     var a= data;
-                    var html = '<button class="showclick">点击</button>'+data;
+                    if(row[14].length<=0){
+                        var html = data;
+                    }else{
+                        var html = '<i class="showclick fa fa-caret-down"></i>'+data;
+                    }
                     return html;
                 }
             }
@@ -372,11 +370,22 @@
             $('#tableItem_length').insertBefore(".mark");
             $('#tableItem_info').insertBefore(".mark");
             $('#tableItem_paginate').insertBefore(".mark");
+
+            // var that = this.api();
+            // //
+            // $("#tableItem tbody tr").each(function (idx,item) {
+            //     var data =  that.row($(item)).data();//数据
+            //     console.log(data[14]);
+            //     showDrawing($(item),data[14]);
+            // })
+        },
+        "fnDrawCallback":function () {
             var that = this.api();
-            //
             $("#tableItem tbody tr").each(function (idx,item) {
                 var data =  that.row($(item)).data();//数据
-                console.log(data[14]);
+                if(!data){
+                    return;
+                }
                 showDrawing($(item),data[14]);
             })
         }
@@ -396,13 +405,42 @@
             area: ['690px', '540px'],
             content:atlasFormDom
         });
+        $("#addId").val(selfid);
+        $("#section").html(section);
         //日期
 
         layui.laydate.render({
-            elem: '#create_time',
+            elem: '#completion_date',
             type: 'month'
         });
         layui.form.render();
+    });
+    //点击新增事件 添加图纸
+    $("#tableItem_wrapper .mybtnDrawing").click(function () {
+        if(!isAtlas){
+            layer.msg("请先选择图册");
+            return;
+        }
+        layer.open({
+            type: 1,
+            title: '新增图纸',
+            area: ['690px', '340px'],
+            content:drawingFormDom
+        });
+        $("#picture_number_drawing").val(selectData[1]+"-");
+        layui.upload.render({
+            elem: '#upload',
+            url: "{:url('archive/common/upload?module=atlas&use=atlas_thumb')}",
+            accept: 'file',//普通文件
+            exts: 'jpg|png|jpeg|pdf',
+            before: function(obj){
+                obj.preview(function(index, file, result){
+                    uploadName = file.name;
+                    $("#file_name").val(file.name);
+                    console.log(file.name);//获取文件名，result就是base64
+                })
+            }
+        });
     });
     //变色
     $('#tableItem tbody').on( 'mouseover', 'td', function () {
@@ -410,14 +448,7 @@
     }).on( 'mouseleave', 'td', function () {
         $(this).parent("tr").removeClass( 'highlight' );
     });
-//图片点击事件
-    $(".showclick").click(function () {
-       var data =  tableItem.row($(this).parents('tr')).data();//数据
-        console.log(data[14]);
-        showDrawing($(this),data[14]);
-    });
     function showDrawing(that,data){
-        console.log(that)
         if(data.length<=0){
             return;
         };
@@ -428,7 +459,10 @@
     };
     //添加折叠表格
     function loadDrawing(that,data) {
-        var trDom = '<tr role="row">' +
+        var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 2px;' onclick='conEdit("+data[13]+")'><i class='fa fa-download'></i></a>" ;
+        html += "<a type='button' class=''  onclick='conDel("+data[13]+")'><i class='fa fa-trash'></i></a>" ;
+        html += "<a type='button' class=''  onclick='conPicshow("+data[13]+")'><i class='fa fa-search'></i></a>" ;
+        var trDom = '<tr role="row" class="c'+data[14]+' drawing">' +
             '<td >'+data[0]+'</td>' +
             '<td >'+data[1]+'</td>' +
             '<td >'+data[2]+'</td>' +
@@ -442,7 +476,7 @@
             '<td >'+data[10]+'</td>' +
             '<td >'+data[11]+'</td>' +
             '<td >'+data[12]+'</td>' +
-            '<td >'+data[13]+'</td>' +
+            '<td >'+html+'</td>' +
             '</tr>';
         $(that).after(trDom);
     }

@@ -14,6 +14,7 @@ use app\archive\model\AtlasCateModel;
 use \think\Controller;
 use think\Db;
 use think\Request;
+use \think\Session;
 
 class Common extends Controller
 {
