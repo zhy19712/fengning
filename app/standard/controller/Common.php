@@ -69,7 +69,7 @@ class Common extends Controller
             if($limitFlag){
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('id,standard_number,standard_name,material_date,alternate_standard,remark,file_id')
+                    ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
                     ->whereIn('sid',$idArr)
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start),intval($length))->select();
@@ -80,7 +80,7 @@ class Common extends Controller
             if($limitFlag){
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('id,standard_number,standard_name,material_date,alternate_standard,remark,file_id')
+                    ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
                     ->whereIn('sid',$idArr)
                     ->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = $recordsTotal;

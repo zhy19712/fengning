@@ -304,7 +304,7 @@ class Division extends Permissions{
                     $insert_unit_data['d_code'] = $v[$code_index];
                     $insert_unit_data['section_id'] = $section_id; // 标段编号
                     $insert_unit_data['filepath'] = $path;
-                    $insert_unit_data['pid'] = $section_id;
+                    $insert_unit_data['pid'] = '0';
                     $insert_unit_data['type'] = '1';
                     // 已经插入了，就不需要重复插入了
                     $flag = Db::name('quality_division')->where(['d_name'=>$v[$name_index],'d_code'=>$v[$code_index],'section_id'=>$section_id,'type'=>'1'])->find();
