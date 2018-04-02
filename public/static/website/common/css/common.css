@@ -18,6 +18,16 @@ i.fa:before{
 i.fa:hover:before{
     color: #009dc3;
 }
+/* 路径 */
+.current-path .add{
+    float: right;
+}
+.current-path i.fa:before{
+    margin-right: 5px;
+    color: #FFF;
+    background: none;
+    border-color: #FFF;
+}
 /* 树 */
 .ztree-title{
     position: absolute;

@@ -1,15 +1,6 @@
 .ztree-title i.fa{
     width: 11%;
 }
-.current-path .add{
-    float: right;
-}
-.current-path i.fa:before{
-    margin-right: 5px;
-    color: #FFF;
-    background: none;
-    border-color: #FFF;
-}
 .current-path i.fa:hover:before{
     color: #FFF;
 }
