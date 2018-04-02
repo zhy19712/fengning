@@ -78,6 +78,45 @@ class AtlasCateModel extends Model
         $data = $this->where("id",$id)->find();
         return $data;
     }
+    /**
+     * 查询一条图册下的所有的图片信息
+     */
+    public function getAllpicture($id)
+    {
+        //定义一个空的数组
+        $children = array();
+
+        $data = Db::name("atlas_cate")->alias('a')
+            ->join('attachment f', 'a.attachmentId = f.id', 'left')
+            ->field('a.picture_number,a.picture_name,a.picture_papaer_num,a.date,a.paper_category,a.owner,FROM_UNIXTIME(f.create_time) as create_time,f.filepath,a.id,a.pid')
+            ->where('pid', $id)
+            ->select();
+        if($data)
+        {
+            foreach ($data as $k=>$v)
+            {
+                $children[$k][] = '';
+                $children[$k][] = $v['picture_number'];
+                $children[$k][] = $v['picture_name'];
+                $children[$k][] = $v['picture_papaer_num'];
+                $children[$k][] = '';
+                $children[$k][] = '';
+                $children[$k][] = '';
+                $children[$k][] = '';
+                $children[$k][] = $v['date'];
+                $children[$k][] = '';
+                $children[$k][] = $v['paper_category'];
+                $children[$k][] = $v['owner'];
+                $children[$k][] = $v['create_time'];
+                $children[$k][] = $v['filepath'];
+                $children[$k][] = $v['id'];
+                $children[$k][] = $v['pid'];
+            }
+        }
+
+
+        return $children;
+    }
 
 
 }
