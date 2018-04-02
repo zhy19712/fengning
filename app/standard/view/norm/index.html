@@ -44,13 +44,27 @@
         <div class="layui-inline">
             <label class="layui-form-label">实施日期</label>
             <div class="layui-input-inline">
-                <input type="text" name="material_date" placeholder="请输入标准编号" lay-verify="required" autocomplete="off" class="layui-input">
+                <input type="text" name="material_date" placeholder="请输入标准编号" lay-verify="required" autocomplete="off" id="material_date" class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">替代标准</label>
             <div class="layui-input-inline">
                 <input type="text" name="alternate_standard" placeholder="请输入标准名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="autograph">
+            <div class="layui-block">
+                <label class="layui-form-label">附件</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="file_name" placeholder="请输入标准名称" autocomplete="off" class="layui-input">
+                    <input type="hidden" id="file_id">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <div id="upload" class="upload"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -62,11 +76,12 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="save">保存</button>
+            <button class="layui-btn" lay-submit lay-filter="save" id="save">保存</button>
             <button type="button" class="layui-btn layui-btn-primary close">关闭</button>
         </div>
     </div>
 </form>
+<div id="form_container" style="display: none;"></div>
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/standard/norm/index.js"></script>
 <script></script>
