@@ -47,6 +47,18 @@ class Document extends Permissions
     }
 
     /**
+     * 属性
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getOne()
+    {
+       return json(
+           DocumentModel::get(input('id'),['documentType','attachmentInfo'])
+       );
+    }
+
+    /**
      * 移动文档
      * @return \think\response\Json
      */
@@ -60,6 +72,18 @@ class Document extends Permissions
         }
     }
 
+    /**
+     * 编辑关键字
+     * @return \think\response\Json
+     */
+    public function remark()
+    {
+        $mod=input('post.');
+        if ($this->documentService->remark($mod)) {
+            return json(['code'=>1]);
+        }
+        return json(['code' => -1]);
+    }
     /**
      * 归档
      * @return \think\response\Json

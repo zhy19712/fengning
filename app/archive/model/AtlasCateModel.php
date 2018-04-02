@@ -75,7 +75,7 @@ class AtlasCateModel extends Model
     */
     public function getOne($id)
     {
-        $data = $this->where("id",$id)->find();
+        $data = $this->where('id', $id)->find();
         return $data;
     }
     /**
@@ -86,9 +86,8 @@ class AtlasCateModel extends Model
         //定义一个空的数组
         $children = array();
 
-        $data = Db::name("atlas_cate")->alias('a')
-            ->join('attachment f', 'a.attachmentId = f.id', 'left')
-            ->field('a.picture_number,a.picture_name,a.picture_papaer_num,a.date,a.paper_category,a.owner,f.create_time as create_time,a.id,a.pid')
+        $data = $this
+            ->field('picture_number,picture_name,picture_papaer_num,date,paper_category,owner,upload_date,id,pid')
             ->where('pid', $id)
             ->select();
         if($data)
@@ -107,7 +106,7 @@ class AtlasCateModel extends Model
                 $children[$k][] = '';
                 $children[$k][] = $v['paper_category'];
                 $children[$k][] = $v['owner'];
-                $children[$k][] = date("Y-m-d",$v['create_time']);
+                $children[$k][] = date("Y-m-d",$v['upload_date']);
                 $children[$k][] = $v['id'];
                 $children[$k][] = $v['pid'];
             }
@@ -116,6 +115,30 @@ class AtlasCateModel extends Model
 
         return $children;
     }
+
+    /**
+     * 根据节点id查询图册表的信息
+     *
+     */
+    public function getpicinfo($id)
+    {
+        $data = $this->field("path")->where("selfid",$id)->select();
+        return $data;
+    }
+
+    /*
+     * 根据图册id删除一条图册记录
+     */
+    public function delselfidCate($id)
+    {
+        try{
+            $this->where("selfid",$id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
 
 
 }
