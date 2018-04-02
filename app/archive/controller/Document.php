@@ -73,6 +73,18 @@ class Document extends Permissions
     }
 
     /**
+     * 编辑关键字
+     * @return \think\response\Json
+     */
+    public function remark()
+    {
+        $mod=input('post.');
+        if ($this->documentService->remark($mod)) {
+            return json(['code'=>1]);
+        }
+        return json(['code' => -1]);
+    }
+    /**
      * 归档
      * @return \think\response\Json
      */
