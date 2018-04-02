@@ -127,4 +127,28 @@ class Norm extends Permissions
         }
     }
 
+    /**
+     * 获取路径
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function getParents()
+    {
+        /**
+         * 前台就传递 当前点击的节点的 id 编号
+         */
+        if(request()->isAjax()){
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            $node = new NormModel();
+            $path = "";
+            while($id>0)
+            {
+                $data = $node->getOne($id);
+                $path = $data['name'] . ">>" . $path;
+                $id = $data['pid'];
+            }
+            return json(['code' => 1,'path' => substr($path, 0 , -2),'msg' => "success"]);
+        }
+    }
+
 }
