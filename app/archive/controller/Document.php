@@ -122,4 +122,13 @@ class Document extends Permissions
             return json(['code' => -1]);
         }
     }
+
+    /**
+     * 绑定文件
+     * @return mixed
+     */
+    public function bind()
+    {
+        return $this->fetch();
+    }
 }
