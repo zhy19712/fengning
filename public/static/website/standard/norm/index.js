@@ -15,6 +15,7 @@ $.datatable({
     ajax:{
         'url':'/standard/common/datatablesPre?tableName=norm_file'
     },
+    dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm"<".fa">>>tipr',
     columns:[
         {
             name: "standard_number"
@@ -47,6 +48,7 @@ $.datatable({
         }
     ],
 });
+$('#add').html('新增');
 //新增弹层
 $.add({
     area:['660px','400px']
@@ -105,6 +107,6 @@ function download(that) {
     $.download({
         that:that,
         url:'./fileDownload',
-        tablePath:'/standard/common/datatablesPre?tableName=norm_file'
+        submitPath:'./fileDownload'
     });
 }
