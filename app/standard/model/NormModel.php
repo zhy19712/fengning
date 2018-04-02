@@ -20,7 +20,7 @@ class NormModel extends Model
 
     public function getNodeInfo()
     {
-        $result = Db::name('standard')->column('id,pid,name');
+        $result = Db::name('norm')->column('id,pid,name');
         $str = "";
         foreach($result as $key=>$vo){
             $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
@@ -82,7 +82,7 @@ class NormModel extends Model
 
     //递归获取当前节点的所有子节点
     public function cateTree($id){
-        $res = Db::name('standard')->all();
+        $res = Db::name('norm')->all();
         if($res){
             $result=$this->sort($res, $id);
             return $result;
