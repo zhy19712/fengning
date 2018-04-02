@@ -1,25 +1,54 @@
 {include file="../../admin/view/public/common_header"}
 <style>
-    <!--
-    左边的树-- >
+
     #nodeZtree .ztree-title i.fa {
         width: 12%;
     }
+    #nodeZtree .ztree-title #add {
+        margin-left: 6px;
+    }
 
-    <!--
-    中间的table-- >
-    #tableContent .mybtn i.fa:before {
+    #tableContent .mybtn i.fa:before,#tableContent .assModel i.fa:before,#tableContent .move i.fa:before,#tableContent .file i.fa:before,#tableContent .oneKeyArchiv i.fa:before {
         background: #00c0ef;
         color: #ffffff;
     }
 
-    #tableContent .mybtn {
+    #tableContent .mybtn,#tableContent .assModel,#tableContent .move,#tableContent .file,#tableContent .oneKeyArchiv{
         position: absolute;
-        right: 1%;
         top: 0;
         background-color: #00c0ef;
     }
+    #tableContent .mybtn{
+        right: 37%;
+    }
+    #tableContent .assModel{
+        right: 28%;
+    }
+    #tableContent .move{
+        right: 19%;
+    }
+    #tableContent .file{
+        right: 10%;
+    }
+    #tableContent .oneKeyArchiv{
+        right: 1%;
+    }
 
+    #tableContent #funKuai{
+        width: 100%;
+        position: absolute;
+        left: 72%;
+
+    }
+    #tableContent #funKuai>span{
+        background-color: #00c0ef;
+        margin-left: 5px;
+        color: #FFFFFF;
+    }
+    #tableContent #funKuai>span i.fa:before {
+        padding-right: 3px;
+        color: #FFFFFF;
+    }
     #tableContent #tableItem_filter {
         float: left;
     }
@@ -52,15 +81,36 @@
         border-top: 1px dotted #cecece;
     }
 
-    #tableContent .dataTables_scrollBody {
-        position: relative;
-        overflow: auto;
+    #information .layui-tab-content .attrBue{
         width: 100%;
-        top: 11px;
+        border: 1px solid red;
+    }
+    #information .layui-tab-content #tableAttr tr td{
+        padding: 8px;
+        border-top: 1px solid #e7eaec;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+        font-size: 12px;
+        max-height: 40px;
+    }
+    #information .layui-tab-content #tableAttr tr:hover{
+        background: #FDD5B5;
+    }
+    #information .attrBue #keyText:focus{
+        border: 1px solid dodgerblue;
+    }
+    #information .attrBue #keyText{
+        margin: 8px;
+        padding: 8px;
+        margin-top: 0;
+        min-height: 100px;
+        overflow: hidden;
+        height: 90px;
+        width: 255px;
     }
 
-    <!--
-    右边的管理信息-- >
 
 </style>
 
@@ -77,6 +127,12 @@
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div id="tableContent" data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#ffffff;">
+    <!--<div id="funKuai">-->
+        <!--<span class="assModel layui-btn layui-btn-sm"><i class='fa fa-plus'></i>关联模型</span>-->
+        <!--<span class="move layui-btn layui-btn-sm"><i class='fa fa-plus'></i>移动</span>-->
+        <!--<span class="file layui-btn layui-btn-sm"><i class='fa fa-plus'></i>归档</span>-->
+        <!--<span class="oneKeyArchiv layui-btn layui-btn-sm"><i class='fa fa-plus'></i>一键归档</span>-->
+    <!--</div>-->
     <table id="tableItem" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
         <tr>
@@ -103,17 +159,43 @@
         </ul>
         <div class="layui-tab-content">
             <!--属性-->
-            <div class="layui-tab-item layui-show">
-                <div style="width: 100%; height: 30px;">
-                    <h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>
-                    <div class="ibox-tools">
-                        <i title="添加" class="fa fa-lg fa-plus-square"></i>
-                    </div>
+            <div class="layui-tab-item layui-show attrBue">
+                <div>
+                    <table id="tableAttr" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <td>文件名称</td>
+                                <td id="fileName"></td>
+                            </tr>
+                            <tr>
+                                <td>文件类别</td>
+                                <td id="fileCategory"></td>
+                            </tr>
+                            <tr>
+                                <td>上传人</td>
+                                <td id="uploadPerson"></td>
+                            </tr>
+                            <tr>
+                                <td>上传时间</td>
+                                <td id="uploadTime"></td>
+                            </tr>
+                            <tr>
+                                <td>文件大小</td>
+                                <td id="fileSize"></td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <h2 style="margin-left:8px;font-size:14px; color:#676a6c; font-weight:bold; font-family:微软雅黑; ">关键词</h2>
+                    <textarea name="keyText" id="keyText" placeholder="关键词"></textarea>
+                    <!--<h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>-->
+                    <!--<div class="ibox-tools">-->
+                        <!--<i title="添加" class="fa fa-lg fa-plus-square"></i>-->
+                    <!--</div>-->
                 </div>
-                <div class="searchName" style="margin-top: 10px;">
-                    <input type="text" id="usernameSearch" class="layui-input" placeholder="用户名称"/>
+                <div class="searchName">
+                    <!--<input type="text" id="usernameSearch" class="layui-input" placeholder="用户名称"/>-->
                 </div>
-                <div class="userContainer" style="width: 100%;"></div>
+                <div class="userContainer"></div>
             </div>
             <!--共享-->
             <div class="layui-tab-item">
@@ -148,7 +230,7 @@
         ajax: {
             "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
         },
-        dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
+        dom: 'lf<"mybtn layui-btn layui-btn-sm"><"assModel layui-btn layui-btn-sm"><"move layui-btn layui-btn-sm"><"file layui-btn layui-btn-sm"><"oneKeyArchiv layui-btn layui-btn-sm">rtip',
         columns: [
             {
                 name: "name"
@@ -176,8 +258,10 @@
                 "targets": [5],
                 "render": function (data, type, row) {
                     var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(" + data + ")'><i class='fa fa-pencil'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-trash'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(" + data + ")'><i class='fa fa-trash'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-pencil'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-chain'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-file-text'></i></a>";
                     return html;
                 }
             },
@@ -220,7 +304,139 @@
     });
 
     //点击上传文件
-    $(".mybtn").html("<div><i class='fa fa-plus'></i>上传文件</div>");
+    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
+    $(".assModel").html("<div id='test3'><i class='fa fa-plus'></i>上传文件1</div>");
+    $(".move").html("<div id='test3'><i class='fa fa-plus'></i>上传文件2</div>");
+    $(".file").html("<div id='test3'><i class='fa fa-plus'></i>上传文件3</div>");
+    $(".oneKeyArchiv").html("<div id='test3'><i class='fa fa-plus'></i>上传文件4</div>");
+
+    var upload ;
+    var uploadId ;
+    var uploadName ;
+    // $(".mybtn >div").click(function () {
+    //     if (!selfid) {
+    //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
+    //         return;
+    //     }else if(selfid){
+    //         $(".mybtn >div").attr("id","test3");
+    //         layui.upload.render({
+    //             elem: '#test3',
+    //             url: "{:url('admin/common/upload?module=document&use=archive')}",
+    //             accept: 'file',//普通文件
+    //             exts: 'doc|docx|pdf',
+    //             before: function(obj){
+    //                 obj.preview(function(index, file, result){
+    //                     uploadName = file.name;
+    //                     console.log(file.name);//获取文件名，result就是base64
+    //                 })
+    //             },
+    //             done: function(res){
+    //                 console.log(res)
+    //                 if(res.code == 2){
+    //                     uploadId = res.id;
+    //                     $.ajax({
+    //                         url:"{:url('documenttype/add')}",
+    //                         data:{
+    //                             name: uploadName, //名称
+    //                             attachmentId: uploadId,  //文档关联Id
+    //                             type:selfid,
+    //                         },
+    //                         type:'post',
+    //                         success:function(res) {
+    //                             console.log(res)
+    //                             // if(res.code == 1) {
+    //                             //     layer.alert(res.msg, function(index){
+    //                             //         location.href = res.url;
+    //                             //     })
+    //                             // } else {
+    //                             //     layer.msg(res.msg);
+    //                             // }
+    //                         }
+    //                     })
+    //                     layer.msg("上传成功！",{time:1500})
+    //                 }else{
+    //                     layer.msg("上传失败！",{time:1500})
+    //                 }
+    //             },
+    //         });
+    //     }
+    // })
+
+    //管理信息的tab 切换
+    layui.use(['element', "layer", 'form', 'upload'], function () {
+        var $ = layui.jquery
+            , element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
+            , upload = layui.upload;
+
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+        //监听提交
+        form.on('submit(demo1)', function (data) {
+            $.ajax({
+                type: "post",
+                url: "./editCate",
+                data: data.field,
+                success: function (res) {
+                    if (res.code == 1) {
+                        var url = "/admin/common/datatablespre/tableName/admin_cate/id/" + selfid + ".shtml";
+                        tableItem.ajax.url(url).load();
+                        parent.layer.msg('保存成功！');
+                        layer.closeAll();
+                    }
+                },
+                error: function (data) {
+                    debugger;
+                }
+            });
+            return false;
+        });
+        upload.render({
+            elem: '#test3',
+            url: "{:url('admin/common/upload?module=document&use=archive')}",
+            accept: 'file',//普通文件
+            exts: 'doc|docx|pdf',
+            before: function(obj){
+                obj.preview(function(index, file, result){
+                    uploadName = file.name;
+                    console.log(file.name);//获取文件名，result就是base64
+                })
+            },
+            done: function(res){
+                console.log(res)
+                if(res.code == 2){
+                    uploadId = res.id;
+                    $.ajax({
+                        url:"{:url('document/add')}",
+                        data:{
+                            name: uploadName, //名称
+                            attachmentId: uploadId,  //文档关联Id
+                            type:selfid,
+                        },
+                        type:'post',
+                        success:function(res) {
+                            console.log(res)
+                            if(res.code == 1) {
+                                var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+                                tableItem.ajax.url(url).load();
+                            } else {
+                                layer.msg('获取数据失败！');
+                            }
+                        }
+                    })
+                    layer.msg("上传成功！",{time:1500})
+                }else{
+                    layer.msg("上传失败！",{time:1500})
+                }
+            },
+        });
+    });
+
+
+
+
 
     $(function () {
         initPermissionTree();
@@ -285,37 +501,7 @@
     };
     zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
-    //管理信息的tab 切换
-    layui.use(['element', "layer", 'form'], function () {
-        var $ = layui.jquery
-            , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
 
-        var form = layui.form
-            , layer = layui.layer
-            , layedit = layui.layedit
-            , laydate = layui.laydate;
-
-        //监听提交
-        form.on('submit(demo1)', function (data) {
-            $.ajax({
-                type: "post",
-                url: "./editCate",
-                data: data.field,
-                success: function (res) {
-                    if (res.code == 1) {
-                        var url = "/admin/common/datatablespre/tableName/admin_cate/id/" + selfid + ".shtml";
-                        tableItem.ajax.url(url).load();
-                        parent.layer.msg('保存成功！');
-                        layer.closeAll();
-                    }
-                },
-                error: function (data) {
-                    debugger;
-                }
-            });
-            return false;
-        });
-    });
 
     //点击获取路径
     function nodeClick(e, treeId, node) {
@@ -354,22 +540,21 @@
             $.ajax({
                 url: "{:url('documenttype/addOrEdit')}",
                 type: "post",
-                data: {pid: pid, name: value, id: ''},
+                data: {pid: pid, name: value},
                 success: function (res) {
                     console.log(res)
                     if (res.code === 1) {
+                        console.log(sNodes)
                         if (sNodes) {
-                            zTreeObj.addNodes(sNodes[0], res.data);
+                            zTreeObj.addNodes(sNodes[0], {"id":res.data,"pid":pid,"name":value});
                         } else {
-                            zTreeObj.addNodes(null, res.data);
+                            zTreeObj.addNodes(null, {"id":res.data,"pid":pid,"name":value});
                         }
-
                     }
                 }
             });
             layer.close(index);
         });
-
     };
 
     //编辑节点

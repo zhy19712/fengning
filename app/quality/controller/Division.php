@@ -67,7 +67,7 @@ class Division extends Permissions{
             $rule = [
                 ['section_id', 'require|number', '请选择标段|标段只能是数字'],
                 ['pid', 'require|number', 'pid不能为空|pid只能是数字'],
-                ['d_code', 'require|alphaDash', '编码不能为空|编码只能是字母、数字和破折号 - 的组合'],
+                ['d_code', 'require|alphaDash', '编码不能为空|编码只能是字母、数字、下划线 _和破折号 - 的组合'],
                 ['d_name', 'require|max:100', '名称不能为空|名称不能超过100个字符'],
                 ['type', 'require|number', '请选择分类|分类只能是数字'],
                 ['primary', 'require|number', '请选择是否是主要工程|是否是主要工程只能是数字']
@@ -177,8 +177,7 @@ class Division extends Permissions{
      */
     public function excelDownload()
     {
-        $filePath = './static/division/工程划分导入模板.xlsx';
-//        halt($filePath);
+        $filePath = './static/division/division.xlsx';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){

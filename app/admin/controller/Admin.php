@@ -267,7 +267,7 @@ class Admin extends Permissions
     			$post = $this->request->post();
     			//验证  唯一规则： 表名，字段名，排除主键值，主键名
 	            $validate = new \think\Validate([
-	                ['name', 'require|alphaDash', '管理员名称不能为空|用户名格式只能是字母、数组、——或_']
+	                ['name', 'require|alphaDash', '管理员名称不能为空|用户名格式只能是字母、数字、下划线 _ 和破折号 - 的组合']
 	            ]);
 	            //验证部分数据合法性
 	            if (!$validate->check($post)) {
@@ -307,7 +307,7 @@ class Admin extends Permissions
     			$post = $this->request->post();
     			//验证  唯一规则： 表名，字段名，排除主键值，主键名
 	            $validate = new \think\Validate([
-	                ['name', 'require|alphaDash', '用户名不能为空|用户名格式只能是字母、数组、——或_'],
+	                ['name', 'require|alphaDash', '用户名不能为空|用户名格式只能是字母、数字、下划线 _ 和破折号 - 的组合'],
 	                ['password', 'require|confirm', '密码不能为空|两次密码不一致'],
 	                ['password_confirm', 'require', '重复密码不能为空']
 	            ]);
@@ -416,9 +416,7 @@ class Admin extends Permissions
 
 
     /**
-     * 管理员删除
-     * @throws \think\Exception
-     * @throws \think\exception\PDOException
+     * 删除管理员
      */
     public function delete()
     {
@@ -430,7 +428,9 @@ class Admin extends Permissions
     		if($id == Session::get('admin')) {
     			return $this->error('自己不能删除自己');
     		}
-    		if(false == Db::name('admin')->where('id',$id)->delete()) {
+            $user = new AdminModel();
+    		$flag = $user->delUser($id);
+    		if($flag['code'] != 1) {
     			return $this->error('删除失败');
     		} else {
                 addlog($id);//写入日志

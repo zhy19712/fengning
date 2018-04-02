@@ -1,6 +1,9 @@
 ;(function($){
+    /**
+     * @param options
+     * @author wyang
+     */
     $.datatable = function(options){
-
         var option = {
             ajax: {
                 "url":"/admin/common/datatablesPre?tableName=admin"

@@ -21,7 +21,7 @@ class DocumentTypeModel extends Model
         } else {
             $res = $this->allowField(true)->save($mod, ['id' => $mod['id']]);
         }
-        return $res ? true : false;
+        return $res ? $res : false;
     }
 
     /**
