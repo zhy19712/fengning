@@ -177,7 +177,7 @@ class Division extends Permissions{
      */
     public function excelDownload()
     {
-        $filePath = ROOT_PATH . 'public' . DS .'static/division/division.xlsx';
+        $filePath = './static/division/division.xlsx';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){
