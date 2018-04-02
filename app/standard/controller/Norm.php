@@ -91,7 +91,7 @@ class Norm extends Permissions
     {
         // 前台需要 传递 文件编号 id
         $norm = new NormModel();
-        $data = $norm->getOne(input('id'));
+        $data = $norm->getOne(input('file_id'));
         $file_obj = Db::name('attachment')->where('id',$data['file_id'])->field('filename,filepath')->find();
         $filePath = $file_obj['filepath'];
         if(!file_exists($filePath)){
