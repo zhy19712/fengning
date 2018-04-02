@@ -336,10 +336,10 @@ class Atlas extends Permissions
         $param = $model->getOne($id);
         //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
         //根据id查询fengning_attachment表中的下载数量
-        $down_number = Db::name("attachment")->field("download")->where("id",$param['attachmentId'])->find();
-        $number = $down_number['download'] + 1;
-        //把更新后的下载量重新放入attachment表中
-        Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
+//        $down_number = Db::name("attachment")->field("download")->where("id",$param['attachmentId'])->find();
+//        $number = $down_number['download'] + 1;
+//        //把更新后的下载量重新放入attachment表中
+//        Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
 
         $data = [
                     "cate_id" => $id,
@@ -418,4 +418,5 @@ class Atlas extends Permissions
             }
         }
     }
+
 }
