@@ -48,7 +48,7 @@ class Norm extends Permissions
             $param = input('post.');
             // 验证规则
             $validate = new \think\Validate([
-                ['sid', 'require|number', '请选择标准分类|标准分类必须是数字'],
+                ['nodeId', 'require|number', '请选择标准分类|标准分类必须是数字'],
                 ['standard_number', 'require|max:100|alphaDash', '标准编号不能为空|标准编号不能超过100个字符|标准编号只能是字母、数字、下划线 _ 和破折号 - 的组合'],
                 ['standard_name', 'require|max:100', '标准名称不能为空|标准名称不能超过100个字符'],
                 ['material_date', 'require|date', '实施日期不能为空|实施日期只能是日期格式'],
@@ -64,7 +64,7 @@ class Norm extends Permissions
             /**
              * 当新增 标准文件的时候
              * 前台需要传递的是
-             * 必须参数 : sid 标准分类(就是选中的节点的编号) standard_number 标准编号,standard_name 标准名称,material_date 实施日期
+             * 必须参数 : nodeId 标准分类(就是选中的节点的编号) standard_number 标准编号,standard_name 标准名称,material_date 实施日期
              * 可选参数 : alternate_standard 替代标准,remark 备注,上传的文件编号 file_id
              * 编辑 标准文件的时候 一定要传递 id 编号
              */

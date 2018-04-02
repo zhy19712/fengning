@@ -133,7 +133,7 @@ class Division extends Permissions{
             if(!empty($exist)){
                 return json(['code' => -1,'msg' => '包含子节点,不能删除']);
             }
-            // 如果删除的是 分项工程 那么它 包含单元工程, 应该首先批量删除单元工程
+            //Todo 如果删除的是 分项工程 那么它 包含单元工程, 应该首先批量删除单元工程
             //Todo 如果 单元工程下面有 还包含其他的数据 那么 也要关联删除
 
 
@@ -157,14 +157,17 @@ class Division extends Permissions{
          */
         if(request()->isAjax()){
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            if($id == 0){ return json(['code' => 0,'path' => '','msg' => '编号有误']); }
             $node = new DivisionModel();
-            $path = "";
+            $section_id = $path =  '';
             while($id>0)
             {
                 $data = $node->getOne($id);
-                $path = $data['name'] . ">>" . $path;
+                $path = $data['d_name'] . ">>" . $path;
                 $id = $data['pid'];
+                $section_id = $data['section_id'];
             }
+            $path = "丰宁抽水蓄能电站>>" .Db::name('section')->where('id',$section_id)->value('name') . ">>" . $path;
             return json(['code' => 1,'path' => substr($path, 0 , -2),'msg' => "success"]);
         }
     }
