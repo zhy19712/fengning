@@ -148,6 +148,19 @@ class Atlas extends Permissions
         return $this->fetch();
     }
     /**********************************右侧图册表************************/
+    /*
+     * 获取一条设备设施验收信息
+     */
+    public function getindex()
+    {
+        if(request()->isAjax()){
+            $model = new AtlasCateModel();
+            $param = input('post.');
+            $data = $model->getOne($param['id']);
+            return json(['code'=> 1, 'data' => $data]);
+        }
+        return $this->fetch();
+    }
     /**
      * 新增/编辑图册
      * @return mixed|\think\response\Json
