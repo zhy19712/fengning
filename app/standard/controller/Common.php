@@ -63,14 +63,14 @@ class Common extends Controller
         $idArr = $node->cateTree($id);
         $idArr[] = $id;
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->whereIn('sid',$idArr)->count(0);
+        $recordsTotal = Db::name($table)->whereIn('nodeId',$idArr)->count(0);
         if(strlen($search)>0){
             //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
-                    ->whereIn('sid',$idArr)
+                    ->whereIn('nodeId',$idArr)
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -81,7 +81,7 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
-                    ->whereIn('sid',$idArr)
+                    ->whereIn('nodeId',$idArr)
                     ->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }

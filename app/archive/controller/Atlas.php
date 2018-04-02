@@ -96,8 +96,12 @@ class Atlas extends Permissions
                 foreach ($data as $k=>$v)
                 {
                     $path = $v['path'];
+                    $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
                     if(file_exists($path)){
                         unlink($path); //删除上传的图片
+                    }
+                    if(file_exists($pdf_path)){
+                        unlink($pdf_path); //删除生成的预览pdf
                     }
                 }
             }else
@@ -260,8 +264,13 @@ class Atlas extends Permissions
 
                     //先删除图片
                     $path = $data['path'];
+                    $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
                     if(file_exists($path)){
                         unlink($path); //删除文件图片
+                    }
+
+                    if(file_exists($pdf_path)){
+                        unlink($pdf_path); //删除生成的预览pdf
                     }
 
                     $flag = $model->delCate($param['id']);
@@ -287,15 +296,26 @@ class Atlas extends Permissions
         if(request()->isAjax()){
             $model = new AtlasCateModel();
             $param = input('post.');
+            $id = $param['id'];//图册id
+
+            $info = $model->getOne($id);
+
                 $data = [
+
                     'attachmentId'=>$param['attachmentId'],//文件关联attachment表中的id
-                    'selfid' => $param['selfid'],//admin_cate_type表中的id,区分图册节点树
+
+                    'selfid' => $info['selfid'],//admin_cate_type表中的id,区分图册节点树
+
+                    'pid' => $id,//pid为父级id
+
                     'picture_number' => $param['picture_number'],//图号
                     'picture_name' => $param['picture_name'],//图名
-                    'picture_papaer_num' => $param['picture_papaer_num'],//图纸张数(输入数字)
+                    'picture_papaer_num' => 1,//图纸张数(输入数字),默认1
                     'completion_date' => date("Y-m"),//完成日期
-                    'paper_category' => $param['paper_category'],//图纸类别
+                    'paper_category' => $info['paper_category'],//图纸类别
                     'owner' => Session::get('current_nickname'),//上传人
+                    'path' => $param['path'],//图片路径
+                    'filename' => $param['filename'],
                     'date' => date("Y-m-d")//上传日期
                 ];
                 $flag = $model->insertCate($data);
@@ -309,9 +329,6 @@ class Atlas extends Permissions
      */
     public function atlascateDownload()
     {
-        if(request()->isAjax()){
-            return json(['code' => 1]);
-        }
         $id = input('param.id');
 
         $model = new AtlasCateModel();
@@ -319,19 +336,20 @@ class Atlas extends Permissions
         $param = $model->getOne($id);
         //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
         //根据id查询fengning_attachment表中的下载数量
-        $down_number = Db::name("attachment")->field("download")->where("id",$param['attachmentId'])->find();
-        $number = $down_number['download'] + 1;
-        //把更新后的下载量重新放入attachment表中
-        Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
+//        $down_number = Db::name("attachment")->field("download")->where("id",$param['attachmentId'])->find();
+//        $number = $down_number['download'] + 1;
+//        //把更新后的下载量重新放入attachment表中
+//        Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
 
         $data = [
+                    "cate_id" => $id,
                     "date" => date("Y-m-d H:i:s"),//下载时间
                     "user_name" => Session::get('current_nickname')//下载人
         ];
 
         $download->insertDownload($data);
 
-        $filePath = $param['path'];
+        $filePath = ".".$param['path'];
         $fileName = $param['filename'];
         $file = fopen($filePath, "r"); //   打开文件
         //输入文件标签
@@ -347,6 +365,110 @@ class Atlas extends Permissions
         exit;
     }
 
+    /**
+     * 获取所有的下载记录信息
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+
+    public function getAlldownrec()
+    {
+        if(request()->isAjax()) {
+            $id = input('param.id');
+            $model = new AtlasDownloadModel;
+            $data = $model->getall($id);
+            return json(['code' => 1, 'data' => $data]);
+        }
+
+    }
+
+    /**
+     * 预览一条图册图片信息
+     * @return \think\response\Json
+     */
+    public function atlascatePreview()
+    {
+        $model = new AtlasCateModel();
+        if(request()->isAjax()) {
+            $param = input('post.');
+            $code = 1;
+            $msg = '预览成功';
+            $data = $model->getOne($param['id']);
+            $path = $data['path'];
+            $extension = strtolower(get_extension(substr($path,1)));
+            $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+            if(!file_exists($pdf_path)){
+                if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
+                    doc_to_pdf($path);
+                }else if($extension === 'xls' || $extension === 'xlsx'){
+                    excel_to_pdf($path);
+                }else if($extension === 'ppt' || $extension === 'pptx'){
+                    ppt_to_pdf($path);
+                }else if($extension === 'pdf'){
+                    $pdf_path = $path;
+                }else{
+                    $code = 0;
+                    $msg = '不支持的文件格式';
+                }
+                return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
+            }else{
+                return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
+            }
+        }
+    }
+
+
+        //获取文件列表
+        function list_dir($dir){
+            $result = array();
+            if (is_dir($dir)){
+                $file_dir = scandir($dir);
+                foreach($file_dir as $file){
+                    if ($file == '.' || $file == '..'){
+                        continue;
+                    }
+                    elseif (is_dir($dir.$file)){
+                        $result = array_merge($result, list_dir($dir.$file.'/'));
+                    }
+                    else{
+                        array_push($result, $dir.$file);
+                    }
+                }
+            }
+            return $result;
+        }
+    public function  download()
+    {
+
+//获取列表
+        $datalist=list_dir('../');
+        $filename = "./bak.zip"; //最终生成的文件名（含路径）
+        if(!file_exists($filename)){
+//重新生成文件
+            $zip = new ZipArchive();//使用本类，linux需开启zlib，windows需取消php_zip.dll前的注释
+            if ($zip->open($filename, ZIPARCHIVE::CREATE)!==TRUE) {
+                exit('无法打开文件，或者文件创建失败');
+            }
+            foreach( $datalist as $val){
+                if(file_exists($val)){
+                    $zip->addFile( $val, basename($val));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                }
+            }
+            $zip->close();//关闭
+        }
+        if(!file_exists($filename)){
+            exit("无法找到文件"); //即使创建，仍有可能失败。。。。
+        }
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header('Content-disposition: attachment; filename='.basename($filename)); //文件名
+        header("Content-Type: application/zip"); //zip格式的
+        header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
+        header('Content-Length: '. filesize($filename)); //告诉浏览器，文件大小
+        @readfile($filename);
+    }
 
 
 

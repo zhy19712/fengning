@@ -96,7 +96,7 @@ class AtlasCateModel extends Model
         $children = array();
 
         $data = $this
-            ->field('picture_number,picture_name,picture_papaer_num,date,paper_category,owner,upload_date,id,pid')
+            ->field('picture_number,picture_name,picture_papaer_num,date,paper_category,owner,completion_date,id,pid')
             ->where('pid', $id)
             ->select();
         if($data)
@@ -111,11 +111,11 @@ class AtlasCateModel extends Model
                 $children[$k][] = '';
                 $children[$k][] = '';
                 $children[$k][] = '';
-                $children[$k][] = $v['date'];
+                $children[$k][] = $v['completion_date'];
                 $children[$k][] = '';
                 $children[$k][] = $v['paper_category'];
                 $children[$k][] = $v['owner'];
-                $children[$k][] = date("Y-m-d",$v['upload_date']);
+                $children[$k][] = $v['date'];
                 $children[$k][] = $v['id'];
                 $children[$k][] = $v['pid'];
             }

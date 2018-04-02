@@ -14,6 +14,7 @@ use app\archive\model\AtlasCateModel;
 use \think\Controller;
 use think\Db;
 use think\Request;
+use \think\Session;
 
 class Common extends Controller
 {
@@ -205,7 +206,7 @@ class Common extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function upload($module='archive',$use='archive_thumb')
+    public function upload($module='atlas',$use='atlas_thumb')
     {
         if($this->request->file('file')){
             $file = $this->request->file('file');
@@ -228,7 +229,7 @@ class Common extends Controller
             $data['create_time'] = time();//时间
             $data['uploadip'] = $this->request->ip();//IP
             $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
-            if($data['module'] = 'archive') {
+            if($data['module'] = 'atlas') {
                 //通过后台上传的文件直接审核通过
                 $data['status'] = 1;
                 $data['admin_id'] = $data['user_id'];

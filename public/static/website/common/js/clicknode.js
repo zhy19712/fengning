@@ -31,7 +31,8 @@
             tablePath:'/admin/common/datatablesPre?tableName=admin',
             parentShow:true,
             tableItem:tableItem,
-            isLoadPath:true
+            isLoadPath:true,
+            others:function () {}
         }
 
         $.extend(option,options);
@@ -73,5 +74,6 @@
             }
         }
         loadData();
+        option.others();
     }
 })(jQuery);

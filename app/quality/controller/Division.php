@@ -65,12 +65,12 @@ class Division extends Permissions{
             $en_type = isset($param['en_type']) ? $param['en_type'] : '';
             // 验证规则
             $rule = [
-                ['section_id', 'require|number', '请选择标段|标段只能是数字'],
+                ['section_id', 'require|number|gt:0', '请选择标段|标段只能是数字|请选择标段'],
                 ['pid', 'require|number', 'pid不能为空|pid只能是数字'],
                 ['d_code', 'require|alphaDash', '编码不能为空|编码只能是字母、数字、下划线 _和破折号 - 的组合'],
                 ['d_name', 'require|max:100', '名称不能为空|名称不能超过100个字符'],
-                ['type', 'require|number', '请选择分类|分类只能是数字'],
-                ['primary', 'require|number', '请选择是否是主要工程|是否是主要工程只能是数字']
+                ['type', 'require|number|gt:0', '请选择分类|分类只能是数字|请选择分类'],
+                ['primary', 'number|egt:0', '请选择是否是主要工程|是否是主要工程只能是数字|请选择是否是主要工程']
             ];
             // 分类 1单位 2分部 3分项
             if($param['type'] != 3 && empty($en_type)){
@@ -133,7 +133,7 @@ class Division extends Permissions{
             if(!empty($exist)){
                 return json(['code' => -1,'msg' => '包含子节点,不能删除']);
             }
-            // 如果删除的是 分项工程 那么它 包含单元工程, 应该首先批量删除单元工程
+            //Todo 如果删除的是 分项工程 那么它 包含单元工程, 应该首先批量删除单元工程
             //Todo 如果 单元工程下面有 还包含其他的数据 那么 也要关联删除
 
 
@@ -157,14 +157,17 @@ class Division extends Permissions{
          */
         if(request()->isAjax()){
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            if($id == 0){ return json(['code' => 0,'path' => '','msg' => '编号有误']); }
             $node = new DivisionModel();
-            $path = "";
+            $section_id = $path =  '';
             while($id>0)
             {
                 $data = $node->getOne($id);
-                $path = $data['name'] . ">>" . $path;
+                $path = $data['d_name'] . ">>" . $path;
                 $id = $data['pid'];
+                $section_id = $data['section_id'];
             }
+            $path = "丰宁抽水蓄能电站>>" .Db::name('section')->where('id',$section_id)->value('name') . ">>" . $path;
             return json(['code' => 1,'path' => substr($path, 0 , -2),'msg' => "success"]);
         }
     }

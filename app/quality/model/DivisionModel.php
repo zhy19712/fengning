@@ -23,23 +23,23 @@ class DivisionModel extends Model
     {
         $section = Db::name('section')->column('id,code,name'); // 标段列表
         $division = $this->column('id,pid,d_name,section_id,type'); // 工程列表
-        $num = $this->count() + 1000;
+        $num = $this->count() + Db::name('section')->count() + 10000;
 
         $str = "";
-        $str .= '{ "id": "' . 1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"';
+        $str .= '{ "id": "' . -1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"';
         $str .= '},';
         foreach($section as $v){
-            $pid =$v['id'] + $num;
-            $str .= '{ "id": "' . $pid . '", "pId":"' . 1 . '", "name":"' . $v['name'].'"' . ',"code":"' . $v['code'] .'"';
+            $id = $v['id'] + $num;
+            $str .= '{ "id": "' . $id . '", "pId":"' . -1 . '", "name":"' . $v['name'].'"' . ',"code":"' . $v['code'] .'"';
             $str .= '},';
             // 分类 1单位 2分部 3分项
             foreach($division as $vo){
                 if($v['id'] == $vo['section_id']){
                     if($vo['type'] == 1){
-                        $str .= '{ "tid": "' . $vo['id'] . '", "pId":"' . $pid . '", "name":"' . $vo['d_name'].'"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $id . '", "name":"' . $vo['d_name'].'"';
                         $str .= '},';
                     }else{
-                        $str .= '{ "tid": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"';
                         $str .= '},';
                     }
                 }
