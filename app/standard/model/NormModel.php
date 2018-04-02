@@ -12,15 +12,15 @@ use think\exception\PDOException;
 use think\Model;
 use think\Db;
 
-class StandardModel extends Model
+class NormModel extends Model
 {
-    protected $name = 'standard_file';
+    protected $name = 'norm_file';
     //自动写入创建、更新时间 insertGetId和update方法中无效，只能用于save方法
     protected $autoWriteTimestamp = true;
 
     public function getNodeInfo()
     {
-        $result = Db::name('standard')->column('id,pid,name');
+        $result = Db::name('norm')->column('id,pid,name');
         $str = "";
         foreach($result as $key=>$vo){
             $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"';
@@ -82,7 +82,7 @@ class StandardModel extends Model
 
     //递归获取当前节点的所有子节点
     public function cateTree($id){
-        $res = Db::name('standard')->all();
+        $res = Db::name('norm')->all();
         if($res){
             $result=$this->sort($res, $id);
             return $result;
