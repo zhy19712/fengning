@@ -89,8 +89,10 @@ class Norm extends Permissions
      */
     public function fileDownload()
     {
-        // 前台需要 传递 文件编号 file_id
-        $file_obj = Db::name('attachment')->field('filename,filepath')->find(input('file_id'));
+        // 前台需要 传递 文件编号 id
+        $norm = new NormModel();
+        $data = $norm->getOne(input('id'));
+        $file_obj = Db::name('attachment')->where('id',$data['file_id'])->field('filename,filepath')->find();
         $filePath = $file_obj['filepath'];
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
