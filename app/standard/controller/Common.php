@@ -9,7 +9,7 @@
 namespace app\standard\controller;
 
 
-use app\standard\model\StandardModel;
+use app\standard\model\NormModel;
 use think\Controller;
 use think\Db;
 use think\Session;
@@ -53,13 +53,13 @@ class Common extends Controller
         return $this->$table($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
     }
 
-    public function standard_file($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function norm_file($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
-        $node = new StandardModel();
+        $node = new NormModel();
         $idArr = $node->cateTree($id);
         $idArr[] = $id;
         //表的总记录数 必要

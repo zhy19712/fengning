@@ -9,10 +9,10 @@
 namespace app\standard\controller;
 
 use app\admin\controller\Permissions;
-use app\standard\model\StandardModel;
+use app\standard\model\NormModel;
 use think\Db;
 
-class Standard extends Permissions
+class Norm extends Permissions
 {
     /**
      * 获取 标准库 左侧的树结构
@@ -23,7 +23,7 @@ class Standard extends Permissions
     {
         if(request()->isAjax()){
             if(request()->isAjax()){
-                $node = new StandardModel();
+                $node = new NormModel();
                 $nodeStr = $node->getNodeInfo();
                 return json($nodeStr);
             }
@@ -40,7 +40,7 @@ class Standard extends Permissions
     {
         if(request()->isAjax()){
             // 如果提交方式是 get 就是点击编辑获取一条数据 post 就是新增或者编辑后保存的操作
-            $node = new StandardModel();
+            $node = new NormModel();
             if($this->request->isGet()) {
                 $data= $node->getOne(input('id'));
                 return json($data);
@@ -121,7 +121,7 @@ class Standard extends Permissions
     {
         // 前台需要传递 id 编号
         if(request()->isAjax()) {
-            $sd = new StandardModel();
+            $sd = new NormModel();
             $flag = $sd->deleteTb(input('param.id'));
             return json($flag);
         }
