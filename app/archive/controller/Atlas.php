@@ -84,14 +84,30 @@ class Atlas extends Permissions
         if(request()->isAjax()){
             //实例化图册类型AtlasCateTypeModel
             $model = new AtlasCateTypeModel();
+            $catemodel = new AtlasCateModel();
             $param = input('post.');
-            //删除图册分类
+            $param['id'] = 11;
+            //删除图册图片
+            //根据节点id查询图片路径
+            $data = $catemodel->getpicinfo($param['id']);
+            if($data)
+            {
+                foreach ($data as $k=>$v)
+                {
+                    $path = $v['path'];
+                    if(file_exists($path)){
+                        unlink($path); //删除上传的图片
+                    }
+                }
+            }else
+            {
+                return $this->fetch();
+            }
+            //根据传过来的节点id删除图册
+            $catemodel->delselfidCate($param['id']);
 
+            //最后删除图册类型树节点
 
-            //删除上传的图片
-
-
-            //删除图册类型树节点
             $flag = $model->delCatetype($param['id']);
             return json($flag);
         }else
@@ -138,13 +154,12 @@ class Atlas extends Permissions
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-
     public function editAtlasCate()
     {
         if(request()->isAjax()){
             $model = new AtlasCateModel();
             $param = input('post.');
-            $param["selfid"] = 11;
+
             //首先查询选择的图册节点树的id，在此分类下的最大的序号cate_number
             //然后在此基础上自动加1
             $max_cate_number = $model->maxcatenumber($param['selfid']);
@@ -166,7 +181,7 @@ class Atlas extends Permissions
                     'section' => $param['section'],//标段
                     'paper_category' => $param['paper_category'],//图纸类别
                     'owner' => Session::get('current_nickname'),//上传人
-                    'date' => date("Y-m-d H:i:s")//上传日期
+                    'date' => date("Y-m-d")//上传日期
                 ];
                 $flag = $model->insertCate($data);
                 return json($flag);
@@ -196,38 +211,53 @@ class Atlas extends Permissions
     }
 
     /**
-     *
+     * 删除一条图册信息
+     */
+    public function delCateone()
+    {
+
+            if(request()->isAjax()) {
+                $param = input('post.');
+                //实例化model类型
+                $model = new AtlasCateModel();
+
+                $flag = $model->delCate($param['id']);
+
+                return $flag;
+
+            }else
+            {
+                return $this->fetch();
+            }
+
+    }
+
+    /**
+     * 上传图纸
      * @return \think\response\Json
      */
-    public function equipmentPreview()
+    public function addPicture()
     {
-        $equipment = new EquipmentCheckAcceptModel();
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
+            $model = new AtlasCateModel();
             $param = input('post.');
-            $code = 1;
-            $msg = '预览成功';
-            $data = $equipment->getOne($param['id']);
-            $path = $data['path'];
-            $extension = strtolower(get_extension(substr($path,1)));
-            $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-            if(!file_exists($pdf_path)){
-                if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
-                    doc_to_pdf($path);
-                }else if($extension === 'xls' || $extension === 'xlsx'){
-                    excel_to_pdf($path);
-                }else if($extension === 'ppt' || $extension === 'pptx'){
-                    ppt_to_pdf($path);
-                }else if($extension === 'pdf'){
-                    $pdf_path = $path;
-                }else{
-                    $code = 0;
-                    $msg = '不支持的文件格式';
-                }
-                return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }else{
-                return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }
+                $data = [
+                    'selfid' => $param['selfid'],//admin_cate_type表中的id,区分图册节点树
+                    'picture_number' => $param['picture_number'],//图号
+                    'picture_name' => $param['picture_name'],//图名
+                    'picture_papaer_num' => $param['picture_papaer_num'],//图纸张数(输入数字)
+                    'completion_date' => date("Y-m"),//完成日期
+                    'paper_category' => $param['paper_category'],//图纸类别
+                    'owner' => Session::get('current_nickname'),//上传人
+                    'date' => date("Y-m-d")//上传日期
+                ];
+                $flag = $model->insertCate($data);
+                return json($flag);
         }
     }
+
+
+
+
 
 }
