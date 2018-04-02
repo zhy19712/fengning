@@ -16,7 +16,11 @@ Class DocumentModel extends Model
 
     public function documentType()
     {
-        return $this->hasOne("DocumentType", 'id', 'type');
+        return $this->hasOne("DocumentTypeModel", 'id', 'type');
+    }
+    public function attachmentInfo()
+    {
+        return $this->hasOne("DocumentAttachment","id","attachmentId");
     }
 
     /**
@@ -39,4 +43,7 @@ Class DocumentModel extends Model
     {
         return DocumentModel::update(['type' => $parms['type']], ['id' => $parms['id']]);
     }
+}
+Class DocumentAttachment extends Model{
+    protected $name='attachment';
 }

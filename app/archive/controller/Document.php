@@ -47,6 +47,18 @@ class Document extends Permissions
     }
 
     /**
+     * 属性
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getOne()
+    {
+       return json(
+           DocumentModel::get(input('id'),['documentType','attachmentInfo'])
+       );
+    }
+
+    /**
      * 移动文档
      * @return \think\response\Json
      */
