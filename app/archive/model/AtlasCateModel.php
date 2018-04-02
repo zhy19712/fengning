@@ -88,7 +88,7 @@ class AtlasCateModel extends Model
 
         $data = Db::name("atlas_cate")->alias('a')
             ->join('attachment f', 'a.attachmentId = f.id', 'left')
-            ->field('a.picture_number,a.picture_name,a.picture_papaer_num,a.date,a.paper_category,a.owner,FROM_UNIXTIME(f.create_time) as create_time,f.filepath,a.id,a.pid')
+            ->field('a.picture_number,a.picture_name,a.picture_papaer_num,a.date,a.paper_category,a.owner,f.create_time as create_time,a.id,a.pid')
             ->where('pid', $id)
             ->select();
         if($data)
@@ -107,7 +107,7 @@ class AtlasCateModel extends Model
                 $children[$k][] = '';
                 $children[$k][] = $v['paper_category'];
                 $children[$k][] = $v['owner'];
-                $children[$k][] = $v['create_time'];
+                $children[$k][] = date("Y-m-d",$v['create_time']);
                 $children[$k][] = $v['filepath'];
                 $children[$k][] = $v['id'];
                 $children[$k][] = $v['pid'];
