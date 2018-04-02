@@ -82,8 +82,8 @@ class NormModel extends Model
 
     //递归获取当前节点的所有子节点
     public function cateTree($id){
-        $res = Db::name('norm')->all();
-        if($res){
+        $res = Db::name('norm')->column('id,pid');
+        if(!empty($res)){
             $result=$this->sort($res, $id);
             return $result;
         }
@@ -91,9 +91,9 @@ class NormModel extends Model
     public function sort($data,$id){
         static $arr=array();
         foreach ($data as $key=>$value){
-            if($value['pid'] == $id){
-                $arr[]=$value['id'];
-                $this->sort($data,$value['id']);
+            if($value == $id){
+                $arr[] = $key;
+                $this->sort($data,$key);
             }
         }
         return $arr;
