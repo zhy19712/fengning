@@ -19,7 +19,9 @@ class AtlasDownloadModel extends Model
     protected $name='atlas_download_record';
 
     /**
-     * 新增一条下载记录
+     * 新增下载记录
+     * @param $param
+     * @return array
      */
     public function insertDownload($param)
     {
@@ -33,5 +35,23 @@ class AtlasDownloadModel extends Model
         }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
+    }
+
+    /**
+     * 获取该条图册的所有的下载记录信息
+     * @return array|false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getall($id)
+    {
+        try{
+            $data = $this->where("cate_id",$id)->select();
+            return $data;
+        }catch (PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+
     }
 }

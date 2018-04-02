@@ -287,15 +287,24 @@ class Atlas extends Permissions
         if(request()->isAjax()){
             $model = new AtlasCateModel();
             $param = input('post.');
+            $id = $param['id'];//图册id
+
+            $info = $model->getOne($id);
+
                 $data = [
+
                     'attachmentId'=>$param['attachmentId'],//文件关联attachment表中的id
-                    'selfid' => $param['selfid'],//admin_cate_type表中的id,区分图册节点树
+
+                    'selfid' => $info['selfid'],//admin_cate_type表中的id,区分图册节点树
+
                     'picture_number' => $param['picture_number'],//图号
                     'picture_name' => $param['picture_name'],//图名
-                    'picture_papaer_num' => $param['picture_papaer_num'],//图纸张数(输入数字)
+                    'picture_papaer_num' => 1,//图纸张数(输入数字),默认1
                     'completion_date' => date("Y-m"),//完成日期
-                    'paper_category' => $param['paper_category'],//图纸类别
+                    'paper_category' => $info['paper_category'],//图纸类别
                     'owner' => Session::get('current_nickname'),//上传人
+                    'path' => $param['path'],//图片路径
+                    'filename' => $param['filename'],
                     'date' => date("Y-m-d")//上传日期
                 ];
                 $flag = $model->insertCate($data);
@@ -309,9 +318,6 @@ class Atlas extends Permissions
      */
     public function atlascateDownload()
     {
-        if(request()->isAjax()){
-            return json(['code' => 1]);
-        }
         $id = input('param.id');
 
         $model = new AtlasCateModel();
@@ -325,6 +331,7 @@ class Atlas extends Permissions
         Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
 
         $data = [
+                    "cate_id" => $id,
                     "date" => date("Y-m-d H:i:s"),//下载时间
                     "user_name" => Session::get('current_nickname')//下载人
         ];
@@ -346,6 +353,26 @@ class Atlas extends Permissions
         fclose($file);
         exit;
     }
+
+    /**
+     * 获取所有的下载记录信息
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+
+    public function getAlldownrec()
+    {
+        if(request()->isAjax()) {
+            $id = input('param.id');
+            $model = new AtlasDownloadModel;
+            $data = $model->getall($id);
+            return json(['code' => 1, 'data' => $data]);
+        }
+
+    }
+
 
 
 
