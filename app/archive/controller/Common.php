@@ -10,6 +10,7 @@ namespace app\archive\controller;
 
 use app\archive\model\DocumentTypeModel;
 use app\archive\model\AtlasCateTypeModel;
+use app\archive\model\AtlasCateModel;
 use \think\Controller;
 use think\Db;
 use think\Request;
@@ -129,7 +130,9 @@ class Common extends Controller
         $recordsFiltered = 0;
         //表的总记录数 必要
         $id = input('selfid');
+
         $model = new AtlasCateTypeModel();
+        $atlascate = new AtlasCateModel();
         $idArr = $model->cateTree($id);
         $idArr[] = $id;
         $recordsTotal = 0;
@@ -140,7 +143,7 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->whereIn('a.selfid', $idArr)
+                    ->whereIn('a.selfid', $idArr)->where("pid = 0")
                     ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -148,22 +151,31 @@ class Common extends Controller
             //没有搜索条件的情况
             if ($limitFlag) {
                 $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->whereIn('a.selfid', $idArr)
+                    ->whereIn('a.selfid', $idArr)->where("pid = 0")
                     ->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
         $temp = array();
         $infos = array();
+        $children = array();
         foreach ($recordsFilteredResult as $key => $value) {
             //计算列长度
             $length = sizeof($columns);
             for ($i = 0; $i < $length; $i++) {
                 array_push($temp, $value[$columns[$i]['name']]);
             }
+                $children_info = $atlascate->getAllpicture($temp['13']);
+
+            array_push($temp, $children_info);
+
             $infos[] = $temp;
+
             $temp = [];
+
         }
+
+
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 }
