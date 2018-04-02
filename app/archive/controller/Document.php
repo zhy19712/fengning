@@ -124,11 +124,11 @@ class Document extends Permissions
     }
 
     /**
-     * 绑定文件
-     * @return mixed
+     * 下载——权限验证
+     * 部门下载部门内，若文件有权限设置则按规则
      */
-    public function bind()
+    public function download()
     {
-        return $this->fetch();
+        return $this->redirect("");
     }
 }
