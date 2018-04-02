@@ -96,8 +96,12 @@ class Atlas extends Permissions
                 foreach ($data as $k=>$v)
                 {
                     $path = $v['path'];
+                    $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
                     if(file_exists($path)){
                         unlink($path); //删除上传的图片
+                    }
+                    if(file_exists($pdf_path)){
+                        unlink($pdf_path); //删除生成的预览pdf
                     }
                 }
             }else
@@ -260,8 +264,13 @@ class Atlas extends Permissions
 
                     //先删除图片
                     $path = $data['path'];
+                    $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
                     if(file_exists($path)){
                         unlink($path); //删除文件图片
+                    }
+
+                    if(file_exists($pdf_path)){
+                        unlink($pdf_path); //删除生成的预览pdf
                     }
 
                     $flag = $model->delCate($param['id']);
@@ -296,6 +305,8 @@ class Atlas extends Permissions
                     'attachmentId'=>$param['attachmentId'],//文件关联attachment表中的id
 
                     'selfid' => $info['selfid'],//admin_cate_type表中的id,区分图册节点树
+
+                    'pid' => $id,//pid为父级id
 
                     'picture_number' => $param['picture_number'],//图号
                     'picture_name' => $param['picture_name'],//图名
@@ -373,9 +384,38 @@ class Atlas extends Permissions
 
     }
 
-
-
-
-
-
+    /**
+     * 预览一条图册图片信息
+     * @return \think\response\Json
+     */
+    public function atlascatePreview()
+    {
+        $model = new AtlasCateModel();
+        if(request()->isAjax()) {
+            $param = input('post.');
+            $code = 1;
+            $msg = '预览成功';
+            $data = $model->getOne($param['id']);
+            $path = $data['path'];
+            $extension = strtolower(get_extension(substr($path,1)));
+            $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+            if(!file_exists($pdf_path)){
+                if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
+                    doc_to_pdf($path);
+                }else if($extension === 'xls' || $extension === 'xlsx'){
+                    excel_to_pdf($path);
+                }else if($extension === 'ppt' || $extension === 'pptx'){
+                    ppt_to_pdf($path);
+                }else if($extension === 'pdf'){
+                    $pdf_path = $path;
+                }else{
+                    $code = 0;
+                    $msg = '不支持的文件格式';
+                }
+                return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
+            }else{
+                return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
+            }
+        }
+    }
 }
