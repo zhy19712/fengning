@@ -67,12 +67,15 @@ class Document extends Permissions
      */
     public function move()
     {
-        $mod = input('post.');
-        if ($this->documentService->move($mod)) {
-            return json(['code' => 1]);
-        } else {
-            return json(['code' => -1]);
+        if ($this->request->isAjax()) {
+            $mod = input('post.');
+            if ($this->documentService->move($mod)) {
+                return json(['code' => 1]);
+            } else {
+                return json(['code' => -1]);
+            }
         }
+        return $this->fetch();
     }
 
     /**
@@ -111,7 +114,7 @@ class Document extends Permissions
     {
         $tid = input('tid');
         $tids = $this->documentTypeService->getChilds($tid);
-        $tids[]=$tid;
+        $tids[] = $tid;
         if ($this->documentService->whereIn('type', $tids)->update(['status' => 1])) {
             return json(['code' => 1]);
 
