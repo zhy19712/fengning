@@ -3,20 +3,17 @@ var initUi = layui.use('form');
 //工程标准及规范树
 $.ztree();
 //点击节点
-
-//工程标准及规范表格
-
 function zTreeOnClick(event, treeId, treeNode){
     $.clicknode({
         treeNode:treeNode,
-        tablePath:'/standard/common/norm_file?tableName=norm_file',
+        tablePath:'/standard/common/datatablesPre?tableName=norm_file',
         isLoadPath:false
-    })
+    });
 }
-
+//工程标准及规范表格
 $.datatable({
     ajax:{
-        'url':'/standard/common/norm_file?tableName=norm_file'
+        'url':'/standard/common/datatablesPre?tableName=norm_file'
     },
     columns:[
         {
@@ -49,4 +46,18 @@ $.datatable({
             }
         }
     ],
-})
+});
+//新增弹层
+$.add({
+    area:['660px','350px']
+});
+//关闭弹层
+$.close();
+//表单提交
+$.submit({
+    ajaxUrl:'./editNode',
+    data:{
+        sid:nodeId
+    },
+    tablePath:'/standard/common/datatablesPre?tableName=norm_file'
+});

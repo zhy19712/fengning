@@ -640,24 +640,8 @@
     $.fn.zTree.init($("#groupZtree"), groupSetting, null);
 
     //新增弹层
-    $('#add').on('click',function(){
-        if(!admin_group_id){
-            layer.msg('请选择节点');
-            return false;
-        }
-        layer.open({
-            id:'1',
-            type:'1',
-            area:['660px','700px'],
-            title:'新增',
-            content:$('#org'),
-            success:function(){
-                $('input[name="admin_group_id"]').val(admin_group_name);
-            },
-            cancel: function(index, layero){
-                $('#org')[0].reset();
-            }
-        });
+    $.add({
+        content:$('#org')
     });
 
     //表单提交方法
@@ -700,10 +684,11 @@
     });
 
     //关闭弹层
-    $('.close').click(function () {
-        $('#org')[0].reset();
-        $('input[name="editId"]').val('');
-        layer.closeAll('page');
+    $.close({
+        formId:'org',
+        others:function(){
+            $('input[name="editId"]').val('');
+        }
     });
 
     //查看表单
