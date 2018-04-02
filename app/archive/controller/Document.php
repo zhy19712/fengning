@@ -10,6 +10,7 @@ namespace app\archive\controller;
 
 use app\admin\controller\Permissions;
 use app\archive\model\DocumentModel;
+use app\archive\model\DocumentTypeModel;
 use think\Request;
 
 /**
@@ -23,9 +24,11 @@ class Document extends Permissions
     {
         parent::__construct($request);
         $this->documentService = new DocumentModel();
+        $this->documentTypeService = new DocumentTypeModel();
     }
 
     protected $documentService;
+    protected $documentTypeService;
 
     /**
      * 首页
@@ -53,9 +56,9 @@ class Document extends Permissions
      */
     public function getOne()
     {
-       return json(
-           DocumentModel::get(input('id'),['documentType','attachmentInfo'])
-       );
+        return json(
+            DocumentModel::get(input('id'), ['documentType', 'attachmentInfo'])
+        );
     }
 
     /**
@@ -64,12 +67,15 @@ class Document extends Permissions
      */
     public function move()
     {
-        $mod = input('post.');
-        if ($this->documentService->move($mod)) {
-            return json(['code' => 1]);
-        } else {
-            return json(['code' => -1]);
+        if ($this->request->isAjax()) {
+            $mod = input('post.');
+            if ($this->documentService->move($mod)) {
+                return json(['code' => 1]);
+            } else {
+                return json(['code' => -1]);
+            }
         }
+        return $this->fetch();
     }
 
     /**
@@ -78,12 +84,13 @@ class Document extends Permissions
      */
     public function remark()
     {
-        $mod=input('post.');
+        $mod = input('post.');
         if ($this->documentService->remark($mod)) {
-            return json(['code'=>1]);
+            return json(['code' => 1]);
         }
         return json(['code' => -1]);
     }
+
     /**
      * 归档
      * @return \think\response\Json
@@ -106,7 +113,9 @@ class Document extends Permissions
     public function batchArchiving()
     {
         $tid = input('tid');
-        if (DocumentModel::update(['status' => 1], ['type' => $tid])) {
+        $tids = $this->documentTypeService->getChilds($tid);
+        $tids[] = $tid;
+        if ($this->documentService->whereIn('type', $tids)->update(['status' => 1])) {
             return json(['code' => 1]);
 
         } else {
