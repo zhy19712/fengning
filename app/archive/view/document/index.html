@@ -1,4 +1,5 @@
-{include file="../../admin/view/public/common_header"}
+{include file="../../public/common_header"}
+<script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
 
     #nodeZtree .ztree-title i.fa {
@@ -14,24 +15,25 @@
     }
 
     #tableContent .mybtn,#tableContent .assModel,#tableContent .move,#tableContent .file,#tableContent .oneKeyArchiv{
-        position: absolute;
-        top: 0;
+        float: right;
         background-color: #00c0ef;
     }
     #tableContent .mybtn{
-        right: 37%;
+        margin-right: 0%;
+
     }
     #tableContent .assModel{
-        right: 28%;
+        margin-right: 0%;
     }
     #tableContent .move{
-        right: 19%;
+        margin-right: 0%;
     }
     #tableContent .file{
-        right: 10%;
+        margin-right: 0%;
     }
     #tableContent .oneKeyArchiv{
-        right: 1%;
+        margin-right: 0%;
+        margin-left: 10px;
     }
 
     #tableContent #funKuai{
@@ -83,7 +85,6 @@
 
     #information .layui-tab-content .attrBue{
         width: 100%;
-        border: 1px solid red;
     }
     #information .layui-tab-content #tableAttr tr td{
         padding: 8px;
@@ -97,6 +98,7 @@
     }
     #information .layui-tab-content #tableAttr tr:hover{
         background: #FDD5B5;
+        cursor: pointer;
     }
     #information .attrBue #keyText:focus{
         border: 1px solid dodgerblue;
@@ -108,10 +110,15 @@
         min-height: 100px;
         overflow: hidden;
         height: 90px;
-        width: 255px;
+        width: 85%;
     }
 
-
+    #information .attrBue .saveText{
+        display: none;
+        float: right;
+        margin-right: 20px;
+        margin-top: 10px;
+    }
 </style>
 
 <div id="nodeZtree" data-options="region:'west',title:'文档目录树',split:true" style="width:180px;">
@@ -187,10 +194,10 @@
                     </table>
                     <h2 style="margin-left:8px;font-size:14px; color:#676a6c; font-weight:bold; font-family:微软雅黑; ">关键词</h2>
                     <textarea name="keyText" id="keyText" placeholder="关键词"></textarea>
-                    <!--<h3 class="path" style="margin-left: 5px;color:#56abe9;"></h3>-->
-                    <!--<div class="ibox-tools">-->
-                        <!--<i title="添加" class="fa fa-lg fa-plus-square"></i>-->
-                    <!--</div>-->
+                    <div class="saveText">
+                        <a href="javascript:;" id="saveCircle">保存<i class="icon icon-ok-circle"></i></a>
+                        <a href="javascript:;" id="reply">返回<i class="icon icon-reply"></i></a>
+                    </div>
                 </div>
                 <div class="searchName">
                     <!--<input type="text" id="usernameSearch" class="layui-input" placeholder="用户名称"/>-->
@@ -200,430 +207,1204 @@
             <!--共享-->
             <div class="layui-tab-item">
                 <div>
-                    <!--<div style="width: 100%;">-->
-                    <!--<iframe src="/admin/rolemanagement/catepublish.shtml?path=" id="catepublish" frameborder="0" width="100%;" height="690px;"></iframe>-->
-                    <!--</div>-->
+                    <div id="Div3" class="tab-pane active" style="height: 346px;">
+
+                        <!--<script type="text/javascript" src="../Content/plugins/slimscroll/jquery.slimscroll.min.js"></script>-->
+
+                        <style type="text/css">
+                            body {
+                                background-color: white;
+                            }
+
+                            p2 {
+                                float: left;
+                                margin: 4px;
+                                background-color: #56ABE4;
+                                text-align: center;
+                                color: white;
+                                min-width: 60px;
+                                font-size: 12px;
+                                border: 1px solid #56ABE4;
+                                border-radius: 20px;
+                                float: left;
+                                line-height: 0.1;
+                                padding: 10px;
+                            }
+
+                            p3 {
+                                float: left;
+                                margin: 4px;
+                                background-color: #f47264;
+                                text-align: center;
+                                color: white;
+                                min-width: 60px;
+                                font-size: 12px;
+                                border: 1px solid #f47264;
+                                border-radius: 20px;
+                                float: left;
+                                line-height: 0.1;
+                                padding: 10px;
+                            }
+
+                            .col-md-4 {
+                                width: 35.4%;
+                                height: 400px;
+                                float: left;
+                                border: 1px solid #CECECE;
+                                margin: 5px;
+                            }
+
+                            .col-md-6 {
+                                width: 62.8%;
+                                height: 400px;
+                                float: right;
+                                border: 1px solid #CECECE;
+                                margin: 5px -4px 5px 5px;
+                            }
+
+                            .col-md-7 {
+                                width: 100%;
+                                float: left;
+                                height: 30px;
+                                border: 1px solid #CECECE;
+                                margin: 5px;
+                                margin-bottom: 3px;
+                            }
+
+                            .fa-times {
+                                color: white;
+                                font-size: 12px;
+                                margin-left: 2px;
+                            }
+
+                            p {
+                                margin-top: 4px;
+                            }
+
+                            .fa:hover {
+                                color: #F8AC59;
+                            }
+
+                            .input-group-sm > .form-control,
+                            .input-group-sm > .input-group-addon,
+                            .input-group-sm > .input-group-btn > .btn {
+                                height: 25px;
+                                padding: 2px 10px;
+                            }
+
+                            .selectContent {
+                                height: 100px;
+                                margin-top: 25px;
+                                width: 450px;
+                                position: absolute;
+                            }
+
+                            #outarrow {
+                                border-color: transparent transparent #CECECE;
+                                border-style: solid;
+                                border-width: 14px;
+                                height: 0;
+                                width: 0;
+                                position: absolute;
+                                top: -43px;
+                                left: 60px;
+                                opacity: 0.5;
+                            }
+
+                            #innerarrow {
+                                border-color: transparent transparent white;
+                                border-style: solid;
+                                border-width: 14px;
+                                height: 0;
+                                width: 0;
+                                position: absolute;
+                                top: -46px;
+                                left: 60px;
+                                margin-top: 6px;
+                            }
+
+                            .selCent {
+                                border: 1px solid #CECECE;
+                                width: 290px;
+                                height: 90px;
+                                margin-top: -15px;
+                                padding: 5px;
+                            }
+
+                            .pImg {
+                                width: 35px;
+                                margin-left: 5px;
+                            }
+
+                            .pTitle {
+                                height: 30px;
+                                line-height: 30px;
+                                color: #676A6C;
+                                font-weight: 700;
+                            }
+
+                            .selectBox {
+                                display: inline-block;
+                                height: 50px;
+                                line-height: 50px;
+                                width: 150px;
+                                border: 1px solid #cecece;
+                            }
+
+
+                            p1 {
+                                display: inline-block;
+                                color: #757779;
+                                margin-left: 45px;
+                            }
+                            /*滚动条*/
+
+                            .slimScrollBar {
+                                background: #bbb none repeat scroll 0 0 !important;
+                            }
+                            /*滚动条*/
+
+                            .blues {
+                                color: #56ABE4;
+                            }
+
+                            .rted {
+                                color: #CDCDCD;
+                            }
+
+                            #bents .aselect {
+                                color: #56ABE4;
+                            }
+
+                            .xiaZai {
+                                display: none;
+                            }
+                            /* 表格*/
+
+                            .table-hover > tbody > tr:hover > td,
+                            .table-hover > tbody > tr:hover > th {
+                                background-color: #fff7e1;
+                            }
+
+                            #tabob {
+                                table-layout: fixed;
+                                border: 1px solid #CED4D6;
+                            }
+
+                            #tabob td {
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                text-align: center;
+                                font-size: 12px;
+                            }
+
+                            #tabob th {
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 12px;
+                                background-color: #ffefd7;
+                                color: #665173;
+                                padding: 5px;
+                                vertical-align: middle;
+                            }
+
+                            #tabob td,
+                            th {
+                                border: 1px solid #CED4D6;
+                                padding: 5px;
+                            }
+                            h4{
+                                font-size: 14px;
+                                font-weight: 800;
+                            }
+                        </style>
+
+                        <div id="bents">
+                            <h4 class="hui rted" style="margin: 10px;" id="tgd">
+                                <a style="margin-right: 7px;" onclick="shareShow()" class="rted aselect">共享人员</a>|
+                                <a style="margin-right: 7px;margin-left: 7px;" onclick="downLoadShow()" class="rted">下载记录</a>
+                            </h4>
+                            <div class="ibox-tools pepleAdd" style="float: right; margin-top: -30px; display: block;">
+                                <a id="relat" onclick="addPeople()" class="relat" style="margin-top:0px;margin-right: 8px;" title="添加人员"></a>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed" style="margin:10px;"></div>
+                        <div class="gongXiang" style="display: block;">
+                            <div>
+                                <div>
+                                    <a id="fPAlls" class="selectBox fillAllSee" style="display:none;">
+                                        <p1>所有人可视</p1>
+                                    </a>
+                                    <a id="fPAll" class="selectBox fillAllSee" style="display:none;">
+                                        <p1>所有人不可视</p1>
+                                    </a>
+                                    <a id="fPNAll" class="selectBox fillAppointSee" style="display:none;">
+                                        <p1>指定人员可视</p1>
+                                    </a>
+                                </div>
+                                <div class="selectContent" id="fPNAllContent" style="display:none;">
+                                    <div id="outarrowCon"></div>
+                                    <div id="innerarrowCon"></div>
+                                    <div class="selCent">
+                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 80px;"><div id="selectedOrganizationDivBySee" class="wcentent" style="height: 80px; width: auto; overflow: hidden;"></div><div class="slimScrollBar" style="background: rgb(0, 0, 0); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" style="margin: 110px 10px 0px;"></div>
+                            <div>
+                                <a id="dPAlls" class="selectBox fillAllSee" style="display:none;">
+                                    <p1>所有人不可下载</p1>
+                                </a>
+                                <a id="dPAll" class="selectBox fillAllSee" style="display:none;">
+                                    <p1>所有人可下载</p1>
+                                </a>
+                                <a id="dPNAll" class="selectBox fillAppointSee" style="display:none;">
+                                    <p1>指定人员可下载</p1>
+                                </a>
+                            </div>
+                            <div class="selectContent" id="dPNAllContent" style="display:none;">
+                                <div id="outarrow"></div>
+                                <div id="innerarrow"></div>
+                                <div class="selCent">
+                                    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 80px;"><div id="selectedOrganizationDiv" class="wcentent" style="height: 80px; width: auto; overflow: hidden;"></div><div class="slimScrollBar" style="background: rgb(0, 0, 0); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="xiaZai" style="display: none;">
+                            <table class="table table-hover" id="tabob" style="width: 100%;margin-bottom: 0;">
+                                <thead>
+                                    <tr>
+                                        <th>下载日期</th>
+                                        <th>下载人员</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="downInfo">
+                                    <tr>
+                                        <td>2016-03-12</td>
+                                        <td>小明</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2016-03-12</td>
+                                        <td>小明</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <script>
+
+                            // $("#tgd a").click(function () {
+                            //     $(this).siblings('a').removeClass('aselect'); // 删除其他兄弟元素的样式
+                            //     $(this).addClass('aselect'); // 添加当前元素的样式
+                            // });
+                            //
+                            // function shareShow() {
+                            //     $('.xiaZai').hide();
+                            //     $('.gongXiang').show();
+                            //     $('.pepleAdd').show();
+                            // }
+                            //
+                            // function downLoadShow() {
+                            //     $('.xiaZai').show();
+                            //     $('.gongXiang').hide();
+                            //     $('.pepleAdd').hide();
+                            // }
+                            //
+                            //
+                            //
+                            // function addPeople() {
+                            //     var document = JSON.parse(($("#document").val()));
+                            //     var id = document.Id;
+                            //     $.ajax({
+                            //         type: "Get",
+                            //         url: "/PermissionRelation/CheckPower?menuId=" + $("#hidMenuId").val() + "&fileType=document&id=" + id + "&type=share&_t=" + new Date().getTime(),
+                            //         success: function (data) {
+                            //             if (data.result == "Faild") {
+                            //                 layerAlert("没有授权权限");
+                            //             }
+                            //             else {
+                            //                 if ($("#document").val() == null || $("#document").val() == "") {
+                            //                     alert("请先选择要授权的图纸数据");
+                            //                 } else {
+                            //                     if (document != undefined) {
+                            //                         if (document.ApproveStatus == 2) {
+                            //
+                            //                             var url = "/Document/Permission?documentId=" + document.Id + "&documentName=" + document.DocumentName;
+                            //                             var v = window.showModalDialog(url, window, "dialogHeight:550px;dialogWidth:780px;status:no;toolbar:no;menubar:no;scrollbars:no;resizable:no;location:no");
+                            //                             showPermissionInfo(0);
+                            //                         } else {
+                            //                             alert("文档未归档，不能共享文件");
+                            //                         }
+                            //                     }
+                            //                     else {
+                            //                         alert("请先选择要授权的图纸数据");
+                            //                     }
+                            //                 }
+                            //             }
+                            //         }
+                            //     });
+                            // }
+                            // $(function () {
+                            //     showPermissionInfo(0);
+                            //     $('.wcentent').slimscroll({
+                            //         height: '80px',
+                            //         alwaysVisible: true,
+                            //         railVisible: false,
+                            //
+                            //     });
+                            //     showDownRecord();
+                            // })
+                            //
+                            // function showSeeUser(documentId) {
+                            //     $("#fPNAllContent").show();
+                            //     $.ajax({
+                            //         type: "Get",
+                            //         url: "/Document/GetPermissionByDocument?documentId=" + documentId + "&type=1&t=" + new Date(),
+                            //         success: function (data) {
+                            //             $("#selectedOrganizationDivBySee").html("");
+                            //             data = data.result;
+                            //             var html = "";
+                            //             var status = 0;
+                            //             if (data.departmentIds) {
+                            //                 $.each(data.departmentNames, function (i, item) {
+                            //                     html = "<p3>" + item + "</p3>";
+                            //                     $("#selectedOrganizationDivBySee").append(html);
+                            //                 });
+                            //                 status = 1;
+                            //             }
+                            //             if (data.userIds) {
+                            //                 $.each(data.userNames, function (i, item) {
+                            //                     html = "<p2>" + item + "</p2>";
+                            //                     $("#selectedOrganizationDivBySee").append(html);
+                            //                 });
+                            //                 status = 1;
+                            //             }
+                            //             if (status > 0) {
+                            //                 $("#fPNAll").show();
+                            //
+                            //             }
+                            //             else {
+                            //                 $("#fPAlls").show();
+                            //                 $("#fPNAllContent").hide();
+                            //             }
+                            //         }
+                            //     });
+                            // }
+                            // function showDownUser(documentId) {
+                            //     $("#dPNAllContent").show();
+                            //     $.ajax({
+                            //         type: "Get",
+                            //         url: "/Document/GetPermissionByDocument?documentId=" + documentId + "&t=" + new Date(),
+                            //         success: function (data) {
+                            //             data = data.result;
+                            //             var html = "";
+                            //             var status = 0;
+                            //             if (data.departmentIds) {
+                            //                 $.each(data.departmentNames, function (i, item) {
+                            //                     html = "<p3>" + item + "</p3>";
+                            //                     $("#selectedOrganizationDiv").append(html);
+                            //                 });
+                            //                 status = 1;
+                            //             }
+                            //             if (data.userIds) {
+                            //                 $.each(data.userNames, function (i, item) {
+                            //                     html = "<p2>" + item + "</p2>";
+                            //                     $("#selectedOrganizationDiv").append(html);
+                            //                 });
+                            //                 status = 1;
+                            //             }
+                            //             if (status > 0) {
+                            //                 $("#dPNAll").show();
+                            //
+                            //             }
+                            //             else {
+                            //                 $("#dPAlls").show();
+                            //                 $("#dPNAllContent").hide();
+                            //             }
+                            //         }
+                            //     });
+                            // }
+                            // function showPermissionInfo(type) {
+                            //     $("#fPAll").hide();
+                            //     $("#dPAll").hide();
+                            //     $("#fPAlls").hide();
+                            //     $("#dPAlls").hide();
+                            //     $("#fPNAll").hide();
+                            //     $("#dPNAll").hide();
+                            //     $("#dPNAllContent").hide();
+                            //     $("#fPNAllContent").hide();
+                            //     if (type != 1) {
+                            //         $("#selectedOrganizationDiv").html("");
+                            //         $("#selectedOrganizationDivBySee").html("");
+                            //         if ($("#document").val() == null || $("#document").val() == "") {
+                            //             //alert("请先选择要授权的图纸数据");
+                            //         } else {
+                            //             var document = JSON.parse(($("#document").val()));
+                            //             if (document != undefined) {
+                            //                 //debugger;
+                            //                 $.ajax({
+                            //                     type: "Get",
+                            //                     url: "/Document/GetDocument?documentId=" + document.Id + "&t=" + new Date(),
+                            //                     success: function (data) {
+                            //                         var dmt = JSON.parse(data.result);
+                            //                         document.DocmentStatus = dmt.DocmentStatus;
+                            //                         document.ApproveStatus = dmt.ApproveStatus;
+                            //                         $("#selectedOrganizationDiv").html("");
+                            //                         if (document.ApproveStatus == 2) {
+                            //                             if (document.DocmentStatus == 0) {
+                            //                                 showDownUser(document.Id);
+                            //                                 showSeeUser(document.Id);
+                            //                             }
+                            //                             else if (document.DocmentStatus == 1) {
+                            //                                 $("#fPAll").show();
+                            //                                 showDownUser(document.Id);
+                            //                             }
+                            //                             else if (document.DocmentStatus == 2) {
+                            //                                 $("#dPAll").show();
+                            //                                 showSeeUser(document.Id);
+                            //                             }
+                            //                             else {
+                            //                                 $("#fPAll").show();
+                            //                                 $("#dPAll").show();
+                            //                             }
+                            //                         }
+                            //                     }
+                            //                 });
+                            //
+                            //             }
+                            //             else {
+                            //                 //alert("请先选择要授权的图纸数据");
+                            //             }
+                            //         }
+                            //     }
+                            //     else {
+                            //         window.location.reload();
+                            //     }
+                            // };
+                            //
+                            // function locationHref() {
+                            //     window.location.reload();
+                            // }
+                            // function showDownRecord() {
+                            //     if ($("#document").val() != "" && $("#document").val() != null) {
+                            //         var document = JSON.parse(($("#document").val()));
+                            //         var id = document.Id;
+                            //         $.ajax({
+                            //             type: "Get",
+                            //             url: "/Document/GetAllDownRecords?fileType=document&fileId=" + id + "&t=" + new Date(),
+                            //             success: function (data) {
+                            //                 data = data.result;
+                            //                 $("#downInfo").html("");
+                            //                 $.each(data, function (i, item) {
+                            //                     html = "<tr><td>" + item.downDateStr + "</td><td>" + item.userName + "</td></tr>";
+                            //                     $("#downInfo").append(html);
+                            //                 });
+                            //             }
+                            //         });
+                            //     }
+                            // }
+
+                        </script>
+
+                    </div>
+
                 </div>
             </div>
             <!--关联关系-->
             <div class="layui-tab-item">
                 <div>
-                    <!--<div style="width: 100%;">-->
-                    <!--<iframe src="/admin/rolemanagement/catepublish.shtml?path=" id="catepublish" frameborder="0" width="100%;" height="690px;"></iframe>-->
-                    <!--</div>-->
+                    <div id="Div4" class="tab-pane" style="height: 346px;">
+
+                        <style type="text/css">
+                            body {
+                                background-color: white;
+                                min-height: 400px;
+                            }
+
+                            .blues {
+                                color: #56ABE4;
+                            }
+
+                            table {
+                                table-layout: fixed;
+                                width: 100%;
+                            }
+
+                            .table-hover > tbody > tr:hover > td,
+                            .table-hover > tbody > tr:hover > th {
+                                background-color: #fff7e1;
+                            }
+
+                            .rted {
+                                color: #CDCDCD;
+                            }
+
+                            a:hover {
+                                color: #56ABE4;
+                                /*text-decoration: underline;*/
+                            }
+
+                            tbody {
+                                font-size: 12px;
+                            }
+
+                            .select {
+                                color: #56ABE4;
+                                /*text-decoration: underline;*/
+                            }
+
+                            #reng {
+                                display: none;
+                            }
+                            #base {
+                                height:100%;
+                            }
+                        </style>
+
+                        <div class="col-lg-6">
+                            <div style="text-align: left; display:none;">
+                                <h4 class="hui rted" style="margin: 10px;font-size: 13px" id="tgdColor">
+                                    <a style="margin-right: 7px;" onclick="baseShow()" class="rted select">我关联的</a>|
+                                    <a style="margin-right: 7px;margin-left: 7px;" onclick="rengShow()" class="rted">关联我的</a>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed" style="margin:10px 10px 0;"></div>
+                        <div class="col-lg-6" id="base">
+                            <ul id="treeZo1" class="ztree" style="overflow: auto; height: 100%; width: 100%;"></ul>
+                        </div>
+                        <!--实物-->
+<!--
+                        <script>
+                            var setting = {
+                                view: {
+                                    selectedMulti: false
+                                },
+                                edit: {
+                                    enable: false,
+                                },
+                                data: {
+                                    simpleData: {
+                                        enable: true
+                                    }
+                                }
+                            };
+                            //树结构
+                            var zNodes1 = [{
+                                name: '文件',
+                                open: true,
+                                children: [
+                                    {
+                                        name: '文件',
+                                    },
+                                    {
+                                        name: '文件',
+                                    },
+                                    {
+                                        name: '文件',
+                                    }
+                                ]
+                            }]
+
+                            $(function () {
+                                var id = $("#hidDocumentId").val();
+                                $.ajax({
+                                    type: "Get",
+                                    url: "/Document/GetDocumentStrToTreeData?documentId=" + id + "&_t=" + new Date(),
+                                    success: function (data) {
+                                        if (data.result != null)
+                                        {
+                                            $.fn.zTree.init($("#treeZo1"), setting, data.result);
+                                        }
+                                    }
+                                });
+
+                            })
+                        </script>-->
+
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-{include file="../../admin/view/public/common_footer"}
+
+{include file="../../public/common_footer"}
 <script src="__WEBSITE__/archive/document/index.js"></script>
-<script>
+</body>
+<script type="text/javascript">
 
-    //组织结构表格
-    var tableItem = $('#tableItem').DataTable({
-        pagingType: "full_numbers",
-        processing: true,
-        serverSide: true,
-        sScrollX: '600px',
-        ajax: {
-            "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
-        },
-        dom: 'lf<"mybtn layui-btn layui-btn-sm"><"assModel layui-btn layui-btn-sm"><"move layui-btn layui-btn-sm"><"file layui-btn layui-btn-sm"><"oneKeyArchiv layui-btn layui-btn-sm">rtip',
-        columns: [
-            {
-                name: "name"
+
+
+        //组织结构表格
+        var tableItem = $('#tableItem').DataTable({
+            pagingType: "full_numbers",
+            processing: true,
+            serverSide: true,
+            sScrollX: '600px',
+            ajax: {
+                "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
             },
-            {
-                name: "nickname"
-            },
-            {
-                name: "create_time"
-            },
-            {
-                name: "id"
-            },
-            {
-                name: "status"
-            },
-            {
-                name: "id"
-            }
-        ],
-        columnDefs: [
-            {
-                "searchable": false,
-                "orderable": false,
-                "targets": [5],
-                "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(" + data + ")'><i class='fa fa-trash'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-pencil'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-chain'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i class='fa fa-file-text'></i></a>";
-                    return html;
+            dom: 'lf<"oneKeyArchiv layui-btn layui-btn-sm">' +
+            '<"file layui-btn layui-btn-sm">' +
+            '<"move layui-btn layui-btn-sm">' +
+            '<"assModel layui-btn layui-btn-sm">' +
+            '<"mybtn layui-btn layui-btn-sm">rtip',
+            columns: [
+                {
+                    name: "name"
+                },
+                {
+                    name: "nickname"
+                },
+                {
+                    name: "create_time"
+                },
+                {
+                    name: "id"
+                },
+                {
+                    name: "status"
+                },
+                {
+                    name: "id"
                 }
-            },
-            {
-                targets: [3],
-                //审批人，目前没数据留空
-                render: function (data, type, row) {
-                    return "";
-                }
-            },
-            {
-                targets: [4],
-                render: function (data, type, row) {
-                    if (data == 1) {
-                        return "已归档";
+            ],
+            columnDefs: [
+                {
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": [5],
+                    "render": function (data, type, row) {
+                        var a = data;
+                        var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(" + data + ")'><i title='删除' class='fa fa-trash'></i></a>";
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i title='下载' class='fa fa-chain'></i></a>";
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i title='关联文件' class='fa fa-chain'></i></a>";
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i title='审阅历史' class='fa fa-file-text'></i></a>";
+                        return html;
                     }
-                    return "待归档";
+                },
+                {
+                    targets: [3],
+                    //审批人，目前没数据留空
+                    render: function (data, type, row) {
+                        return "";
+                    }
+                },
+                {
+                    targets: [4],
+                    render: function (data, type, row) {
+                        if (data == 1) {
+                            return "已归档";
+                        }
+                        return "待归档";
+                    }
                 }
+            ],
+            language: {
+                "lengthMenu": "_MENU_",
+                "zeroRecords": "没有找到记录",
+                "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+                "infoEmpty": "无记录",
+                "search": "搜索：",
+                "infoFiltered": "(从 _MAX_ 条记录过滤)",
+                "paginate": {
+                    "sFirst": "<<",
+                    "sPrevious": "<",
+                    "sNext": ">",
+                    "sLast": ">>"
+                }
+            },
+            "fnInitComplete": function (oSettings, json) {
+                $('#tableItem_length').insertBefore(".mark");
+                $('#tableItem_info').insertBefore(".mark");
+                $('#tableItem_paginate').insertBefore(".mark");
             }
-        ],
-        language: {
-            "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            "infoEmpty": "无记录",
-            "search": "搜索：",
-            "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            "paginate": {
-                "sFirst": "<<",
-                "sPrevious": "<",
-                "sNext": ">",
-                "sLast": ">>"
-            }
-        },
-        "fnInitComplete": function (oSettings, json) {
-            $('#tableItem_length').insertBefore(".mark");
-            $('#tableItem_info').insertBefore(".mark");
-            $('#tableItem_paginate').insertBefore(".mark");
-        }
-    });
+        });
 
-    //点击上传文件
-    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
-    $(".assModel").html("<div id='test3'><i class='fa fa-plus'></i>上传文件1</div>");
-    $(".move").html("<div id='test3'><i class='fa fa-plus'></i>上传文件2</div>");
-    $(".file").html("<div id='test3'><i class='fa fa-plus'></i>上传文件3</div>");
-    $(".oneKeyArchiv").html("<div id='test3'><i class='fa fa-plus'></i>上传文件4</div>");
+        //点击上传文件
+        $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
+        $(".assModel").html("<div id='model'><i class='fa fa-plus'></i>关联模型</div>");
+        $(".move").html("<div id='moveClick'><i class='fa fa-plus'></i>移动</div>");
+        $(".file").html("<div id='fileClick'><i class='fa fa-plus'></i>归档</div>");
+        $(".oneKeyArchiv").html("<div id='oneClick'><i class='fa fa-plus'></i>一键归档</div>");
 
-    var upload ;
-    var uploadId ;
-    var uploadName ;
-    // $(".mybtn >div").click(function () {
-    //     if (!selfid) {
-    //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
-    //         return;
-    //     }else if(selfid){
-    //         $(".mybtn >div").attr("id","test3");
-    //         layui.upload.render({
-    //             elem: '#test3',
-    //             url: "{:url('admin/common/upload?module=document&use=archive')}",
-    //             accept: 'file',//普通文件
-    //             exts: 'doc|docx|pdf',
-    //             before: function(obj){
-    //                 obj.preview(function(index, file, result){
-    //                     uploadName = file.name;
-    //                     console.log(file.name);//获取文件名，result就是base64
-    //                 })
-    //             },
-    //             done: function(res){
-    //                 console.log(res)
-    //                 if(res.code == 2){
-    //                     uploadId = res.id;
-    //                     $.ajax({
-    //                         url:"{:url('documenttype/add')}",
-    //                         data:{
-    //                             name: uploadName, //名称
-    //                             attachmentId: uploadId,  //文档关联Id
-    //                             type:selfid,
-    //                         },
-    //                         type:'post',
-    //                         success:function(res) {
-    //                             console.log(res)
-    //                             // if(res.code == 1) {
-    //                             //     layer.alert(res.msg, function(index){
-    //                             //         location.href = res.url;
-    //                             //     })
-    //                             // } else {
-    //                             //     layer.msg(res.msg);
-    //                             // }
-    //                         }
-    //                     })
-    //                     layer.msg("上传成功！",{time:1500})
-    //                 }else{
-    //                     layer.msg("上传失败！",{time:1500})
-    //                 }
-    //             },
-    //         });
-    //     }
-    // })
+        var upload ;
+        var uploadId ;
+        var uploadName ;
+        var clickId ;
+        var clickTreeId ;//一键归档选树的id
+        // $(".mybtn >div").click(function () {
+        //     if (!selfid) {
+        //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
+        //         return;
+        //     }else if(selfid){
+        //         $(".mybtn >div").attr("id","test3");
+        //
+        //         layui.upload.render({
+        //             elem: '#test3',
+        //             url: "{:url('admin/common/upload?module=document&use=archive')}",
+        //             accept: 'file',//普通文件
+        //             exts: 'doc|docx|pdf',
+        //             before: function(obj){
+        //                 obj.preview(function(index, file, result){
+        //                     uploadName = file.name;
+        //                     console.log(file.name);//获取文件名，result就是base64
+        //                 })
+        //             },
+        //             done: function(res){
+        //                 console.log(res)
+        //                 if(res.code == 2){
+        //                     uploadId = res.id;
+        //                     $.ajax({
+        //                         url:"{:url('documenttype/add')}",
+        //                         data:{
+        //                             name: uploadName, //名称
+        //                             attachmentId: uploadId,  //文档关联Id
+        //                             type:selfid,
+        //                         },
+        //                         type:'post',
+        //                         success:function(res) {
+        //                             console.log(res)
+        //                             if(res.code == 1) {
+        //                                 var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+        //                                 tableItem.ajax.url(url).load();
+        //                             } else {
+        //                                 layer.msg('获取数据失败！');
+        //                             }
+        //                         }
+        //                     })
+        //                     layer.msg("上传成功！",{time:1500})
+        //                 }else{
+        //                     layer.msg("上传失败！",{time:1500})
+        //                 }
+        //             },
+        //         });
+        //     }
+        // });
 
-    //管理信息的tab 切换
-    layui.use(['element', "layer", 'form', 'upload'], function () {
-        var $ = layui.jquery
-            , element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
-            , upload = layui.upload;
+        //管理信息的tab 切换
+        layui.use(['element', "layer", 'form', 'upload'], function () {
+            var $ = layui.jquery
+                , element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
+                , upload = layui.upload;
 
-        var form = layui.form
-            , layer = layui.layer
-            , layedit = layui.layedit
-            , laydate = layui.laydate;
+            var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate;
 
-        //监听提交
-        form.on('submit(demo1)', function (data) {
+            //监听提交
+            form.on('submit(demo1)', function (data) {
+                $.ajax({
+                    type: "post",
+                    url: "./editCate",
+                    data: data.field,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            var url = "/admin/common/datatablespre/tableName/admin_cate/id/" + selfid + ".shtml";
+                            tableItem.ajax.url(url).load();
+                            parent.layer.msg('保存成功！');
+                            layer.closeAll();
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                    }
+                });
+                return false;
+            });
+            upload.render({
+                elem: '#test3',
+                url: "{:url('admin/common/upload?module=document&use=archive')}",
+                accept: 'file',//普通文件
+                exts: 'doc|docx|pdf',
+                before: function(obj){
+                    obj.preview(function(index, file, result){
+                        uploadName = file.name;
+                        console.log(file.name);//获取文件名，result就是base64
+                    })
+                },
+                done: function(res){
+                    console.log(res)
+                    if(res.code == 2){
+                        uploadId = res.id;
+                        $.ajax({
+                            url:"{:url('document/add')}",
+                            data:{
+                                name: uploadName, //名称
+                                attachmentId: uploadId,  //文档关联Id
+                                type:selfid,
+                            },
+                            type:'post',
+                            success:function(res) {
+                                console.log(res)
+                                if(res.code == 1) {
+                                    var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+                                    tableItem.ajax.url(url).load();
+                                } else {
+                                    layer.msg('获取数据失败！');
+                                }
+                            }
+                        })
+                        layer.msg("上传成功！",{time:1500})
+                    }else{
+                        layer.msg("上传失败！",{time:1500})
+                    }
+                },
+            });
+        });
+
+        //关联模型
+        $("#model").click(function (){
             $.ajax({
-                type: "post",
-                url: "./editCate",
-                data: data.field,
+                type:"post",
+                url:"{:url('document/archiving')}",
+                data:{id:clickId},
                 success: function (res) {
-                    if (res.code == 1) {
-                        var url = "/admin/common/datatablespre/tableName/admin_cate/id/" + selfid + ".shtml";
+                    console.log(res)
+                    if(res.code == 1){
+                        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
                         tableItem.ajax.url(url).load();
-                        parent.layer.msg('保存成功！');
-                        layer.closeAll();
+                        layer.msg("归档成功！")
                     }
                 },
                 error: function (data) {
                     debugger;
                 }
-            });
-            return false;
+            })
         });
-        upload.render({
-            elem: '#test3',
-            url: "{:url('admin/common/upload?module=document&use=archive')}",
-            accept: 'file',//普通文件
-            exts: 'doc|docx|pdf',
-            before: function(obj){
-                obj.preview(function(index, file, result){
-                    uploadName = file.name;
-                    console.log(file.name);//获取文件名，result就是base64
-                })
-            },
-            done: function(res){
-                console.log(res)
-                if(res.code == 2){
-                    uploadId = res.id;
-                    $.ajax({
-                        url:"{:url('document/add')}",
-                        data:{
-                            name: uploadName, //名称
-                            attachmentId: uploadId,  //文档关联Id
-                            type:selfid,
-                        },
-                        type:'post',
-                        success:function(res) {
-                            console.log(res)
-                            if(res.code == 1) {
-                                var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
-                                tableItem.ajax.url(url).load();
-                            } else {
-                                layer.msg('获取数据失败！');
-                            }
-                        }
-                    })
-                    layer.msg("上传成功！",{time:1500})
-                }else{
-                    layer.msg("上传失败！",{time:1500})
+
+        //移动
+        $("#moveClick").click(function (){
+            if (!clickId) {
+                layer.msg("请选择移动的目标！", {time: 1500, shade: 0.1});
+                return;
+            }else {
+                layer.open({
+                    type: 2,
+                    title: '移动文档到',
+                    shadeClose: true,
+                    area: ['480px', '550px'],
+                    content: '{:url("move")}',
+                    success: function(layero, index){
+                        var body = layer.getChildFrame('body', index);
+                        // console.log(body.html())
+                        body.find("#moveZtreeId").val(clickId);
+                    },
+                    end: function () {
+                        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
+                        tableItem.ajax.url(url).load();
+
+                    }
+                });
+            }
+        });
+
+        //归档
+        $("#fileClick").click(function (){
+            $.ajax({
+                type:"post",
+                url:"{:url('document/archiving')}",
+                data:{id:clickId},
+                success: function (res) {
+                    console.log(res)
+                    if(res.code == 1){
+                        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+                        tableItem.ajax.url(url).load();
+                        layer.msg("归档成功！")
+                    }
+                },
+                error: function (data) {
+                    debugger;
                 }
-            },
+            })
         });
-    });
 
+        //一键归档
+        $("#oneClick").click(function (){
+            if (!selfid) {
+                layer.msg("请选择节点", {time: 1500, shade: 0.1});
+                return;
+            }else{
+                $.ajax({
+                    type:"post",
+                    url:"{:url('document/batchArchiving')}",
+                    data:{tid:clickTreeId},
+                    success: function (res) {
+                        console.log(res)
+                        if(res.code == 1){
+                            var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+                            tableItem.ajax.url(url).load();
+                            layer.msg("一键归档成功！")
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                    }
+                })
+            }
+        });
 
+        // $(function () {
+        //     initPermissionTree();
+        // });
+        //
+        // //加载功能菜单树
+        // function initPermissionTree() {
+        //     var setting = {
+        //         check: {
+        //             enable: true
+        //         },
+        //         data: {
+        //             simpleData: {
+        //                 enable: true
+        //             }
+        //         },
+        //         view: {
+        //             selectedMulti: false
+        //         }
+        //     };
+        //     $.ajax({
+        //         type: "Get",
+        //         url: "{:url('documenttype/getAll')}",
+        //         success: function (data) {
+        //             $.fn.zTree.init($("#treeRight"), setting, data.result);
+        //         }
+        //     });
+        // };
 
+        //初始化树节点
+        var selfid,
+            nodeName,
+            nodePid,
+            zTreeObj,
+            groupid,
+            sNodes;
 
-
-    $(function () {
-        initPermissionTree();
-    });
-
-    //加载功能菜单树
-    function initPermissionTree() {
         var setting = {
-            check: {
-                enable: true
+            view: {
+                showLine: true, //设置 zTree 是否显示节点之间的连线。
+                selectedMulti: false, //设置是否允许同时选中多个节点。
+                // dblClickExpand: true //双击节点时，是否自动展开父节点的标识。
+            },
+            async: {
+                enable: true,
+                autoParam: ["pid"],
+                type: "post",
+                url: "{:url('documenttype/getAll')}",
+                dataType: "json",
+                // dataFilter: ajaxDataFilter
             },
             data: {
                 simpleData: {
-                    enable: true
+                    enable: true,
+                    idkey: "id",
+                    pIdKey: "pid",
+                    rootPId: 0
                 }
             },
-            view: {
-                selectedMulti: false
+            callback: {
+                onClick: this.nodeClick
             }
         };
-        $.ajax({
-            type: "Get",
-            url: "{:url('documenttype/getAll')}",
-            success: function (data) {
-                $.fn.zTree.init($("#treeRight"), setting, data.result);
-            }
-        });
-    };
+        zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
-    //初始化树节点
-    var selfid,
-        nodeName,
-        nodePid,
-        zTreeObj,
-        groupid,
-        sNodes;
-    var setting = {
-        view: {
-            showLine: true, //设置 zTree 是否显示节点之间的连线。
-            selectedMulti: false, //设置是否允许同时选中多个节点。
-            // dblClickExpand: true //双击节点时，是否自动展开父节点的标识。
-        },
-        async: {
-            enable: true,
-            autoParam: ["pid"],
-            type: "post",
-            url: "{:url('documenttype/getAll')}",
-            dataType: "json",
-            // dataFilter: ajaxDataFilter
-        },
-        data: {
-            simpleData: {
-                enable: true,
-                idkey: "id",
-                pIdKey: "pid",
-                rootPId: 0
-            }
-        },
-        callback: {
-            onClick: this.nodeClick
-        }
-    };
-    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
-
-
-
-    //点击获取路径
-    function nodeClick(e, treeId, node) {
-        console.log(node);
-        selectData = "";
-        sNodes = zTreeObj.getSelectedNodes();//选中节点
-        console.log(sNodes);
-        selfid = zTreeObj.getSelectedNodes()[0].id;//当前id
-        nodeName = zTreeObj.getSelectedNodes()[0].name;//当前name
-        nodePid = zTreeObj.getSelectedNodes()[0].pid;//当前pid
-        console.log(selfid + '---id');
-        console.log(nodeName + '---name');
-        console.log(nodePid + '---pid');
-        var path = sNodes[0].name; //选中节点的名字
-        node = sNodes[0].getParentNode();//获取父节点
-        //判断是否还有父节点
-        if (node) {
+        //点击获取路径
+        function nodeClick(e, treeId, node) {
+            console.log(node);
+            selectData = "";
+            sNodes = zTreeObj.getSelectedNodes()[0];//选中节点
+            console.log(sNodes);
+            selfid = zTreeObj.getSelectedNodes()[0].id;//当前id
+            nodeName = zTreeObj.getSelectedNodes()[0].name;//当前name
+            nodePid = zTreeObj.getSelectedNodes()[0].pid;//当前pid
+            console.log(selfid + '---id');
+            console.log(nodeName + '---name');
+            console.log(nodePid + '---pid');
+            var path = sNodes.name; //选中节点的名字
+            node = sNodes.getParentNode();//获取父节点
             //判断是否还有父节点
-            while (node) {
-                path = node.name + "-" + path;
-                node = node.getParentNode();
+            if (node) {
+                //判断是否还有父节点
+                while (node) {
+                    path = node.name + "-" + path;
+                    node = node.getParentNode();
+                }
+            } else {
+                $(".layout-panel-center .panel-title").text(sNodes.name);
             }
-        } else {
-            $(".layout-panel-center .panel-title").text(sNodes[0].name);
+            groupid = sNodes.pId //父节点的id
+            var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+            tableItem.ajax.url(url).load();
+            $(".layout-panel-center .panel-title").text("当前路径:" + path)
+            getPathText(sNodes);
+            clickTreeId = selfid;
         }
-        groupid = sNodes[0].pId //父节点的id
-        // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
-        // tableItem.ajax.url(url).load();
-        $(".layout-panel-center .panel-title").text("当前路径:" + path)
-    }
 
-    //点击添加节点
-    function addNodetree() {
-        var pid = selfid ? selfid : 0;
-        layer.prompt({title: '请输入节点名称',}, function (value, index, elem) {
-            $.ajax({
-                url: "{:url('documenttype/addOrEdit')}",
-                type: "post",
-                data: {pid: pid, name: value},
-                success: function (res) {
-                    console.log(res)
-                    if (res.code === 1) {
-                        console.log(sNodes)
-                        if (sNodes) {
-                            zTreeObj.addNodes(sNodes[0], {"id":res.data,"pid":pid,"name":value});
-                        } else {
-                            zTreeObj.addNodes(null, {"id":res.data,"pid":pid,"name":value});
-                        }
-                    }
-                }
-            });
-            layer.close(index);
-        });
-    };
-
-    //编辑节点
-    function editNodetree() {
-        if (!selfid) {
-            layer.msg("请选择节点", {time: 1500, shade: 0.1});
-            return;
-        }
-        console.log(sNodes[0])
-        layer.prompt({
-            title: '编辑',
-            value: sNodes[0].name
-        }, function (value, index, elem) {
-            $.ajax({
-                url: "{:url('documenttype/addOrEdit')}",
-                type: "post",
-                data: {id: selfid, name: value},
-                success: function (res) {
-                    if (res.code === 1) {
-                        sNodes[0].name = value;
-                        zTreeObj.updateNode(sNodes[0]);//更新节点名称
-                        layer.msg("编辑成功")
-                    }
-                }
-            });
-            layer.close(index);
-        });
-    };
-
-    //删除节点
-    function delNodetree() {
-        if (!selfid) {
-            layer.msg("请选择节点");
-            return;
-        }
-        if (!sNodes[0].children) {
-            layer.confirm("该操作会将关联数据同步删除，是否确认删除？", function () {
+        //点击添加节点
+        function addNodetree() {
+            var pid = selfid ? selfid : 0;
+            layer.prompt({title: '请输入节点名称',}, function (value, index, elem) {
                 $.ajax({
-                    url: "{:url('documenttype/del')}",
+                    url: "{:url('documenttype/addOrEdit')}",
                     type: "post",
-                    data: {id: selfid},
+                    data: {pid: pid, name: value},
                     success: function (res) {
+                        console.log(res)
                         if (res.code === 1) {
-                            layer.msg("删除节点成功", {time: 1500, shade: 0.1});
-                            //下面是更新列表
-                            // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
-                            // tableItem.ajax.url(url).load();
-                            zTreeObj.removeNode(sNodes[0]);
-                            selfid = "";
+                            console.log(sNodes)
+                            if (sNodes) {
+                                zTreeObj.addNodes(sNodes, {"id":res.data,"pid":pid,"name":value});
+                            } else {
+                                zTreeObj.addNodes(null, {"id":res.data,"pid":pid,"name":value});
+                            }
                         }
                     }
                 });
+                layer.close(index);
             });
-        } else {
-            layer.msg("包含下级，无法删除", {time: 1500, shade: 0.1});
+        };
+
+        //编辑节点
+        function editNodetree() {
+            if (!selfid) {
+                layer.msg("请选择节点", {time: 1500, shade: 0.1});
+                return;
+            }
+            console.log(sNodes[0])
+            layer.prompt({
+                title: '编辑',
+                value: sNodes[0].name
+            }, function (value, index, elem) {
+                $.ajax({
+                    url: "{:url('documenttype/addOrEdit')}",
+                    type: "post",
+                    data: {id: selfid, name: value},
+                    success: function (res) {
+                        if (res.code === 1) {
+                            sNodes[0].name = value;
+                            zTreeObj.updateNode(sNodes[0]);//更新节点名称
+                            layer.msg("编辑成功")
+                        }
+                    }
+                });
+                layer.close(index);
+            });
+        };
+
+        //删除节点
+        function delNodetree() {
+            if (!selfid) {
+                layer.msg("请选择节点");
+                return;
+            }
+            if (!sNodes[0].children) {
+                layer.confirm("该操作会将关联数据同步删除，是否确认删除？", function () {
+                    $.ajax({
+                        url: "{:url('documenttype/del')}",
+                        type: "post",
+                        data: {id: selfid},
+                        success: function (res) {
+                            if (res.code === 1) {
+                                layer.msg("删除节点成功", {time: 1500, shade: 0.1});
+                                //下面是更新列表
+                                // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
+                                // tableItem.ajax.url(url).load();
+                                zTreeObj.removeNode(sNodes[0]);
+                                selfid = "";
+                            }
+                        }
+                    });
+                });
+            } else {
+                layer.msg("包含下级，无法删除", {time: 1500, shade: 0.1});
+            }
+
+        };
+
+        //全部展开
+        $('#openNode').click(function () {
+            zTreeObj.expandAll(true);
+        });
+
+        //收起所有
+        $('#closeNode').click(function () {
+            zTreeObj.expandAll(false);
+        });
+
+        //右边的属性
+        var uploadPle;//上传人
+        var treefileCategory;//文件类别
+
+        //获取点击行
+        $("#tableItem").delegate("tbody tr","click",function (e) {
+            if($(e.target).hasClass("dataTables_empty")){
+                return;
+            }
+            $(".path").html("");
+            $(this).addClass("select-color").siblings().removeClass("select-color");
+            selectData = tableItem.row(".select-color").data();//获取选中行数据
+            console.log(selectData);
+            uploadPle = selectData[1];
+            clickId = selectData[5];
+            console.log(clickId)
+            getAttrList(selectData[5]);
+        });
+
+        //掉后台接口
+        function getAttrList(id){
+            $.ajax({
+                type:"post",
+                url:"{:url('document/getOne')}",
+                data:{id:id},
+                success: function (res) {
+                    // console.log(res)
+                    $("#fileName").text(res.name);
+                    $("#fileCategory").text(treefileCategory);
+                    $("#uploadPerson").text(uploadPle);
+                    $("#uploadTime").text(res.attachment_info.create_time);
+                    $("#fileSize").text((res.attachment_info.filesize)/1000+' KB');
+                },
+                error: function (data) {
+                    debugger;
+                }
+            })
         }
 
-    };
+        //属性拼接的方法
+        function getPathText(node) {
+            var s = node.name;
+            while (node = node.getParentNode()) {
+                s = node.name + '>>' + s;
+            }
+            treefileCategory = s;
+            return s;
+        }
 
-    //全部展开
-    $('#openNode').click(function () {
-        zTreeObj.expandAll(true);
-    });
+        //title
+        $('#tableAttr thead').on( 'mouseover', 'td', function () {
+            $(this).attr('title',$(this).text());
+        }).on( 'mouseleave', 'td', function () {
+            $(this).removeAttr("title");
+        });
 
-    //收起所有
-    $('#closeNode').click(function () {
-        zTreeObj.expandAll(false);
-    });
+        //保存 与返回
+        $('#keyText').focus(function () {
+            $(".saveText").css('display','block');
+        });
+
+        //保存
+        $('#saveCircle').click(function () {
+            $(".saveText").css('display','none');
+        });
+
+        //返回
+        $('#reply').click(function () {
+            $(".saveText").css('display','none');
+        })
 
 </script>
-</body>
 </html>
