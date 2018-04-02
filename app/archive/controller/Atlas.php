@@ -10,6 +10,7 @@ namespace app\archive\controller;
 use app\admin\controller\Permissions;
 use app\archive\model\AtlasCateTypeModel;//左侧节点树
 use app\archive\model\AtlasCateModel;//右侧图册类型
+use app\archive\model\AtlasDownloadModel;//下载记录
 use \think\Db;
 use \think\Session;
 /**
@@ -161,6 +162,19 @@ class Atlas extends Permissions
         }
         return $this->fetch();
     }
+
+    /**
+     * 获取标段信息
+     */
+    public function getAllsecname()
+    {
+        $data = Db::name("section")->field("name")->select();
+        return json(['code'=>1,'data'=>$data]);
+    }
+
+
+
+
     /**
      * 新增/编辑图册
      * @return mixed|\think\response\Json
@@ -301,6 +315,7 @@ class Atlas extends Permissions
         $id = input('param.id');
 
         $model = new AtlasCateModel();
+        $download = new AtlasDownloadModel();
         $param = $model->getOne($id);
         //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
         //根据id查询fengning_attachment表中的下载数量
@@ -308,6 +323,14 @@ class Atlas extends Permissions
         $number = $down_number['download'] + 1;
         //把更新后的下载量重新放入attachment表中
         Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
+
+        $data = [
+                    "date" => date("Y-m-d H:i:s"),//下载时间
+                    "user_name" => Session::get('current_nickname')//下载人
+        ];
+
+        $download->insertDownload($data);
+
         $filePath = $param['path'];
         $fileName = $param['filename'];
         $file = fopen($filePath, "r"); //   打开文件
