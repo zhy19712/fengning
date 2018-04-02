@@ -108,7 +108,6 @@ class AtlasCateModel extends Model
                 $children[$k][] = $v['paper_category'];
                 $children[$k][] = $v['owner'];
                 $children[$k][] = date("Y-m-d",$v['create_time']);
-                $children[$k][] = $v['filepath'];
                 $children[$k][] = $v['id'];
                 $children[$k][] = $v['pid'];
             }
