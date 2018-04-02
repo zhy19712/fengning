@@ -78,6 +78,15 @@ class AtlasCateModel extends Model
         $data = $this->where('id', $id)->find();
         return $data;
     }
+
+    /**
+     * 根据id查询该id下是否存在子类
+     */
+    public function judge($id)
+    {
+        $data = $this->where('pid', $id)->find();
+        return $data;
+    }
     /**
      * 查询一条图册下的所有的图片信息
      */

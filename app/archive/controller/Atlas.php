@@ -231,12 +231,31 @@ class Atlas extends Permissions
 
             if(request()->isAjax()) {
                 $param = input('post.');
+
                 //实例化model类型
                 $model = new AtlasCateModel();
 
-                $flag = $model->delCate($param['id']);
 
-                return $flag;
+                //首先判断一下删除的该图册是否存在下级
+
+                $info = $model ->judge($param['id']);
+
+                if(empty($info))//没有下级直接删除
+                {
+                    $data = $model->getOne($param['id']);
+
+                    //先删除图片
+                    $path = $data['path'];
+                    if(file_exists($path)){
+                        unlink($path); //删除文件图片
+                    }
+
+                    $flag = $model->delCate($param['id']);
+                    return $flag;
+                }else
+                {
+                    return ['code' => -1, 'msg' => '当前图册下已有图纸，请先删除图纸！'];
+                }
 
             }else
             {
@@ -280,8 +299,15 @@ class Atlas extends Permissions
             return json(['code' => 1]);
         }
         $id = input('param.id');
+
         $model = new AtlasCateModel();
         $param = $model->getOne($id);
+        //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
+        //根据id查询fengning_attachment表中的下载数量
+        $down_number = Db::name("attachment")->field("download")->where("id",$param['attachmentId'])->find();
+        $number = $down_number['download'] + 1;
+        //把更新后的下载量重新放入attachment表中
+        Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
         $filePath = $param['path'];
         $fileName = $param['filename'];
         $file = fopen($filePath, "r"); //   打开文件
