@@ -109,8 +109,10 @@ var atlasFormDom =['    <form  id="atlasform" action="#" onsubmit="return false"
 ].join(""); //图册新增dom
 //layui
 var drawingFormDom =['    <form  id="drawinfform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">',
-    '        <input type="hidden" name="selfid" id="addId" style="display: none;">',
-    '        <input type="hidden" name="id" id="editId" style="display: none;">',
+    '        <input type="hidden" name="selfid" id="addDrawId" style="display: none;">',
+    '        <input type="hidden" name="id" id="atlasId" style="display: none;">',
+    '        <input type="hidden" name="path" id="path" style="display: none;">',
+    '        <input type="hidden" name="attachmentId" id="attachmentId" style="display: none;">',
     '        <div class="layui-form-item">',
     '            <div class="autograph">',
     '                <label class="layui-form-label">图号</label>',
@@ -133,7 +135,7 @@ var drawingFormDom =['    <form  id="drawinfform" action="#" onsubmit="return fa
     '            <div class="autograph">',
     '            <label class="layui-form-label">图纸文件</label>',
     '            <div class="layui-input-inline">',
-    '                <input type="text" name="signature" id="file_name" placeholder="图纸文件" lay-verify="required" readonly autocomplete="off" class="layui-input">',
+    '                <input type="text" name="filename" id="file_name" placeholder="图纸文件" lay-verify="required" readonly autocomplete="off" class="layui-input">',
     '            </div>',
     '            <div class="layui-form-mid layui-word-aux">',
     '               <button type="button" class="layui-btn" id="upload">选择</button>',
@@ -162,7 +164,6 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
 
     //监听提交
     form.on('submit(demo1)', function(data){
-        console.log(data.filed);
         $.ajax({
             type: "post",
             url:"./editAtlasCate",
@@ -183,7 +184,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
         return false;
     });
     form.on('submit(demo2)', function(data){
-        console.log(data.filed);
+        console.log(data);
         $.ajax({
             type: "post",
             url:"./addPicture",
@@ -492,6 +493,53 @@ function conDel(id){
          }else if(res.code===-1){
              layer.msg(res.msg);
          }
+        }
+    })
+}
+//点击下载
+//下载
+function download(id,url) {
+    $.ajax({
+        url: url,
+        data:{id:id},
+        success: function (res) {
+            if(res.code != 1){
+                console.log(res)
+                layer.msg(res.msg)
+            }else {
+                $("#form_container").empty();
+                var str = "";
+                str += ""
+                    + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
+                    + "<form name=download"+ id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
+                    + "<span class='file_name' style='color: #000;'>"+str+"</span>"
+                    + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                    + "<button type='submit' class=btn" + id +"></button>"
+                    + "</form>"
+                $("#form_container").append(str);
+                $("#form_container").find(".btn" + id).click();
+            }
+
+        }
+    })
+}
+function conDown(id) {
+
+    download(id,"./atlascateDownload")
+}
+//预览
+function showPdf(id,url) {
+    $.ajax({
+        url: url,
+        type: "post",
+        data: {id:id},
+        success: function (res) {
+            if(res.code === 1){
+                var path = res.path;
+                window.open("__JS__/web/viewer.html?file=" + path,"_blank");
+            }else {
+                layer.msg(res.msg);
+            }
         }
     })
 }
