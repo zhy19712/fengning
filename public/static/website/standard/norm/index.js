@@ -56,8 +56,5 @@ $.close();
 //表单提交
 $.submit({
     ajaxUrl:'./editNode',
-    data:{
-        sid:nodeId
-    },
     tablePath:'/standard/common/datatablesPre?tableName=norm_file'
 });

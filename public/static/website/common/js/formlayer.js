@@ -63,12 +63,14 @@
             ajaxUrl:'./publish',
             data:{},
             others:function(){}
+
         };
         $.extend(option,options);
         layui.use('form',function(){
             var form = layui.form;
             //表单提交
             form.on('submit(save)', function(data){
+                option.data.nodeId = window.nodeId;
                 $.extend(true,data.field,option.data);
                 $.ajax({
                     url:option.ajaxUrl,
@@ -76,6 +78,7 @@
                     type:'POST',
                     data:data.field,
                     success:function(res){
+                        var filter = $(data.elem).attr('lay-filter');
                         if(filter=='save'){
                             layer.closeAll('page');
                         }
