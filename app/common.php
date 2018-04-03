@@ -179,7 +179,7 @@ function get_extension($file)
 //调用MS office DCOM 将文件转换为pdf， 使用pdf.js预览， 要求服务器安装MS office 较高版本，Linux环境下需改用LebreOffice或openOffice
 function ppt_to_pdf($path)
 {
-    $srcfilename = ROOT_PATH . 'public' . substr($path, 1);
+    $srcfilename = ROOT_PATH . 'public' . $path;
     $filepath = '/uploads/temp/' . basename($path);
     $destfilename = ROOT_PATH . 'public' . $filepath;
     try {
@@ -210,7 +210,7 @@ function ppt_to_pdf($path)
  */
 function excel_to_pdf($path)
 {
-    $srcfilename = ROOT_PATH . 'public' . substr($path, 1);
+    $srcfilename = ROOT_PATH . 'public' .$path;
     $filepath = '/uploads/temp/' . basename($path);
     $destfilename = ROOT_PATH . 'public' . $filepath;
     try {
@@ -237,15 +237,14 @@ function excel_to_pdf($path)
 
 function doc_to_pdf($path)
 {
-    $srcfilename = ROOT_PATH . 'public' . substr($path, 1);
+    $srcfilename = ROOT_PATH . 'public' . $path;
     $filepath = '/uploads/temp/' . basename($path);
     $destfilename = ROOT_PATH . 'public' . $filepath;
     try {
         if (!file_exists($srcfilename)) {
             return json(['code' => 0, 'msg' => '文件不存在']);
         }
-
-        $word = new \COM("word.application") or die("Can't start Word!");
+        $word = new COM("word.application") or die("Can't start Word!");
         $word->Visible = 0;
         $word->Documents->Open($srcfilename, false, false, false, "1", "1", true);
         if (file_exists($destfilename . '.pdf')) {

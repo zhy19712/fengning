@@ -334,63 +334,27 @@ class Atlas extends Permissions
     public function atlascateDownload()
     {
         if(request()->isAjax()){
-            return json(['code' => 1]);
+            $id = input('param.id');
+            $model = new AtlasCateModel();
+
+            //查询当前用户是否被禁用下载图册
+            $blacklist = $model->getbalcklist($id);
+            if($blacklist['blacklist'])
+            {
+                $list = explode(",",$blacklist['blacklist']);
+                if(!(in_array(Session::get('current_id'),$list)))
+                {
+                    return json(['code' => -1, 'msg' => "没有下载权限"]);
+                }else
+                {
+                    return json(['code' => 1]);
+                }
+            }
+
         }
         $id = input('param.id');
-        $model = new AtlasCateModel();
-
-        //查询当前用户是否被禁用下载图册
-        $blacklist = $model->getbalcklist($id);
-
-        if($blacklist['blacklist'])
-        {
-            $list = explode(",",$blacklist['blacklist']);
-            if(in_array(Session::get('current_id'),$list))
-            {
-                $download = new AtlasDownloadModel();
-                $param = $model->getOne($id);
-                //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
-                //根据id查询fengning_attachment表中的下载数量
-//        $down_number = Db::name("attachment")->field("download")->where("id",$param['attachmentId'])->find();
-//        $number = $down_number['download'] + 1;
-//        //把更新后的下载量重新放入attachment表中
-//        Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
-
-                $data = [
-                    "cate_id" => $id,
-                    "date" => date("Y-m-d H:i:s"),//下载时间
-                    "user_name" => Session::get('current_nickname')//下载人
-                ];
-
-                $download->insertDownload($data);
-
-                // 前台需要 传递 文件编号 id
-                $filePath = '.' . $param['path'];
-                if(!file_exists($filePath)){
-                    return json(['code' => '-1','msg' => '文件不存在']);
-                }else if(request()->isAjax()){
-                    return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
-                }else{
-                    $fileName = $param['filename'];
-                    $file = fopen($filePath, "r"); //   打开文件
-                    //输入文件标签
-                    $fileName = iconv("utf-8","gb2312",$fileName);
-                    Header("Content-type:application/octet-stream ");
-                    Header("Accept-Ranges:bytes ");
-                    Header("Accept-Length:   " . filesize($filePath));
-                    Header("Content-Disposition:   attachment;   filename= " . $fileName);
-                    //   输出文件内容
-                    echo fread($file, filesize($filePath));
-                    fclose($file);
-                    exit;
-                }
-            }else
-            {
-                return json(['code' => -1, 'msg' => "没有下载权限"]);
-            }
-        }
-
         $download = new AtlasDownloadModel();
+        $model = new AtlasCateModel();
         $param = $model->getOne($id);
         //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
         //根据id查询fengning_attachment表中的下载数量
@@ -461,6 +425,7 @@ class Atlas extends Permissions
             $msg = '预览成功';
             $data = $model->getOne($param['id']);
             $path = $data['path'];
+
             $extension = strtolower(get_extension(substr($path,1)));
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(!file_exists($pdf_path)){
@@ -472,7 +437,9 @@ class Atlas extends Permissions
                     ppt_to_pdf($path);
                 }else if($extension === 'pdf'){
                     $pdf_path = $path;
-                }else{
+                }else if($extension === "jpg"|"png"|"jpeg"){
+                    $pdf_path = $path;
+                }else {
                     $code = 0;
                     $msg = '不支持的文件格式';
                 }
@@ -614,12 +581,12 @@ class Atlas extends Permissions
                 $res[$k] = json_encode($v);
             }
 
-            $user = Db::name('admin')->field('id,admin_group_id,name')->select();
+            $user = Db::name('admin')->field('id,admin_group_id,nickname')->select();
             if(!empty($user))//如果$user不为空时
             {
                 foreach((array)$user as $key=>$vo){
                     $id = $vo['id'] + 10000;
-                    $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
+                    $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['nickname'].'"';
                     $str .= '}*';
                 }
                 $str = substr($str, 0, -1);
@@ -649,8 +616,6 @@ class Atlas extends Permissions
         if(request()->isAjax()) {
             $model = new AtlasCateModel();
             $param = input('post.');//需要前台传过来用户数组admin_id,cate表中的id
-            $param['admin_id'] = ['3','4','5'];
-            $param['id'] = 44;
             $data = $model->insertAdminid($param);
             return json($data);
         }

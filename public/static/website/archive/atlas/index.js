@@ -1,5 +1,7 @@
 var selfid,zTreeObj,groupid,sNodes,selectData="";//选中的节点id，ztree对象，父节点id，选中的节点，选中的表格的信息
 var isAtlas;//是否是图册
+var userList=[];//
+var drawingId='';
 var section='<option value=""></option>'; //标段
 //获取标段信息
 $.ajax({
@@ -135,7 +137,8 @@ var drawingFormDom =['    <form  id="drawinfform" action="#" onsubmit="return fa
     '            <div class="autograph">',
     '            <label class="layui-form-label">图纸文件</label>',
     '            <div class="layui-input-inline">',
-    '                <input type="text" name="filename" id="file_name" placeholder="图纸文件" lay-verify="required" readonly autocomplete="off" class="layui-input">',
+    '                <input type="text" name="filename_1" id="file_name_1" placeholder="图纸文件" lay-verify="required" readonly autocomplete="off" class="layui-input">',
+    '                <input type="hidden" name="filename" id="file_name" >',
     '            </div>',
     '            <div class="layui-form-mid layui-word-aux">',
     '               <button type="button" class="layui-btn" id="upload">选择</button>',
@@ -427,16 +430,28 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
             $("#tableItem tbody tr.c"+data[13]).show();
         };
     }
+    selectData="";
+    drawingId='';
     $(".path").html("");
     $(this).addClass("select-color").siblings().removeClass("select-color");
+    //判断是不是图册
     if($(this).hasClass("drawing")){
         isAtlas = false;
+        drawingId = $(this).data("sid");
+        $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+$(this).find("td:nth-child(3)").html());
+        //下载记录
+        var url = "/archive/common/datatablespre/tableName/atlas_download_record/id/"+drawingId+".shtml";
+        downlog.ajax.url(url).load();
+        getAdminname(drawingId);
     }else{
         isAtlas = true;
-        $(".path").html("");
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItem.row(".select-color").data();//获取选中行数据
-        $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[1]);
+        $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[2]);
+        //下载记录
+        var url = "/archive/common/datatablespre/tableName/atlas_download_record/id/"+selectData[13]+".shtml";
+        downlog.ajax.url(url).load();
+        getAdminname(selectData[13]);
     }
 });
 //点击编辑图册
@@ -499,6 +514,7 @@ function conDel(id){
 //点击下载
 //下载
 function download(id,url) {
+    var url1 = url;
     $.ajax({
         url: url,
         type:"post",
@@ -506,19 +522,22 @@ function download(id,url) {
         data:{id:id},
         success: function (res) {
             if(res.code != 1){
-                layer.msg(res.msg)
+                layer.msg(res.msg);
             }else {
                 $("#form_container").empty();
                 var str = "";
                 str += ""
                     + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
-                    + "<form name=download"+ id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
+                    + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
                     + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                     + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
                     + "<button type='submit' class=btn" + id +"></button>"
                     + "</form>"
                 $("#form_container").append(str);
                 $("#form_container").find(".btn" + id).click();
+                //下载记录
+                var url = "/archive/common/datatablespre/tableName/atlas_download_record/id/"+id+".shtml";
+                downlog.ajax.url(url).load();
             }
 
         }
@@ -540,6 +559,10 @@ function showPdf(id,url) {
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
+                console.log(res.path.split(".")[1]);
+                if(res.path.split(".")[1]==="pdf"){
+
+                }
                 window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
             }else {
                 layer.msg(res.msg);
@@ -558,8 +581,14 @@ function getAdminname(id) {
         url:"./getAdminname",
         data:{id:id,name:''},
         success: function (res) {
-            userList = res;
-            showUser();
+            if(res.code===1){
+                userList = res.data;
+                showUser();
+            }else if(res.code===-1){
+                userList=[];
+                showUser();
+            }
+
         },
         error: function (data) {
             debugger;
@@ -569,16 +598,19 @@ function getAdminname(id) {
 //删除的点击事件
 $(".userContainer").delegate("p a","click",function () {
     var admin_id = $(this).attr('id').slice(1);
-    var that = $(this);
+    var that = $(this)
+    var id = drawingId===""?selectData[13]:drawingId;
     $.ajax({
         type:"post",
         url:"./delAdminname",
-        data:{id:selectData[5],admin_id:admin_id},
+        data:{id:id,admin_id:admin_id},
         success: function (res) {
             if(res.code===1){
                 layer.msg("删除成功");
                 console.log(that.parent("p"))
                 that.parent("p").remove();
+            }else{
+                layer.msg(res.msg)
             }
         },
         error: function (data) {
@@ -617,14 +649,21 @@ $('#usernameSearch').bind('input propertychange', function() {
         $(".userContainer").html(str);
     },20)
 });
-//点击添加角色用户
+//点击添加黑名单
 $(".ibox-tools i").click(function () {
     if(selectData===""){
-        layer.msg("请先选择角色");
-        return;
+        if(drawingId===''){
+            layer.msg("请先选择图册或图纸");
+            return;
+        }else{
+         var id = drawingId;
+        }
+    }else{
+        var id = selectData[13];
     }
+
     var path = $(".path").html();//获取角色类型+角色名称的路径信息
-    window.open("./addBlacklist?path=" + path + "&roleId=" + selectData[13], "授权", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+    window.open("./addBlacklist?path=" + path + "&roleId=" +id, "授权", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
 
 });
 //

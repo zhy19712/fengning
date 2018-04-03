@@ -164,9 +164,7 @@ class Document extends Permissions
     {
         $mod = DocumentModel::get(input('id'));
         //权限控制
-        if (empty($mod['users'])) {
-
-        } else if (!in_array(Session::get('current_id'), explode($mod['users'], "|"))) {
+        if (!$mod->havePermission($mod['users'], Session::get('current_id'))) {
             return json(['code' => -2, 'msg' => "没有下载权限"]);
         }
         $file_obj = Db::name('attachment')->where('id', $mod['attachmentId'])->find();
@@ -208,8 +206,27 @@ class Document extends Permissions
      * 预览
      * @return mixed
      */
-    public function preview()
+    public function preview($url = null)
     {
+        if ($this->request->isAjax()) {
+            $doc = DocumentModel::get(input('id'), 'attachmentInfo');
+            if ($doc->havePermission($doc['users'], Session::get('current_id'))) {
+                $ext = $doc['attachment_info']['fileext'];
+                $path = $doc['attachment_info']['filepath'];
+                if ($ext == "doc" || $ext == "docx" || $ext == 'txt') {
+                    return doc_to_pdf($path);
+                } else if ($ext == "xls" || $ext == "xlsx") {
+                    return excel_to_pdf($path);
+                } else if ($ext == "ppt" || $ext == "pptx") {
+                    return ppt_to_pdf($path);
+                } else {
+                    return json(['code' => 1, 'msg' => "", 'data' => $path]);
+                }
+            } else {
+                return json(['code' => -1, 'msg' => '没有权限']);
+            }
+        }
+        $this->assign('url', $url);
         return $this->fetch();
     }
 
@@ -225,22 +242,21 @@ class Document extends Permissions
     {
         if ($this->request->isAjax()) {
             $par = input('users');
-           $flag= DocumentModel::update(['users' => $par], ['id' => $id]);
-           if ($flag)
-           {
-               return json(['code'=>1]);
-           }else
-           {
-               return json(['code'=>-1]);
-           }
+            $flag = DocumentModel::update(['users' => $par], ['id' => $id]);
+            if ($flag) {
+                return json(['code' => 1]);
+            } else {
+                return json(['code' => -1]);
+            }
+        } else {
+            //显示文档权限用户
+            $doc = DocumentModel::get($id);
+            if (empty($doc['users'])) {
+                return json();
+            }
+            $users = explode("|", $doc['users']);
+            $list = Db::table('admin')->whereIn('id', $users)->field('id,nickname')->select();
+            return json($list);
         }
-        //显示文档权限用户
-        $doc = DocumentModel::get($id);
-        if (empty($doc['users'])) {
-            return json();
-        }
-        $users = explode("|", $doc['users']);
-        $list = Db::table('admin')->whereIn('id', $users)->field('id,nickname')->select();
-        return json($list);
     }
 }
