@@ -473,6 +473,9 @@ class Atlas extends Permissions
                 {
                     return json(['code' => 1]);
                 }
+            }else
+            {
+                return json(['code' => 1]);
             }
 
         }
