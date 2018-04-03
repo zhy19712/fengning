@@ -7,8 +7,11 @@
     .search .layui-form-item{
         margin: 0;
     }
+    .ztree{
+        margin: 0;
+    }
 </style>
-<div data-options="region:'west',title:'国家标准分类',split:true" style="width:180px;">
+<div data-options="region:'west',title:'国家标准分类',split:true" style="width:260px;">
     <div data-options="region:'west',title:'国家标准分类',split:true" style="width:260px;">
         <ul class="ztree" id="ztree"></ul>
     </div>
@@ -89,7 +92,6 @@
                 <label class="layui-form-label">附件</label>
                 <div class="layui-input-inline">
                     <input type="text" name="file_name" placeholder="请输入标准名称" autocomplete="off" class="layui-input" disabled>
-                    <input type="hidden" id="file_id">
                 </div>
                 <div class="layui-form-mid layui-word-aux">
                     <div id="upload" class="upload"></div>
