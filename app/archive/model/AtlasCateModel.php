@@ -168,6 +168,74 @@ class AtlasCateModel extends Model
         return $data;
     }
 
+    /**
+     * 根据传过来的fengning_atlas_cate图册表中的id,admin表中的id,
+     */
+
+    public function delblacklist($param)
+    {
+
+        //查询白名单中的用户id
+        $blacklist = $this->field("blacklist")->where("id",$param['id'])->find();
+
+
+
+        if($blacklist["blacklist"])
+        {
+            $list = explode(",",$blacklist["blacklist"]);
+
+            foreach($list as $k=>$v)
+            {
+                if($v == $param['admin_id'])
+                {
+                    unset($list[$k]);
+                }
+            }
+        }
+
+        if($list)
+        {
+            $str = implode(",",$list);
+
+        }
+
+
+        //把处理过得数据重新插入数组中
+        $result = $this->allowField(true)->save(['blacklist'=>$str],['id' => $param['id']]);
+
+
+
+        if($result)
+        {
+            return ['code' => 1,'msg' => "删除成功"];
+        }else{
+            return ['code' => -1,'msg' => "删除失败"];
+        }
+
+    }
+
+    /**
+     * 添加用户到白名单
+     */
+
+    public function insertAdminid($param)
+    {
+        try {
+            if ($param["admin_id"]) {
+
+                    $str = implode(",", $param["admin_id"]);
+
+                    //把重新修改的blacklist重新插入数据库
+
+                    $this->allowField(true)->save(['blacklist' => $str], ['id' => $param['id']]);
+
+            }
+            return ['code' => 1, 'msg' => '添加成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
 
 
 }

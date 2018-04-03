@@ -64,11 +64,29 @@ Class DocumentModel extends Model
     public function deleteDoc($par)
     {
 
-        $mod=DocumentModel::get($par,'attachmentInfo');
-        if(file_exists($mod['attachment_info']['filepath'])){
+        $mod = DocumentModel::get($par, 'attachmentInfo');
+        if (file_exists($mod['attachment_info']['filepath'])) {
             unlink($mod['attachment_info']['filepath']); //删除上传的图片
         }
         return $mod->delete();
+    }
+
+    /**
+     * 用户是否含有指定文档的权限
+     * @param $docUsers
+     * @param $userId
+     * @return bool
+     */
+    public function havePermission($docUsers, $userId)
+    {
+        if (empty($docUsers))
+        {
+            return true;
+        }
+        if (in_array($userId, explode($docUsers, "|"))) {
+            return true;
+        }
+        return false;
     }
 }
 

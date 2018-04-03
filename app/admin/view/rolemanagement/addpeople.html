@@ -190,15 +190,11 @@
     $(function () {
         $("#btnSaveRoleUser").click(function () { saveRoleUser(); });
         $("#btnCloseRoleUser").click(function () { window.close(); });
-        initOrgnizationTree();
+
         initRoleUserData();
     });
     var treeObj;
 
-    //加载左侧组织机构树
-    function initOrgnizationTree() {
-
-    };
 //字符解码
 function ajaxDataFilter(treeId, parentNode, responseData) {
 

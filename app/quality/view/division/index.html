@@ -1,22 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<a href="./excelDownload">下载</a>
-<a href="./getParents">获取路径</a>
-<!--<form action="./importExcel" method="post" enctype="multipart/form-data">-->
-<form action="./editNode" method="post" >
-    <input name="section_id" type="hidden" value="1">
-    <input type="text" name="pid" value="2">
-    <input type="text" name="d_code" value="code_001">
-    <input type="text" name="d_name" value="1234">
-    <input type="text" name="type" value="3">
-    <input type="text" name="primary" value="">
-    <!--<input type="file" name="file">-->
-    <button> 上传 </button>
+{include file="../app/public/common_header.html"}
+
+<div data-options="region:'west',title:'工程划分',split:true" style="width:260px;">
+    <div class="ztree-title">
+        <i title="新增节点" class="fa fa-lg fa-sitemap" id="addNode"></i>
+        <i title="编辑节点" class="fa fa-lg fa-pencil" id="editNode"></i>
+        <i title="删除节点" class="fa fa-lg fa-trash" id="delNode"></i>
+        <i title="展开所有" class="fa fa-lg fa-plus-square" id="openNode"></i>
+        <i title="收起所有" class="fa fa-lg fa-minus-square" id="closeNode"></i>
+    </div>
+    <ul class="ztree" id="ztree"></ul>
+</div>
+<div data-options="region:'center',title:'单元工程：'" style="padding:5px;background:#eee;">
+
+</div>
+<!-- 新增节点 -->
+<form action="" class="layui-form" id="addNodeForm" style="display: none">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">上级名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="pname" placeholder="上级名称" lay-verify="required" autocomplete="off" class="layui-input" readonly>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">节点名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" placeholder="请输入节点名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
 </form>
+{include file="../app/public/common_footer.html"}
+<script src="__WEBSITE__/quality/division/index.js"></script>
 </body>
 </html>

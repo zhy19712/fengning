@@ -8,9 +8,10 @@
  */
 
 
-function object2array(&$object) {
-    $object =  json_decode( json_encode( $object),true);
-    return  $object;
+function object2array(&$object)
+{
+    $object = json_decode(json_encode($object), true);
+    return $object;
 }
 
 /**
@@ -20,18 +21,18 @@ function object2array(&$object) {
  */
 function geturl($id)
 {
-	if ($id) {
-		$geturl = \think\Db::name("attachment")->where(['id' => $id])->find();
-		if($geturl['status'] == 1) {
-			//审核通过
-			return $geturl['filepath'];
-		} elseif($geturl['status'] == 0) {
-			//待审核
-			return '/uploads/xitong/beiyong1.jpg';
-		} else {
-			//不通过
-			return '/uploads/xitong/beiyong2.jpg';
-		}
+    if ($id) {
+        $geturl = \think\Db::name("attachment")->where(['id' => $id])->find();
+        if ($geturl['status'] == 1) {
+            //审核通过
+            return $geturl['filepath'];
+        } elseif ($geturl['status'] == 0) {
+            //待审核
+            return '/uploads/xitong/beiyong1.jpg';
+        } else {
+            //不通过
+            return '/uploads/xitong/beiyong2.jpg';
+        }
     }
     return false;
 }
@@ -52,41 +53,41 @@ function SendMail($address)
 {
     vendor('phpmailer.PHPMailerAutoload');
     //vendor('PHPMailer.class#PHPMailer');
-    $mail = new \PHPMailer();          
-     // 设置PHPMailer使用SMTP服务器发送Email
-    $mail->IsSMTP();                
+    $mail = new \PHPMailer();
+    // 设置PHPMailer使用SMTP服务器发送Email
+    $mail->IsSMTP();
     // 设置邮件的字符编码，若不指定，则为'UTF-8'
-    $mail->CharSet='UTF-8';         
+    $mail->CharSet = 'UTF-8';
     // 添加收件人地址，可以多次使用来添加多个收件人
-    $mail->AddAddress($address); 
+    $mail->AddAddress($address);
 
-    $data = \think\Db::name('emailconfig')->where('email','email')->find();
-            $title = $data['title'];
-            $message = $data['content'];
-            $from = $data['from_email'];
-            $fromname = $data['from_name'];
-            $smtp = $data['smtp'];
-            $username = $data['username'];
-            $password = $data['password'];   
+    $data = \think\Db::name('emailconfig')->where('email', 'email')->find();
+    $title = $data['title'];
+    $message = $data['content'];
+    $from = $data['from_email'];
+    $fromname = $data['from_name'];
+    $smtp = $data['smtp'];
+    $username = $data['username'];
+    $password = $data['password'];
     // 设置邮件正文
-    $mail->Body=$message;           
+    $mail->Body = $message;
     // 设置邮件头的From字段。
-    $mail->From=$from;  
+    $mail->From = $from;
     // 设置发件人名字
-    $mail->FromName=$fromname;  
+    $mail->FromName = $fromname;
     // 设置邮件标题
-    $mail->Subject=$title;          
+    $mail->Subject = $title;
     // 设置SMTP服务器。
-    $mail->Host=$smtp;
+    $mail->Host = $smtp;
     // 设置为"需要验证" ThinkPHP 的config方法读取配置文件
-    $mail->SMTPAuth=true;
+    $mail->SMTPAuth = true;
     //设置html发送格式
-    $mail->isHTML(true);           
+    $mail->isHTML(true);
     // 设置用户名和密码。
-    $mail->Username=$username;
-    $mail->Password=$password; 
+    $mail->Username = $username;
+    $mail->Password = $password;
     // 发送邮件。
-    return($mail->Send());
+    return ($mail->Send());
 }
 
 
@@ -101,7 +102,7 @@ function SendMail($address)
  * @param [type] $code      [description]
  * @param [type] $data      [description]
  */
-function SendSms($param,$phone)
+function SendSms($param, $phone)
 {
     // 配置信息
     import('dayu.top.TopClient');
@@ -111,34 +112,34 @@ function SendSms($param,$phone)
     import('dayu.top.RequestCheckUtil');
 
     //获取短信配置
-    $data = \think\Db::name('smsconfig')->where('sms','sms')->find();
-            $appkey = $data['appkey'];
-            $secretkey = $data['secretkey'];
-            $type = $data['type'];
-            $name = $data['name'];
-            $code = $data['code'];
-    
+    $data = \think\Db::name('smsconfig')->where('sms', 'sms')->find();
+    $appkey = $data['appkey'];
+    $secretkey = $data['secretkey'];
+    $type = $data['type'];
+    $name = $data['name'];
+    $code = $data['code'];
+
     $c = new \TopClient();
-    $c ->appkey = $appkey;
-    $c ->secretKey = $secretkey;
-    
+    $c->appkey = $appkey;
+    $c->secretKey = $secretkey;
+
     $req = new \AlibabaAliqinFcSmsNumSendRequest();
     //公共回传参数，在“消息返回”中会透传回该参数。非必须
-    $req ->setExtend("");
+    $req->setExtend("");
     //短信类型，传入值请填写normal
-    $req ->setSmsType($type);
+    $req->setSmsType($type);
     //短信签名，传入的短信签名必须是在阿里大于“管理中心-验证码/短信通知/推广短信-配置短信签名”中的可用签名。
-    $req ->setSmsFreeSignName($name);
+    $req->setSmsFreeSignName($name);
     //短信模板变量，传参规则{"key":"value"}，key的名字须和申请模板中的变量名一致，多个变量之间以逗号隔开。
-    $req ->setSmsParam($param);
+    $req->setSmsParam($param);
     //短信接收号码。支持单个或多个手机号码，传入号码为11位手机号码，不能加0或+86。群发短信需传入多个号码，以英文逗号分隔，一次调用最多传入200个号码。
-    $req ->setRecNum($phone);
+    $req->setRecNum($phone);
     //短信模板ID，传入的模板必须是在阿里大于“管理中心-短信模板管理”中的可用模板。
-    $req ->setSmsTemplateCode($code);
+    $req->setSmsTemplateCode($code);
     //发送
-    
 
-    $resp = $c ->execute($req);
+
+    $resp = $c->execute($req);
 }
 
 
@@ -147,21 +148,23 @@ function SendSms($param,$phone)
  * @param  [type] $str [description]
  * @return [type]      [description]
  */
-function hide_phone($str){
-    $resstr = substr_replace($str,'****',3,4);  
-    return $resstr;  
+function hide_phone($str)
+{
+    $resstr = substr_replace($str, '****', 3, 4);
+    return $resstr;
 }
 
 /**
  * 分类树function
  * @return [type] [description]
  */
-function tree($data,$pid=0){
+function tree($data, $pid = 0)
+{
     static $treeList = array();
-    foreach($data as $v){
-        if($v['pid']==$pid){
-            $treeList[]=$v;//将结果装到$treeList中
-            tree($data,$v['id']);
+    foreach ($data as $v) {
+        if ($v['pid'] == $pid) {
+            $treeList[] = $v;//将结果装到$treeList中
+            tree($data, $v['id']);
         }
     }
     return $treeList;
@@ -174,65 +177,77 @@ function get_extension($file)
 }
 
 //调用MS office DCOM 将文件转换为pdf， 使用pdf.js预览， 要求服务器安装MS office 较高版本，Linux环境下需改用LebreOffice或openOffice
-function ppt_to_pdf($path) {
-    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
-    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+function ppt_to_pdf($path)
+{
+    $srcfilename = ROOT_PATH . 'public' . $path;
+    $filepath = '/uploads/temp/' . basename($path);
+    $destfilename = ROOT_PATH . 'public' . $filepath;
     try {
-        if(!file_exists($srcfilename)){
+        if (!file_exists($srcfilename)) {
             return json(['code' => 0, 'msg' => '文件不存在']);
         }
         $ppt = new \COM("powerpoint.application") or die("Unable to instantiate Powerpoint");
         $presentation = $ppt->Presentations->Open($srcfilename, false, false, false);
-        if(file_exists($destfilename . '.pdf')){
+        if (file_exists($destfilename . '.pdf')) {
             unlink($destfilename . '.pdf');
         }
-        $presentation->SaveAs($destfilename,32,1);
+        $presentation->SaveAs($destfilename, 32, 1);
         $presentation->Close();
         $ppt->Quit();
+        return json(['code' => 1, 'msg' => '', 'data' => $filepath]);
     } catch (\Exception $e) {
-        if (method_exists($ppt, "Quit")){
+        if (method_exists($ppt, "Quit")) {
             $ppt->Quit();
         }
         return json(['code' => 0, 'msg' => '未知错误']);
     }
 }
 
-function excel_to_pdf($path) {
-    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
-    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+/**
+ * excel转pdf
+ * @param $path 文件路径
+ * @return \think\response\Json json数据，可直接返回
+ */
+function excel_to_pdf($path)
+{
+    $srcfilename = ROOT_PATH . 'public' .$path;
+    $filepath = '/uploads/temp/' . basename($path);
+    $destfilename = ROOT_PATH . 'public' . $filepath;
     try {
-        if(!file_exists($srcfilename)){
+        if (!file_exists($srcfilename)) {
             return json(['code' => 0, 'msg' => '文件不存在']);
         }
         $excel = new \COM("excel.application") or die("Unable to instantiate excel");
         $workbook = $excel->Workbooks->Open($srcfilename, null, false, null, "1", "1", true);
-        if(file_exists($destfilename . '.pdf')){
+        if (file_exists($destfilename . '.pdf')) {
             unlink($destfilename . '.pdf');
         }
         $workbook->ExportAsFixedFormat(0, $destfilename);
         $workbook->Close();
         $excel->Quit();
+        return json(['code' => 1, 'msg' => '', 'data' => $filepath]);
     } catch (\Exception $e) {
-        echo ("src:$srcfilename catch exception:" . $e->__toString());
-        if (method_exists($excel, "Quit")){
+        echo("src:$srcfilename catch exception:" . $e->__toString());
+        if (method_exists($excel, "Quit")) {
             $excel->Quit();
         }
         return json(['code' => 0, 'msg' => '未知错误']);
     }
 }
 
-function doc_to_pdf($path) {
-    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
-    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+function doc_to_pdf($path)
+{
+    $srcfilename = ROOT_PATH . 'public' . $path;
+    $filepath = '/uploads/temp/' . basename($path);
+    $destfilename = ROOT_PATH . 'public' . $filepath;
     try {
-        if(!file_exists($srcfilename)){
+        if (!file_exists($srcfilename)) {
             return json(['code' => 0, 'msg' => '文件不存在']);
         }
-
-        $word = new \COM("word.application") or die("Can't start Word!");
-        $word->Visible=0;
+        $word = new COM("word.application") or die("Can't start Word!");
+        $word->Visible = 0;
         $word->Documents->Open($srcfilename, false, false, false, "1", "1", true);
-        if(file_exists($destfilename . '.pdf')){
+        if (file_exists($destfilename . '.pdf')) {
             unlink($destfilename . '.pdf');
         }
 
@@ -253,8 +268,9 @@ function doc_to_pdf($path) {
         );
         $word->ActiveDocument->Close();
         $word->Quit();
+        return json(['code' => 1, 'msg' => '', 'data' => $filepath]);
     } catch (\Exception $e) {
-        if (method_exists($word, "Quit")){
+        if (method_exists($word, "Quit")) {
             $word->Quit();
         }
         return json(['code' => 0, 'msg' => '未知错误']);

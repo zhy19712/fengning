@@ -133,3 +133,7 @@ select.form-control {
 .panel-body{
     background-color: #FFF;
 }
+/* 表格 */
+.dataTables_wrapper,.tbcontainer{
+    display: none;
+}

@@ -46,7 +46,7 @@ class Norm extends Permissions
                 $info['filename'] = Db::name('attachment')->where('id',$info['data']['file_id'])->column('filename');
                 return json($info);
             }
-            $param = input('post.');
+            $param = input('param.');
             // 验证规则
             $validate = new \think\Validate([
                 ['nodeId', 'require|number', '请选择标准分类|标准分类必须是数字'],
@@ -59,7 +59,7 @@ class Norm extends Permissions
             ]);
             //验证部分数据合法性
             if (!$validate->check($param)) {
-                $this->error('提交失败：' . $validate->getError());
+                return json(['code' => -1,'msg' => $validate->getError()]);
             }
 
             /**
