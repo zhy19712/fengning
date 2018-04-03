@@ -1231,7 +1231,6 @@
                         $("#form_container").append(str);
                         $("#form_container").find(".btn" + id).click();
                     }
-
                 }
             })
         }
@@ -1251,7 +1250,28 @@
                 success: function (res) {
                     if(res.code === 1){
                         var path = res.path;
-                        window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
+                        console.log(res.path.split(".")[1]);
+                        if(res.path.split(".")[1]==="pdf"){
+                            window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
+                        }else{
+                            layer.photos({
+                                photos: {
+                                    "title": "", //相册标题
+                                    "id": id, //相册id
+                                    "start": 0, //初始显示的图片序号，默认0
+                                    "data": [   //相册包含的图片，数组格式
+                                        {
+                                            "alt": "图片名",
+                                            "pid": id, //图片id
+                                            "src": "../../../"+res.path, //原图地址
+                                            "thumb": "" //缩略图地址
+                                        }
+                                    ]
+                                }
+                                ,anim: Math.floor(Math.random()*7) //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                            });
+                        }
+
                     }else {
                         layer.msg(res.msg);
                     }
@@ -1263,12 +1283,28 @@
         function previewList(id){
             layer.load(1, {shade: [0.8, '#393D49']})
 
-            // showPdf(id,'./atlascatePreview')
-            setTimeout(function () {
-                var index = layer.load();
-                layer.close(index);
-            },3000)
+            $.ajax({
+                url: "{:url('document/preview')}",
+                data:{users:id},
+                type:"post",
+                success: function (res) {
+                    console.log(res);
+                    if(res.code == 1){
+                        console.log(res);
+                        layer.msg(res.msg)
+                        // showPdf(id,'./atlascatePreview')
+                        setTimeout(function () {
+                            var index = layer.load();
+                            layer.close(index);
+                        },3000)
+                    }else {
+                        layer.msg(res.msg)
+                    }
+                }
+            })
+
         }
+
         // //关联文件
         // function AssFile() {
         //     layer.open({
@@ -1411,6 +1447,26 @@
                 shadeClose: true,
                 area: ['810px', '600px'],
                 content: '{:url("share")}?id='+clickId,
+                end:function(){
+                    $.ajax({
+                        type: "post",
+                        url: "{:url('document/PermissionRelation')}",
+                        data: {id: clickId},
+                        success: function (res) {
+                            console.log(res);
+                            $("#userContainer").html("");
+                            var strTr = '';
+                            for (var i = 0; i < res.length; i++) {
+                                strTr += '<tr>\n' +
+                                    '       <td>' + res[i].create_time + '</td>\n' +
+                                    '       <td>' + res[i].user + '</td>\n' +
+                                    '    </tr>'
+                            }
+                            $("#userContainer").append(strTr);
+
+                        }
+                    })
+                }
             });
 
         }

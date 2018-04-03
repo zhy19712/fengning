@@ -165,11 +165,10 @@
 <script src="__PUBLIC__/datatables/js/dataTables.buttons.min.js"></script>
 <script src="__PUBLIC__/datatables/js/dataTables.bootstrap.js"></script>
 <script>
-    // var layer;
-    // layui.use("layer",function(){
-    //     layer = layui.layer;
-    //     console.log(parent.layer.getFrameIndex(window.name));
-    // });
+    var layer;
+    layui.use("layer",function(){
+        layer = layui.layer;
+    });
 
     //获取参数
     var objdata = {};
@@ -188,7 +187,6 @@
     }
     //获取参数
     urlSearch();
-
     $("#path").html("已选图纸/图册&nbsp;>&nbsp;"+decodeURIComponent(objdata.path))
     $("#roleId").val(objdata.roleId);
 
@@ -242,7 +240,6 @@
             onDblClick: onDblClick
         }
     };
-
     treeObj = $.fn.zTree.init($("#treeDemo"), setting, null);
     //搜索树
     function SearchTree() {
@@ -311,18 +308,13 @@
         })
     };
 
-    console.log(parent.layer.getFrameIndex(window.name))
-
     function closWin() {
         var index = parent.layer.getFrameIndex(window.name);
         parent.layer.close(index);
     };
-    function refreshSub() {
-        parent.admin_table.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
-    }
 
     var wordDataId = $("#wordId").val();
-    console.log(wordDataId)
+    // console.log(wordDataId)
     //保存角色用户信息
     function saveRoleUser() {
         var roleId = $("#roleId").val();
@@ -344,8 +336,7 @@
                 if(res.code == 1){
                     // window.opener.getAdminname(roleId);
                     parent.layer.msg("保存成功");
-
-                    // window.close();
+                    parent.layer.closeAll('iframe'); //关闭所有的iframe层
                 }else{
                     parent.layer.msg("保存失败！")
                 }
