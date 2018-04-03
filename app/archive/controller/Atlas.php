@@ -526,10 +526,31 @@ class Atlas extends Permissions
                 return json(['code' => 1, 'data' => $res]);//返回json数据
             }else
             {
-                return $this->fetch();
+                return json(['code' => -1, 'msg' => "没有黑名单用户！"]);//返回json数据
             }
 
         }
+    }
+
+    /**
+     * 根据角色类型删除角色类型下的用户
+     * @return \think\response\Json
+     */
+    public function delAdminname()
+    {
+//        if(request()->isAjax()) {
+            $param = input('post.id');
+            //实例化model类型
+            $model = new AdminModel();
+
+            $flag = $model->deladmincateid($param);
+
+            return $flag;
+
+//        }else
+//        {
+//            return $this->fetch();
+//        }
     }
 
 
