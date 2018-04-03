@@ -302,5 +302,14 @@ class Admin extends Model
 
 
     }
+    /**
+     * 根据admin表中的id查询用户名，用户id
+     */
+
+    public function getadmininfo($id)
+    {
+        $data = $this->field("id,nickname")->where("id",$id)->find();
+        return $data;
+    }
 
 }
