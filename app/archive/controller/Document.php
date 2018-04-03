@@ -152,8 +152,6 @@ class Document extends Permissions
      */
     public function download()
     {
-        // 前台需要 传递 文件编号 id
-
         $mod = DocumentModel::get(input('id'));
         //权限控制
         if (empty($mod['users'])) {
@@ -168,7 +166,8 @@ class Document extends Permissions
         } else if (request()->isAjax()) {
             return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
         } else {
-            $this->documentDownRecord->save([]);
+            //插入下载记录
+            $this->documentDownRecord->save(['docId'=>$mod['id'],'user'=>Session::get('current_nickname')]);
             $fileName = $file_obj['filename'];
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
@@ -182,10 +181,5 @@ class Document extends Permissions
             fclose($file);
             exit;
         }
-    }
-
-    public function test()
-    {
-        return json(DocumentDownRecord::get(input('id')->select()));
     }
 }
