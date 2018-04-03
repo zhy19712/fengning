@@ -287,6 +287,7 @@ class Common extends Controller
             }
             $data['use'] = $this->request->has('use') ? $this->request->param('use') : $use;//用处
             $res['id'] = Db::name('attachment')->insertGetId($data);
+            $res['filename'] = $info->getFilename();//文件名
             $res['src'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();
             $res['code'] = 2;
             addlog($res['id']);//记录日志
