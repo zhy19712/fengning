@@ -458,6 +458,7 @@ class Atlas extends Permissions
     {
         //获取列表
         $id = input('param.id');
+        $id = 6;
 //        $id = $param['id'];//图册的id
 
         $model = new AtlasCateModel();
@@ -469,28 +470,39 @@ class Atlas extends Permissions
 
         $zip = new \ZipArchive;
 //压缩文件名
-        $filename = 'download.zip';
-//新建zip压缩包
-        $zip->open($filename,\ZipArchive::OVERWRITE|\ZipArchive::CREATE);
-//把图片一张一张加进去压缩
-        foreach ($datalist as $key => $value) {
+        $zipName = '../../public/uploads/atlas/atlas_thumb/download.zip';
+        halt($zipName);
 
-            $zip->addFile($value);
+//新建zip压缩包
+        if ($zip->open($zipName, \ZIPARCHIVE::OVERWRITE | \ZIPARCHIVE::CREATE)!==TRUE) {
+            exit('无法打开文件，或者文件创建失败');
         }
+//把图片一张一张加进去压缩
+        foreach($datalist as $key=>$val){
+
+            //$attachfile = $attachmentDir . $val['filepath']; //获取原始文件路径
+            if(file_exists($val['path'])){
+                //addFile函数首个参数如果带有路径，则压缩的文件里包含的是带有路径的文件压缩
+                //若不希望带有路径，则需要该函数的第二个参数
+                $zip->addFile($val['path'], basename($val['path']));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+            }
+        }
+
 //打包zip
         $zip->close();
 
-//可以直接重定向下载
-        header('Location:'.$filename);
+        if(!file_exists($zipName)){
+            exit("无法找到文件"); //即使创建，仍有可能失败
+        }
 
-//或者输出下载
+        //如果不要下载，下面这段删掉即可，如需返回压缩包下载链接，只需 return $zipName;
         header("Cache-Control: public");
         header("Content-Description: File Transfer");
-        header('Content-disposition: attachment; filename='.basename($filename)); //文件名
-        header("Content-Type: application/force-download");
-        header("Content-Transfer-Encoding: binary");
-        header('Content-Length: '. filesize($filename)); //告诉浏览器，文件大小
-        readfile($filename);
+        header('Content-disposition: attachment; filename='.basename($zipName)); //文件名
+        header("Content-Type: application/zip"); //zip格式的
+        header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
+        header('Content-Length: '. filesize($zipName)); //告诉浏览器，文件大小
+        @readfile($zipName);
     }
 
     /**********************************下载黑名单************************/
