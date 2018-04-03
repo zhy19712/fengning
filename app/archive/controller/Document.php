@@ -151,8 +151,9 @@ class Document extends Permissions
      * 共享文档
      * @return mixed
      */
-    public function share()
+    public function share($id)
     {
+        $this->assign('docId',$id);
         return $this->fetch();
     }
 
@@ -222,12 +223,11 @@ class Document extends Permissions
                 } else {
                     return json(['code' => 1, 'msg' => "", 'data' => $path]);
                 }
-            }else
-            {
-                return json(['code'=>-1,'msg'=>'没有权限']);
+            } else {
+                return json(['code' => -1, 'msg' => '没有权限']);
             }
         }
-        $this->assign('url',$url);
+        $this->assign('url', $url);
         return $this->fetch();
     }
 
@@ -249,14 +249,15 @@ class Document extends Permissions
             } else {
                 return json(['code' => -1]);
             }
+        } else {
+            //显示文档权限用户
+            $doc = DocumentModel::get($id);
+            if (empty($doc['users'])) {
+                return json();
+            }
+            $users = explode("|", $doc['users']);
+            $list = Db::table('admin')->whereIn('id', $users)->field('id,nickname')->select();
+            return json($list);
         }
-        //显示文档权限用户
-        $doc = DocumentModel::get($id);
-        if (empty($doc['users'])) {
-            return json();
-        }
-        $users = explode("|", $doc['users']);
-        $list = Db::table('admin')->whereIn('id', $users)->field('id,nickname')->select();
-        return json($list);
     }
 }

@@ -81,6 +81,12 @@ class Division extends Permissions{
              *
              * 顶级节点 -》标段  不允许 增删改,它们是从其他表格获取的
              *
+             * 顶级节点 -》标段 下面 新增的是 -》单位工程 type = 1 , d_code 是自定义的
+             *                                   单位工程 下面 新增的是 =》 子单位工程 type = 3 , d_code 是继承父级节点的
+             *                                                           =》 分部工程  type = 3 , d_code 是继承父级节点的
+             *                                                               分部工程 下面 新增的是 -》 子分部工程 type = 3 ,d_code 是继承父级节点的
+             *                                                                                      -》 分项工程   type = 3 ,d_code 是继承父级节点的
+             *
              * 当新增 单位工程 =》 子单位工程 =》分部工程 -》子分部工程 的时候
              * 前台需要传递的是 section_id 标段编号 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,primary 是否主要工程,remark 描述
              * 编辑 的时候 一定要 传递 id 编号
@@ -91,6 +97,9 @@ class Division extends Permissions{
              *
              */
             $data = ['section_id' => $param['section_id'],'pid' => $param['pid'],'d_code' => $param['d_code'],'d_name' => $param['d_name'],'type' => $param['type'],'primary' => $param['primary'],'remark' => $param['remark']];
+            if($param['type'] == 1){
+                $data['pid'] = 0;
+            }
             if($param['type'] == 3 && !empty($en_type)){
                 $data['en_type'] = $en_type;
             }
