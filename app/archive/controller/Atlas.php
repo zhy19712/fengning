@@ -13,6 +13,7 @@ use app\archive\model\AtlasCateModel;//右侧图册类型
 use app\archive\model\AtlasDownloadModel;//下载记录
 
 use app\admin\model\Admin as adminModel;//管理员模型
+use app\admin\model\AdminGroup;//组织机构
 
 use \think\Db;
 use \think\Session;
@@ -346,6 +347,45 @@ class Atlas extends Permissions
             $list = explode(",",$blacklist['blacklist']);
             if(in_array(Session::get('current_id'),$list))
             {
+                $download = new AtlasDownloadModel();
+                $param = $model->getOne($id);
+                //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
+                //根据id查询fengning_attachment表中的下载数量
+//        $down_number = Db::name("attachment")->field("download")->where("id",$param['attachmentId'])->find();
+//        $number = $down_number['download'] + 1;
+//        //把更新后的下载量重新放入attachment表中
+//        Db::name("attachment")->allowField(true)->update(['download' => $number],['id' => $param['attachmentId']]);
+
+                $data = [
+                    "cate_id" => $id,
+                    "date" => date("Y-m-d H:i:s"),//下载时间
+                    "user_name" => Session::get('current_nickname')//下载人
+                ];
+
+                $download->insertDownload($data);
+
+                // 前台需要 传递 文件编号 id
+                $filePath = '.' . $param['path'];
+                if(!file_exists($filePath)){
+                    return json(['code' => '-1','msg' => '文件不存在']);
+                }else if(request()->isAjax()){
+                    return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+                }else{
+                    $fileName = $param['filename'];
+                    $file = fopen($filePath, "r"); //   打开文件
+                    //输入文件标签
+                    $fileName = iconv("utf-8","gb2312",$fileName);
+                    Header("Content-type:application/octet-stream ");
+                    Header("Accept-Ranges:bytes ");
+                    Header("Accept-Length:   " . filesize($filePath));
+                    Header("Content-Disposition:   attachment;   filename= " . $fileName);
+                    //   输出文件内容
+                    echo fread($file, filesize($filePath));
+                    fclose($file);
+                    exit;
+                }
+            }else
+            {
                 return json(['code' => -1, 'msg' => "没有下载权限"]);
             }
         }
@@ -489,7 +529,7 @@ class Atlas extends Permissions
     /**********************************下载黑名单************************/
 
     /**
-     * 黑名单首页
+     * 白名单首页
      */
     public function addBlacklist()
     {
@@ -497,7 +537,7 @@ class Atlas extends Permissions
     }
 
     /**
-     * 根据图册信息查询该图册下所有的黑名单用户
+     * 根据图册信息查询该图册下所有的白名单用户
      * @return \think\response\Json
      */
     public function getAdminname()
@@ -526,31 +566,92 @@ class Atlas extends Permissions
                 return json(['code' => 1, 'data' => $res]);//返回json数据
             }else
             {
-                return json(['code' => -1, 'msg' => "没有黑名单用户！"]);//返回json数据
+                return json(['code' => -1, 'msg' => "没有白名单用户！"]);//返回json数据
             }
 
         }
     }
 
     /**
-     * 根据角色类型删除角色类型下的用户
+     * 删除下载白名单下的用户
      * @return \think\response\Json
      */
     public function delAdminname()
     {
-//        if(request()->isAjax()) {
-            $param = input('post.id');
+        if(request()->isAjax()) {
+            $param = input('post.');
             //实例化model类型
-            $model = new AdminModel();
+            $model = new AtlasCateModel();
+            $flag = $model->delblacklist($param);
 
-            $flag = $model->deladmincateid($param);
+            return json($flag);
 
-            return $flag;
+        }else
+        {
+            return $this->fetch();
+        }
+    }
 
-//        }else
-//        {
-//            return $this->fetch();
-//        }
+    /**
+     * 获取 组织机构 左侧的树结构
+     * @return mixed|\think\response\Json
+     */
+    public function getOrganization()
+    {
+
+        if(request()->isAjax()) {
+            // 获取左侧的树结构
+            $model = new AdminGroup();
+            //定义一个空的字符串
+            $str = "";
+            $data = $model->getall();
+            $res = tree($data);
+
+            foreach ((array)$res as $k => $v) {
+
+                $v['id'] = strval($v['id']);
+                $v['pid'] = strval($v['pid']);
+                $res[$k] = json_encode($v);
+            }
+
+            $user = Db::name('admin')->field('id,admin_group_id,name')->select();
+            if(!empty($user))//如果$user不为空时
+            {
+                foreach((array)$user as $key=>$vo){
+                    $id = $vo['id'] + 10000;
+                    $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
+                    $str .= '}*';
+                }
+                $str = substr($str, 0, -1);
+
+                $str = explode("*",$str);
+
+                //$res,$str这两个数组都存在时，才可以合并
+
+                if($res && $str)
+                {
+                    $merge = array_merge($res,$str);
+                }
+
+                return json($merge);
+            }
+
+        }
+    }
+
+    /**
+     * 添加用户到白名单
+     * @return \think\response\Json
+     */
+    public function addAdminname()
+    {
+
+        if(request()->isAjax()) {
+            $model = new AtlasCateModel();
+            $param = input('post.');//需要前台传过来用户数组admin_id,cate表中的id
+            $data = $model->insertAdminid($param);
+            return json($data);
+        }
     }
 
 
