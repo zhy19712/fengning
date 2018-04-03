@@ -51,6 +51,7 @@ class Division extends Permissions{
             $en_type = isset($param['en_type']) ? $param['en_type'] : '';
             if(request()->isGet()){
                 $info['node'] = $node->getOne($id);
+                // Todo 工程分类
                 return json($info);
             }
 
@@ -82,10 +83,10 @@ class Division extends Permissions{
              * 顶级节点 -》标段  不允许 增删改,它们是从其他表格获取的
              *
              * 顶级节点 -》标段 下面 新增的是 -》单位工程 type = 1 , d_code 是自定义的
-             *                                   单位工程 下面 新增的是 =》 子单位工程 type = 3 , d_code 是继承父级节点的
-             *                                                           =》 分部工程  type = 3 , d_code 是继承父级节点的
-             *                                                               分部工程 下面 新增的是 -》 子分部工程 type = 3 ,d_code 是继承父级节点的
-             *                                                                                      -》 分项工程   type = 3 ,d_code 是继承父级节点的
+             *                                   单位工程 下面 新增的是 =》 子单位工程 type = 2 , d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                           =》 分部工程  type = 2 , d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                               分部工程 下面 新增的是 -》 子分部工程 type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                                                      -》 分项工程   type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
              *
              * 当新增 单位工程 =》 子单位工程 =》分部工程 -》子分部工程 的时候
              * 前台需要传递的是 section_id 标段编号 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,primary 是否主要工程,remark 描述
@@ -440,6 +441,8 @@ class Division extends Permissions{
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
             if(request()->isGet()){
                 $info['node'] = $unit->getOne($id);
+                // Todo 施工依据
+                // Todo 工程类型
                 return json($info);
             }
 
