@@ -65,8 +65,8 @@ Class DocumentModel extends Model
     {
 
         $mod=DocumentModel::get($par,'attachmentInfo');
-        if(file_exists($mod['attachment_info']['filepatch'])){
-            unlink($mod['attachment_info']['filepatch']); //删除上传的图片
+        if(file_exists($mod['attachment_info']['filepath'])){
+            unlink($mod['attachment_info']['filepath']); //删除上传的图片
         }
         return $mod->delete();
     }
