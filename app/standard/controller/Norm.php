@@ -42,8 +42,9 @@ class Norm extends Permissions
             // 如果提交方式是 get 就是点击编辑获取一条数据 post 就是新增或者编辑后保存的操作
             $node = new NormModel();
             if($this->request->isGet()) {
-                $data= $node->getOne(input('id'));
-                return json($data);
+                $info['data'] = $node->getOne(input('id'));
+                $info['filePath'] = Db::name('attachment')->where('id',$info['data']['file_id'])->column('filepath');
+                return json($info);
             }
             $param = input('post.');
             // 验证规则

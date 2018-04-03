@@ -166,3 +166,97 @@ function tree($data,$pid=0){
     }
     return $treeList;
 }
+
+//获取后缀名
+function get_extension($file)
+{
+    return substr(strrchr($file, '.'), 1);
+}
+
+//调用MS office DCOM 将文件转换为pdf， 使用pdf.js预览， 要求服务器安装MS office 较高版本，Linux环境下需改用LebreOffice或openOffice
+function ppt_to_pdf($path) {
+    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
+    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+    try {
+        if(!file_exists($srcfilename)){
+            return json(['code' => 0, 'msg' => '文件不存在']);
+        }
+        $ppt = new \COM("powerpoint.application") or die("Unable to instantiate Powerpoint");
+        $presentation = $ppt->Presentations->Open($srcfilename, false, false, false);
+        if(file_exists($destfilename . '.pdf')){
+            unlink($destfilename . '.pdf');
+        }
+        $presentation->SaveAs($destfilename,32,1);
+        $presentation->Close();
+        $ppt->Quit();
+    } catch (\Exception $e) {
+        if (method_exists($ppt, "Quit")){
+            $ppt->Quit();
+        }
+        return json(['code' => 0, 'msg' => '未知错误']);
+    }
+}
+
+function excel_to_pdf($path) {
+    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
+    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+    try {
+        if(!file_exists($srcfilename)){
+            return json(['code' => 0, 'msg' => '文件不存在']);
+        }
+        $excel = new \COM("excel.application") or die("Unable to instantiate excel");
+        $workbook = $excel->Workbooks->Open($srcfilename, null, false, null, "1", "1", true);
+        if(file_exists($destfilename . '.pdf')){
+            unlink($destfilename . '.pdf');
+        }
+        $workbook->ExportAsFixedFormat(0, $destfilename);
+        $workbook->Close();
+        $excel->Quit();
+    } catch (\Exception $e) {
+        echo ("src:$srcfilename catch exception:" . $e->__toString());
+        if (method_exists($excel, "Quit")){
+            $excel->Quit();
+        }
+        return json(['code' => 0, 'msg' => '未知错误']);
+    }
+}
+
+function doc_to_pdf($path) {
+    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
+    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+    try {
+        if(!file_exists($srcfilename)){
+            return json(['code' => 0, 'msg' => '文件不存在']);
+        }
+
+        $word = new \COM("word.application") or die("Can't start Word!");
+        $word->Visible=0;
+        $word->Documents->Open($srcfilename, false, false, false, "1", "1", true);
+        if(file_exists($destfilename . '.pdf')){
+            unlink($destfilename . '.pdf');
+        }
+
+        $word->ActiveDocument->final = false;
+        $word->ActiveDocument->Saved = true;
+        $word->ActiveDocument->ExportAsFixedFormat(
+            $destfilename . '.pdf',
+            17,                         // wdExportFormatPDF
+            false,                      // open file after export
+            0,                          // wdExportOptimizeForPrint
+            3,                          // wdExportFromTo
+            1,                          // begin page
+            5000,                       // end page
+            7,                          // wdExportDocumentWithMarkup
+            true,                       // IncludeDocProps
+            true,                       // KeepIRM
+            1                           // WdExportCreateBookmarks
+        );
+        $word->ActiveDocument->Close();
+        $word->Quit();
+    } catch (\Exception $e) {
+        if (method_exists($word, "Quit")){
+            $word->Quit();
+        }
+        return json(['code' => 0, 'msg' => '未知错误']);
+    }
+}

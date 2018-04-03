@@ -425,7 +425,7 @@ class Atlas extends Permissions
     public function allDownload()
     {
         //获取列表
-        $param = input('post.');
+        $id = input('param.id');
 //        $id = $param['id'];//图册的id
 
         $model = new AtlasCateModel();
@@ -433,7 +433,7 @@ class Atlas extends Permissions
         //定义一个空的数组
 
 
-        $datalist = $model->getallpath($param['id']);
+        $datalist = $model->getallpath($id);
 
         $zip = new \ZipArchive;
 //压缩文件名
