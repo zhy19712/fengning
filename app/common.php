@@ -175,8 +175,8 @@ function get_extension($file)
 
 //调用MS office DCOM 将文件转换为pdf， 使用pdf.js预览， 要求服务器安装MS office 较高版本，Linux环境下需改用LebreOffice或openOffice
 function ppt_to_pdf($path) {
-    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
-    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+    $srcfilename = ROOT_PATH.'public' . substr($path, 1);
+    $destfilename = ROOT_PATH.'public/uploads/temp/' . basename($path);
     try {
         if(!file_exists($srcfilename)){
             return json(['code' => 0, 'msg' => '文件不存在']);
@@ -198,8 +198,8 @@ function ppt_to_pdf($path) {
 }
 
 function excel_to_pdf($path) {
-    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
-    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+    $srcfilename = ROOT_PATH.'public' . substr($path, 1);
+    $destfilename = ROOT_PATH.'public/uploads/temp/' . basename($path);
     try {
         if(!file_exists($srcfilename)){
             return json(['code' => 0, 'msg' => '文件不存在']);
@@ -222,8 +222,8 @@ function excel_to_pdf($path) {
 }
 
 function doc_to_pdf($path) {
-    $srcfilename = 'D:/phpStudy/WWW/shuzi/public' . substr($path, 1);
-    $destfilename = 'D:/phpStudy/WWW/shuzi/public/uploads/temp/' . basename($path);
+    $srcfilename = ROOT_PATH.'public' . substr($path, 1);
+    $destfilename = ROOT_PATH.'public/uploads/temp/' . basename($path);
     try {
         if(!file_exists($srcfilename)){
             return json(['code' => 0, 'msg' => '文件不存在']);
