@@ -129,7 +129,7 @@
                             return false;
                         }
                         option.others(res);
-                        initUi.form.render('select');
+                        initUi.form.render();
                     }
                 });
             },

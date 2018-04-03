@@ -458,7 +458,6 @@ class Atlas extends Permissions
     {
         //获取列表
         $id = input('param.id');
-        $id = 6;
 //        $id = $param['id'];//图册的id
 
         $model = new AtlasCateModel();
@@ -468,10 +467,11 @@ class Atlas extends Permissions
 
         $datalist = $model->getallpath($id);
 
+
         $zip = new \ZipArchive;
 //压缩文件名
-        $zipName = '../../public/uploads/atlas/atlas_thumb/download.zip';
-        halt($zipName);
+        $zipName = '/uploads/atlas/atlas_thumb/download.zip';
+//        halt($zipName);
 
 //新建zip压缩包
         if ($zip->open($zipName, \ZIPARCHIVE::OVERWRITE | \ZIPARCHIVE::CREATE)!==TRUE) {
