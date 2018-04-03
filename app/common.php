@@ -244,7 +244,6 @@ function doc_to_pdf($path)
         if (!file_exists($srcfilename)) {
             return json(['code' => 0, 'msg' => '文件不存在']);
         }
-
         $word = new COM("word.application") or die("Can't start Word!");
         $word->Visible = 0;
         $word->Documents->Open($srcfilename, false, false, false, "1", "1", true);
