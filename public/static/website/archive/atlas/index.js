@@ -561,9 +561,35 @@ function showPdf(id,url) {
                 var path = res.path;
                 console.log(res.path.split(".")[1]);
                 if(res.path.split(".")[1]==="pdf"){
-
+                    window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
+                }else{
+                    // var index = layer.open({
+                    //     type: 2,
+                    //     title: '文件在线预览：' ,
+                    //     shadeClose: true,
+                    //     shade: 0.8,
+                    //     area: ['980px', '600px'],
+                    //     content: './pictureshow?url=' //iframe的url
+                    // });
+                    // layer.full(index);
+                    layer.photos({
+                        photos: {
+                            "title": "", //相册标题
+                            "id": id, //相册id
+                            "start": 0, //初始显示的图片序号，默认0
+                            "data": [   //相册包含的图片，数组格式
+                                {
+                                    "alt": "图片名",
+                                    "pid": id, //图片id
+                                    "src": "../../../"+res.path, //原图地址
+                                    "thumb": "" //缩略图地址
+                                }
+                            ]
+                        }
+                        ,anim: Math.floor(Math.random()*7) //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                    });
                 }
-                window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
+
             }else {
                 layer.msg(res.msg);
             }
@@ -573,6 +599,7 @@ function showPdf(id,url) {
 //预览图纸
 function conPicshow(id){
     showPdf(id,'./atlascatePreview')
+
 }
 //拉取黑名单用户
 function getAdminname(id) {
