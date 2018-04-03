@@ -514,6 +514,7 @@ function conDel(id){
 //点击下载
 //下载
 function download(id,url) {
+    var url1 = url;
     $.ajax({
         url: url,
         type:"post",
@@ -527,7 +528,7 @@ function download(id,url) {
                 var str = "";
                 str += ""
                     + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
-                    + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
+                    + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
                     + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                     + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
                     + "<button type='submit' class=btn" + id +"></button>"
@@ -558,6 +559,10 @@ function showPdf(id,url) {
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
+                console.log(res.path.split(".")[1]);
+                if(res.path.split(".")[1]==="pdf"){
+
+                }
                 window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
             }else {
                 layer.msg(res.msg);
