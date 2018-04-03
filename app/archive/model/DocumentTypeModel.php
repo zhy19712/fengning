@@ -59,12 +59,12 @@ class DocumentTypeModel extends Model
     }
     function _getChilds($list,$id)
     {
-        $nodeArray=array();
+       $nodeArray=array();
         foreach ($list as $item)
         {
             if ($item['pid']==$id){
                 $nodeArray[]=$item['id'];
-                $this->_getChilds($list,$item['id']);
+                $nodeArray= array_merge($nodeArray, $this->_getChilds($list,$item['id']));
             }
         }
         return $nodeArray;
