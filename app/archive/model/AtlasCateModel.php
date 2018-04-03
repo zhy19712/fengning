@@ -148,6 +148,16 @@ class AtlasCateModel extends Model
         }
     }
 
+    /*
+     * 查询该图册下的所有的文件路径
+     */
+    public function  getallpath($id)
+    {
+        $data = $this->field("path")->where("pid",$id)->select();
+
+        return $data;
+    }
+
 
 
 }
