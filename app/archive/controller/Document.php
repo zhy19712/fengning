@@ -222,6 +222,9 @@ class Document extends Permissions
                 } else {
                     return json(['code' => 1, 'msg' => "", 'data' => $path]);
                 }
+            }else
+            {
+                return json(['code'=>-1,'msg'=>'没有权限']);
             }
         }
         $this->assign('url',$url);
