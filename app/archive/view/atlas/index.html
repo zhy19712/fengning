@@ -94,6 +94,13 @@
     .showclick{
         font-size: 14px;
     }
+    #downlog{
+        width: 90%;
+    }
+    #downlog ,#downlog tr ,#downlog tr td , #downlog tr th{
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
 </style>
 <div data-options="region:'west',title:'图册文件树',split:true" style="width:240px;">
     <div class="ztree-title">
@@ -242,6 +249,7 @@
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
                 <div style="width: 100%; height: 30px;">
+                    <h3 >下载黑名单</h3>
                     <div class="ibox-tools">
                         <i title="添加" class="fa fa-lg fa-plus-square" ></i>
                     </div>
@@ -252,8 +260,8 @@
                 <div class="userContainer" style="width: 100%;"></div>
             </div>
             <div class="layui-tab-item ">
-               <table id="downlog" style="width: 80%;">
-                   <thead style="width: 100%;border: 1px solid black; background-color:#ffefd7;">
+               <table id="downlog"  style="width: 100%;">
+                   <thead style="width: 100% ;background-color:#ffefd7;">
                    <tr>
                        <th style="width: 50%; ">下载日期</th>
                        <th style="width: 50%; ">下载人员</th>
@@ -275,7 +283,7 @@
         serverSide: true,
         ordering: false, // 禁止排序
         ajax: {
-            "url":"{:url('archive/common/datatablesPre?tableName=atlas_cate&selfid=')}"
+            "url":"{:url('archive/common/datatablesPre?tableName=atlas_cate&selfid=0')}"
         },
         dom: 'lf<"mybtnDrawing mybtn layui-btn layui-btn-sm"><"mybtnAtlas mybtn layui-btn layui-btn-sm">rtip',
         columns:[
@@ -331,7 +339,7 @@
                 "render" :  function(data,type,row) {
                     var a = data;
                     var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+row[13]+")'><i class='fa fa-pencil'></i></a>" ;
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown("+row[13]+")'><i class='fa fa-download'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDownAll("+row[13]+")'><i class='fa fa-download'></i></a>" ;
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+row[13]+")'><i class='fa fa-trash'></i></a>" ;
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPicshow("+row[13]+")'><i class='fa fa-search'></i></a>" ;
                     return html;
@@ -489,15 +497,7 @@
             1,1
         ]
     ]
-    $.ajax({
-        type:"post",
-        data:{id:24},
-        url:"./getAlldownrec",
-        dataType:"json",
-        success: function (res) {
-            dataset = res.data;
-        }
-    });
+
     //下载记录
     var downlog = $('#downlog').DataTable( {
         paging: false, // 禁止分页
@@ -505,8 +505,16 @@
         processing: true,
         serverSide: true,
         ajax:{
-            url:"./getAlldownrec"
+            "url":"{:url('archive/common/datatablesPre?tableName=atlas_download_record&id=6')}"
         },
+        columns:[
+            {
+                name : "date"
+            },
+            {
+                name :"user_name"
+            }
+        ],
         ordering: false, // 禁止排序
         language: {
             "lengthMenu": "_MENU_",

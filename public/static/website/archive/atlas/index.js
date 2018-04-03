@@ -501,10 +501,11 @@ function conDel(id){
 function download(id,url) {
     $.ajax({
         url: url,
+        type:"post",
+        dataType: "json",
         data:{id:id},
         success: function (res) {
             if(res.code != 1){
-                console.log(res)
                 layer.msg(res.msg)
             }else {
                 $("#form_container").empty();
@@ -527,6 +528,9 @@ function conDown(id) {
 
     download(id,"./atlascateDownload")
 }
+function conDownAll(id) {
+    download(id,'./allDownload');
+}
 //预览
 function showPdf(id,url) {
     $.ajax({
@@ -536,43 +540,94 @@ function showPdf(id,url) {
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
-                window.open("__JS__/web/viewer.html?file=" + path,"_blank");
+                window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
             }else {
                 layer.msg(res.msg);
             }
         }
     })
 }
-//预览图片
+//预览图纸
 function conPicshow(id){
-    var index = top.layer.open({
-        type: 2,
-        title: '图片预览',
-        shadeClose: true,
-        shade: 0.8,
-        area: ['880px', '600px'],
-        content: '/pictureshow'//iframe的url
-    });
-    top.layer.full(index);
-        // $.ajax({
-        //     type: "Get",
-        //     url: "/Atlas/IsDown?atlasId=" + id + "&_t=" + new Date().getTime(),
-        //     success: function (data) {
-        //         if (data.result == "Faild") {
-        //             layerAlert("你没有预览下载此文件");
-        //         }
-        //         else {
-        //             var index = top.layer.open({
-        //                 type: 2,
-        //                 title: '图片预览',
-        //                 shadeClose: true,
-        //                 shade: 0.8,
-        //                 area: ['880px', '600px'],
-        //                 content: '/Model/PictureShow?type=2&elementId=' + id //iframe的url
-        //             });
-        //
-        //             top.layer.full(index);
-        //         }
-        //     }
-        // });
+    showPdf(id,'./atlascatePreview')
+}
+//拉取黑名单用户
+function getAdminname(id) {
+    $.ajax({
+        type:"post",
+        url:"./getAdminname",
+        data:{id:id,name:''},
+        success: function (res) {
+            userList = res;
+            showUser();
+        },
+        error: function (data) {
+            debugger;
+        }
+    })
+};
+//删除的点击事件
+$(".userContainer").delegate("p a","click",function () {
+    var admin_id = $(this).attr('id').slice(1);
+    var that = $(this);
+    $.ajax({
+        type:"post",
+        url:"./delAdminname",
+        data:{id:selectData[5],admin_id:admin_id},
+        success: function (res) {
+            if(res.code===1){
+                layer.msg("删除成功");
+                console.log(that.parent("p"))
+                that.parent("p").remove();
+            }
+        },
+        error: function (data) {
+            debugger;
+        }
+    })
+})
+//展示名字
+function showUser() {
+    var str = ""
+    for(var i=0 ; i<userList.length;i++){
+        str += '<p id="p'+userList[i].id+'">'+userList[i].name+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
+    }
+    $(".userContainer").html(str);
+}
+//筛选
+$('#usernameSearch').bind('input propertychange', function() {
+    var userList2 = [];
+    var that = $(this);
+    if(that.val().trim()===""){
+        showUser();
+        return;
+    }
+    setTimeout(function () {
+        for(var i=0 ; i<userList.length;i++){
+            //有就push进去
+            if(userList[i].name.indexOf(that.val().trim())!==-1){
+                userList2.push(userList[i]);
+            }
+        }
+        $(".userContainer").html("");
+        var str = ""
+        for(var j=0 ; j<userList2.length;j++){
+            str += '<p id="p'+userList2[j].id+'">'+userList2[j].name+'&nbsp;<a id="a'+userList2[j].id+'"><i class="fa fa-times"></i></a></p>';
+        }
+        $(".userContainer").html(str);
+    },20)
+});
+//点击添加角色用户
+$(".ibox-tools i").click(function () {
+    if(selectData===""){
+        layer.msg("请先选择角色");
+        return;
+    }
+    var path = $(".path").html();//获取角色类型+角色名称的路径信息
+    window.open("./addBlacklist?path=" + path + "&roleId=" + selectData[13], "授权", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+
+});
+//
+function cateMsg(str) {
+    layer.msg(str)
 }

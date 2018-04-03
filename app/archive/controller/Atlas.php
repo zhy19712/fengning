@@ -348,7 +348,7 @@ class Atlas extends Permissions
 
         $download->insertDownload($data);
 
-        $filePath = ".".$param['path'];
+        $filePath = "." .$param['path'];
         $fileName = $param['filename'];
         $file = fopen($filePath, "r"); //   打开文件
         //输入文件标签
