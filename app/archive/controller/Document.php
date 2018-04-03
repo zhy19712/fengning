@@ -186,6 +186,6 @@ class Document extends Permissions
 
     public function test()
     {
-        return json(DocumentDownRecord::get(input('id'), "user"));
+        return json(DocumentDownRecord::get(input('id')->select()));
     }
 }
