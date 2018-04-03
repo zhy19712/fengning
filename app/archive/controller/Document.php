@@ -147,6 +147,14 @@ class Document extends Permissions
     }
 
     /**
+     * 共享文档
+     * @return mixed
+     */
+    public function share()
+    {
+        return $this->fetch();
+    }
+    /**
      * 下载——权限验证
      * 部门下载部门内，若文件有权限设置则按规则
      */
