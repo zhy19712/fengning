@@ -169,37 +169,37 @@ class AtlasCateModel extends Model
     }
 
     /**
-     * 根据传过来的fengning_atlas_cate表中的id,admin表中的id,
+     * 根据传过来的fengning_atlas_cate图册表中的id,admin表中的id,
      */
 
-    public function deladmincateid($param)
+    public function delblacklist($param)
     {
-        //admin_id是admin表id，id为cate表id
 
-        $admin_cate_id = $this->field("admin_cate_id")->where("id",$param['admin_id'])->find();
+        //查询黑名单中的用户id
+        $blacklist = $this->field("blacklist")->where("id",$param['id'])->find();
 
 
 
-        if($admin_cate_id["admin_cate_id"])
+        if($blacklist["blacklist"])
         {
-            $cate_id = explode(",",$admin_cate_id["admin_cate_id"]);
+            $list = explode(",",$blacklist["blacklist"]);
 
-            foreach($cate_id as $k=>$v)
+            foreach($list as $k=>$v)
             {
-                if($v == $param['id'])
+                if($v == $param['admin_id'])
                 {
-                    unset($cate_id[$k]);
+                    unset($list[$k]);
                 }
             }
         }
-        if($cate_id)
+        if($list)
         {
-            $str = implode(",",$cate_id);
+            $str = implode(",",$list);
 
         }
 
         //把处理过得数据重新插入数组中
-        $result = $this->allowField(true)->update(['admin_cate_id'=>$str],['id' => $param['admin_id']]);
+        $result = $this->allowField(true)->update(['blacklist'=>$str],['id' => $param['id']]);
 
         if($result)
         {
