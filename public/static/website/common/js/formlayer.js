@@ -48,7 +48,7 @@
         $.extend(option,options);
         $('.'+option.btn).click(function () {
             $('#'+option.formId)[0].reset();
-            option.others();    //关闭的时候需要处理的其他事务
+            option.others();    //关闭的时候需要处理的其他事务R
             layer.closeAll('page');
         });
     };
@@ -83,6 +83,7 @@
                             layer.closeAll('page');
                         }
                         $('#'+option.formId)[0].reset();
+                        window.rowId = '';
                         option.others();    //表单提交成功后需要处理的事务
                         layer.msg(res.msg);
                         tableItem.ajax.url(options.tablePath+"&id="+ nodeId).load();
