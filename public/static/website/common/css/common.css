@@ -62,6 +62,7 @@ i.fa:hover:before{
 
 .layui-input[disabled],.layui-textarea[disabled]{
     cursor: not-allowed;
+    background: #cecece;
 }
 .layui-form-item .autograph .layui-form-mid{
     padding: 0 !important;
