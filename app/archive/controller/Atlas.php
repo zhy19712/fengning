@@ -331,6 +331,21 @@ class Atlas extends Permissions
     {
         $id = input('param.id');
         $model = new AtlasCateModel();
+
+        $id = 42;
+
+        //查询当前用户是否被禁用下载图册
+        $blacklist = $model->getbalcklist($id);
+
+        if($blacklist['blacklist'])
+        {
+            $list = explode(",",$blacklist['blacklist']);
+            if(in_array(Session::get('current_id'),$list))
+            {
+                return json(['code' => -1, 'msg' => "没有下载权限"]);
+            }
+        }
+
         $download = new AtlasDownloadModel();
         $param = $model->getOne($id);
         //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
@@ -461,7 +476,15 @@ class Atlas extends Permissions
         readfile($filename);
     }
 
+    /**********************************下载黑名单************************/
 
+    /**
+     * 黑名单首页
+     */
+    public function addBlacklist()
+    {
+        return $this->fetch();
+    }
 
 
 }
