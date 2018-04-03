@@ -10,6 +10,7 @@ namespace app\quality\controller;
 
 use app\admin\controller\Permissions;
 use app\quality\model\DivisionModel;
+use app\quality\model\DivisionUnitModel;
 use think\Db;
 use think\Loader;
 /**
@@ -34,25 +35,10 @@ class Division extends Permissions{
         return $this->fetch();
     }
 
-    /**
-     * 点击编辑的时候
-     * 获取一条节点信息
-     * @return \think\response\Json
-     * @author hutao
-     */
-    public function getNode()
-    {
-        if(request()->isAjax()){
-            $param = input('post.');
-            $id = isset($param['id']) ? $param['id'] : 0;
-            $node = new DivisionModel();
-            $info['node'] = $node->getOne($id);
-            return json($info);
-        }
-    }
 
     /**
-     * 新增 或者 编辑 工程划分的节点
+     * GET 提交方式 :  获取一条节点数据
+     * POST 提交方式 : 新增 或者 编辑 工程划分的节点
      * @return mixed|\think\response\Json
      * @author hutao
      */
@@ -60,9 +46,14 @@ class Division extends Permissions{
     {
         if(request()->isAjax()){
             $node = new DivisionModel();
-            $param = input('post.');
+            $param = input('param.');
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
             $en_type = isset($param['en_type']) ? $param['en_type'] : '';
+            if(request()->isGet()){
+                $info['node'] = $node->getOne($id);
+                return json($info);
+            }
+
             // 验证规则
             $rule = [
                 ['section_id', 'require|number|gt:0', '请选择标段|标段只能是数字|请选择标段'],
@@ -81,7 +72,7 @@ class Division extends Permissions{
             }
             //验证部分数据合法性
             if (!$validate->check($param)) {
-                $this->error('提交失败：' . $validate->getError());
+                return json(['code' => -1,'msg' => $validate->getError()]);
             }
 
             /**
@@ -112,7 +103,6 @@ class Division extends Permissions{
                 return json($flag);
             }
         }
-        return $this->fetch();
     }
 
     /**
@@ -418,5 +408,83 @@ class Division extends Permissions{
         return $ar;
     }
 
+    /**
+     * GET 提交方式 :  获取一条 单元工程数据
+     * POST 提交方式 : 新增 或者 编辑 单元工程
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function editUnit()
+    {
+        if(request()->isAjax()){
+            $unit = new DivisionUnitModel();
+            $param = input('param.');
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            if(request()->isGet()){
+                $info['node'] = $unit->getOne($id);
+                return json($info);
+            }
+
+            // 验证规则
+            $rule = [
+                ['division_id', 'require|number|gt:0', '请选择分项工程|分项工程编号只能是数字|请选择分项工程'],
+                ['serial_number', 'require|alphaDash', '单元工程流水号不能为空|单元工程流水号只能是字母、数字、下划线 _和破折号 - 的组合'],
+                ['site', 'require|max:100', '单元工程部位不能为空|单元工程部位不能超过100个字符'],
+                ['coding', 'require|alphaDash', '系统编码不能为空|系统编码只能是字母、数字、下划线 _和破折号 - 的组合'],
+                ['ma_bases', 'require', '请选择施工依据'],
+                ['hinge', 'require|number', '请选择是否是关键部位|关键部位只能是数字'],
+                ['en_type', 'require|number|gt:0', '请选择工程类型|工程类型只能是数字|请选择工程类型'],
+                ['start_date', 'date', '开工日期格式有误']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+
+            /**
+             * 单元工程 (注意 这是归属于分项工程下的 数据信息 它不是节点)
+             *
+             * 当新增 单元工程 的时候
+             * 前台需要传递的是
+             * 必传参数 : division_id 归属的分项工程编号 serial_number 单元工程流水号,
+             *            site 单元工程部位,coding 系统编码,ma_bases 施工依据(注意这里是可以多选的，选中的编号以下划线连接 例如：1_2_3_4_5 ),
+             *            hinge 关键部位(1 是 0 否),en_type 工程类型
+             *
+             * 可选参数 : su_basis 补充依据,el_start 高程（起）,el_cease 高程（止）,quantities 工程量,pile_number 起止桩号,start_date 开工日期,completion_date 完工日期
+             *
+             * 编辑 的时候 一定要 传递 id 编号
+             *
+             */
+            if(empty($id)){
+                $flag = $unit->insertTb($param);
+                return json($flag);
+            }else{
+                $flag = $unit->editTb($param);
+                return json($flag);
+            }
+        }
+    }
+
+
+    /**
+     * 删除 单元工程
+     * @return \think\response\Json
+     * @author hutao
+     */
+    protected function delUnit()
+    {
+        /**
+         * 前台只需要给我传递 要删除的 单元工程的 id 编号
+         */
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+        if($id == 0){
+            $unit = new DivisionUnitModel();
+            $flag = $unit->deleteTb($id);
+            return json($flag);
+        }else{
+            return json(['code' => 0,'msg' => '编号有误']);
+        }
+    }
 
 }
