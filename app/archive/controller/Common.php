@@ -226,22 +226,14 @@ class Common extends Controller
         $id = input('param.id');
         $recordsTotal = Db::name($table)->where('cate_id',$id)->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
-            //有搜索条件的情况
-            if($limitFlag){
-                //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->where('cate_id',$id)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
-                $recordsFiltered = sizeof($recordsFilteredResult);
-            }
-        }else{
             //没有搜索条件的情况
-            if($limitFlag){
                 $recordsFilteredResult = Db::name($table)->where('cate_id',$id)->order($order)->limit(intval($start),intval($length))->select();
+
                 //*****多表查询join改这里******
                 //$recordsFilteredResult = Db::name('datatables_example')->alias('d')->join('datatables_example_join e','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
                 $recordsFiltered = $recordsTotal;
-            }
-        }
+
+
         $temp = array();
         $infos = array();
         foreach ($recordsFilteredResult as $key => $value) {
