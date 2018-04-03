@@ -329,6 +329,9 @@ class Atlas extends Permissions
      */
     public function atlascateDownload()
     {
+        if(request()->isAjax()){
+            return json(['code' => 1]);
+        }
         $id = input('param.id');
         $model = new AtlasCateModel();
 
