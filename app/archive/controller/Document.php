@@ -190,4 +190,15 @@ class Document extends Permissions
             exit;
         }
     }
+
+    /**
+     * 文档下载记录
+     * @param $id 文档Id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function downloadrecord($id)
+    {
+        return json(DocumentDownRecord::all(['docId'=>$id]));
+    }
 }
