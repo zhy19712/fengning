@@ -223,23 +223,9 @@ class AtlasCateModel extends Model
         try {
             if ($param["admin_id"]) {
 
+                    $str = implode(",", $param["admin_id"]);
 
-                    //根据admin_id查询fengning_atlas_cate表中的blacklist,并插入传过来的id
-                    $blacklist = $this->field("blacklist")->where("id",$param['id'])->find();
-
-
-                    if ($blacklist["blacklist"]) {
-                        $blacklist = explode(",", $blacklist["blacklist"]);
-
-                        $merge = array_merge($blacklist,$param['admin_id']);
-
-                    }
-
-
-                    $str = implode(",", $merge);
-
-
-                    //把重新修改的admin_cate_id重新插入数据库
+                    //把重新修改的blacklist重新插入数据库
 
                     $this->allowField(true)->save(['blacklist' => $str], ['id' => $param['id']]);
 
