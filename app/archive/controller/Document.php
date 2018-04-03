@@ -151,8 +151,9 @@ class Document extends Permissions
      * 共享文档
      * @return mixed
      */
-    public function share()
+    public function share($id)
     {
+        $this->assign('docId',$id);
         return $this->fetch();
     }
 
