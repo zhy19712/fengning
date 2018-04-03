@@ -308,7 +308,7 @@ class Admin extends Model
 
     public function getadmininfo($id)
     {
-        $data = $this->field("id,nickname")->where("id",$id)->find();
+        $data = $this->field("id,nickname as name")->where("id",$id)->find();
         return $data;
     }
 
