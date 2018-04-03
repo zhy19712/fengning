@@ -13,20 +13,51 @@
 <div data-options="region:'center',title:'单元工程：'" style="padding:5px;background:#eee;">
 
 </div>
+<div data-options="region:'east',title:'二维码',split:true" style="width:260px;">
+
+</div>
 <!-- 新增节点 -->
-<form action="" class="layui-form" id="addNodeForm" style="display: none">
+<form action="" class="layui-form" id="nodeForm" style="display: none">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">上级名称</label>
+            <label class="layui-form-label">编码</label>
             <div class="layui-input-inline">
-                <input type="text" name="pname" placeholder="上级名称" lay-verify="required" autocomplete="off" class="layui-input" readonly>
+                <input type="text" name="d_code" placeholder="请输入编码" lay-verify="required" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">节点名称</label>
+            <label class="layui-form-label">名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="name" placeholder="请输入节点名称" autocomplete="off" class="layui-input">
+                <input type="text" name="d_name" placeholder="请输入名称" autocomplete="off" class="layui-input">
             </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">分类</label>
+            <div class="layui-input-inline">
+                <select name="type" lay-verify="required">
+                    <option value="1">单位工程</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">主要单位工程</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" name="primary" lay-skin="switch" lay-text="是|否" value="1">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述</label>
+        <div class="layui-input-block">
+            <textarea name="remark" placeholder="请输入描述" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="save" id="save">保存</button>
+            <button type="button" class="layui-btn layui-btn-primary close">关闭</button>
         </div>
     </div>
 </form>

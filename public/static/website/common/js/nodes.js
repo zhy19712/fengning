@@ -1,6 +1,6 @@
 ;(function($){
     /**
-     * 点击节点
+     * 点击
      * @param options[当前节点,表格实例,是否允许父节点加载表格数据,表格数据请求路径]
      * @author wyang
      */
@@ -23,6 +23,7 @@
             window.nextSortId = nextNode.sort_id;
         }
 
+        window.treeNode = options.treeNode;
         window.nodeId = options.treeNode.id;
         window.nodeSortId = options.treeNode.sort_id;
 
@@ -86,15 +87,18 @@
         treeObj.expandAll(options.state);
     };
     /**
-     * 添加节点
+     * 新增弹层
      * @param options
      */
-    $.addMode = function (options) {
+    $.addNode = function (options) {
         var option = {
+            formId:'nodeForm',
             layerId:'3',
-            area:['660px','200px'],
+            area:['660px','360px'],
             title:'新增节点',
-            btn: ['保存', '关闭'],
+            others:function(){
+
+            }
         };
         $.extend(option,options);
         layer.open({
@@ -102,31 +106,98 @@
             type:'1',
             area:option.area,
             title:option.title,
-            btn: option.btn,
             content: $('#'+option.formId),
-            yes: function(index, layero){
-                console.log(index,layero);
-                var newName = $(layero).find('input[name="name"]').val();
-                $.ajax({
-                    url:'./editNode',
-                    dataType:'JSON',
-                    type:'POST',
-                    data:{
-                        pid:nodes[0].id,
-                        name:newName
-                    },
-                    success:function(data){
-                        $('input[type="hidden"][name="treeId"]').val(data.data);
-                        treeObj.addNodes(nodes[0], data.data);
-                    }
-                });
-                $('#addNodeForm')[0].reset();
-                layer.close(index);
+            success:function () {
+                option.others();
             }
         });
     };
     /**
-     * 删除节点
+     * 编辑
+     * @param options
+     */
+    $.editNode = function (options) {
+        var option = {
+            formId:'nodeForm',
+            ajaxUrl:'./editNode',
+            area:['660px','360px'],
+            layerId:'2',
+            data:{
+                id:window.nodeId
+            },
+            others:function(){}
+        };
+        $.extend(option,options);
+        layer.open({
+            id:option.layerId,
+            type:'1',
+            area:option.area,
+            title:'编辑',
+            content:$('#'+option.formId),
+            success:function(){
+                $.ajax({
+                    url:option.ajaxUrl,
+                    dataType:'JSON',
+                    type:'GET',
+                    data:option.data,
+                    success:function(res){
+                        if(res.code==0){
+                            layer.msg(res.msg);
+                            return false;
+                        }
+                        option.others(res);
+                        initUi.form.render();
+
+                    }
+                });
+            },
+            cancel: function(index, layero){
+                $('#'+option.formId)[0].reset();
+            }
+        });
+    };
+    /**
+     * 提交新增
+     * @param options
+     */
+    $.submitNode = function (options) {
+        var option = {
+            treeId:'ztree',
+            formId:'nodeForm',
+            data:{},
+            ajaxUrl:'./editNode',
+            others:function () {},
+        };
+
+        $.extend(option,options);
+        var treeObj = $.fn.zTree.getZTreeObj(option.treeId);
+        var nodes = treeObj.getSelectedNodes();
+
+        layui.use('form',function(){
+            var form = layui.form;
+            //表单提交
+            form.on('submit(save)', function(data){
+                option.data.pid = window.nodeId;
+                $.extend(true,data.field,option.data);
+                $.ajax({
+                    url:option.ajaxUrl,
+                    dataType:'JSON',
+                    type:'POST',
+                    data:option.data,
+                    success:function(res){
+                        option.others();
+                        treeObj.addNodes(nodes[0], res.data);
+                        $('#'+option.formId)[0].reset();
+                        layer.msg(res.msg);
+                        layer.closeAll('page');
+                    }
+                });
+                return false;
+            });
+        });
+    }
+    /**
+     * 删除
      * @param options[树ID,是否删除父节点,ajax请求地址,ajax参数]
      * @author wyang
      */
