@@ -361,20 +361,26 @@ class Atlas extends Permissions
 
         $download->insertDownload($data);
 
-        $filePath = "." .$param['path'];
-        $fileName = $param['filename'];
-        $file = fopen($filePath, "r"); //   打开文件
-        //输入文件标签
-        $fileName = iconv("utf-8","gb2312",$fileName);
-        Header("Content-type:application/octet-stream ");
-        Header("Accept-Ranges:bytes ");
-        Header("Accept-Length:   " . filesize($filePath));
-        Header("Content-Disposition:   attachment;   filename= " . $fileName);
-
-        //   输出文件内容
-        echo fread($file, filesize($filePath));
-        fclose($file);
-        exit;
+        // 前台需要 传递 文件编号 id
+        $filePath = '.' . $param['path'];
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }else if(request()->isAjax()){
+            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+        }else{
+            $fileName = $param['filename'];
+            $file = fopen($filePath, "r"); //   打开文件
+            //输入文件标签
+            $fileName = iconv("utf-8","gb2312",$fileName);
+            Header("Content-type:application/octet-stream ");
+            Header("Accept-Ranges:bytes ");
+            Header("Accept-Length:   " . filesize($filePath));
+            Header("Content-Disposition:   attachment;   filename= " . $fileName);
+            //   输出文件内容
+            echo fread($file, filesize($filePath));
+            fclose($file);
+            exit;
+        }
     }
 
     /**
