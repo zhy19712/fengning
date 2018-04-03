@@ -354,6 +354,7 @@ class Atlas extends Permissions
         }
         $id = input('param.id');
         $download = new AtlasDownloadModel();
+        $model = new AtlasCateModel();
         $param = $model->getOne($id);
         //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
         //根据id查询fengning_attachment表中的下载数量
@@ -424,6 +425,7 @@ class Atlas extends Permissions
             $msg = '预览成功';
             $data = $model->getOne($param['id']);
             $path = $data['path'];
+
             $extension = strtolower(get_extension(substr($path,1)));
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(!file_exists($pdf_path)){
@@ -435,7 +437,9 @@ class Atlas extends Permissions
                     ppt_to_pdf($path);
                 }else if($extension === 'pdf'){
                     $pdf_path = $path;
-                }else{
+                }else if($extension === "jpg"|"png"|"jpeg"){
+                    $pdf_path = $path;
+                }else {
                     $code = 0;
                     $msg = '不支持的文件格式';
                 }
@@ -577,12 +581,12 @@ class Atlas extends Permissions
                 $res[$k] = json_encode($v);
             }
 
-            $user = Db::name('admin')->field('id,admin_group_id,name')->select();
+            $user = Db::name('admin')->field('id,admin_group_id,nickname')->select();
             if(!empty($user))//如果$user不为空时
             {
                 foreach((array)$user as $key=>$vo){
                     $id = $vo['id'] + 10000;
-                    $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
+                    $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['nickname'].'"';
                     $str .= '}*';
                 }
                 $str = substr($str, 0, -1);
