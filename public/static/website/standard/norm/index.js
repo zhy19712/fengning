@@ -15,7 +15,7 @@ $.datatable({
     ajax:{
         'url':'/standard/common/datatablesPre?tableName=norm_file'
     },
-    dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm"<".fa">>>tipr~',
+    dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm">>tipr',
     columns:[
         {
             name: "standard_number"
@@ -77,33 +77,11 @@ layui.use('laydate', function(){
     });
 });
 //上传
-uploader = WebUploader.create({
-    auto: true,
-    // swf文件路径
-    swf:  '/static/public/webupload/Uploader.swf',
-
-    // 文件接收服务端。
-    server: "/standard/common/upload",
-
-    // 选择文件的按钮。可选。
-    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-    pick: {
-        multiple: false,
-        id: "#upload",
-        innerHTML: "上传"
-    },
+$.upload({
     formData:{
         module:'norm',
         use:'norm_file',
-    },
-    // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-    resize: false
-});
-
-uploader.on( 'uploadSuccess', function( file ,res) {
-    layer.msg(file.name+'已上传成功');
-    $('input[name="file_name"]').val(file.name);
-    window.file_id = res.id;
+    }
 });
 //编辑
 function edit(that) {
