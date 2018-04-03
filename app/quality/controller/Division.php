@@ -91,6 +91,9 @@ class Division extends Permissions{
              *
              */
             $data = ['section_id' => $param['section_id'],'pid' => $param['pid'],'d_code' => $param['d_code'],'d_name' => $param['d_name'],'type' => $param['type'],'primary' => $param['primary'],'remark' => $param['remark']];
+            if($param['type'] == 1){
+                $data['pid'] = 0;
+            }
             if($param['type'] == 3 && !empty($en_type)){
                 $data['en_type'] = $en_type;
             }
