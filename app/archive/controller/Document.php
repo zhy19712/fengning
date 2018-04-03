@@ -154,6 +154,7 @@ class Document extends Permissions
     {
         return $this->fetch();
     }
+
     /**
      * 下载——权限验证
      * 部门下载部门内，若文件有权限设置则按规则
