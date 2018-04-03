@@ -43,7 +43,7 @@ class Norm extends Permissions
             $node = new NormModel();
             if($this->request->isGet()) {
                 $info['data'] = $node->getOne(input('id'));
-                $info['filePath'] = Db::name('attachment')->where('id',$info['data']['file_id'])->column('filepath');
+                $info['filename'] = Db::name('attachment')->where('id',$info['data']['file_id'])->column('filename');
                 return json($info);
             }
             $param = input('post.');
