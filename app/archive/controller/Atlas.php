@@ -13,6 +13,7 @@ use app\archive\model\AtlasCateModel;//右侧图册类型
 use app\archive\model\AtlasDownloadModel;//下载记录
 
 use app\admin\model\Admin as adminModel;//管理员模型
+use app\admin\model\AdminGroup;//组织机构
 
 use \think\Db;
 use \think\Session;
@@ -528,7 +529,7 @@ class Atlas extends Permissions
     /**********************************下载黑名单************************/
 
     /**
-     * 黑名单首页
+     * 白名单首页
      */
     public function addBlacklist()
     {
@@ -536,7 +537,7 @@ class Atlas extends Permissions
     }
 
     /**
-     * 根据图册信息查询该图册下所有的黑名单用户
+     * 根据图册信息查询该图册下所有的白名单用户
      * @return \think\response\Json
      */
     public function getAdminname()
@@ -565,33 +566,92 @@ class Atlas extends Permissions
                 return json(['code' => 1, 'data' => $res]);//返回json数据
             }else
             {
-                return json(['code' => -1, 'msg' => "没有黑名单用户！"]);//返回json数据
+                return json(['code' => -1, 'msg' => "没有白名单用户！"]);//返回json数据
             }
 
         }
     }
 
     /**
-     * 根据角色类型删除角色类型下的用户
+     * 删除下载白名单下的用户
      * @return \think\response\Json
      */
     public function delAdminname()
     {
-//        if(request()->isAjax()) {
+        if(request()->isAjax()) {
             $param = input('post.');
-            $param['id'] = 17;
-            $param['admin_id'] = 61;
             //实例化model类型
-        var_dump($param);die;
             $model = new AtlasCateModel();
             $flag = $model->delblacklist($param);
 
-            return $flag;
+            return json($flag);
 
-//        }else
-//        {
-//            return $this->fetch();
-//        }
+        }else
+        {
+            return $this->fetch();
+        }
+    }
+
+    /**
+     * 获取 组织机构 左侧的树结构
+     * @return mixed|\think\response\Json
+     */
+    public function getOrganization()
+    {
+
+        if(request()->isAjax()) {
+            // 获取左侧的树结构
+            $model = new AdminGroup();
+            //定义一个空的字符串
+            $str = "";
+            $data = $model->getall();
+            $res = tree($data);
+
+            foreach ((array)$res as $k => $v) {
+
+                $v['id'] = strval($v['id']);
+                $v['pid'] = strval($v['pid']);
+                $res[$k] = json_encode($v);
+            }
+
+            $user = Db::name('admin')->field('id,admin_group_id,name')->select();
+            if(!empty($user))//如果$user不为空时
+            {
+                foreach((array)$user as $key=>$vo){
+                    $id = $vo['id'] + 10000;
+                    $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['name'].'"';
+                    $str .= '}*';
+                }
+                $str = substr($str, 0, -1);
+
+                $str = explode("*",$str);
+
+                //$res,$str这两个数组都存在时，才可以合并
+
+                if($res && $str)
+                {
+                    $merge = array_merge($res,$str);
+                }
+
+                return json($merge);
+            }
+
+        }
+    }
+
+    /**
+     * 添加用户到白名单
+     * @return \think\response\Json
+     */
+    public function addAdminname()
+    {
+
+        if(request()->isAjax()) {
+            $model = new AtlasCateModel();
+            $param = input('post.');//需要前台传过来用户数组admin_id,cate表中的id
+            $data = $model->insertAdminid($param);
+            return json($data);
+        }
     }
 
 
