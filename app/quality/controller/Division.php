@@ -123,9 +123,18 @@ class Division extends Permissions{
             if(!empty($exist)){
                 return json(['code' => -1,'msg' => '包含子节点,不能删除']);
             }
-            //Todo 如果删除的是 分项工程 那么它 包含单元工程, 应该首先批量删除单元工程
-            //Todo 如果 单元工程下面有 还包含其他的数据 那么 也要关联删除
+            // 如果删除的是 分项工程 那么它 有可能 包含单元工程, 应该首先批量删除单元工程
+            // 分类 1单位 2分部 3分项
+            $data = $node->getOne($id);
+            if($data['type'] == 3){
+                $unit = new DivisionUnitModel();
+                $flag = $unit->batchDel($id);
+                if($flag['code'] == -1){
+                    return json($flag);
+                }
+            }
 
+            //Todo 如果 单元工程下面 还包含其他的数据 那么 也要关联删除
 
             // 最后删除此节点
             $flag = $node->deleteTb($id);

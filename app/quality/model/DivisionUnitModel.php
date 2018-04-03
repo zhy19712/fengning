@@ -61,4 +61,14 @@ class DivisionUnitModel extends Model
         $data = $this->find($id);
         return $data;
     }
+
+    public function batchDel($id)
+    {
+        try{
+            $this->where('division_id',$id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
 }
