@@ -138,7 +138,7 @@ class Document extends Permissions
     {
         $par = input('id');
 
-        $f = $this->documentService->delete($par);
+        $f = $this->documentService->deleteDoc($par);
         if ($f) {
             return json(['code' => 1]);
         } else {
