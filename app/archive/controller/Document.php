@@ -154,6 +154,7 @@ class Document extends Permissions
     {
         return $this->fetch();
     }
+
     /**
      * 下载——权限验证
      * 部门下载部门内，若文件有权限设置则按规则
@@ -175,7 +176,7 @@ class Document extends Permissions
             return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
         } else {
             //插入下载记录
-            $this->documentDownRecord->save(['docId'=>$mod['id'],'user'=>Session::get('current_nickname')]);
+            $this->documentDownRecord->save(['docId' => $mod['id'], 'user' => Session::get('current_nickname')]);
             $fileName = $file_obj['filename'];
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
@@ -189,5 +190,25 @@ class Document extends Permissions
             fclose($file);
             exit;
         }
+    }
+
+    /**
+     * 文档下载记录
+     * @param $id 文档Id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function downloadrecord($id)
+    {
+        return json(DocumentDownRecord::all(['docId' => $id]));
+    }
+
+    /**
+     * 预览
+     * @return mixed
+     */
+    public function preview()
+    {
+        return $this->fetch();
     }
 }

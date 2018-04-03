@@ -11,6 +11,9 @@ use app\admin\controller\Permissions;
 use app\archive\model\AtlasCateTypeModel;//左侧节点树
 use app\archive\model\AtlasCateModel;//右侧图册类型
 use app\archive\model\AtlasDownloadModel;//下载记录
+
+use app\admin\model\Admin as adminModel;//管理员模型
+
 use \think\Db;
 use \think\Session;
 /**
@@ -329,8 +332,24 @@ class Atlas extends Permissions
      */
     public function atlascateDownload()
     {
+        if(request()->isAjax()){
+            return json(['code' => 1]);
+        }
         $id = input('param.id');
         $model = new AtlasCateModel();
+
+        //查询当前用户是否被禁用下载图册
+        $blacklist = $model->getbalcklist($id);
+
+        if($blacklist['blacklist'])
+        {
+            $list = explode(",",$blacklist['blacklist']);
+            if(in_array(Session::get('current_id'),$list))
+            {
+                return json(['code' => -1, 'msg' => "没有下载权限"]);
+            }
+        }
+
         $download = new AtlasDownloadModel();
         $param = $model->getOne($id);
         //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
@@ -348,20 +367,26 @@ class Atlas extends Permissions
 
         $download->insertDownload($data);
 
-        $filePath = "." .$param['path'];
-        $fileName = $param['filename'];
-        $file = fopen($filePath, "r"); //   打开文件
-        //输入文件标签
-        $fileName = iconv("utf-8","gb2312",$fileName);
-        Header("Content-type:application/octet-stream ");
-        Header("Accept-Ranges:bytes ");
-        Header("Accept-Length:   " . filesize($filePath));
-        Header("Content-Disposition:   attachment;   filename= " . $fileName);
-
-        //   输出文件内容
-        echo fread($file, filesize($filePath));
-        fclose($file);
-        exit;
+        // 前台需要 传递 文件编号 id
+        $filePath = '.' . $param['path'];
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }else if(request()->isAjax()){
+            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+        }else{
+            $fileName = $param['filename'];
+            $file = fopen($filePath, "r"); //   打开文件
+            //输入文件标签
+            $fileName = iconv("utf-8","gb2312",$fileName);
+            Header("Content-type:application/octet-stream ");
+            Header("Accept-Ranges:bytes ");
+            Header("Accept-Length:   " . filesize($filePath));
+            Header("Content-Disposition:   attachment;   filename= " . $fileName);
+            //   输出文件内容
+            echo fread($file, filesize($filePath));
+            fclose($file);
+            exit;
+        }
     }
 
     /**
@@ -459,6 +484,73 @@ class Atlas extends Permissions
         header("Content-Transfer-Encoding: binary");
         header('Content-Length: '. filesize($filename)); //告诉浏览器，文件大小
         readfile($filename);
+    }
+
+    /**********************************下载黑名单************************/
+
+    /**
+     * 黑名单首页
+     */
+    public function addBlacklist()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 根据图册信息查询该图册下所有的黑名单用户
+     * @return \think\response\Json
+     */
+    public function getAdminname()
+    {
+
+        if(request()->isAjax()) {
+
+            $id = input('post.id');
+            //定义一个空数组
+            $res = array();
+            //实例化模型类
+            $model = new AtlasCateModel();
+            $admin = new adminModel;
+            //先查询admin表中的所有的admin_cate_id
+            $datainfo = $model->getOne($id);
+
+            if($datainfo['blacklist'])
+            {
+                $blacklist = explode(",",$datainfo['blacklist']);
+
+                foreach ($blacklist as $v)
+                {
+                    $res[] = $admin->getadmininfo($v);
+                }
+
+                return json(['code' => 1, 'data' => $res]);//返回json数据
+            }else
+            {
+                return json(['code' => -1, 'msg' => "没有黑名单用户！"]);//返回json数据
+            }
+
+        }
+    }
+
+    /**
+     * 根据角色类型删除角色类型下的用户
+     * @return \think\response\Json
+     */
+    public function delAdminname()
+    {
+//        if(request()->isAjax()) {
+            $param = input('post.id');
+            //实例化model类型
+            $model = new AdminModel();
+
+            $flag = $model->deladmincateid($param);
+
+            return $flag;
+
+//        }else
+//        {
+//            return $this->fetch();
+//        }
     }
 
 
