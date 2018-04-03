@@ -11,8 +11,4 @@ use think\Model;
 class DocumentDownRecord extends Model
 {
     protected $name='archive_document_downrecord';
-    public function userInfo()
-    {
-        $this->hasOne('app\admin\model\Admin','id','userId');
-    }
 }
