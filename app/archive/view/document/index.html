@@ -137,6 +137,7 @@
         </thead>
     </table>
     <div class="info"></div>
+    <div id="form_container"></div>
     <div class="tbcontainer">
         <div class="mark"></div>
     </div>
@@ -977,7 +978,7 @@
                                 ImageShow(filename);
                         }
                     }
-                });
+            });
         }
 
         //关联模型
@@ -1264,45 +1265,50 @@
 
         //删除
         function delFile() {
-
             $.ajax({
-                type:"post",
-                url:"{:url('document/del')}",
-                data:{id:clickId},
-                success: function (res) {
-                    console.log(res)
-                },
-                error: function (data) {
-                    debugger;
-                }
-            })
+                    type: "post",
+                    url: "{:url('document/del')}",
+                    data: {id: clickId},
+                    success: function (res) {
+                        console.log(res)
+                        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
+                        tableItem.ajax.url(url).load();
+                    },
+                    error: function (data) {
+                        debugger;
+                    }
+                })
         }
 
-        //下载
-        function downFile(url,submitPath) {
+        //下载的方法
+        function download(id,url) {
             $.ajax({
                 url: url,
-                type: "post",
-                dataType: "json",
-                data:{id:clickId},
+                data:{id:id},
                 success: function (res) {
                     if(res.code != 1){
-                        layer.msg(res.msg);
+                        console.log(res)
+                        layer.msg(res.msg)
                     }else {
                         $("#form_container").empty();
                         var str = "";
                         str += ""
-                            + "<iframe name=downloadFrame"+ file_id +" style='display:none;'></iframe>"
-                            + "<form id=download"+ file_id +" action="+ submitPath +" method='get' target=downloadFrame"+ file_id +">"
+                            + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
+                            + "<form name=download"+ id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
                             + "<span class='file_name' style='color: #000;'>"+str+"</span>"
-                            + "<input class='file_url' style='display: none;' name='file_id' value="+ file_id +">"
-                            + "<button type='submit' class=btn" + file_id +"></button>"
+                            + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                            + "<button type='submit' class=btn" + id +"></button>"
                             + "</form>"
                         $("#form_container").append(str);
-                        $("#form_container").find(".btn" + file_id).click();
+                        $("#form_container").find(".btn" + id).click();
                     }
+
                 }
             })
+        }
+        //下载调用
+        function downFile(){
+            download(16,"{:url('document/download')}")
         }
 
         // //关联文件
