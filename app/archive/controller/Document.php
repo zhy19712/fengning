@@ -9,6 +9,7 @@
 namespace app\archive\controller;
 
 use app\admin\controller\Permissions;
+use app\admin\model\Admin;
 use app\archive\model\DocumentAttachment;
 use app\archive\model\DocumentDownRecord;
 use app\archive\model\DocumentModel;
@@ -210,5 +211,36 @@ class Document extends Permissions
     public function preview()
     {
         return $this->fetch();
+    }
+
+    /**
+     * 文档权限
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function PermissionRelation($id)
+    {
+        if ($this->request->isAjax()) {
+            $par = input('users');
+           $flag= DocumentModel::update(['users' => $par], ['id' => $id]);
+           if ($flag)
+           {
+               return json(['code'=>1]);
+           }else
+           {
+               return json(['code'=>-1]);
+           }
+        }
+        //显示文档权限用户
+        $doc = DocumentModel::get($id);
+        if (empty($doc['users'])) {
+            return json();
+        }
+        $users = explode("|", $doc['users']);
+        $list = Db::table('admin')->whereIn('id', $users)->field('id,nickname')->select();
+        return json($list);
     }
 }
