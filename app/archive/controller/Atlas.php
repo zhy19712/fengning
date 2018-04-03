@@ -332,8 +332,6 @@ class Atlas extends Permissions
         $id = input('param.id');
         $model = new AtlasCateModel();
 
-        $id = 42;
-
         //查询当前用户是否被禁用下载图册
         $blacklist = $model->getbalcklist($id);
 
