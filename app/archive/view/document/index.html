@@ -72,6 +72,9 @@
     #tableContent #tableItem tr td a{
         color: #337ab7;
     }
+    #tableContent #tableItem{
+        display: none;
+    }
 
     #information .layui-tab-content .attrBue{
         width: 100%;
@@ -406,8 +409,8 @@
                                 <a style="margin-right: 7px;" onclick="shareShow()" class="rted aselect">共享人员</a>|
                                 <a style="margin-right: 7px;margin-left: 7px;" onclick="downLoadShow()" class="rted">下载记录</a>
                             </h4>
-                            <div class="ibox-tools pepleAdd" style="float: right; margin-top: -30px; display: block;">
-                                <a id="relat" onclick="addPeople()" class="relat" style="margin-top:0px;margin-right: 8px;" title="添加人员"></a>
+                            <div class="ibox-tools pepleAdd" style="float: right; margin-top: -30px;font-size: 15px; display: block;">
+                                <a class="relat" id="relat" onclick="addPeople()" style="margin-top:0px;margin-right: 8px;" title="添加人员"><i class="fa fa-lg fa-plus-square"></i></a>
                             </div>
                         </div>
                         <div class="hr-line-dashed" style="margin:10px;"></div>
@@ -491,6 +494,26 @@
                                 $('.pepleAdd').hide();
                             }
 
+                            function addPeople() {
+
+                                    layer.open({
+                                        type: 2,
+                                        title: '添加共享人员',
+                                        shadeClose: true,
+                                        area: ['780px', '550px'],
+                                        content: '{:url("move")}',
+                                        success: function(layero, index){
+                                            var body = layer.getChildFrame('body', index);
+                                            // console.log(body.html())
+                                            body.find("#moveZtreeId").val(clickId);
+                                        },
+                                        end: function () {
+                                            var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
+                                            tableItem.ajax.url(url).load();
+                                        }
+                                    });
+
+                            }
                             //
                             //
                             // function addPeople() {
@@ -927,59 +950,59 @@
         });
 
         //预览
-        function previewList(filename, documentName, documentId) {
-            $.ajax({
-                    type: "Get",
-                    url: "/Document/IsDown?documentId=" + documentId + "&_t=" + new Date().getTime(),
-                    success: function (data) {
-                        if (data.result == "Faild") {
-                            layerAlert("你没有权限预览此文件");
-                        }
-                        else {
-                            if (filename.indexOf(".rvt") > -1) {
-                                layerAlert("暂不支持该格式文件");
-                                return;
-                            }
-                            if (filename.indexOf(".pdf") > -1 || filename.indexOf(".PDF") > -1)
-                                picshow(documentId);
-                            else if (filename.indexOf(".avi") > -1 || filename.indexOf(".wmv") > -1 || filename.indexOf(".flv") > -1 || filename.indexOf(".mp4") > -1) {
-                                top.layer.open({
-                                    type: 2,
-                                    shadeClose: true,
-                                    shade: 0.8,
-                                    area: ['880px', '600px'],
-                                    title: '<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><i class="fa fa-video-camera" style="margin-right: 10px;"></i>视频播放</a>',
-                                    content: '/Model/VideoShow?videoUrl=' + filename,
-                                });
-                            }
-                            else if (filename.indexOf(".xlsx") > -1 || filename.indexOf(".xls") > -1 || filename.indexOf(".doc") > -1 || filename.indexOf(".docx") > -1 || filename.indexOf(".txt") > -1) {
-                                $.ajax({
-                                    type: "Get",
-                                    url: "/PermissionRelation/PreView?url=" + filename,
-                                    success: function (data) {
-                                        if (data.result == "Faild") {
-                                            layerAlert("你没有权限预览此文件");
-                                        }
-                                        else {
-                                            var index = top.layer.open({
-                                                type: 2,
-                                                title: '文件在线预览：' + documentName,
-                                                shadeClose: true,
-                                                shade: 0.8,
-                                                area: ['980px', '600px'],
-                                                content: '/document/DocumentPrint?url=' + data.result //iframe的url
-                                            });
-                                            top.layer.full(index);
-                                        }
-                                    }
-                                });
-                            }
-                            else
-                                ImageShow(filename);
-                        }
-                    }
-            });
-        }
+        // function previewList(filename, documentName, documentId) {
+        //     $.ajax({
+        //             type: "Get",
+        //             url: "/Document/IsDown?documentId=" + documentId + "&_t=" + new Date().getTime(),
+        //             success: function (data) {
+        //                 if (data.result == "Faild") {
+        //                     layerAlert("你没有权限预览此文件");
+        //                 }
+        //                 else {
+        //                     if (filename.indexOf(".rvt") > -1) {
+        //                         layerAlert("暂不支持该格式文件");
+        //                         return;
+        //                     }
+        //                     if (filename.indexOf(".pdf") > -1 || filename.indexOf(".PDF") > -1)
+        //                         picshow(documentId);
+        //                     else if (filename.indexOf(".avi") > -1 || filename.indexOf(".wmv") > -1 || filename.indexOf(".flv") > -1 || filename.indexOf(".mp4") > -1) {
+        //                         top.layer.open({
+        //                             type: 2,
+        //                             shadeClose: true,
+        //                             shade: 0.8,
+        //                             area: ['880px', '600px'],
+        //                             title: '<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><i class="fa fa-video-camera" style="margin-right: 10px;"></i>视频播放</a>',
+        //                             content: '/Model/VideoShow?videoUrl=' + filename,
+        //                         });
+        //                     }
+        //                     else if (filename.indexOf(".xlsx") > -1 || filename.indexOf(".xls") > -1 || filename.indexOf(".doc") > -1 || filename.indexOf(".docx") > -1 || filename.indexOf(".txt") > -1) {
+        //                         $.ajax({
+        //                             type: "Get",
+        //                             url: "/PermissionRelation/PreView?url=" + filename,
+        //                             success: function (data) {
+        //                                 if (data.result == "Faild") {
+        //                                     layerAlert("你没有权限预览此文件");
+        //                                 }
+        //                                 else {
+        //                                     var index = top.layer.open({
+        //                                         type: 2,
+        //                                         title: '文件在线预览：' + documentName,
+        //                                         shadeClose: true,
+        //                                         shade: 0.8,
+        //                                         area: ['980px', '600px'],
+        //                                         content: '/document/DocumentPrint?url=' + data.result //iframe的url
+        //                                     });
+        //                                     top.layer.full(index);
+        //                                 }
+        //                             }
+        //                         });
+        //                     }
+        //                     else
+        //                         ImageShow(filename);
+        //                 }
+        //             }
+        //     });
+        // }
 
         //关联模型
         $("#model").click(function (){
@@ -1167,6 +1190,7 @@
             groupid = sNodes.pId //父节点的id
             var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
             tableItem.ajax.url(url).load();
+            $("#tableItem").css('display','block');
             $(".layout-panel-center .panel-title").text("当前路径:" + path)
             getPathText(sNodes);
             clickTreeId = selfid;
@@ -1308,9 +1332,29 @@
         }
         //下载调用
         function downFile(){
-            download(16,"{:url('document/download')}")
+            download(clickId,"{:url('document/download')}")
         }
 
+        //预览
+        function showPdf(id,url) {
+            $.ajax({
+                url: url,
+                type: "post",
+                data: {id:id},
+                success: function (res) {
+                    if(res.code === 1){
+                        var path = res.path;
+                        window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
+                    }else {
+                        layer.msg(res.msg);
+                    }
+                }
+            })
+        }
+        //预览图纸
+        function conPicshow(id){
+            showPdf(id,'./atlascatePreview')
+        }
         // //关联文件
         // function AssFile() {
         //     layer.open({
@@ -1339,6 +1383,7 @@
         //右边的属性
         var uploadPle;//上传人
         var treefileCategory;//文件类别
+
         //获取点击行
         $("#tableItem").delegate("tbody tr","click",function (e) {
             if($(e.target).hasClass("dataTables_empty")){

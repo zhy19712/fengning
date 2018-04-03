@@ -331,6 +331,19 @@ class Atlas extends Permissions
     {
         $id = input('param.id');
         $model = new AtlasCateModel();
+
+        //查询当前用户是否被禁用下载图册
+        $blacklist = $model->getbalcklist($id);
+
+        if($blacklist['blacklist'])
+        {
+            $list = explode(",",$blacklist['blacklist']);
+            if(in_array(Session::get('current_id'),$list))
+            {
+                return json(['code' => -1, 'msg' => "没有下载权限"]);
+            }
+        }
+
         $download = new AtlasDownloadModel();
         $param = $model->getOne($id);
         //记录下载的数量，每次调用此方法时把fengning_attachment表中的download数量加1
@@ -348,20 +361,26 @@ class Atlas extends Permissions
 
         $download->insertDownload($data);
 
-        $filePath = "." .$param['path'];
-        $fileName = $param['filename'];
-        $file = fopen($filePath, "r"); //   打开文件
-        //输入文件标签
-        $fileName = iconv("utf-8","gb2312",$fileName);
-        Header("Content-type:application/octet-stream ");
-        Header("Accept-Ranges:bytes ");
-        Header("Accept-Length:   " . filesize($filePath));
-        Header("Content-Disposition:   attachment;   filename= " . $fileName);
-
-        //   输出文件内容
-        echo fread($file, filesize($filePath));
-        fclose($file);
-        exit;
+        // 前台需要 传递 文件编号 id
+        $filePath = '.' . $param['path'];
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }else if(request()->isAjax()){
+            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+        }else{
+            $fileName = $param['filename'];
+            $file = fopen($filePath, "r"); //   打开文件
+            //输入文件标签
+            $fileName = iconv("utf-8","gb2312",$fileName);
+            Header("Content-type:application/octet-stream ");
+            Header("Accept-Ranges:bytes ");
+            Header("Accept-Length:   " . filesize($filePath));
+            Header("Content-Disposition:   attachment;   filename= " . $fileName);
+            //   输出文件内容
+            echo fread($file, filesize($filePath));
+            fclose($file);
+            exit;
+        }
     }
 
     /**
@@ -461,7 +480,15 @@ class Atlas extends Permissions
         readfile($filename);
     }
 
+    /**********************************下载黑名单************************/
 
+    /**
+     * 黑名单首页
+     */
+    public function addBlacklist()
+    {
+        return $this->fetch();
+    }
 
 
 }
