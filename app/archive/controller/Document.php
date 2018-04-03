@@ -167,7 +167,7 @@ class Document extends Permissions
             return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
         } else {
             //插入下载记录
-            $this->documentDownRecord->save(['fileid'=>$mod['id'],'user'=>Session::get('current_nickname')]);
+            $this->documentDownRecord->save(['docId'=>$mod['id'],'user'=>Session::get('current_nickname')]);
             $fileName = $file_obj['filename'];
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
