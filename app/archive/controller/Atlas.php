@@ -481,10 +481,10 @@ class Atlas extends Permissions
         foreach($datalist as $key=>$val){
 
             //$attachfile = $attachmentDir . $val['filepath']; //获取原始文件路径
-            if(file_exists($val['path'])){
+            if(file_exists("." .$val['path'])){
                 //addFile函数首个参数如果带有路径，则压缩的文件里包含的是带有路径的文件压缩
                 //若不希望带有路径，则需要该函数的第二个参数
-                $zip->addFile($val['path'], basename($val['path']));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                $zip->addFile("." .$val['path'], basename("." .$val['path']));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
             }
         }
 
