@@ -649,8 +649,6 @@ class Atlas extends Permissions
         if(request()->isAjax()) {
             $model = new AtlasCateModel();
             $param = input('post.');//需要前台传过来用户数组admin_id,cate表中的id
-            $param['admin_id'] = ['3','4','5'];
-            $param['id'] = 44;
             $data = $model->insertAdminid($param);
             return json($data);
         }
