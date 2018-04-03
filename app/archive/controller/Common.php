@@ -198,6 +198,56 @@ class Common extends Controller
     }
 
     /**
+     * 图册下载记录
+     * @param $id
+     * @param $draw
+     * @param $table
+     * @param $search
+     * @param $start
+     * @param $length
+     * @param $limitFlag
+     * @param $order
+     * @param $columns
+     * @param $columnString
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function atlas_download_record($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    {
+
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //表的总记录数 必要
+        $recordsTotal = 0;
+        //传过来的id,类别id
+        $id = input('param.id');
+        $recordsTotal = Db::name($table)->where('cate_id',$id)->count(0);
+        $recordsFilteredResult = array();
+            //没有搜索条件的情况
+                $recordsFilteredResult = Db::name($table)->where('cate_id',$id)->limit(intval($start), intval($length))->select();
+
+                //*****多表查询join改这里******
+                //$recordsFilteredResult = Db::name('datatables_example')->alias('d')->join('datatables_example_join e','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
+                $recordsFiltered = $recordsTotal;
+
+
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+    /**
      * 图册图片文件上传
      * @param string $module
      * @param string $use
@@ -237,6 +287,7 @@ class Common extends Controller
             }
             $data['use'] = $this->request->has('use') ? $this->request->param('use') : $use;//用处
             $res['id'] = Db::name('attachment')->insertGetId($data);
+            $res['filename'] = $info->getFilename();//文件名
             $res['src'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();
             $res['code'] = 2;
             addlog($res['id']);//记录日志
