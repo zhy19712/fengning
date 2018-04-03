@@ -13,7 +13,6 @@
         background: #00c0ef;
         color: #ffffff;
     }
-
     #tableContent .mybtn,#tableContent .assModel,#tableContent .move,#tableContent .file,#tableContent .oneKeyArchiv{
         float: right;
         background-color: #00c0ef;
@@ -27,15 +26,8 @@
     }
     #tableContent .move{
         margin-right: 0%;
-    }
-    #tableContent .file{
-        margin-right: 0%;
-    }
-    #tableContent .oneKeyArchiv{
-        margin-right: 0%;
         margin-left: 10px;
     }
-
     #tableContent #funKuai{
         width: 100%;
         position: absolute;
@@ -54,33 +46,31 @@
     #tableContent #tableItem_filter {
         float: left;
     }
-
     #tableContent .select-color {
         background-color: #FDD5B5 !important;
     }
-
     #tableContent h3 {
         margin-top: 5px;
         font-weight: 600;
         font-size: 16px;
         display: inline-block;
     }
-
     #tableContent .ibox-tools {
         float: right;
         margin-right: 30px;
         margin-top: 10px;
     }
-
     #tableContent .ibox-tools2 {
         float: right;
         margin-right: 15px;
     }
-
     #tableContent .dataTables_wrapper .dataTables_scroll {
         position: relative;
         top: 15px;
         border-top: 1px dotted #cecece;
+    }
+    #tableContent #tableItem tr td a{
+        color: #337ab7;
     }
 
     #information .layui-tab-content .attrBue{
@@ -112,13 +102,13 @@
         height: 90px;
         width: 85%;
     }
-
     #information .attrBue .saveText{
         display: none;
         float: right;
         margin-right: 20px;
         margin-top: 10px;
     }
+
 </style>
 
 <div id="nodeZtree" data-options="region:'west',title:'文档目录树',split:true" style="width:180px;">
@@ -134,12 +124,6 @@
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div id="tableContent" data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#ffffff;">
-    <!--<div id="funKuai">-->
-        <!--<span class="assModel layui-btn layui-btn-sm"><i class='fa fa-plus'></i>关联模型</span>-->
-        <!--<span class="move layui-btn layui-btn-sm"><i class='fa fa-plus'></i>移动</span>-->
-        <!--<span class="file layui-btn layui-btn-sm"><i class='fa fa-plus'></i>归档</span>-->
-        <!--<span class="oneKeyArchiv layui-btn layui-btn-sm"><i class='fa fa-plus'></i>一键归档</span>-->
-    <!--</div>-->
     <table id="tableItem" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
         <tr>
@@ -162,7 +146,6 @@
         <ul class="layui-tab-title">
             <li class="layui-this">属性</li>
             <li>共享</li>
-            <li>关联关系</li>
         </ul>
         <div class="layui-tab-content">
             <!--属性-->
@@ -200,7 +183,6 @@
                     </div>
                 </div>
                 <div class="searchName">
-                    <!--<input type="text" id="usernameSearch" class="layui-input" placeholder="用户名称"/>-->
                 </div>
                 <div class="userContainer"></div>
             </div>
@@ -208,8 +190,6 @@
             <div class="layui-tab-item">
                 <div>
                     <div id="Div3" class="tab-pane active" style="height: 346px;">
-
-                        <!--<script type="text/javascript" src="../Content/plugins/slimscroll/jquery.slimscroll.min.js"></script>-->
 
                         <style type="text/css">
                             body {
@@ -493,23 +473,23 @@
                         </div>
                         <script>
 
-                            // $("#tgd a").click(function () {
-                            //     $(this).siblings('a').removeClass('aselect'); // 删除其他兄弟元素的样式
-                            //     $(this).addClass('aselect'); // 添加当前元素的样式
-                            // });
-                            //
-                            // function shareShow() {
-                            //     $('.xiaZai').hide();
-                            //     $('.gongXiang').show();
-                            //     $('.pepleAdd').show();
-                            // }
-                            //
-                            // function downLoadShow() {
-                            //     $('.xiaZai').show();
-                            //     $('.gongXiang').hide();
-                            //     $('.pepleAdd').hide();
-                            // }
-                            //
+                            $("#tgd a").click(function () {
+                                $(this).siblings('a').removeClass('aselect'); // 删除其他兄弟元素的样式
+                                $(this).addClass('aselect'); // 添加当前元素的样式
+                            });
+
+                            function shareShow() {
+                                $('.xiaZai').hide();
+                                $('.gongXiang').show();
+                                $('.pepleAdd').show();
+                            }
+
+                            function downLoadShow() {
+                                $('.xiaZai').show();
+                                $('.gongXiang').hide();
+                                $('.pepleAdd').hide();
+                            }
+
                             //
                             //
                             // function addPeople() {
@@ -707,123 +687,6 @@
                         </script>
 
                     </div>
-
-                </div>
-            </div>
-            <!--关联关系-->
-            <div class="layui-tab-item">
-                <div>
-                    <div id="Div4" class="tab-pane" style="height: 346px;">
-
-                        <style type="text/css">
-                            body {
-                                background-color: white;
-                                min-height: 400px;
-                            }
-
-                            .blues {
-                                color: #56ABE4;
-                            }
-
-                            table {
-                                table-layout: fixed;
-                                width: 100%;
-                            }
-
-                            .table-hover > tbody > tr:hover > td,
-                            .table-hover > tbody > tr:hover > th {
-                                background-color: #fff7e1;
-                            }
-
-                            .rted {
-                                color: #CDCDCD;
-                            }
-
-                            a:hover {
-                                color: #56ABE4;
-                                /*text-decoration: underline;*/
-                            }
-
-                            tbody {
-                                font-size: 12px;
-                            }
-
-                            .select {
-                                color: #56ABE4;
-                                /*text-decoration: underline;*/
-                            }
-
-                            #reng {
-                                display: none;
-                            }
-                            #base {
-                                height:100%;
-                            }
-                        </style>
-
-                        <div class="col-lg-6">
-                            <div style="text-align: left; display:none;">
-                                <h4 class="hui rted" style="margin: 10px;font-size: 13px" id="tgdColor">
-                                    <a style="margin-right: 7px;" onclick="baseShow()" class="rted select">我关联的</a>|
-                                    <a style="margin-right: 7px;margin-left: 7px;" onclick="rengShow()" class="rted">关联我的</a>
-                                </h4>
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed" style="margin:10px 10px 0;"></div>
-                        <div class="col-lg-6" id="base">
-                            <ul id="treeZo1" class="ztree" style="overflow: auto; height: 100%; width: 100%;"></ul>
-                        </div>
-                        <!--实物-->
-<!--
-                        <script>
-                            var setting = {
-                                view: {
-                                    selectedMulti: false
-                                },
-                                edit: {
-                                    enable: false,
-                                },
-                                data: {
-                                    simpleData: {
-                                        enable: true
-                                    }
-                                }
-                            };
-                            //树结构
-                            var zNodes1 = [{
-                                name: '文件',
-                                open: true,
-                                children: [
-                                    {
-                                        name: '文件',
-                                    },
-                                    {
-                                        name: '文件',
-                                    },
-                                    {
-                                        name: '文件',
-                                    }
-                                ]
-                            }]
-
-                            $(function () {
-                                var id = $("#hidDocumentId").val();
-                                $.ajax({
-                                    type: "Get",
-                                    url: "/Document/GetDocumentStrToTreeData?documentId=" + id + "&_t=" + new Date(),
-                                    success: function (data) {
-                                        if (data.result != null)
-                                        {
-                                            $.fn.zTree.init($("#treeZo1"), setting, data.result);
-                                        }
-                                    }
-                                });
-
-                            })
-                        </script>-->
-
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -836,8 +699,6 @@
 </body>
 <script type="text/javascript">
 
-
-
         //组织结构表格
         var tableItem = $('#tableItem').DataTable({
             pagingType: "full_numbers",
@@ -847,9 +708,7 @@
             ajax: {
                 "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
             },
-            dom: 'lf<"oneKeyArchiv layui-btn layui-btn-sm">' +
-            '<"file layui-btn layui-btn-sm">' +
-            '<"move layui-btn layui-btn-sm">' +
+            dom: 'lf<"move layui-btn layui-btn-sm">' +
             '<"assModel layui-btn layui-btn-sm">' +
             '<"mybtn layui-btn layui-btn-sm">rtip',
             columns: [
@@ -874,15 +733,22 @@
             ],
             columnDefs: [
                 {
+                    targets: [0],
+                    render: function (data, type, row) {
+                        // var html = "<a title='" + row.DocumentName + "' onclick='preview(\"" + row.FilePath + "\",\"" + row.DocumentName + "\",\"" + row.Id + "\")'>" + row.DocumentName + str + "</a>";
+                        return  '<a title="' + data + '" href=""  onclick=\"previewList(this)\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
+                    }
+                },
+                {
                     "searchable": false,
                     "orderable": false,
                     "targets": [5],
                     "render": function (data, type, row) {
                         var a = data;
-                        var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit(" + data + ")'><i title='删除' class='fa fa-trash'></i></a>";
-                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i title='下载' class='fa fa-chain'></i></a>";
-                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i title='关联文件' class='fa fa-chain'></i></a>";
-                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel(" + data + ")'><i title='审阅历史' class='fa fa-file-text'></i></a>";
+                        var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile(this)'><i title='删除' class='fa fa-trash'></i></a>";
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile(this)'><i title='下载' class='fa fa-download'></i></a>";
+                        // html += "<a type='button' class='' style='margin-left: 5px;' onclick='AssFile(this)'><i title='关联文件' class='fa fa-chain'></i></a>";
+                        // html += "<a type='button' class='' style='margin-left: 5px;' onclick='reviewHistory(this)'><i title='审阅历史' class='fa fa-file-text'></i></a>";
                         return html;
                     }
                 },
@@ -928,14 +794,16 @@
         $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
         $(".assModel").html("<div id='model'><i class='fa fa-plus'></i>关联模型</div>");
         $(".move").html("<div id='moveClick'><i class='fa fa-plus'></i>移动</div>");
-        $(".file").html("<div id='fileClick'><i class='fa fa-plus'></i>归档</div>");
-        $(".oneKeyArchiv").html("<div id='oneClick'><i class='fa fa-plus'></i>一键归档</div>");
+        // $(".file").html("<div id='fileClick'><i class='fa fa-plus'></i>归档</div>");
+        // $(".oneKeyArchiv").html("<div id='oneClick'><i class='fa fa-plus'></i>一键归档</div>");
 
         var upload ;
         var uploadId ;
         var uploadName ;
         var clickId ;
         var clickTreeId ;//一键归档选树的id
+        var fileStatus ;//一键归档选树的id
+
         // $(".mybtn >div").click(function () {
         //     if (!selfid) {
         //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
@@ -1057,24 +925,80 @@
             });
         });
 
+        //预览
+        function previewList(filename, documentName, documentId) {
+            $.ajax({
+                    type: "Get",
+                    url: "/Document/IsDown?documentId=" + documentId + "&_t=" + new Date().getTime(),
+                    success: function (data) {
+                        if (data.result == "Faild") {
+                            layerAlert("你没有权限预览此文件");
+                        }
+                        else {
+                            if (filename.indexOf(".rvt") > -1) {
+                                layerAlert("暂不支持该格式文件");
+                                return;
+                            }
+                            if (filename.indexOf(".pdf") > -1 || filename.indexOf(".PDF") > -1)
+                                picshow(documentId);
+                            else if (filename.indexOf(".avi") > -1 || filename.indexOf(".wmv") > -1 || filename.indexOf(".flv") > -1 || filename.indexOf(".mp4") > -1) {
+                                top.layer.open({
+                                    type: 2,
+                                    shadeClose: true,
+                                    shade: 0.8,
+                                    area: ['880px', '600px'],
+                                    title: '<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><i class="fa fa-video-camera" style="margin-right: 10px;"></i>视频播放</a>',
+                                    content: '/Model/VideoShow?videoUrl=' + filename,
+                                });
+                            }
+                            else if (filename.indexOf(".xlsx") > -1 || filename.indexOf(".xls") > -1 || filename.indexOf(".doc") > -1 || filename.indexOf(".docx") > -1 || filename.indexOf(".txt") > -1) {
+                                $.ajax({
+                                    type: "Get",
+                                    url: "/PermissionRelation/PreView?url=" + filename,
+                                    success: function (data) {
+                                        if (data.result == "Faild") {
+                                            layerAlert("你没有权限预览此文件");
+                                        }
+                                        else {
+                                            var index = top.layer.open({
+                                                type: 2,
+                                                title: '文件在线预览：' + documentName,
+                                                shadeClose: true,
+                                                shade: 0.8,
+                                                area: ['980px', '600px'],
+                                                content: '/document/DocumentPrint?url=' + data.result //iframe的url
+                                            });
+                                            top.layer.full(index);
+                                        }
+                                    }
+                                });
+                            }
+                            else
+                                ImageShow(filename);
+                        }
+                    }
+                });
+        }
+
         //关联模型
         $("#model").click(function (){
-            $.ajax({
-                type:"post",
-                url:"{:url('document/archiving')}",
-                data:{id:clickId},
-                success: function (res) {
-                    console.log(res)
-                    if(res.code == 1){
-                        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
-                        tableItem.ajax.url(url).load();
-                        layer.msg("归档成功！")
-                    }
-                },
-                error: function (data) {
-                    debugger;
-                }
-            })
+            layer.msg("有待开发")
+            // $.ajax({
+            //     type:"post",
+            //     url:"{:url('document/archiving')}",
+            //     data:{id:clickId},
+            //     success: function (res) {
+            //         console.log(res)
+            //         if(res.code == 1){
+            //             var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+            //             tableItem.ajax.url(url).load();
+            //             layer.msg("归档成功！")
+            //         }
+            //     },
+            //     error: function (data) {
+            //         debugger;
+            //     }
+            // })
         });
 
         //移动
@@ -1097,56 +1021,64 @@
                     end: function () {
                         var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
                         tableItem.ajax.url(url).load();
-
                     }
                 });
             }
         });
 
-        //归档
-        $("#fileClick").click(function (){
-            $.ajax({
-                type:"post",
-                url:"{:url('document/archiving')}",
-                data:{id:clickId},
-                success: function (res) {
-                    console.log(res)
-                    if(res.code == 1){
-                        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
-                        tableItem.ajax.url(url).load();
-                        layer.msg("归档成功！")
-                    }
-                },
-                error: function (data) {
-                    debugger;
-                }
-            })
-        });
-
-        //一键归档
-        $("#oneClick").click(function (){
-            if (!selfid) {
-                layer.msg("请选择节点", {time: 1500, shade: 0.1});
-                return;
-            }else{
-                $.ajax({
-                    type:"post",
-                    url:"{:url('document/batchArchiving')}",
-                    data:{tid:clickTreeId},
-                    success: function (res) {
-                        console.log(res)
-                        if(res.code == 1){
-                            var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
-                            tableItem.ajax.url(url).load();
-                            layer.msg("一键归档成功！")
-                        }
-                    },
-                    error: function (data) {
-                        debugger;
-                    }
-                })
-            }
-        });
+        // //归档
+        // $("#fileClick").click(function (){
+        //     if(fileStatus == 1){
+        //         layer.msg("归档文件不能重复归档！")
+        //     }else{
+        //         if (!clickId) {
+        //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
+        //         return;
+        //     }else {
+        //         $.ajax({
+        //             type: "post",
+        //             url: "{:url('document/archiving')}",
+        //             data: {id: clickId},
+        //             success: function (res) {
+        //                 console.log(res)
+        //                 if (res.code == 1) {
+        //                     var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
+        //                     tableItem.ajax.url(url).load();
+        //                     layer.msg("归档成功！")
+        //                 }
+        //             },
+        //             error: function (data) {
+        //                 debugger;
+        //             }
+        //         })
+        //     }
+        //     }
+        // });
+        //
+        // //一键归档
+        // $("#oneClick").click(function (){
+        //     if (!selfid) {
+        //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
+        //         return;
+        //     }else{
+        //         $.ajax({
+        //             type:"post",
+        //             url:"{:url('document/batchArchiving')}",
+        //             data:{tid:clickTreeId},
+        //             success: function (res) {
+        //                 console.log(res)
+        //                 if(res.code == 1){
+        //                     var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+        //                     tableItem.ajax.url(url).load();
+        //                     layer.msg("一键归档成功！")
+        //                 }
+        //             },
+        //             error: function (data) {
+        //                 debugger;
+        //             }
+        //         })
+        //     }
+        // });
 
         // $(function () {
         //     initPermissionTree();
@@ -1177,12 +1109,7 @@
         // };
 
         //初始化树节点
-        var selfid,
-            nodeName,
-            nodePid,
-            zTreeObj,
-            groupid,
-            sNodes;
+        var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
 
         var setting = {
             view: {
@@ -1335,10 +1262,77 @@
             zTreeObj.expandAll(false);
         });
 
+        //删除
+        function delFile() {
+
+            $.ajax({
+                type:"post",
+                url:"{:url('document/del')}",
+                data:{id:clickId},
+                success: function (res) {
+                    console.log(res)
+                },
+                error: function (data) {
+                    debugger;
+                }
+            })
+        }
+
+        //下载
+        function downFile(url,submitPath) {
+            $.ajax({
+                url: url,
+                type: "post",
+                dataType: "json",
+                data:{id:clickId},
+                success: function (res) {
+                    if(res.code != 1){
+                        layer.msg(res.msg);
+                    }else {
+                        $("#form_container").empty();
+                        var str = "";
+                        str += ""
+                            + "<iframe name=downloadFrame"+ file_id +" style='display:none;'></iframe>"
+                            + "<form id=download"+ file_id +" action="+ submitPath +" method='get' target=downloadFrame"+ file_id +">"
+                            + "<span class='file_name' style='color: #000;'>"+str+"</span>"
+                            + "<input class='file_url' style='display: none;' name='file_id' value="+ file_id +">"
+                            + "<button type='submit' class=btn" + file_id +"></button>"
+                            + "</form>"
+                        $("#form_container").append(str);
+                        $("#form_container").find(".btn" + file_id).click();
+                    }
+                }
+            })
+        }
+
+        // //关联文件
+        // function AssFile() {
+        //     layer.open({
+        //         type: 2,
+        //         title: '关联文件',
+        //         shadeClose: true,
+        //         area: ['780px', '570px'],
+        //         content: '{:url("bind")}',
+        //         success: function(layero, index){
+        //             var body = layer.getChildFrame('body', index);
+        //             // console.log(body.html())
+        //             body.find("#moveZtreeId").val(clickId);
+        //         },
+        //         end: function () {
+        //             var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
+        //             tableItem.ajax.url(url).load();
+        //         }
+        //     });
+        // }
+        //
+        // //审阅历史
+        // function reviewHistory() {
+        //     alert(9)
+        // }
+
         //右边的属性
         var uploadPle;//上传人
         var treefileCategory;//文件类别
-
         //获取点击行
         $("#tableItem").delegate("tbody tr","click",function (e) {
             if($(e.target).hasClass("dataTables_empty")){
@@ -1350,7 +1344,8 @@
             console.log(selectData);
             uploadPle = selectData[1];
             clickId = selectData[5];
-            console.log(clickId)
+            fileStatus = selectData[4];
+            console.log(clickId);
             getAttrList(selectData[5]);
         });
 
@@ -1396,15 +1391,36 @@
             $(".saveText").css('display','block');
         });
 
-        //保存
+        //保存 存的关键字
         $('#saveCircle').click(function () {
-            $(".saveText").css('display','none');
+            if (!clickId) {
+                layer.msg("请选择节点！", {time: 1500, shade: 0.1});
+                return;
+            }else {
+                $.ajax({
+                    type: "post",
+                    url: "{:url('document/remark')}",
+                    data: {id: clickId, remark: $("#keyText").val()},
+                    success: function (res) {
+                        console.log(res)
+                        if(res.code == 1){
+                            layer.msg("保存成功！")
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                    }
+                })
+                $(".saveText").css('display', 'none');
+            }
         });
 
         //返回
         $('#reply').click(function () {
             $(".saveText").css('display','none');
+            $("#keyText").val("");
         })
+
 
 </script>
 </html>

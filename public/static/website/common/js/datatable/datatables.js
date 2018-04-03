@@ -7,7 +7,8 @@
         var option = {
             ajax: {
                 "url":"/admin/common/datatablesPre?tableName=admin"
-            }
+            },
+            dom:'lftipr'
         }
 
         $.extend(option,options);
@@ -21,6 +22,7 @@
             pagingType: "full_numbers",
             processing: true,
             serverSide: true,
+            dom: option.dom,
             ajax: option.ajax,
             columns: options.columns,
             columnDefs: options.columnDefs,
@@ -45,5 +47,6 @@
                 $('#tableItem_paginate').insertBefore(".mark");
             }
         });
+
     }
 })(jQuery);

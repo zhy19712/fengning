@@ -45,9 +45,29 @@ Class DocumentModel extends Model
         return DocumentModel::update(['type' => $parms['type']], ['id' => $parms['id']]);
     }
 
+    /**
+     * 编辑关键字
+     * @param $parms
+     * @return $this
+     */
     public function remark($parms)
     {
         return DocumentModel::update(['remark' => $parms['remark']], ['id' => $parms['id']]);
+    }
+
+    /**
+     * 删除文档
+     * @param $par
+     * @return int
+     * @throws \think\exception\DbException
+     */
+    public function deleteDoc($par)
+    {
+        $mod=self::get($par,'attachmentInfo');
+        if(file_exists($mod['attachmentInfo']['filepatch'])){
+            unlink($mod['attachmentInfo']['filepatch']); //删除上传的图片
+        }
+        return $mod->delete();
     }
 }
 
