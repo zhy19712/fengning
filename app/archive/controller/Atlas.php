@@ -269,7 +269,7 @@ class Atlas extends Permissions
                     $data = $model->getOne($param['id']);
 
                     //先删除图片
-                    $path = $data['path'];
+                    $path = "." .$data['path'];
                     $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
                     if(file_exists($path)){
                         unlink($path); //删除文件图片
