@@ -125,10 +125,20 @@ class Division extends Permissions{
                 $data['en_type'] = $en_type;
             }
             if(empty($id)){
+                // 编码 和 名称 必须 是 唯一的
+                $is_unique = Db::name('quality_division')->where('d_code','like','%'.$param['d_code'])->whereOr('d_name','like','%'.$param['d_name'])->value('id');
+                if(empty($is_unique)){
+                    return json(['code' => -1,'msg' => '编码或名称已存在']);
+                }
                 $flag = $node->insertTb($data);
                 return json($flag);
             }else{
                 $data['id'] = $id;
+                // 编码 和 名称 必须 是 唯一的
+                $is_unique = Db::name('quality_division')->where('id','neq',$id)->where('d_code','like','%'.$param['d_code'])->whereOr('d_name','like','%'.$param['d_name'])->value('id');
+                if(empty($is_unique)){
+                    return json(['code' => -1,'msg' => '编码或名称已存在']);
+                }
                 $flag = $node->editTb($data);
                 return json($flag);
             }
@@ -142,6 +152,7 @@ class Division extends Permissions{
      */
     public function delNode()
     {
+        //Todo 等我的功能做完了，给张志方说让他删除标段的时候，也关联删除我的工程划分
         /**
          * 前台只需要给我传递 要删除的 节点的 id 编号
          */
@@ -150,6 +161,7 @@ class Division extends Permissions{
             $node = new DivisionModel();
             // 是否包含子节点
             $exist = $node->isParent($id);
+            halt($exist);
             if(!empty($exist)){
                 return json(['code' => -1,'msg' => '包含子节点,不能删除']);
             }
@@ -491,8 +503,8 @@ class Division extends Permissions{
              *
              * 当新增 单元工程段号(单元划分) 的时候
              * 前台需要传递的是
-             * 必传参数 : division_id 归属的工程编号 serial_number 单元工程流水号,
-             *            site 单元工程部位,coding 系统编码,ma_bases 施工依据(注意这里是可以多选的，选中的编号以下划线连接 例如：1_2_3_4_5 ),
+             * 必传参数 : division_id 归属的工程编号 serial_number 单元工程段号(单元划分)流水号,
+             *            site 单元工程段号(单元划分)部位,coding 系统编码,ma_bases 施工依据(注意这里是可以多选的，选中的编号以下划线连接 例如：1_2_3_4_5 ),
              *            hinge 关键部位(1 是 0 否),en_type 工程类型 (如果 type=2 还需要 传递 again_save 继续保存 值就等于 again_save)
              *
              * 可选参数 : su_basis 补充依据,el_start 高程（起）,el_cease 高程（止）,quantities 工程量,pile_number 起止桩号,start_date 开工日期,completion_date 完工日期
@@ -501,9 +513,19 @@ class Division extends Permissions{
              *
              */
             if(empty($id)){
+                // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
+                $is_unique = Db::name('quality_unit')->where('serial_number','like','%'.$param['serial_number'])->whereOr('coding','like','%'.$param['coding'])->value('id');
+                if(empty($is_unique)){
+                    return json(['code' => -1,'msg' => '流水号 或 系统编码已存在']);
+                }
                 $flag = $unit->insertTb($param);
                 return json($flag);
             }else{
+                // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
+                $is_unique = Db::name('quality_unit')->where('id','neq',$param['id'])->where('serial_number','like','%'.$param['serial_number'])->whereOr('coding','like','%'.$param['coding'])->value('id');
+                if(empty($is_unique)){
+                    return json(['code' => -1,'msg' => '流水号 或 系统编码已存在']);
+                }
                 $flag = $unit->editTb($param);
                 return json($flag);
             }
@@ -523,6 +545,8 @@ class Division extends Permissions{
          */
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         if($id != 0){
+            //Todo 如果 单元工程段号(单元划分) 下面 还包含其他的数据 那么 也要关联删除
+
             $unit = new DivisionUnitModel();
             $flag = $unit->deleteTb($id);
             return json($flag);

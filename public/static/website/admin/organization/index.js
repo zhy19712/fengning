@@ -706,7 +706,6 @@
                 id:id
             },
             success:function(res){
-
                 if(res.code==0){
                     layer.msg(res.msg);
                     return false;

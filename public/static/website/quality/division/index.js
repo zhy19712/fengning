@@ -33,37 +33,63 @@ $('#delNode').click(function () {
 });
 //新增节点弹层
 $('#addNode').click(function (){
+    if(!window.treeNode||window.treeNode.level==0){
+        layer.msg('未选择标段');
+        return false;
+    }
     $.addNode({
-        area:['660px','360px'],
+        area:['670px','420px'],
         others:function () {
             //构建select
             //type = 1 单位工程 / type = 2 [子单位工程|分部工程] / type = 3 [子分部工程|分项工程]
             var options = [];
             var unitArr = [{type:1,name:"单位工程"}];
             var branchArr = [{type:2,name:"子单位工程"},{type:2,name:"分部工程"}];
-            var itemArr = [{type:3,name:"子分部工程"},{type:3,name:"分项工程"}];
-            if(treeNode.level==1){
+            var itemArr = [{type:3,name:"子分部工程"},{type:3,name:"分项工程"},{type:1,name:"单位工程"}];
+            if(window.treeNode.level==1){
                 options.push('<option value='+ unitArr[0].type +'>'+ unitArr[0].name +'</option>');
             }
-            if(treeNode.level==2){
+            if(window.treeNode.level==2){
                 for(var i = 0;i<branchArr.length;i++){
                     options.push('<option value='+ branchArr[i].type +'>'+ branchArr[i].name +'</option>');
                 }
             }
-            if(treeNode.level==3){
+            if(window.treeNode.level==3){
                 for(var i = 0;i<itemArr.length;i++){
                     options.push('<option value='+ itemArr[i].type +'>'+ itemArr[i].name +'</option>');
                 }
             }
             $('select[name="type"]').empty();
             $('select[name="type"]').append(options);
+
+            if(window.treeNode.level>2){
+                $('.autograph').show();
+            }
             initUi.form.render('select');
         }
     });
 });
+//工程类型树
+$.ztree({
+    treeId:'typeZtree'
+});
+//展示工程类型树
+$('#typeZtreeBtn').click(function () {
+    if(window.treeNode.level>2){
+        layer.open({
+            title:'工程类型',
+            id:'99',
+            type:'1',
+            content:$('#ztreeLayer')
+        });
+    }
+
+});
 //编辑节点
 $('#editNode').click(function () {
-    $.editNode();
+    $.editNode({
+        area:['670px','420px'],
+    });
 });
 //关闭弹层
 $.close({

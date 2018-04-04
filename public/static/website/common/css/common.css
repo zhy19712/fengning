@@ -60,9 +60,10 @@ i.fa:hover:before{
 }
 /* layui表单 */
 
-.layui-input[disabled],.layui-textarea[disabled]{
+.layui-input[disabled],.layui-textarea[disabled],.layui-disabled{
     cursor: not-allowed;
-    background: #cecece;
+    background: #cecece !important;
+    color: #545454 !important;
 }
 .layui-form-item .autograph .layui-form-mid{
     padding: 0 !important;
@@ -134,6 +135,6 @@ select.form-control {
     display: none;
 }
 /* 弹层 */
-.layui-layer-title{
-    margin-bottom: 15px;
+.layui-layer-content{
+    padding-top: 15px;
 }

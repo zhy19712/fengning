@@ -36,10 +36,10 @@ class DivisionModel extends Model
             foreach($division as $vo){
                 if($v['id'] == $vo['section_id']){
                     if($vo['type'] == 1){
-                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $id . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $id . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"';
                         $str .= '},';
                     }else{
-                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"';
                         $str .= '},';
                     }
                 }
