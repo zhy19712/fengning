@@ -50,8 +50,23 @@ class Division extends Permissions{
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
             $en_type = isset($param['en_type']) ? $param['en_type'] : '';
             if(request()->isGet()){
-                $info['node'] = $node->getOne($id);
+                $info['data'] = $node->getOne($id);
                 // Todo 工程分类
+                // 这里是 假的 用来做测试的
+                $str = '{ "id": "' . 1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"},';
+                $str .= '{ "id": "' . 2 . '", "pId":"' . 1 . '", "name":"' . '开挖' .'"},';
+                $str .= '{ "id": "' . 3 . '", "pId":"' . 1 . '", "name":"' . '支护' .'"},';
+                $str .= '{ "id": "' . 4 . '", "pId":"' . 1 . '", "name":"' . '混凝土' .'"},';
+                $str .= '{ "id": "' . 5 . '", "pId":"' . 1 . '", "name":"' . '填筑' .'"},';
+                $str .= '{ "id": "' . 6 . '", "pId":"' . 1 . '", "name":"' . '灌浆工程' .'"},';
+                $str .= '{ "id": "' . 7 . '", "pId":"' . 2 . '", "name":"' . '岩石平洞开挖' .'"},';
+                $str .= '{ "id": "' . 8 . '", "pId":"' . 2 . '", "name":"' . '竖井（斜井）开挖' .'"},';
+                $str .= '{ "id": "' . 9 . '", "pId":"' . 2 . '", "name":"' . '岩石边坡开挖' .'"},';
+                $str .= '{ "id": "' . 10 . '", "pId":"' . 2 . '", "name":"' . '岩石地基开挖' .'"},';
+                $str .= '{ "id": "' . 11 . '", "pId":"' . 3 . '", "name":"' . '锚喷支护' .'"},';
+                $str .= '{ "id": "' . 12 . '", "pId":"' . 3 . '", "name":"' . '锚筋桩' .'"},';
+                $info['node'] = $str;
+
                 return json($info);
             }
 

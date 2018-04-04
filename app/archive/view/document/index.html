@@ -497,7 +497,7 @@
             '<"mybtn layui-btn layui-btn-sm">rtip',
             columns: [
                 {
-                    name: "name"
+                    name: "docname"
                 },
                 {
                     name: "nickname"
@@ -513,6 +513,10 @@
                 }
             ],
             columnDefs: [
+                {
+                    "searchable": false,
+                    targets:[2]
+                },
                 {
                     targets: [0],
                     render: function (data, type, row) {
@@ -533,6 +537,7 @@
                     }
                 },
                 {
+                    "searchable": false,
                     targets: [3],
                     render: function (data, type, row) {
                         if (data == 1) {
@@ -710,7 +715,7 @@
                         $.ajax({
                             url:"{:url('document/add')}",
                             data:{
-                                name: uploadName, //名称
+                                docname: uploadName, //名称
                                 attachmentId: uploadId,  //文档关联Id
                                 type:selfid,
                             },

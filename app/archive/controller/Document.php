@@ -262,10 +262,11 @@ class Document extends Permissions
     {
         $doc = DocumentModel::get($id);
         if (empty($doc['users'])) {
-            return json();
+            return json(['code'=>1,'data'=>'']);
         }
         $users = explode("|", $doc['users']);
         $list = Db::name('admin')->whereIn('id', $users)->field('id,nickname')->select();
-        return json($list);
+        return json(['code'=>1,'data'=>$list]);
+
     }
 }
