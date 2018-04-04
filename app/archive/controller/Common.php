@@ -150,35 +150,30 @@ class Common extends Controller
         $recordsFiltered = 0;
         //表的总记录数 必要
         $id = input('selfid');
-
-        $model = new AtlasCateTypeModel();
-        $atlascate = new AtlasCateModel();
-        $idArr = $model->cateTree($id);
-        $idArr[] = $id;
+        //表的总记录数 必要
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->count();
+        $recordsTotal = Db::name($table)->where('selfid',$id)->where("pid = 0")->count(0);
         $recordsFilteredResult = array();
-        if (strlen($search) > 0) {
+        if(strlen($search)>0){
             //有搜索条件的情况
-            if ($limitFlag) {
+            if($limitFlag){
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->whereIn('a.selfid', $idArr)->where("pid = 0")
-                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where('selfid',$id)->where("pid = 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        } else {
+        }else{
             //没有搜索条件的情况
-            if ($limitFlag) {
-                $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->whereIn('a.selfid', $idArr)->where("pid = 0")
-                    ->select();
+            if($limitFlag){
+                $recordsFilteredResult = Db::name($table)->where('selfid',$id)->where("pid = 0")->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
+
+
+        //实例化model类
+        $atlascate = new AtlasCateModel();
         $temp = array();
         $infos = array();
-        $children = array();
         foreach ($recordsFilteredResult as $key => $value) {
             //计算列长度
             $length = sizeof($columns);
@@ -216,7 +211,7 @@ class Common extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function atlas_download_record($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function atlas_download_record($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
 
         //查询
@@ -226,10 +221,10 @@ class Common extends Controller
         $recordsTotal = 0;
         //传过来的id,类别id
         $id = input('param.id');
-        $recordsTotal = Db::name($table)->where('cate_id', $id)->count(0);
+        $recordsTotal = Db::name($table)->where('cate_id',$id)->count(0);
         $recordsFilteredResult = array();
         //没有搜索条件的情况
-        $recordsFilteredResult = Db::name($table)->where('cate_id', $id)->limit(intval($start), intval($length))->select();
+        $recordsFilteredResult = Db::name($table)->where('cate_id',$id)->order("date desc")->limit(intval($start), intval($length))->select();
 
         //*****多表查询join改这里******
         //$recordsFilteredResult = Db::name('datatables_example')->alias('d')->join('datatables_example_join e','d.position = e.id')->field('d.id,d.name,e.name as position,d.office')->select();
