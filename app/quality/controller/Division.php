@@ -78,7 +78,6 @@ class Division extends Permissions{
 
             /**
              * 节点 层级
-             * 顶级节点 -》标段 -》单位工程 =》 子单位工程 =》分部工程 -》子分部工程 -》 分项工程 -》 单元工程 (注意 这是一条数据 是不在 树节点里的)
              *
              * 顶级节点 -》标段  不允许 增删改,它们是从其他表格获取的
              *
@@ -87,12 +86,17 @@ class Division extends Permissions{
              *                                                           =》 分部工程  type = 2 , d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
              *                                                               分部工程 下面 新增的是 -》 子分部工程 type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
              *                                                                                      -》 分项工程   type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                                                      -》 单元工程   type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
              *
-             * 当新增 单位工程 =》 子单位工程 =》分部工程 -》子分部工程 的时候
+             *                     注意:如果分部工程直接新建 -》 单元工程段号(单元划分) 的时候,  也必须 选择 工程分类
+             *                               （ 这个可以前台判断 type= 2 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类)
+             *                               ( 然后再在后台判断 type= 2 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类 或者 继续保存 分部工程的工程分类默认与当前单元工程段号(单元划分) 一致)
+             *
+             * 当新增 单位工程 , 子单位工程 ,分部工程  的时候
              * 前台需要传递的是 section_id 标段编号 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,primary 是否主要工程,remark 描述
              * 编辑 的时候 一定要 传递 id 编号
              *
-             * 当新增 分项工程 的时候
+             * 当新增 子分部工程,分项工程 和 单元工程 的时候 必须 选择 工程分类
              * 前台需要传递的是 section_id 标段编号 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,en_type 工程分类,primary 是否主要工程,remark 描述
              * 编辑 的时候 一定要 传递 id 编号
              *
@@ -126,7 +130,7 @@ class Division extends Permissions{
          * 前台只需要给我传递 要删除的 节点的 id 编号
          */
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
-        if($id == 0){
+        if($id != 0){
             $node = new DivisionModel();
             // 是否包含子节点
             $exist = $node->isParent($id);
@@ -464,6 +468,16 @@ class Division extends Permissions{
             }
 
             /**
+             * type= 2 时新增 单元工程段号(单元划分)
+             * 提示 请先给分部工程选择 工程分类 或者 继续保存 分部工程的工程分类默认与当前单元工程段号(单元划分) 一致
+             */
+            $type = Db::name('quality_division')->where('id',$param['division_id'])->value('type');
+            $again_save = isset($param['again_save']) ? $param['again_save'] : '';
+            if($type == 2 && $again_save != 'again_save'){
+                return json(['code' => -1,'msg' => '继续保存： 分部工程的工程分类默认与当前单元工程段号(单元划分) 一致']);
+            }
+
+            /**
              * 单元工程 (注意 这是归属于分项工程下的 数据信息 它不是节点)
              *
              * 当新增 单元工程 的时候
@@ -499,7 +513,7 @@ class Division extends Permissions{
          * 前台只需要给我传递 要删除的 单元工程的 id 编号
          */
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
-        if($id == 0){
+        if($id != 0){
             $unit = new DivisionUnitModel();
             $flag = $unit->deleteTb($id);
             return json($flag);

@@ -237,14 +237,14 @@ function excel_to_pdf($path)
 
 function doc_to_pdf($path)
 {
-    $srcfilename = ROOT_PATH . 'public' . $path;
+    $srcfilename = 'E:/phpStudy/WWW/fengning/public/uploads/document/archive/20180404/f15a0abe99e90a323990f7c505104b51.docx';
     $filepath = '/uploads/temp/' . basename($path);
-    $destfilename = ROOT_PATH . 'public' . $filepath;
+    $destfilename = 'E:/phpStudy/WWW/fengning/public/uploads/temp/test.pdf';
     try {
         if (!file_exists($srcfilename)) {
             return json(['code' => 0, 'msg' => '文件不存在']);
         }
-        $word = new COM("word.application") or die("Can't start Word!");
+        $word = new \COM("word.application") or die("Can't start Word!");
         $word->Visible = 0;
         $word->Documents->Open($srcfilename, false, false, false, "1", "1", true);
         if (file_exists($destfilename . '.pdf')) {

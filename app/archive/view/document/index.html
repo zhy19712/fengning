@@ -186,8 +186,12 @@
                     <h2 style="margin-left:8px;font-size:14px; color:#676a6c; font-weight:bold; font-family:微软雅黑; ">关键词</h2>
                     <textarea name="keyText" id="keyText" placeholder="关键词"></textarea>
                     <div class="saveText">
-                        <a href="javascript:;" id="saveCircle">保存<i class="icon icon-ok-circle"></i></a>
-                        <a href="javascript:;" id="reply">返回<i class="icon icon-reply"></i></a>
+                        <button id="saveCircle" class="layui-btn" type="button" style="margin-right: 15px;border-radius:50%">
+                            <i class="fa fa-check" title="保存"></i>
+                        </button>
+                        <button id="reply" class="layui-btn layui-btn-warm" type="button" style="margin-right: 15px;border-radius:50%">
+                            <i class="fa fa-times" style="color:#ffffff" ; title="关闭"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="searchName">
@@ -881,7 +885,7 @@
             upload.render({
                 elem: '#test3',
                 url: "{:url('admin/common/upload?module=document&use=archive')}",
-                exts: 'doc|docx|pdf|png|jpg',
+                exts: 'doc|docx|pdf|png|jpg|xls',
                 before: function(obj){
                     obj.preview(function(index, file, result){
                         uploadName = file.name;
@@ -1498,13 +1502,13 @@
                 url: "{:url('document/PermissionRelation')}?id="+id,
                 success: function (res) {
                     console.log(res)
-                    if(res.code===1){
-                        userList = res.data;
-                        showUser();
-                    }else if(res.code===-1){
-                        userList=[];
-                        showUser();
-                    }
+                    // if(res.code===1){
+                    //     userList = res.data;
+                    //     showUser();
+                    // }else if(res.code===-1){
+                    //     userList=[];
+                    //     showUser();
+                    // }
 
                 },
                 error: function (data) {
