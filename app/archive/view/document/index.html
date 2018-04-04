@@ -115,6 +115,18 @@
         margin-right: 20px;
         margin-top: 10px;
     }
+    #information #saveCircle,#information #reply{
+        margin-right: 15px;
+        border-radius: 100%;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        line-height: 0;
+    }
+    #information #saveCircle i.fa:before,#information #reply i.fa:before{
+        background:none;
+        color: white;
+    }
 
 </style>
 
@@ -137,7 +149,6 @@
             <th>文件名称</th>
             <th>上传人</th>
             <th>上传时间</th>
-            <th>当前审批人</th>
             <th>状态</th>
             <th>操作</th>
         </tr>
@@ -186,11 +197,11 @@
                     <h2 style="margin-left:8px;font-size:14px; color:#676a6c; font-weight:bold; font-family:微软雅黑; ">关键词</h2>
                     <textarea name="keyText" id="keyText" placeholder="关键词"></textarea>
                     <div class="saveText">
-                        <button id="saveCircle" class="layui-btn" type="button" style="margin-right: 15px;border-radius:50%">
+                        <button title="保存" id="saveCircle" class="layui-btn" type="button" style="margin-right: 15px;">
                             <i class="fa fa-check" title="保存"></i>
                         </button>
-                        <button id="reply" class="layui-btn layui-btn-warm" type="button" style="margin-right: 15px;border-radius:50%">
-                            <i class="fa fa-times" style="color:#ffffff" ; title="关闭"></i>
+                        <button title="关闭" id="reply" class="layui-btn layui-btn-warm" type="button" style="margin-right: 15px;">
+                            <i class="fa fa-times" style="color:#ffffff" ;></i>
                         </button>
                     </div>
                 </div>
@@ -423,9 +434,9 @@
                         </div>
                         <div class="hr-line-dashed" style="margin:10px;"></div>
                         <div class="gongXiang" style="display: block;">
-                            <div style="width: 100%; height: 30px;margin-top: 10px">
-                                <h3 style="font-weight: 800">共享白名单</h3>
-                            </div>
+                            <!--<div style="width: 100%; height: 30px;margin-top: 10px">-->
+                                <!--<h3 style="font-weight: 800">共享白名单</h3>-->
+                            <!--</div>-->
                             <div class="searchName" style="margin-top: 10px;">
                                 <input type="text" id="usernameSearch"  class="layui-input" placeholder="用户名称" />
                             </div>
@@ -440,210 +451,10 @@
                                     </tr>
                                 </thead>
                                 <tbody id="downInfo">
-                                    <!--<tr>-->
-                                        <!--<td></td>-->
-                                        <!--<td></td>-->
-                                    <!--</tr>-->
+
                                 </tbody>
                             </table>
                         </div>
-                        <script>
-
-                            //
-                            //
-                            // function addPeople() {
-                            //     var document = JSON.parse(($("#document").val()));
-                            //     var id = document.Id;
-                            //     $.ajax({
-                            //         type: "Get",
-                            //         url: "/PermissionRelation/CheckPower?menuId=" + $("#hidMenuId").val() + "&fileType=document&id=" + id + "&type=share&_t=" + new Date().getTime(),
-                            //         success: function (data) {
-                            //             if (data.result == "Faild") {
-                            //                 layerAlert("没有授权权限");
-                            //             }
-                            //             else {
-                            //                 if ($("#document").val() == null || $("#document").val() == "") {
-                            //                     alert("请先选择要授权的图纸数据");
-                            //                 } else {
-                            //                     if (document != undefined) {
-                            //                         if (document.ApproveStatus == 2) {
-                            //
-                            //                             var url = "/Document/Permission?documentId=" + document.Id + "&documentName=" + document.DocumentName;
-                            //                             var v = window.showModalDialog(url, window, "dialogHeight:550px;dialogWidth:780px;status:no;toolbar:no;menubar:no;scrollbars:no;resizable:no;location:no");
-                            //                             showPermissionInfo(0);
-                            //                         } else {
-                            //                             alert("文档未归档，不能共享文件");
-                            //                         }
-                            //                     }
-                            //                     else {
-                            //                         alert("请先选择要授权的图纸数据");
-                            //                     }
-                            //                 }
-                            //             }
-                            //         }
-                            //     });
-                            // }
-                            // $(function () {
-                            //     showPermissionInfo(0);
-                            //     $('.wcentent').slimscroll({
-                            //         height: '80px',
-                            //         alwaysVisible: true,
-                            //         railVisible: false,
-                            //
-                            //     });
-                            //     showDownRecord();
-                            // })
-                            //
-                            // function showSeeUser(documentId) {
-                            //     $("#fPNAllContent").show();
-                            //     $.ajax({
-                            //         type: "Get",
-                            //         url: "/Document/GetPermissionByDocument?documentId=" + documentId + "&type=1&t=" + new Date(),
-                            //         success: function (data) {
-                            //             $("#selectedOrganizationDivBySee").html("");
-                            //             data = data.result;
-                            //             var html = "";
-                            //             var status = 0;
-                            //             if (data.departmentIds) {
-                            //                 $.each(data.departmentNames, function (i, item) {
-                            //                     html = "<p3>" + item + "</p3>";
-                            //                     $("#selectedOrganizationDivBySee").append(html);
-                            //                 });
-                            //                 status = 1;
-                            //             }
-                            //             if (data.userIds) {
-                            //                 $.each(data.userNames, function (i, item) {
-                            //                     html = "<p2>" + item + "</p2>";
-                            //                     $("#selectedOrganizationDivBySee").append(html);
-                            //                 });
-                            //                 status = 1;
-                            //             }
-                            //             if (status > 0) {
-                            //                 $("#fPNAll").show();
-                            //
-                            //             }
-                            //             else {
-                            //                 $("#fPAlls").show();
-                            //                 $("#fPNAllContent").hide();
-                            //             }
-                            //         }
-                            //     });
-                            // }
-                            // function showDownUser(documentId) {
-                            //     $("#dPNAllContent").show();
-                            //     $.ajax({
-                            //         type: "Get",
-                            //         url: "/Document/GetPermissionByDocument?documentId=" + documentId + "&t=" + new Date(),
-                            //         success: function (data) {
-                            //             data = data.result;
-                            //             var html = "";
-                            //             var status = 0;
-                            //             if (data.departmentIds) {
-                            //                 $.each(data.departmentNames, function (i, item) {
-                            //                     html = "<p3>" + item + "</p3>";
-                            //                     $("#selectedOrganizationDiv").append(html);
-                            //                 });
-                            //                 status = 1;
-                            //             }
-                            //             if (data.userIds) {
-                            //                 $.each(data.userNames, function (i, item) {
-                            //                     html = "<p2>" + item + "</p2>";
-                            //                     $("#selectedOrganizationDiv").append(html);
-                            //                 });
-                            //                 status = 1;
-                            //             }
-                            //             if (status > 0) {
-                            //                 $("#dPNAll").show();
-                            //
-                            //             }
-                            //             else {
-                            //                 $("#dPAlls").show();
-                            //                 $("#dPNAllContent").hide();
-                            //             }
-                            //         }
-                            //     });
-                            // }
-                            // function showPermissionInfo(type) {
-                            //     $("#fPAll").hide();
-                            //     $("#dPAll").hide();
-                            //     $("#fPAlls").hide();
-                            //     $("#dPAlls").hide();
-                            //     $("#fPNAll").hide();
-                            //     $("#dPNAll").hide();
-                            //     $("#dPNAllContent").hide();
-                            //     $("#fPNAllContent").hide();
-                            //     if (type != 1) {
-                            //         $("#selectedOrganizationDiv").html("");
-                            //         $("#selectedOrganizationDivBySee").html("");
-                            //         if ($("#document").val() == null || $("#document").val() == "") {
-                            //             //alert("请先选择要授权的图纸数据");
-                            //         } else {
-                            //             var document = JSON.parse(($("#document").val()));
-                            //             if (document != undefined) {
-                            //                 //debugger;
-                            //                 $.ajax({
-                            //                     type: "Get",
-                            //                     url: "/Document/GetDocument?documentId=" + document.Id + "&t=" + new Date(),
-                            //                     success: function (data) {
-                            //                         var dmt = JSON.parse(data.result);
-                            //                         document.DocmentStatus = dmt.DocmentStatus;
-                            //                         document.ApproveStatus = dmt.ApproveStatus;
-                            //                         $("#selectedOrganizationDiv").html("");
-                            //                         if (document.ApproveStatus == 2) {
-                            //                             if (document.DocmentStatus == 0) {
-                            //                                 showDownUser(document.Id);
-                            //                                 showSeeUser(document.Id);
-                            //                             }
-                            //                             else if (document.DocmentStatus == 1) {
-                            //                                 $("#fPAll").show();
-                            //                                 showDownUser(document.Id);
-                            //                             }
-                            //                             else if (document.DocmentStatus == 2) {
-                            //                                 $("#dPAll").show();
-                            //                                 showSeeUser(document.Id);
-                            //                             }
-                            //                             else {
-                            //                                 $("#fPAll").show();
-                            //                                 $("#dPAll").show();
-                            //                             }
-                            //                         }
-                            //                     }
-                            //                 });
-                            //
-                            //             }
-                            //             else {
-                            //                 //alert("请先选择要授权的图纸数据");
-                            //             }
-                            //         }
-                            //     }
-                            //     else {
-                            //         window.location.reload();
-                            //     }
-                            // };
-                            //
-                            // function locationHref() {
-                            //     window.location.reload();
-                            // }
-                            // function showDownRecord() {
-                            //     if ($("#document").val() != "" && $("#document").val() != null) {
-                            //         var document = JSON.parse(($("#document").val()));
-                            //         var id = document.Id;
-                            //         $.ajax({
-                            //             type: "Get",
-                            //             url: "/Document/GetAllDownRecords?fileType=document&fileId=" + id + "&t=" + new Date(),
-                            //             success: function (data) {
-                            //                 data = data.result;
-                            //                 $("#downInfo").html("");
-                            //                 $.each(data, function (i, item) {
-                            //                     html = "<tr><td>" + item.downDateStr + "</td><td>" + item.userName + "</td></tr>";
-                            //                     $("#downInfo").append(html);
-                            //                 });
-                            //             }
-                            //         });
-                            //     }
-                            // }
-
-                        </script>
                     </div>
                 </div>
             </div>
@@ -680,9 +491,6 @@
                     name: "create_time"
                 },
                 {
-                    name: "id"
-                },
-                {
                     name: "status"
                 },
                 {
@@ -693,17 +501,17 @@
                 {
                     targets: [0],
                     render: function (data, type, row) {
-                        return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[5]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
+                        return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[4]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
                     }
                 },
                 {
                     "searchable": false,
                     "orderable": false,
-                    "targets": [5],
+                    "targets": [4],
                     "render": function (data, type, row) {
                         var a = data;
-                        var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile("+row[5]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile("+row[5]+")'><i title='下载' class='fa fa-download'></i></a>";
+                        var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                         // html += "<a type='button' class='' style='margin-left: 5px;' onclick='AssFile(this)'><i title='关联文件' class='fa fa-chain'></i></a>";
                         // html += "<a type='button' class='' style='margin-left: 5px;' onclick='reviewHistory(this)'><i title='审阅历史' class='fa fa-file-text'></i></a>";
                         return html;
@@ -711,13 +519,6 @@
                 },
                 {
                     targets: [3],
-                    //审批人，目前没数据留空
-                    render: function (data, type, row) {
-                        return "";
-                    }
-                },
-                {
-                    targets: [4],
                     render: function (data, type, row) {
                         if (data == 1) {
                             return "已归档";
@@ -748,12 +549,9 @@
         });
 
         //点击上传文件
-        // $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
         $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
         $(".assModel").html("<div id='model'><i class='fa fa-plus'></i>关联模型</div>");
         $(".move").html("<div id='moveClick'><i class='fa fa-plus'></i>移动</div>");
-        // $(".file").html("<div id='fileClick'><i class='fa fa-plus'></i>归档</div>");
-        // $(".oneKeyArchiv").html("<div id='oneClick'><i class='fa fa-plus'></i>一键归档</div>");
 
         var upload ;
         var uploadId ;
@@ -770,7 +568,6 @@
         //         return;
         //     }else if(selfid){
         //         $(".mybtn >div").attr("id","test3");
-
                 // $("#picker").click(function(){
                 //    uploader = WebUploader.create({
                 //        auto: true,
@@ -829,7 +626,6 @@
                 //        $list.val('上传出错');
                 //    });
                 // });
-
                 // layui.upload.render({
                 //     elem: '#test3',
                 //     url: "{:url('admin/common/upload?module=document&use=archive')}",
@@ -1021,34 +817,6 @@
         //         })
         //     }
         // });
-
-        // $(function () {
-        //     initPermissionTree();
-        // });
-        //
-        // //加载功能菜单树
-        // function initPermissionTree() {
-        //     var setting = {
-        //         check: {
-        //             enable: true
-        //         },
-        //         data: {
-        //             simpleData: {
-        //                 enable: true
-        //             }
-        //         },
-        //         view: {
-        //             selectedMulti: false
-        //         }
-        //     };
-        //     $.ajax({
-        //         type: "Get",
-        //         url: "{:url('documenttype/getAll')}",
-        //         success: function (data) {
-        //             $.fn.zTree.init($("#treeRight"), setting, data.result);
-        //         }
-        //     });
-        // };
 
         //初始化树节点
         var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
@@ -1326,17 +1094,17 @@
         //预览文件
         function previewList(id){
             layer.load(1, {shade: [0.8, '#393D49']})
-
             $.ajax({
                 url: "{:url('document/preview')}",
                 data:{id:id},
-                type:"post",
+                type:"get",
                 success: function (res) {
                     console.log(res);
                     setTimeout(function () {
                         var index = layer.load();
                         layer.close(index);
                     },3000)
+                    layer.msg("暂不支持该功能！")
                     // if(res.code == 1){
                     //     console.log(res);
                     //     layer.msg(res.msg)
@@ -1349,31 +1117,6 @@
             })
 
         }
-
-        // //关联文件
-        // function AssFile() {
-        //     layer.open({
-        //         type: 2,
-        //         title: '关联文件',
-        //         shadeClose: true,
-        //         area: ['780px', '570px'],
-        //         content: '{:url("bind")}',
-        //         success: function(layero, index){
-        //             var body = layer.getChildFrame('body', index);
-        //             // console.log(body.html())
-        //             body.find("#moveZtreeId").val(clickId);
-        //         },
-        //         end: function () {
-        //             var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
-        //             tableItem.ajax.url(url).load();
-        //         }
-        //     });
-        // }
-        //
-        // //审阅历史
-        // function reviewHistory() {
-        //     alert(9)
-        // }
 
         //右边的属性
         var uploadPle;//上传人
@@ -1389,10 +1132,10 @@
             selectData = tableItem.row(".select-color").data();//获取选中行数据
             console.log(selectData);
             uploadPle = selectData[1];
-            clickId = selectData[5];
-            fileStatus = selectData[4];
+            clickId = selectData[4];
+            fileStatus = selectData[3];
             console.log(clickId);
-            getAttrList(selectData[5]);
+            getAttrList(selectData[4]);
             record(clickId);
         });
 
@@ -1466,40 +1209,46 @@
         $('#reply').click(function () {
             $(".saveText").css('display','none');
             $("#keyText").val("");
-        })
+        });
 
+        //共享
         $("#tgd a").click(function () {
             $(this).siblings('a').removeClass('aselect'); // 删除其他兄弟元素的样式
             $(this).addClass('aselect'); // 添加当前元素的样式
         });
 
+        //共享人员
         function shareShow() {
             $('.xiaZai').hide();
             $('.gongXiang').show();
             $('.pepleAdd').show();
-        }
+        };
 
+        //下载记录
         function downLoadShow() {
             $('.xiaZai').show();
             $('.gongXiang').hide();
             $('.pepleAdd').hide();
-        }
+        };
 
+        //添加白名单
         function showUser() {
+            $(".userContainer").html("");
             var str = ""
             for(var i=0 ; i<userList.length;i++){
                 str += '<p id="p'+userList[i].id+'">'+userList[i].name+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
             }
             $(".userContainer").html(str);
-        }
+        };
 
         var userList=[];//
         var drawingId='';
 
+        //人员回显的父页面
         function getAdminname(id) {
             $.ajax({
                 type:"get",
-                url: "{:url('document/PermissionRelation')}?id="+id,
+                url: "{:url('document/PermissionRelationList')}?id="+id,
                 success: function (res) {
                     console.log(res)
                     // if(res.code===1){
@@ -1509,7 +1258,6 @@
                     //     userList=[];
                     //     showUser();
                     // }
-
                 },
                 error: function (data) {
                     debugger;
@@ -1517,7 +1265,7 @@
             })
         };
 
-        //共享人员
+        //共享人员弹层
         function addPeople() {
             if (!clickId) {
                 layer.msg("请选择节点", {time: 1500, shade: 0.1});
@@ -1530,29 +1278,11 @@
                     area: ['810px', '600px'],
                     content: '{:url("share")}?id='+clickId,
                     end:function(){
-                        // $.ajax({
-                        //     type: "post",
-                        //     url: "{:url('document/PermissionRelation')}",
-                        //     data: {id: clickId},
-                        //     success: function (res) {
-                        //         console.log(res);
-                        //         $("#userContainer").html("");
-                        //         var strTr = '';
-                        //         for (var i = 0; i < res.length; i++) {
-                        //             strTr += '<tr>\n' +
-                        //                 '       <td>' + res[i].create_time + '</td>\n' +
-                        //                 '       <td>' + res[i].user + '</td>\n' +
-                        //                 '    </tr>'
-                        //         }
-                        //         $("#userContainer").append(strTr);
-                        //
-                        //     }
-                        // })
-                        //拉取黑名单用户
+                        //拉取白名单用户
                         getAdminname(clickId)
                     }
                 });
             }
-        }
+        };
 </script>
 </html>
