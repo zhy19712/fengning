@@ -93,7 +93,7 @@ var atlasFormDom =['    <form  id="atlasform" action="#" onsubmit="return false"
     '                    <select name="paper_category" id="paper_category" lay-verify="">',
     '                        <option value=""></option>',
     '                        <option value="A">A</option>',
-    '                        <option value="B" selected="">B</option>',
+    '                        <option value="B">B</option>',
     '                        <option value="C">C</option>',
     '                        <option value="D">D</option>',
     '                    </select>',
