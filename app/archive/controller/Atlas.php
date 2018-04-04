@@ -370,6 +370,7 @@ class Atlas extends Permissions
             $code = 1;
             $msg = '预览成功';
             $data = $model->getOne($param['id']);
+
             $path = $data['path'];
 
             $extension = strtolower(get_extension(substr($path,1)));

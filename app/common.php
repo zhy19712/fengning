@@ -237,9 +237,9 @@ function excel_to_pdf($path)
 
 function doc_to_pdf($path)
 {
-    $srcfilename = 'E:/phpStudy/WWW/fengning/public/uploads/document/archive/20180404/95a323473e7fbd734176efb62fd3e35a.doc';
+    $srcfilename = ROOT_PATH . 'public' .$path;
     $filepath = '/uploads/temp/' . basename($path);
-    $destfilename = 'E:/phpStudy/WWW/fengning/public/uploads/temp/test.pdf';
+    $destfilename = ROOT_PATH . 'public' . $filepath;
     try {
         if (!file_exists($srcfilename)) {
             return json(['code' => 0, 'msg' => '文件不存在']);
