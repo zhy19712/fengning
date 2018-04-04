@@ -64,7 +64,7 @@ class Division extends Permissions{
                 ['type', 'require|number|gt:0', '请选择分类|分类只能是数字|请选择分类'],
                 ['primary', 'number|egt:0', '请选择是否是主要工程|是否是主要工程只能是数字|请选择是否是主要工程']
             ];
-            // 分类 1单位 2分部 3分项
+            // 分类 1单位 2分部 3子分部，分项，单元
             if($param['type'] != 3 && empty($en_type)){
                 $validate = new \think\Validate($rule);
             }else{
@@ -78,7 +78,6 @@ class Division extends Permissions{
 
             /**
              * 节点 层级
-             * 顶级节点 -》标段 -》单位工程 =》 子单位工程 =》分部工程 -》子分部工程 -》 分项工程 -》 单元工程 (注意 这是一条数据 是不在 树节点里的)
              *
              * 顶级节点 -》标段  不允许 增删改,它们是从其他表格获取的
              *
@@ -87,12 +86,18 @@ class Division extends Permissions{
              *                                                           =》 分部工程  type = 2 , d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
              *                                                               分部工程 下面 新增的是 -》 子分部工程 type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
              *                                                                                      -》 分项工程   type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                                                      -》 单元工程   type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                                                           ——》 这三项 可以 新建 单元工程段号(单元划分) (也就是右侧的table列表)
              *
-             * 当新增 单位工程 =》 子单位工程 =》分部工程 -》子分部工程 的时候
+             *          注意:如果分部工程直接新建 -》 单元工程段号(单元划分) 的时候,  也必须 选择 工程分类
+             *               ( 这个可以前台判断 type= 2 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类 )
+             *               ( 然后再在后台判断 type= 2 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类 或者 继续保存 分部工程的工程分类默认与当前单元工程段号(单元划分) 一致 )
+             *
+             * 当新增 单位工程 , 子单位工程 ,分部工程  的时候
              * 前台需要传递的是 section_id 标段编号 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,primary 是否主要工程,remark 描述
              * 编辑 的时候 一定要 传递 id 编号
              *
-             * 当新增 分项工程 的时候
+             * 当新增 子分部工程,分项工程 和 单元工程 的时候 必须 选择 工程分类
              * 前台需要传递的是 section_id 标段编号 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,en_type 工程分类,primary 是否主要工程,remark 描述
              * 编辑 的时候 一定要 传递 id 编号
              *
@@ -126,25 +131,18 @@ class Division extends Permissions{
          * 前台只需要给我传递 要删除的 节点的 id 编号
          */
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
-        if($id == 0){
+        if($id != 0){
             $node = new DivisionModel();
             // 是否包含子节点
             $exist = $node->isParent($id);
             if(!empty($exist)){
                 return json(['code' => -1,'msg' => '包含子节点,不能删除']);
             }
-            // 如果删除的是 分项工程 那么它 有可能 包含单元工程, 应该首先批量删除单元工程
-            // 分类 1单位 2分部 3分项
-            $data = $node->getOne($id);
-            if($data['type'] == 3){
-                $unit = new DivisionUnitModel();
-                $flag = $unit->batchDel($id);
-                if($flag['code'] == -1){
-                    return json($flag);
-                }
-            }
+            // 先批量删除 包含的 单元工程段号(单元划分)
+            $unit = new DivisionUnitModel();
+            $unit->batchDel($id);
 
-            //Todo 如果 单元工程下面 还包含其他的数据 那么 也要关联删除
+            //Todo 如果 单元工程段号(单元划分) 下面 还包含其他的数据 那么 也要关联删除
 
             // 最后删除此节点
             $flag = $node->deleteTb($id);
@@ -428,8 +426,8 @@ class Division extends Permissions{
     }
 
     /**
-     * GET 提交方式 :  获取一条 单元工程数据
-     * POST 提交方式 : 新增 或者 编辑 单元工程
+     * GET 提交方式 :  获取一条 单元工程段号(单元划分) 数据
+     * POST 提交方式 : 新增 或者 编辑 单元工程段号(单元划分)
      * @return \think\response\Json
      * @author hutao
      */
@@ -448,9 +446,9 @@ class Division extends Permissions{
 
             // 验证规则
             $rule = [
-                ['division_id', 'require|number|gt:0', '请选择分项工程|分项工程编号只能是数字|请选择分项工程'],
-                ['serial_number', 'require|alphaDash', '单元工程流水号不能为空|单元工程流水号只能是字母、数字、下划线 _和破折号 - 的组合'],
-                ['site', 'require|max:100', '单元工程部位不能为空|单元工程部位不能超过100个字符'],
+                ['division_id', 'require|number|gt:0', '请选择归属工程|归属工程编号只能是数字|请选择归属工程'],
+                ['serial_number', 'require|alphaDash', '流水号不能为空|流水号只能是字母、数字、下划线 _和破折号 - 的组合'],
+                ['site', 'require|max:100', '部位不能为空|部位不能超过100个字符'],
                 ['coding', 'require|alphaDash', '系统编码不能为空|系统编码只能是字母、数字、下划线 _和破折号 - 的组合'],
                 ['ma_bases', 'require', '请选择施工依据'],
                 ['hinge', 'require|number', '请选择是否是关键部位|关键部位只能是数字'],
@@ -464,13 +462,23 @@ class Division extends Permissions{
             }
 
             /**
-             * 单元工程 (注意 这是归属于分项工程下的 数据信息 它不是节点)
+             * type= 2 时新增 单元工程段号(单元划分)
+             * 提示 请先给分部工程选择 工程分类 或者 继续保存 分部工程的工程分类默认与当前单元工程段号(单元划分) 一致
+             */
+            $type = Db::name('quality_division')->where('id',$param['division_id'])->value('type');
+            $again_save = isset($param['again_save']) ? $param['again_save'] : '';
+            if($type == 2 && $again_save != 'again_save'){
+                return json(['code' => -1,'msg' => '继续保存： 当前所选的分部工程的工程分类,将默认与当前单元工程段号(单元划分) 一致']);
+            }
+
+            /**
+             * 单元工程段号(单元划分) (注意 这是归属于所选工程下的 多条数据信息 它不是节点)
              *
-             * 当新增 单元工程 的时候
+             * 当新增 单元工程段号(单元划分) 的时候
              * 前台需要传递的是
-             * 必传参数 : division_id 归属的分项工程编号 serial_number 单元工程流水号,
+             * 必传参数 : division_id 归属的工程编号 serial_number 单元工程流水号,
              *            site 单元工程部位,coding 系统编码,ma_bases 施工依据(注意这里是可以多选的，选中的编号以下划线连接 例如：1_2_3_4_5 ),
-             *            hinge 关键部位(1 是 0 否),en_type 工程类型
+             *            hinge 关键部位(1 是 0 否),en_type 工程类型 (如果 type=2 还需要 传递 again_save 继续保存 值就等于 again_save)
              *
              * 可选参数 : su_basis 补充依据,el_start 高程（起）,el_cease 高程（止）,quantities 工程量,pile_number 起止桩号,start_date 开工日期,completion_date 完工日期
              *
@@ -489,17 +497,17 @@ class Division extends Permissions{
 
 
     /**
-     * 删除 单元工程
+     * 删除 单元工程段号(单元划分)
      * @return \think\response\Json
      * @author hutao
      */
     protected function delUnit()
     {
         /**
-         * 前台只需要给我传递 要删除的 单元工程的 id 编号
+         * 前台只需要给我传递 要删除的 单元工程段号(单元划分) 的 id 编号
          */
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
-        if($id == 0){
+        if($id != 0){
             $unit = new DivisionUnitModel();
             $flag = $unit->deleteTb($id);
             return json($flag);
