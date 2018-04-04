@@ -137,7 +137,7 @@
         border: 1px solid #56ABE4;
         border-radius: 20px;
         line-height: 0.1;
-        padding: 5px;
+        padding: 10px;
     }
     #information .userContainer p i.fa:before {
         background:none;
@@ -222,7 +222,6 @@
                 </div>
                 <div class="searchName">
                 </div>
-                <div class="userContainer"></div>
             </div>
             <!--共享-->
             <div class="layui-tab-item">
@@ -579,8 +578,11 @@
         var clickId ;
         var clickTreeId ;//一键归档选树的id
         var fileStatus ;//一键归档选树的id
+        var userList=[];
+        var drawingId='';
         var uploadInst;
         var uploader;
+
 
         // $(".mybtn >div").click(function () {
         //     if (!selfid) {
@@ -1257,16 +1259,36 @@
             $(".userContainer").html("");
             var str = ""
             for(var i=0 ; i<userList.length;i++){
-                str += '<p id="p'+userList[i].id+'">'+userList[i].nickname+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
+                str += '<p id="p'+userList[i].id+'">'+userList[i].nickname+'&nbsp;<a id="a'+userList[i].id+'"></a></p>';
             }
             $(".userContainer").html(str);
-            $("#a" + userList[i].id).click(function () {
-                $("#p" + userList[i].id).remove();
-            });
         };
 
-        var userList;
-        var drawingId='';
+
+
+        //删除的点击事件
+        $(".userContainer").delegate("p a","click",function () {
+            var admin_id = $(this).attr('id').slice(1);
+            var that = $(this)
+            var id = drawingId===""?selectData[4]:drawingId;
+            $.ajax({
+                type:"post",
+                url:"./delAdminname",
+                data:{id:id,admin_id:admin_id},
+                success: function (res) {
+                    if(res.code===1){
+                        layer.msg("删除成功");
+                        console.log(that.parent("p"))
+                        that.parent("p").remove();
+                    }else{
+                        layer.msg(res.msg)
+                    }
+                },
+                error: function (data) {
+                    debugger;
+                }
+            })
+        })
 
         //人员回显的父页面
         function getAdminname(id) {
@@ -1274,9 +1296,13 @@
                 type:"get",
                 url: "{:url('document/PermissionRelationList')}?id="+id,
                 success: function (res) {
-                    console.log(res)
-                    userList = res;
-                    showUser();
+                    console.log(res);
+                    if(res.code===1){
+                        userList = res.data;
+                        showUser();
+                    }else{
+                        layer.msg("获取数据失败！")
+                    }
                 },
                 error: function (data) {
                     debugger;
