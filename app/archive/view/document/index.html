@@ -577,12 +577,11 @@
         var uploadName ;
         var clickId ;
         var clickTreeId ;//一键归档选树的id
-        var fileStatus ;//一键归档选树的id
+        var fileStatus ;
         var userList=[];
         var drawingId='';
         var uploadInst;
         var uploader;
-
 
         // $(".mybtn >div").click(function () {
         //     if (!selfid) {
@@ -996,27 +995,31 @@
         });
 
         //删除
-        function delFile(id) {
-            layer.confirm('该操作会将数据删除，是否确认删除？', function(index){
-                console.log(id);
-                $.ajax({
-                    type: "post",
-                    url: "{:url('document/del')}",
-                    data: {id: id},
-                    success: function (res) {
-                        if(res.code == 1){
-                            console.log(res)
-                            layer.msg("删除成功！")
-                            var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
-                            tableItem.ajax.url(url).load();
-                        }
-                    },
-                    error: function (data) {
-                        debugger;
+        function delFileFun(id,url) {
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {id: id},
+                success: function (res) {
+                    if(res.code == 1){
+                        console.log(res);
+                        layer.msg("删除成功！");
+                        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
+                        tableItem.ajax.url(url).load();
+                    }else if(res.code==0){
+                        layer.msg(res.msg);
                     }
-                })
-                layer.close(index);
+                },
+                error: function (data) {
+                    debugger;
+                }
             });
+        }
+
+        //删除调用
+        function delFile(id){
+            console.log(id);
+            delFileFun(id,"{:url('document/del')}")
         }
 
         //下载的历史记录
@@ -1264,8 +1267,6 @@
             $(".userContainer").html(str);
         };
 
-
-
         //删除的点击事件
         $(".userContainer").delegate("p a","click",function () {
             var admin_id = $(this).attr('id').slice(1);
@@ -1329,5 +1330,30 @@
                 });
             }
         };
+
+        //筛选
+        $('#usernameSearch').bind('input propertychange', function() {
+            var userList2 = [];
+            var that = $(this);
+            if(that.val().trim()===""){
+                showUser();
+                return;
+            }
+            setTimeout(function () {
+                for(var i=0 ; i<userList.length;i++){
+                    //有就push进去
+                    if(userList[i].nickname.indexOf(that.val().trim())!== -1){
+                        userList2.push(userList[i]);
+                    }
+                }
+                $(".userContainer").html("");
+                var str = ""
+                for(var j=0 ; j<userList2.length;j++){
+                    str += '<p id="p'+userList2[j].id+'">'+userList2[j].nickname+'&nbsp;<a id="a'+userList2[j].id+'"></a></p>';
+                }
+                $(".userContainer").html(str);
+            },20)
+        });
+
 </script>
 </html>
