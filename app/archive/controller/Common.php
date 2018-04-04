@@ -151,17 +151,19 @@ class Common extends Controller
 
         $model = new AtlasCateTypeModel();
         $atlascate = new AtlasCateModel();
-        $idArr = $model->cateTree($id);
-        $idArr[] = $id;
+//        $idArr = $model->cateTree($id);
+//        $idArr[] = $id;
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->count();
+        $recordsTotal = Db::name($table)->where("selfid",$id)->count();
         $recordsFilteredResult = array();
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->whereIn('a.selfid', $idArr)->where("pid = 0")
+//                    ->whereIn('a.selfid', $idArr)
+                    ->where("pid = 0")
+                    ->where('selfid',$id)
                     ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -169,7 +171,9 @@ class Common extends Controller
             //没有搜索条件的情况
             if ($limitFlag) {
                 $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->whereIn('a.selfid', $idArr)->where("pid = 0")
+//                    ->whereIn('a.selfid', $idArr)
+                    ->where("pid = 0")
+                    ->where('selfid',$id)
                     ->select();
                 $recordsFiltered = $recordsTotal;
             }
