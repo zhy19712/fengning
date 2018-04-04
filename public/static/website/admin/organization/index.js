@@ -641,7 +641,10 @@
 
     //新增弹层
     $.add({
-        content:$('#org')
+        formId:'org',
+        others:function(){
+            $('input[name="admin_group_id"]').val(admin_group_name);
+        }
     });
 
     //表单提交方法
