@@ -488,7 +488,8 @@ function conEdit(id) {
                 $("#completion_date").val(res.data.completion_date);
                 $("#section").val(res.data.section);
                 $("#paper_category").val(res.data.paper_category);
-                $("#editId").val(res.data.id)
+                $("#editId").val(res.data.id);
+                layui.form.render('select');
             }
         }
     })
