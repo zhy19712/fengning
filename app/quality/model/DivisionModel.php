@@ -61,6 +61,7 @@ class DivisionModel extends Model
             $result = $this->allowField(true)->save($param);
             $id = $this->getLastInsID();
             $data = $this->getOne($id);
+            $data['name'] = $data['d_name'];
             if(false === $result){
                 return ['code' => -1,'msg' => $this->getError()];
             }else{
