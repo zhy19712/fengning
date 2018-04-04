@@ -39,12 +39,21 @@ $('#addNode').click(function (){
             //构建select
             //type = 1 单位工程 / type = 2 [子单位工程|分部工程] / type = 3 [子分部工程|分项工程]
             var options = [];
-            var res = [{type:1,name:"单位工程111"},{type:2,name:"单位工程111"}];
+            var unitArr = [{type:1,name:"单位工程"}];
+            var branchArr = [{type:2,name:"子单位工程"},{type:2,name:"分部工程"}];
+            var itemArr = [{type:3,name:"子分部工程"},{type:3,name:"分项工程"}];
             if(treeNode.level==1){
-                options.push('<option value='+ res[0].type +'>'+ res[0].name +'</option>');
+                options.push('<option value='+ unitArr[0].type +'>'+ unitArr[0].name +'</option>');
             }
             if(treeNode.level==2){
-                options.push('<option value='+ res[1].type +'>'+ res[1].name +'</option>');
+                for(var i = 0;i<branchArr.length;i++){
+                    options.push('<option value='+ branchArr[i].type +'>'+ branchArr[i].name +'</option>');
+                }
+            }
+            if(treeNode.level==3){
+                for(var i = 0;i<itemArr.length;i++){
+                    options.push('<option value='+ itemArr[i].type +'>'+ itemArr[i].name +'</option>');
+                }
             }
             $('select[name="type"]').empty();
             $('select[name="type"]').append(options);
@@ -66,7 +75,7 @@ $('#save').click(function () {
     var d_name = $('input[name="d_name"]').val();
     var type = $('select[name="type"] option:selected').val();
     var primary = $('input[name="primary"]').val();
-    var remark = $('input[name="remark"]').val();
+    var remark = $('textarea[name="remark"]').val();
     if(window.treeNode.level==1){
         var section_id = window.treeNode.section_id;
     }else{

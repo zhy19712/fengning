@@ -54,4 +54,40 @@ class AtlasDownloadModel extends Model
         }
 
     }
+
+    /**
+     * 清除该条图册的所有的下载记录信息
+     * @return array|false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function deldownloadall($id)
+    {
+        try{
+            $data = $this->where("cate_id",$id)->delete();
+            return $data;
+        }catch (PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+
+    }
+
+    /**
+     * 根据类型树id清除该条图册的所有的下载记录信息
+     * @return array|false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function delselfidall($selfid)
+    {
+        try{
+            $data = $this->where("selfid",$selfid)->delete();
+            return $data;
+        }catch (PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+
+    }
 }

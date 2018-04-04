@@ -129,11 +129,11 @@ select.form-control {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-/* 面板 */
-.panel-body{
-    background-color: #FFF;
-}
 /* 表格 */
 .dataTables_wrapper,.tbcontainer{
     display: none;
+}
+/* 弹层 */
+.layui-layer-title{
+    margin-bottom: 15px;
 }
