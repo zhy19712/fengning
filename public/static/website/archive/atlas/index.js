@@ -536,9 +536,10 @@ function download(id,url) {
                     + "</form>"
                 $("#form_container").append(str);
                 $("#form_container").find(".btn" + id).click();
-                //下载记录
                 var url = "/archive/common/datatablespre/tableName/atlas_download_record/id/"+id+".shtml";
-                downlog.ajax.url(url).load();
+                setTimeout(function () {
+                    downlog.ajax.url(url).load();
+                },200);
             }
 
         }
@@ -558,6 +559,7 @@ function showPdf(id,url) {
         type: "post",
         data: {id:id},
         success: function (res) {
+            console.log(res);
             if(res.code === 1){
                 var path = res.path;
                 console.log(res.path.split(".")[1]);
