@@ -154,7 +154,7 @@ class Common extends Controller
 //        $idArr = $model->cateTree($id);
 //        $idArr[] = $id;
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->where("selfid",$id)->count();
+        $recordsTotal = Db::name($table)->where("selfid",$id)->where("pid = 0")->count();
         $recordsFilteredResult = array();
         if (strlen($search) > 0) {
             //有搜索条件的情况
