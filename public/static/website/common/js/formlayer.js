@@ -8,9 +8,9 @@
         var option = {
             btn:'add',
             formId:'formLayer',
-            content:$('#formLayer'),
             layerId:'1',
-            area:['660px','700px']
+            area:['660px','700px'],
+            others:function () {}
         };
         $.extend(option,options);
         $('#'+option.btn).on('click',function(){
@@ -24,12 +24,12 @@
                 type:'1',
                 area:option.area,
                 title:'新增',
-                content:option.content,
+                content:$('#'+ option.formId),
                 success:function(){
-
+                    option.others();
                 },
                 cancel: function(index, layero){
-                    $('#'+option.formId)[0].reset();
+                    $('#'+option.formId).get(0).reset();
                 }
             });
         });

@@ -169,6 +169,16 @@ class AtlasCateModel extends Model
     }
 
     /**
+     * 查询当前图册下是否有图纸文件
+     */
+
+    public function getpic($id)
+    {
+        $data = $this->where("pid",$id)->find();
+        return $data;
+    }
+
+    /**
      * 根据传过来的fengning_atlas_cate图册表中的id,admin表中的id,
      */
 

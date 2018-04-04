@@ -172,6 +172,7 @@
 
     //获取参数
     var objdata = {};
+
     function urlSearch() {
         var str=location.search;
         str=str.substr(1); //取得所有参数   stringvar.substr(start [, length ]
@@ -189,7 +190,7 @@
     urlSearch();
     $("#path").html("已选图纸/图册&nbsp;>&nbsp;"+decodeURIComponent(objdata.path))
     $("#roleId").val(objdata.roleId);
-
+    console.log(objdata)
     $(function () {
         $("#btnSaveRoleUser").click(function () { saveRoleUser(); });
         $("#btnCloseRoleUser").click(function () { window.close(); });

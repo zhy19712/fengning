@@ -153,7 +153,7 @@ class Document extends Permissions
      */
     public function share($id)
     {
-        $this->assign('docId',$id);
+        $this->assign('docId', $id);
         return $this->fetch();
     }
 
@@ -241,23 +241,31 @@ class Document extends Permissions
      */
     public function PermissionRelation($id)
     {
-        if ($this->request->isAjax()) {
-            $par = input('users');
-            $flag = DocumentModel::update(['users' => $par], ['id' => $id]);
-            if ($flag) {
-                return json(['code' => 1]);
-            } else {
-                return json(['code' => -1]);
-            }
+        $par = input('users');
+        $flag = DocumentModel::update(['users' => $par], ['id' => $id]);
+        if ($flag) {
+            return json(['code' => 1]);
         } else {
-            //显示文档权限用户
-            $doc = DocumentModel::get($id);
-            if (empty($doc['users'])) {
-                return json();
-            }
-            $users = explode("|", $doc['users']);
-            $list = Db::table('admin')->whereIn('id', $users)->field('id,nickname')->select();
-            return json($list);
+            return json(['code' => -1]);
         }
+    }
+
+    /**
+     * 显示文档权限用户
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function PermissionRelationList($id)
+    {
+        $doc = DocumentModel::get($id);
+        if (empty($doc['users'])) {
+            return json();
+        }
+        $users = explode("|", $doc['users']);
+        $list = Db::table('admin')->whereIn('id', $users)->field('id,nickname')->select();
+        return json($list);
     }
 }

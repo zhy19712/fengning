@@ -77,7 +77,7 @@
         color: #337ab7;
     }
     #tableContent .dataTables_wrapper {
-        display: block;
+        display: none;
     }
 
     #information .layui-tab-content .attrBue{
@@ -186,8 +186,12 @@
                     <h2 style="margin-left:8px;font-size:14px; color:#676a6c; font-weight:bold; font-family:微软雅黑; ">关键词</h2>
                     <textarea name="keyText" id="keyText" placeholder="关键词"></textarea>
                     <div class="saveText">
-                        <a href="javascript:;" id="saveCircle">保存<i class="icon icon-ok-circle"></i></a>
-                        <a href="javascript:;" id="reply">返回<i class="icon icon-reply"></i></a>
+                        <button id="saveCircle" class="layui-btn" type="button" style="margin-right: 15px;border-radius:50%">
+                            <i class="fa fa-check" title="保存"></i>
+                        </button>
+                        <button id="reply" class="layui-btn layui-btn-warm" type="button" style="margin-right: 15px;border-radius:50%">
+                            <i class="fa fa-times" style="color:#ffffff" ; title="关闭"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="searchName">
@@ -744,8 +748,8 @@
         });
 
         //点击上传文件
+        // $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
         $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
-        // $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i></div>");
         $(".assModel").html("<div id='model'><i class='fa fa-plus'></i>关联模型</div>");
         $(".move").html("<div id='moveClick'><i class='fa fa-plus'></i>移动</div>");
         // $(".file").html("<div id='fileClick'><i class='fa fa-plus'></i>归档</div>");
@@ -765,108 +769,106 @@
         //         layer.msg("请选择节点", {time: 1500, shade: 0.1});
         //         return;
         //     }else if(selfid){
-        //         // $(".mybtn >div").attr("id","test3");
-        //
-        //         $("#picker").click(function(){
-        //            uploader = WebUploader.create({
-        //                auto: true,
-        //                // swf文件路径
-        //                swf:  '/static/public/webupload/Uploader.swf',
-        //
-        //                // 文件接收服务端。
-        //                server: "{:url('admin/common/upload?module=document&use=archive')}",
-        //
-        //                // 选择文件的按钮。可选。
-        //                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-        //                pick: {
-        //                    multiple: false,
-        //                    id: "#picker",
-        //                    innerHTML: "上传文件"
-        //                },
-        //                // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-        //                resize: false
-        //            });
-        //            var $list = $('#addName');
-        //            uploader.on( 'fileQueued', function( file ) {
-        //                $list.val('等待上传...');
-        //            });
-        //
-        //            uploader.on( 'uploadSuccess', function( file,res) {
-        //                $list.val('已上传成功');
-        //                console.log(res)
-        //
-        //                // if(res.code == 2){
-        //                //     uploadId = res.id;
-        //                //     $.ajax({
-        //                //         url:"{:url('documenttype/add')}",
-        //                //         data:{
-        //                //             name: uploadName, //名称
-        //                //             attachmentId: uploadId,  //文档关联Id
-        //                //             type:selfid,
-        //                //         },
-        //                //         type:'post',
-        //                //         success:function(res) {
-        //                //             console.log(res)
-        //                //             if(res.code == 1) {
-        //                //                 var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
-        //                //                 tableItem.ajax.url(url).load();
-        //                //             } else {
-        //                //                 layer.msg('获取数据失败！');
-        //                //             }
-        //                //         }
-        //                //     })
-        //                //     layer.msg("上传成功！",{time:1500})
-        //                // }else{
-        //                //     layer.msg("上传失败！",{time:1500})
-        //                // }
-        //            });
-        //
-        //            uploader.on( 'uploadError', function( file ) {
-        //                $list.val('上传出错');
-        //            });
-        //         });
-        //
-        //
-        //
-        //         // uploadInst = layui.upload.render({
-        //         //     elem: '#test3',
-        //         //     url: "{:url('admin/common/upload?module=document&use=archive')}",
-        //         //     accept: 'file',//普通文件
-        //         //     exts: 'doc|docx|pdf',
-        //         //     before: function(obj){
-        //         //         obj.preview(function(index, file, result){
-        //         //             uploadName = file.name;
-        //         //             console.log(file.name);//获取文件名，result就是base64
-        //         //         })
-        //         //     },
-        //         //     done: function(res){
-        //         //         console.log(res)
-        //         //         if(res.code == 2){
-        //         //             uploadId = res.id;
-        //         //             $.ajax({
-        //         //                 url:"{:url('documenttype/add')}",
-        //         //                 data:{
-        //         //                     name: uploadName, //名称
-        //         //                     attachmentId: uploadId,  //文档关联Id
-        //         //                     type:selfid,
-        //         //                 },
-        //         //                 type:'post',
-        //         //                 success:function(res) {
-        //         //                     console.log(res)
-        //         //                     if(res.code == 1) {
-        //         //                         var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
-        //         //                         tableItem.ajax.url(url).load();
-        //         //                     } else {
-        //         //                         layer.msg('获取数据失败！');
-        //         //                     }
-        //         //                 }
-        //         //             })
-        //         //             layer.msg("上传成功！",{time:1500})
-        //         //         }else{
-        //         //             layer.msg("上传失败！",{time:1500})
-        //         //         }
-        //         //     },
-        //         // });
+        //         $(".mybtn >div").attr("id","test3");
+
+                // $("#picker").click(function(){
+                //    uploader = WebUploader.create({
+                //        auto: true,
+                //        // swf文件路径
+                //        swf:  '/static/public/webupload/Uploader.swf',
+                //
+                //        // 文件接收服务端。
+                //        server: "{:url('admin/common/upload?module=document&use=archive')}",
+                //
+                //        // 选择文件的按钮。可选。
+                //        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                //        pick: {
+                //            multiple: false,
+                //            id: "#picker",
+                //            innerHTML: "上传文件"
+                //        },
+                //        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+                //        resize: false
+                //    });
+                //    var $list = $('#addName');
+                //    uploader.on( 'fileQueued', function( file ) {
+                //        $list.val('等待上传...');
+                //    });
+                //
+                //    uploader.on( 'uploadSuccess', function( file,res) {
+                //        $list.val('已上传成功');
+                //        console.log(res)
+                //
+                //        // if(res.code == 2){
+                //        //     uploadId = res.id;
+                //        //     $.ajax({
+                //        //         url:"{:url('documenttype/add')}",
+                //        //         data:{
+                //        //             name: uploadName, //名称
+                //        //             attachmentId: uploadId,  //文档关联Id
+                //        //             type:selfid,
+                //        //         },
+                //        //         type:'post',
+                //        //         success:function(res) {
+                //        //             console.log(res)
+                //        //             if(res.code == 1) {
+                //        //                 var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+                //        //                 tableItem.ajax.url(url).load();
+                //        //             } else {
+                //        //                 layer.msg('获取数据失败！');
+                //        //             }
+                //        //         }
+                //        //     })
+                //        //     layer.msg("上传成功！",{time:1500})
+                //        // }else{
+                //        //     layer.msg("上传失败！",{time:1500})
+                //        // }
+                //    });
+                //
+                //    uploader.on( 'uploadError', function( file ) {
+                //        $list.val('上传出错');
+                //    });
+                // });
+
+                // layui.upload.render({
+                //     elem: '#test3',
+                //     url: "{:url('admin/common/upload?module=document&use=archive')}",
+                //     accept: 'file',//普通文件
+                //     exts: 'doc|docx|pdf',
+                //     before: function(obj){
+                //         obj.preview(function(index, file, result){
+                //             uploadName = file.name;
+                //             console.log(file.name);//获取文件名，result就是base64
+                //         })
+                //     },
+                //     done: function(res){
+                //         console.log(res)
+                //         if(res.code == 2){
+                //             uploadId = res.id;
+                //             $.ajax({
+                //                 url:"{:url('documenttype/add')}",
+                //                 data:{
+                //                     name: uploadName, //名称
+                //                     attachmentId: uploadId,  //文档关联Id
+                //                     type:selfid,
+                //                 },
+                //                 type:'post',
+                //                 success:function(res) {
+                //                     console.log(res)
+                //                     if(res.code == 1) {
+                //                         var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+                //                         tableItem.ajax.url(url).load();
+                //                     } else {
+                //                         layer.msg('获取数据失败！');
+                //                     }
+                //                 }
+                //             })
+                //             layer.msg("上传成功！",{time:1500})
+                //         }else{
+                //             layer.msg("上传失败！",{time:1500})
+                //         }
+                //     },
+                // });
         //     }
         // });
 
@@ -883,7 +885,7 @@
             upload.render({
                 elem: '#test3',
                 url: "{:url('admin/common/upload?module=document&use=archive')}",
-                exts: 'doc|docx|pdf|png|jpg',
+                exts: 'doc|docx|pdf|png|jpg|xls',
                 before: function(obj){
                     obj.preview(function(index, file, result){
                         uploadName = file.name;
@@ -1106,7 +1108,7 @@
             groupid = sNodes.pId //父节点的id
             var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
             tableItem.ajax.url(url).load();
-            // $("#tableItem").css('display','block');
+            $("#tableContent .dataTables_wrapper").css('display','block');
             $(".layout-panel-center .panel-title").text("当前路径:" + path)
             getPathText(sNodes);
             clickTreeId = selfid;
@@ -1482,57 +1484,75 @@
             $('.gongXiang').hide();
             $('.pepleAdd').hide();
         }
+
+        function showUser() {
+            var str = ""
+            for(var i=0 ; i<userList.length;i++){
+                str += '<p id="p'+userList[i].id+'">'+userList[i].name+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
+            }
+            $(".userContainer").html(str);
+        }
+
+        var userList=[];//
+        var drawingId='';
+
+        function getAdminname(id) {
+            $.ajax({
+                type:"get",
+                url: "{:url('document/PermissionRelation')}?id="+id,
+                success: function (res) {
+                    console.log(res)
+                    // if(res.code===1){
+                    //     userList = res.data;
+                    //     showUser();
+                    // }else if(res.code===-1){
+                    //     userList=[];
+                    //     showUser();
+                    // }
+
+                },
+                error: function (data) {
+                    debugger;
+                }
+            })
+        };
+
         //共享人员
         function addPeople() {
-            layer.open({
-                type: 2,
-                title: '添加共享人员',
-                shadeClose: true,
-                area: ['810px', '600px'],
-                content: '{:url("share")}?id='+clickId,
-                end:function(){
-                    $.ajax({
-                        type: "post",
-                        url: "{:url('document/PermissionRelation')}",
-                        data: {id: clickId},
-                        success: function (res) {
-                            console.log(res);
-                            $("#userContainer").html("");
-                            var strTr = '';
-                            for (var i = 0; i < res.length; i++) {
-                                strTr += '<tr>\n' +
-                                    '       <td>' + res[i].create_time + '</td>\n' +
-                                    '       <td>' + res[i].user + '</td>\n' +
-                                    '    </tr>'
-                            }
-                            $("#userContainer").append(strTr);
-
-                        }
-                    })
-                    //拉取黑名单用户
-                    // function getAdminname(id) {
-                    //     $.ajax({
-                    //         type:"post",
-                    //         url:"./getAdminname",
-                    //         data:{id:id,name:''},
-                    //         success: function (res) {
-                    //             if(res.code===1){
-                    //                 userList = res.data;
-                    //                 showUser();
-                    //             }else if(res.code===-1){
-                    //                 userList=[];
-                    //                 showUser();
-                    //             }
-                    //
-                    //         },
-                    //         error: function (data) {
-                    //             debugger;
-                    //         }
-                    //     })
-                    // };
-                }
-            });
-
+            if (!clickId) {
+                layer.msg("请选择节点", {time: 1500, shade: 0.1});
+                return;
+            }else if(clickId){
+                layer.open({
+                    type: 2,
+                    title: '添加共享人员',
+                    shadeClose: true,
+                    area: ['810px', '600px'],
+                    content: '{:url("share")}?id='+clickId,
+                    end:function(){
+                        // $.ajax({
+                        //     type: "post",
+                        //     url: "{:url('document/PermissionRelation')}",
+                        //     data: {id: clickId},
+                        //     success: function (res) {
+                        //         console.log(res);
+                        //         $("#userContainer").html("");
+                        //         var strTr = '';
+                        //         for (var i = 0; i < res.length; i++) {
+                        //             strTr += '<tr>\n' +
+                        //                 '       <td>' + res[i].create_time + '</td>\n' +
+                        //                 '       <td>' + res[i].user + '</td>\n' +
+                        //                 '    </tr>'
+                        //         }
+                        //         $("#userContainer").append(strTr);
+                        //
+                        //     }
+                        // })
+                        //拉取黑名单用户
+                        getAdminname(clickId)
+                    }
+                });
+            }
         }
 </script>
 </html>
