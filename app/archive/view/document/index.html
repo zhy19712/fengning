@@ -137,7 +137,7 @@
         border: 1px solid #56ABE4;
         border-radius: 20px;
         line-height: 0.1;
-        padding: 5px;
+        padding: 10px;
     }
     #information .userContainer p i.fa:before {
         background:none;
@@ -222,7 +222,6 @@
                 </div>
                 <div class="searchName">
                 </div>
-                <div class="userContainer"></div>
             </div>
             <!--共享-->
             <div class="layui-tab-item">
@@ -578,7 +577,9 @@
         var uploadName ;
         var clickId ;
         var clickTreeId ;//一键归档选树的id
-        var fileStatus ;//一键归档选树的id
+        var fileStatus ;
+        var userList=[];
+        var drawingId='';
         var uploadInst;
         var uploader;
 
@@ -994,27 +995,31 @@
         });
 
         //删除
-        function delFile(id) {
-            layer.confirm('该操作会将数据删除，是否确认删除？', function(index){
-                console.log(id);
-                $.ajax({
-                    type: "post",
-                    url: "{:url('document/del')}",
-                    data: {id: id},
-                    success: function (res) {
-                        if(res.code == 1){
-                            console.log(res)
-                            layer.msg("删除成功！")
-                            var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
-                            tableItem.ajax.url(url).load();
-                        }
-                    },
-                    error: function (data) {
-                        debugger;
+        function delFileFun(id,url) {
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {id: id},
+                success: function (res) {
+                    if(res.code == 1){
+                        console.log(res);
+                        layer.msg("删除成功！");
+                        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
+                        tableItem.ajax.url(url).load();
+                    }else if(res.code==0){
+                        layer.msg(res.msg);
                     }
-                })
-                layer.close(index);
+                },
+                error: function (data) {
+                    debugger;
+                }
             });
+        }
+
+        //删除调用
+        function delFile(id){
+            console.log(id);
+            delFileFun(id,"{:url('document/del')}")
         }
 
         //下载的历史记录
@@ -1257,16 +1262,34 @@
             $(".userContainer").html("");
             var str = ""
             for(var i=0 ; i<userList.length;i++){
-                str += '<p id="p'+userList[i].id+'">'+userList[i].nickname+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
+                str += '<p id="p'+userList[i].id+'">'+userList[i].nickname+'&nbsp;<a id="a'+userList[i].id+'"></a></p>';
             }
             $(".userContainer").html(str);
-            $("#a" + userList[i].id).click(function () {
-                $("#p" + userList[i].id).remove();
-            });
         };
 
-        var userList;
-        var drawingId='';
+        //删除的点击事件
+        $(".userContainer").delegate("p a","click",function () {
+            var admin_id = $(this).attr('id').slice(1);
+            var that = $(this)
+            var id = drawingId===""?selectData[4]:drawingId;
+            $.ajax({
+                type:"post",
+                url:"./delAdminname",
+                data:{id:id,admin_id:admin_id},
+                success: function (res) {
+                    if(res.code===1){
+                        layer.msg("删除成功");
+                        console.log(that.parent("p"))
+                        that.parent("p").remove();
+                    }else{
+                        layer.msg(res.msg)
+                    }
+                },
+                error: function (data) {
+                    debugger;
+                }
+            })
+        })
 
         //人员回显的父页面
         function getAdminname(id) {
@@ -1274,9 +1297,13 @@
                 type:"get",
                 url: "{:url('document/PermissionRelationList')}?id="+id,
                 success: function (res) {
-                    console.log(res)
-                    userList = res;
-                    showUser();
+                    console.log(res);
+                    if(res.code===1){
+                        userList = res.data;
+                        showUser();
+                    }else{
+                        layer.msg("获取数据失败！")
+                    }
                 },
                 error: function (data) {
                     debugger;
@@ -1303,5 +1330,30 @@
                 });
             }
         };
+
+        //筛选
+        $('#usernameSearch').bind('input propertychange', function() {
+            var userList2 = [];
+            var that = $(this);
+            if(that.val().trim()===""){
+                showUser();
+                return;
+            }
+            setTimeout(function () {
+                for(var i=0 ; i<userList.length;i++){
+                    //有就push进去
+                    if(userList[i].nickname.indexOf(that.val().trim())!== -1){
+                        userList2.push(userList[i]);
+                    }
+                }
+                $(".userContainer").html("");
+                var str = ""
+                for(var j=0 ; j<userList2.length;j++){
+                    str += '<p id="p'+userList2[j].id+'">'+userList2[j].nickname+'&nbsp;<a id="a'+userList2[j].id+'"></a></p>';
+                }
+                $(".userContainer").html(str);
+            },20)
+        });
+
 </script>
 </html>
