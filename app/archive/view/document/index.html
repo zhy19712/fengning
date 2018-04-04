@@ -434,9 +434,9 @@
                         </div>
                         <div class="hr-line-dashed" style="margin:10px;"></div>
                         <div class="gongXiang" style="display: block;">
-                            <div style="width: 100%; height: 30px;margin-top: 10px">
-                                <h3 style="font-weight: 800">共享白名单</h3>
-                            </div>
+                            <!--<div style="width: 100%; height: 30px;margin-top: 10px">-->
+                                <!--<h3 style="font-weight: 800">共享白名单</h3>-->
+                            <!--</div>-->
                             <div class="searchName" style="margin-top: 10px;">
                                 <input type="text" id="usernameSearch"  class="layui-input" placeholder="用户名称" />
                             </div>
@@ -501,7 +501,7 @@
                 {
                     targets: [0],
                     render: function (data, type, row) {
-                        return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[5]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
+                        return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[4]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
                     }
                 },
                 {
@@ -1097,13 +1097,14 @@
             $.ajax({
                 url: "{:url('document/preview')}",
                 data:{id:id},
-                type:"post",
+                type:"get",
                 success: function (res) {
                     console.log(res);
                     setTimeout(function () {
                         var index = layer.load();
                         layer.close(index);
                     },3000)
+                    layer.msg("暂不支持该功能！")
                     // if(res.code == 1){
                     //     console.log(res);
                     //     layer.msg(res.msg)
@@ -1232,6 +1233,7 @@
 
         //添加白名单
         function showUser() {
+            $(".userContainer").html("");
             var str = ""
             for(var i=0 ; i<userList.length;i++){
                 str += '<p id="p'+userList[i].id+'">'+userList[i].name+'&nbsp;<a id="a'+userList[i].id+'"><i class="fa fa-times"></i></a></p>';
@@ -1246,7 +1248,7 @@
         function getAdminname(id) {
             $.ajax({
                 type:"get",
-                url: "{:url('document/PermissionRelation')}?id="+id,
+                url: "{:url('document/PermissionRelationList')}?id="+id,
                 success: function (res) {
                     console.log(res)
                     // if(res.code===1){
@@ -1256,7 +1258,6 @@
                     //     userList=[];
                     //     showUser();
                     // }
-
                 },
                 error: function (data) {
                     debugger;
@@ -1277,25 +1278,7 @@
                     area: ['810px', '600px'],
                     content: '{:url("share")}?id='+clickId,
                     end:function(){
-                        // $.ajax({
-                        //     type: "post",
-                        //     url: "{:url('document/PermissionRelation')}",
-                        //     data: {id: clickId},
-                        //     success: function (res) {
-                        //         console.log(res);
-                        //         $("#userContainer").html("");
-                        //         var strTr = '';
-                        //         for (var i = 0; i < res.length; i++) {
-                        //             strTr += '<tr>\n' +
-                        //                 '       <td>' + res[i].create_time + '</td>\n' +
-                        //                 '       <td>' + res[i].user + '</td>\n' +
-                        //                 '    </tr>'
-                        //         }
-                        //         $("#userContainer").append(strTr);
-                        //
-                        //     }
-                        // })
-                        //拉取黑名单用户
+                        //拉取白名单用户
                         getAdminname(clickId)
                     }
                 });

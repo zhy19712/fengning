@@ -265,7 +265,7 @@ class Document extends Permissions
             return json();
         }
         $users = explode("|", $doc['users']);
-        $list = Db::table('admin')->whereIn('id', $users)->field('id,nickname')->select();
+        $list = Db::name('admin')->whereIn('id', $users)->field('id,nickname')->select();
         return json($list);
     }
 }

@@ -237,13 +237,14 @@ function excel_to_pdf($path)
 
 function doc_to_pdf($path)
 {
-    $srcfilename = 'E:/phpStudy/WWW/fengning/public/uploads/document/archive/20180404/f15a0abe99e90a323990f7c505104b51.docx';
+    $srcfilename = 'E:/phpStudy/WWW/fengning/public/uploads/document/archive/20180404/95a323473e7fbd734176efb62fd3e35a.doc';
     $filepath = '/uploads/temp/' . basename($path);
     $destfilename = 'E:/phpStudy/WWW/fengning/public/uploads/temp/test.pdf';
     try {
         if (!file_exists($srcfilename)) {
             return json(['code' => 0, 'msg' => '文件不存在']);
         }
+        $srcfilename = iconv('gb2312','utf-8',$srcfilename);
         $word = new \COM("word.application") or die("Can't start Word!");
         $word->Visible = 0;
         $word->Documents->Open($srcfilename, false, false, false, "1", "1", true);
@@ -273,6 +274,6 @@ function doc_to_pdf($path)
         if (method_exists($word, "Quit")) {
             $word->Quit();
         }
-        return json(['code' => 0, 'msg' => '未知错误']);
+        return json(['code' => 0, 'msg' => '未知错误:'.$e->getMessage()]);
     }
 }
