@@ -98,10 +98,12 @@
             color: white;
         }
         .layui-btn{
-            width: 20px;
-            height: 20px;
+            margin-right: 15px;
             border-radius: 100%;
+            width: 30px;
+            height: 30px;
             padding: 0;
+            line-height: 44px;
         }
         .layui-btn i.fa{
             position: relative;
@@ -189,11 +191,11 @@
     //获取参数
     urlSearch();
     $("#path").html("已选图纸/图册&nbsp;>&nbsp;"+decodeURIComponent(objdata.path))
-    $("#roleId").val(objdata.roleId);
+    $("#roleId").val(objdata.id);
     console.log(objdata)
     $(function () {
         $("#btnSaveRoleUser").click(function () { saveRoleUser(); });
-        $("#btnCloseRoleUser").click(function () { window.close(); });
+        $("#btnCloseRoleUser").click(function () { parent.layer.closeAll('iframe'); });
         initRoleUserData();
     });
     var treeObj;
@@ -278,12 +280,13 @@
         var roleId = $("#roleId").val();
         $("#selectedUserDiv").html("");
         $.ajax({
-            type: "post",
-            url: "{:url('atlas/getAdminname')}",
-            data:{id:roleId,name:''},
+            type: "get",
+            url: "{:url('document/PermissionRelationList')}?id="+roleId,
+            // data:{id:roleId,name:''},
             success: function (res) {
+                console.log(res);
                 $.each(res.data, function (i, item) {
-                    html = "<p2 id='p" + item.id + "'>" + item.name + "&nbsp;<a id='a" + item.id + "'><i class='fa fa-times'></i></a><input type='hidden' value='" + item.id + "'></p2>"
+                    html = "<p2 id='p" + item.id + "'>" + item.nickname + "&nbsp;<a id='a" + item.id + "'><i class='fa fa-times'></i></a><input type='hidden' value='" + item.id + "'></p2>"
                     $("#selectedUserDiv").append(html);
                     $("#a" + item.id).click(function () {
                         $("#p" + item.id).remove();
