@@ -241,8 +241,9 @@ class Document extends Permissions
      */
     public function PermissionRelation($id)
     {
-        if ($this->request->isAjax()) {
-            $par = input('users');
+        $par = input('users');
+
+        if (!empty($par)) {
             $flag = DocumentModel::update(['users' => $par], ['id' => $id]);
             if ($flag) {
                 return json(['code' => 1]);
