@@ -383,7 +383,7 @@ class Atlas extends Permissions
                     ppt_to_pdf($path);
                 }else if($extension === 'pdf'){
                     $pdf_path = $path;
-                }else if($extension === "jpg"|"png"|"jpeg"){
+                }else if($extension === "jpg"||"png"||"jpeg"){
                     $pdf_path = $path;
                 }else {
                     $code = 0;
@@ -477,11 +477,26 @@ class Atlas extends Permissions
                     return json(['code' => -1, 'msg' => "没有下载权限"]);
                 }else
                 {
-                    return json(['code' => 1]);
+                    $res = $model->getbalcklist($id);
+                    if(!$res['pid'])
+                    {
+                        return json(['code' => 1,'msg'=>"当前图册下没有图纸文件！"]);
+                    }else
+                    {
+                        return json(['code' => 1]);
+                    }
                 }
             }else
             {
-                return json(['code' => 1]);
+                $res = $model->getbalcklist($id);
+               if(!$res['pid'])
+               {
+                   return json(['code' => 1,'msg'=>"当前图册下没有图纸文件！"]);
+               }else
+               {
+                   return json(['code' => 1]);
+               }
+
             }
 
         }
