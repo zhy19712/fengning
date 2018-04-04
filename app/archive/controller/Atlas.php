@@ -456,45 +456,58 @@ class Atlas extends Permissions
      */
     public function allDownload()
     {
-        //获取列表
+        if(request()->isAjax()){
+
+            $id = input('param.id');
+            $model = new AtlasCateModel();
+
+            //查询当前用户是否被禁用下载图册
+            $blacklist = $model->getbalcklist($id);
+            if($blacklist['blacklist'])
+            {
+                $list = explode(",",$blacklist['blacklist']);
+                if(!(in_array(Session::get('current_id'),$list)))
+                {
+                    return json(['code' => -1, 'msg' => "没有下载权限"]);
+                }else
+                {
+                    return json(['code' => 1]);
+                }
+            }else
+            {
+                return json(['code' => 1]);
+            }
+
+        }
+        //获取文件列表
         $id = input('param.id');
-//        $id = $param['id'];//图册的id
 
         $model = new AtlasCateModel();
 
-        //定义一个空的数组
-
-
         $datalist = $model->getallpath($id);
 
-
         $zip = new \ZipArchive;
-//压缩文件名
-        $zipName = '/uploads/atlas/atlas_thumb/download.zip';
-//        halt($zipName);
+        //压缩文件名
+        $zipName = './uploads/atlas/atlas_thumb/download.zip';
 
-//新建zip压缩包
-        if ($zip->open($zipName, \ZIPARCHIVE::OVERWRITE | \ZIPARCHIVE::CREATE)!==TRUE) {
-            exit('无法打开文件，或者文件创建失败');
-        }
-//把图片一张一张加进去压缩
-        foreach($datalist as $key=>$val){
-
-            //$attachfile = $attachmentDir . $val['filepath']; //获取原始文件路径
-            if(file_exists($val['path'])){
-                //addFile函数首个参数如果带有路径，则压缩的文件里包含的是带有路径的文件压缩
-                //若不希望带有路径，则需要该函数的第二个参数
-                $zip->addFile($val['path'], basename($val['path']));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+        //新建zip压缩包
+        if ($zip->open($zipName, \ZIPARCHIVE::CREATE)==TRUE) {
+            foreach($datalist as $key=>$val){
+                //$attachfile = $attachmentDir . $val['filepath']; //获取原始文件路径
+                if(file_exists('.'.$val['path'])){
+                    //addFile函数首个参数如果带有路径，则压缩的文件里包含的是带有路径的文件压缩
+                    //若不希望带有路径，则需要该函数的第二个参数
+                    $zip->addFile('.'.$val['path'], basename('.'.$val['path']));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                }
             }
         }
 
-//打包zip
+        //打包zip
         $zip->close();
 
         if(!file_exists($zipName)){
             exit("无法找到文件"); //即使创建，仍有可能失败
         }
-
         //如果不要下载，下面这段删掉即可，如需返回压缩包下载链接，只需 return $zipName;
         header("Cache-Control: public");
         header("Content-Description: File Transfer");
