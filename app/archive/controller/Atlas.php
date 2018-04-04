@@ -480,7 +480,7 @@ class Atlas extends Permissions
                     $res = $model->getbalcklist($id);
                     if(!$res['pid'])
                     {
-                        return json(['code' => 1,'msg'=>"当前图册下没有图纸文件！"]);
+                        return json(['code' => -1,'msg'=>"当前图册下没有图纸文件！"]);
                     }else
                     {
                         return json(['code' => 1]);
@@ -491,7 +491,7 @@ class Atlas extends Permissions
                 $res = $model->getbalcklist($id);
                if(!$res['pid'])
                {
-                   return json(['code' => 1,'msg'=>"当前图册下没有图纸文件！"]);
+                   return json(['code' => -1,'msg'=>"当前图册下没有图纸文件！"]);
                }else
                {
                    return json(['code' => 1]);
