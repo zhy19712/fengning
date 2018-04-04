@@ -477,7 +477,7 @@ class Atlas extends Permissions
                     return json(['code' => -1, 'msg' => "没有下载权限"]);
                 }else
                 {
-                    $res = $model->getbalcklist($id);
+                    $res = $model->getpic($id);
                     if(!$res['pid'])
                     {
                         return json(['code' => -1,'msg'=>"当前图册下没有图纸文件！"]);
@@ -488,7 +488,9 @@ class Atlas extends Permissions
                 }
             }else
             {
-                $res = $model->getbalcklist($id);
+
+                $res = $model->getpic($id);
+
                if(!$res['pid'])
                {
                    return json(['code' => -1,'msg'=>"当前图册下没有图纸文件！"]);

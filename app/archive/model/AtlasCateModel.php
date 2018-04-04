@@ -164,7 +164,17 @@ class AtlasCateModel extends Model
 
     public function getbalcklist($id)
     {
-        $data = $this->field("blacklist,pid")->where("id",$id)->find();
+        $data = $this->field("blacklist")->where("id",$id)->find();
+        return $data;
+    }
+
+    /**
+     * 查询当前图册下是否有图纸文件
+     */
+
+    public function getpic($id)
+    {
+        $data = $this->where("pid",$id)->find();
         return $data;
     }
 
