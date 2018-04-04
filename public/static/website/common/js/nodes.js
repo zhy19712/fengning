@@ -96,11 +96,16 @@
             layerId:'3',
             area:['660px','360px'],
             title:'新增节点',
-            others:function(){
-
-            }
+            isSelectNode:true, //是否必须选择节点
+            others:function(){}
         };
         $.extend(option,options);
+        if(option.isSelectNode){
+            if(!window.treeNode){
+                layer.msg('请选择节点');
+                return;
+            }
+        }
         layer.open({
             id:option.layerId,
             type:'1',

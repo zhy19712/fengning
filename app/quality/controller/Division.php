@@ -150,6 +150,7 @@ class Division extends Permissions{
             $node = new DivisionModel();
             // 是否包含子节点
             $exist = $node->isParent($id);
+            halt($exist);
             if(!empty($exist)){
                 return json(['code' => -1,'msg' => '包含子节点,不能删除']);
             }
