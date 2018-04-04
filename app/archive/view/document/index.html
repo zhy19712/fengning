@@ -898,6 +898,7 @@
             var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
             tableItem.ajax.url(url).load();
             $("#tableContent .dataTables_wrapper").css('display','block');
+            $("#tableContent .tbcontainer").css('display','block');
             $(".layout-panel-center .panel-title").text("当前路径:" + path)
             getPathText(sNodes);
             clickTreeId = selfid;
