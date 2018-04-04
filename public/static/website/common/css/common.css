@@ -137,3 +137,7 @@ select.form-control {
 .dataTables_wrapper,.tbcontainer{
     display: none;
 }
+/* 弹层 */
+.layui-layer-title{
+    margin-bottom: 15px;
+}
