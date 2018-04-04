@@ -164,7 +164,7 @@ class AtlasCateModel extends Model
 
     public function getbalcklist($id)
     {
-        $data = $this->field("blacklist")->where("id",$id)->find();
+        $data = $this->field("blacklist,pid")->where("id",$id)->find();
         return $data;
     }
 
