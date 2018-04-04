@@ -1,5 +1,9 @@
 ;(function($){
     $.ztree = function (options) {
+        var option = {
+            treeId:'ztree'
+        };
+        $.extend(option,options);
         var setting = {
             async: {
                 enable : true,
@@ -27,6 +31,6 @@
 
         $.extend(setting,options);
 
-        zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
+        zTreeObj = $.fn.zTree.init($("#"+ option.treeId), setting, null);
     }
 })(jQuery);
