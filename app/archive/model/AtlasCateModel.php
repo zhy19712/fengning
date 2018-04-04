@@ -178,11 +178,10 @@ class AtlasCateModel extends Model
         //查询白名单中的用户id
         $blacklist = $this->field("blacklist")->where("id",$param['id'])->find();
 
-
-
         if($blacklist["blacklist"])
         {
             $list = explode(",",$blacklist["blacklist"]);
+
 
             foreach($list as $k=>$v)
             {
@@ -191,12 +190,16 @@ class AtlasCateModel extends Model
                     unset($list[$k]);
                 }
             }
+
         }
 
         if($list)
         {
             $str = implode(",",$list);
 
+        }else
+        {
+            $str = "";
         }
 
 
