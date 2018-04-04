@@ -102,10 +102,8 @@ $('#save').click(function () {
     var type = $('select[name="type"] option:selected').val();
     var primary = $('input[name="primary"]').val();
     var remark = $('textarea[name="remark"]').val();
-    if(window.treeNode.level==1){
+    if(window.treeNode.level>0){
         var section_id = window.treeNode.section_id;
-    }else{
-        var section_id = window.nodeId;
     }
     $.submitNode({
         data:{

@@ -4,6 +4,9 @@ body{
 .panel-title,.current-path h3{
     font-size: 14px;
 }
+.panel-body{
+    overflow: initial;
+}
 /* 图标 */
 .layout-panel-west .layout-body{
     position: relative;
@@ -31,12 +34,14 @@ i.fa:hover:before{
 /* 树 */
 .ztree-title{
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -31px;
+    left: -1px;
     width: 100%;
     height: 30px;
     line-height: 30px;
-    border-bottom: 1px solid #cecece;
+    border: 1px solid #cecece;
+    z-index: 99;
+    background: #FFF;
 }
 
 .ztree li a.curSelectedNode{
@@ -44,6 +49,8 @@ i.fa:hover:before{
 }
 .ztree{
     margin-top: 30px;
+    height: 95%;
+    overflow-y: auto;
 }
 /* 当前路径 */
 .current-path{
