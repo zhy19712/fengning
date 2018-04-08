@@ -93,9 +93,12 @@ class Scenepicture extends Permissions
      */
     public function addPicture()
     {
-//        if(request()->isAjax()){
+        if(request()->isAjax()){
+            //实例化模型类
             $model = new ScenePictureModel();
             $admin = new Admin();
+            $group = new AdminGroup();
+
             $param = input('post.');
 
             //获取用户id
@@ -111,30 +114,60 @@ class Scenepicture extends Permissions
             $day = date("d");
 
             //根据当前的上传时间获取父级节点id
-            //1.查询当前的年份是否存在
-            $result = $model->getyear($year);
-            halt($result["id"]);
-
-
-
-
-
-//            $data = [
-//                'pid' => $id,//pid为父级id
-//
-//                'picture_number' => $param['picture_number'],//图号
-//                'picture_name' => $param['picture_name'],//图名
-//                'picture_papaer_num' => 1,//图纸张数(输入数字),默认1
-//                'completion_date' => date("Y-m"),//完成日期
-//                'paper_category' => $info['paper_category'],//图纸类别
-//                'owner' => Session::get('current_nickname'),//上传人
-//                'path' => $param['path'],//图片路径
-//                'filename' => $param['filename'],
-//                'date' => date("Y-m-d")//上传日期
-//            ];
-//            $flag = $model->insertCate($data);
-//            return json($flag);
-//        }
+            //1.查询当前的年份是否存在,如果年份不存在时，新建一条年份记录
+            $search_info =[
+                "year" => $year
+            ];
+            $result = $model->getid($search_info);
+            if(!$result['id'])//如果当前的年份不存在就新建当前年的记录
+            {
+                $data = [
+                    "year" => $year,
+                    "name" => $year."年",
+                    'pid' => 1
+                ];
+                //新增一条年份
+                $model -> insertScene($data);
+            }else{
+                //2.查询当前的月份是否存在,如果月份不存在时，新建一条月份记录
+                $search_info =[
+                    "year" => $year,
+                    "month" => $month
+                ];
+                $result1 = $model->getid($search_info);
+                if(!$result1['id'])//如果当前的月份不存在就新建当前月的记录
+                {
+                    $data = [
+                        "year" => $year,
+                        "month" => $month,
+                        "name" => $month."月",
+                        'pid' => $result['id']
+                    ];
+                    //新增一条月份
+                    $model -> insertScene($data);
+                }else{
+                    //3.如果当前的年份、月份都存在时，新增完整的一条现场图片信息
+                    //查询当前登录的用户所属的组织机构名
+                    $admininfo = $admin->getadmininfo(Session::get('current_id'));
+                    $group = $group->getOne($admininfo["admin_group_id"]);
+                    $data = [
+                        "year" => $year,
+                        "month" => $month,
+                        "day" => $day,
+                        "name" => $day."日",
+                        "pid" => $result1['id'],
+                        "filename" => date("YmdHis"),//默认上传的文件名为日期
+                        "date" => date("Y-m-d H:i:s"),
+                        "owner" => Session::get('current_name'),
+                        "company" => $group["name"],//单位
+                        "admin_group_id" => $admininfo["admin_group_id"],
+                        "path" => $param['path']//路径
+                    ];
+                    $flag = $model->insertScene($data);
+                    return json($flag);
+                }
+            }
+        }
     }
 
 }
