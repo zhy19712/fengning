@@ -408,7 +408,7 @@ class Atlas extends Permissions
             $model = new AtlasCateModel();
             //查看文件路径是否存在
             $param = $model->getOne($id);
-            if(!$param['path'] && !file_exists("." .$param['path'])){
+            if(!$param['path'] || !file_exists("." .$param['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
             }
             //查询当前用户是否被禁用下载图册

@@ -262,7 +262,7 @@ class Scenepicture extends Permissions
             $id = input('param.id');
             $model = new ScenePictureModel();
             $param = $model->getOne($id);
-            if(!$param['path'] && !file_exists("." .$param['path'])){
+            if(!$param['path'] || !file_exists("." .$param['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
             }
             return json(['code' => 1]);
