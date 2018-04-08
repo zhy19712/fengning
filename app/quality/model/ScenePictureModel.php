@@ -77,4 +77,25 @@ class ScenePictureModel extends Model
             return ['code' => 0, 'msg' => $e->getMessage()];
         }
     }
+
+    /**
+     * 删除一条现场图片信息
+     */
+    public function delScene($id)
+    {
+        try{
+            $this->where("id",$id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * 获取所属同一个pid下的现场图片的数量
+     */
+    public function getcount($pid)
+    {
+        return $this->field("pid")->where("pid",$pid)->count();
+    }
 }
