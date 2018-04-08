@@ -196,6 +196,7 @@ $('#save').click(function () {
 
 //table数据
 $.datatable({
+    tableItem:'tableItem',
     ajax:{
         'url':'/quality/common/datatablesPre?tableName=quality_unit'
     },
@@ -259,3 +260,76 @@ layui.use('laydate', function(){
         elem: '#completion_date'
     });
 });
+
+$('.maBasesBtn').click(function () {
+    layer.open({
+        title:'添加施工依据',
+        id:'100',
+        type:'1',
+        area:['650px','400px'],
+        content:$('#maBasesLayer'),
+        btn:['保存','关闭'],
+        success:function () {
+            maBasesTable();
+        },
+        yes:function () {
+
+        },
+        cancel: function(index, layero){
+            layer.close(layer.index);
+        }
+    });
+});
+
+//构建弹层表格
+function maBasesTable() {
+    $.datatable({
+        tableItem:'maBasesItem',
+        serverSide:false,
+        /*ajax:{
+            'url':'/quality/common/datatablesPre?tableName=quality_unit'
+        },*/
+        dom: 'lf<".current-path"<"#saveMaBases.add layui-btn layui-btn-normal layui-btn-sm">>tipr',
+        columns:[
+            {
+                name: "serial_number"
+            },
+            {
+                name: "site"
+            },
+            {
+                name: "coding"
+            },
+            {
+                name: "hinge"
+            },
+            {
+                name: "pile_number"
+            },
+            {
+                name: "start_date"
+            },
+            {
+                name: "completion_date"
+            },
+            {
+                name: "id"
+            }
+        ],
+        columnDefs:[
+            {
+                searchable: false,
+                targets:0,
+                data:null,
+                render:function () {
+                    var ipt = "<input type='checkbox' name='checkList' onclick='getSelectId(this)'>";
+                    return ipt;
+                }
+            },
+        ],
+    });
+    $('#saveMaBases').html('保存');
+}
+
+//取消全选的事件绑定
+$("thead tr th:first-child").unbind();
