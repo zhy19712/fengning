@@ -1,4 +1,6 @@
 var selfid,zTreeObj,groupid,sNodes,selectData="";//选中的节点id，ztree对象，父节点id，选中的节点，选中的表格的信息
+var uploadpath;
+var admin_group_id,year="",month="",day="";
 //编辑dom
 var sceneDom =[
     '<form  id="sceneform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">',
@@ -95,27 +97,31 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
     //上传图片
     upload.render({
         elem: '#upload',
-        url: "{:url('archive/common/upload?module=atlas&use=atlas_thumb')}",
+        url: '../../quality/common/qualityUpload?module=quality&use=quality_thumb',
         accept: 'file',//普通文件
         before: function(obj){
             obj.preview(function(index, file, result){
-                uploadName = file.name;
-                $("#file_name_1").val(file.name);
             })
         },
         done:function (res) {
-            $("#file_name").val(res.filename);
-            $("#path").val(res.src);
-            $("#attachmentId").val(res.id);
+            console.log(uploadpath);
+          $.ajax({
+              type:"post",
+              data:{path:res.src},
+              url:"./addPicture",
+              dataType:"json",
+              success:function (res) {
+                  if(res.code===1){
+                      layer.msg("上传成功");
+                      var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+                      tableItem.ajax.url(url).load();
+                  }
+              }
+          })
         }
     });
 });
-//变色
-$('#tableItem tbody').on( 'mouseover', 'td', function () {
-    $(this).parent("tr").addClass('highlight');
-}).on( 'mouseleave', 'td', function () {
-    $(this).parent("tr").removeClass( 'highlight' );
-});
+
 //点击获取路径
 function onClick(e, treeId, node) {
     selectData = "";
@@ -134,13 +140,12 @@ function onClick(e, treeId, node) {
     }else{
         $(".layout-panel-center .panel-title").text(sNodes[0].name);
     }
-    groupid = sNodes[0].pId //父节点的id
+    groupid = sNodes[0].pId; //父节点的id
     //获取年月日
-    var year = path.split("-")[1]?path.split("-")[1].substr(0,path.split("-")[1].length-1):"";
-    var month = path.split("-")[2]?path.split("-")[2].substr(0,path.split("-")[2].length-1):"";
-    var day = path.split("-")[3]?path.split("-")[3].substr(0,path.split("-")[3].length-1):"";
-    console.log(year,month,day);
-    var url = "/quality/common/datatablespre/tableName/scene_picture/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+     year = path.split("-")[1]?path.split("-")[1].substr(0,path.split("-")[1].length-1):"";
+     month = path.split("-")[2]?path.split("-")[2].substr(0,path.split("-")[2].length-1):"";
+     day = path.split("-")[3]?path.split("-")[3].substr(0,path.split("-")[3].length-1):"";
+    var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
     tableItem.ajax.url(url).load();
     $(".layout-panel-center .panel-title").text("当前路径:"+path)
 };
