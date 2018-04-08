@@ -187,7 +187,7 @@
         processing: true,
         serverSide: true,
         ajax: {
-            "url": "{:url('/standard/common/datatablesPre')}?tableName=template"
+            "url": "{:url('/standard/common/datatablesPre')}?tableName=quality_template"
         },
         dom: '<"mybtn layui-btn layui-btn-sm">rtip',
         columns: [
@@ -215,7 +215,8 @@
             {
                 targets: [0],
                 render: function (data, type, row) {
-                    return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[4]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
+                    // return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[4]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
+                    return ''
                 }
             },
             {
@@ -233,10 +234,7 @@
                 "searchable": false,
                 targets: [3],
                 render: function (data, type, row) {
-                    if (data == 1) {
-                        return "已归档";
-                    }
-                    return "待归档";
+                   return ''
                 }
             }
         ],

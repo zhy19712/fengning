@@ -101,11 +101,11 @@
             <div class="ibox-content">
                 <!--新增用户信息开始-->
                 <form class="layui-form" name="memberAdd" id="memberAdd" method="post" action="#" onsubmit="return false">
-                    <!--<input type="hidden" name="id" id="addId" value="">-->
+                    <input type="hidden" name="id" id="addId" value="">
                     <div class="layui-form-item">
                         <label class="layui-form-label">模版编号</label>
                         <div class="layui-input-block" class="inpLength">
-                            <input type="text" name="name" id="temNum" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
+                            <input type="text" name="code" id="temCode" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -116,19 +116,19 @@
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">表格类型</label>
-                        <select name="contractId" id="tableType">
+                        <select name="type" id="tableType">
                             <option value="">请选择</option>
-                            <option value="">质量</option>
-                            <option value="">其他</option>
+                            <option value="1">质量</option>
+                            <option value="2">其他</option>
                         </select>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">表格用途</label>
-                        <select name="contractId" id="formUse">
+                        <select name="use" id="formUse">
                             <option value="">请选择</option>
-                            <option value="单元工程质量评定表">单元工程质量评定表</option>
-                            <option value="分部工程质量评定表">分部工程质量评定表</option>
-                            <option value="单位工程质量评定表">单位工程质量评定表</option>
+                            <option value="1">单元工程质量评定表</option>
+                            <option value="2">分部工程质量评定表</option>
+                            <option value="3">单位工程质量评定表</option>
                         </select>
                     </div>
 
@@ -182,41 +182,37 @@
                 dataType: "json",
                 success: function (res) {
                     $('#addId').val(res.id);
-                    $('#code').val(res.code);
-                    $('#shortName').val(res.shortName);
-                    $('#money').val(res.money);
-                    $('#name').val(res.name);
-                    $('#contractId').val(res.contractId);
-                    $('#constructorId').val(res.constructorId);
-                    $('#designerId').val(res.designerId);
-                    $('#supervisorId').val(res.supervisorId);
-                    $('#builderId').val(res.builderId);
-                    $('#eveluateUserId').val(res.eveluateUserId);
+                    $('#temCode').val(res.shortName);
+                    $('#TemName').val(res.money);
+                    $('#tableType').val(res.contractId);
+                    $('#formUse').val(res.constructorId);
                     layui.form.render();
                 }
             });
         }
     }
+    // if ($("#addId").val() == '') {
+    //     $("#addId").attr('name','');
+    // }
 
     var form;
     layui.use(['form', 'layedit', 'laydate'], function () {
         form = layui.form;
-        var layer = layui.layer
-
+        var layer = layui.layer;
         function closWin() {
             var index = parent.layer.getFrameIndex(window.name);
             parent.layer.close(index);
         };
 
         function refreshSub() {
-            parent.admin_table.ajax.url("{:url('contract/common/datatablesPre?tableName=section')}").load();
+            parent.tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template").load();
         }
         //监听提交
         form.on('submit(demo1)', function (data) {
-            console.log($("#addId").val())
+            console.log($("#addId").val());
             console.log(data);
             if ($("#addId").val() == '') {
-                console.log($("#addId").val())
+                // console.log($("#addId").val());
                 $.ajax({
                     type: "Post",
                     url: "{:url('add')}",
