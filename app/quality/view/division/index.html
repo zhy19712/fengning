@@ -1,33 +1,5 @@
 {include file="../app/public/common_header.html"}
-<style>
-    .layui-form-label{
-        width: 85px;
-    }
-    textarea[name="remark"]{
-        width: 95%;
-    }
-    input[name="en_type"]{
-
-    }
-    .ztree-title i.fa {
-        width: 18%;
-        text-align: center;
-    }
-    i.fa-navicon:before{
-        color: #FFF;
-        padding: 12px;
-        background: #00a0e9;
-    }
-    i.fa-navicon:hover:before{
-        color: #FFF;
-    }
-    .layui-form-item .autograph .layui-form-mid {
-        padding: 9px 0!important;
-    }
-    .autograph{
-        display: none;
-    }
-</style>
+<link rel="stylesheet" href="__WEBSITE__/quality/division/index.css">
 <div data-options="region:'west',title:'工程划分',split:true" style="width:260px;">
     <div class="ztree-title">
         <i title="新增节点" class="fa fa-lg fa-sitemap" id="addNode"></i>
@@ -38,8 +10,21 @@
     </div>
     <ul class="ztree" id="ztree"></ul>
 </div>
-<div data-options="region:'center',title:'单元工程：'" style="padding:5px;">
-
+<div data-options="region:'center',title:'单元工程段号(单元划分)：'" style="padding:5px;">
+    <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
+        <thead>
+        <tr>
+            <th>单元工程流水号</th>
+            <th>单元工程部位</th>
+            <th>系统编码</th>
+            <th>关键部位</th>
+            <th>起止桩号</th>
+            <th>开工日期</th>
+            <th>完工日期</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+    </table>
 </div>
 <div data-options="region:'east',title:'二维码',split:true" style="width:260px;">
 
@@ -82,9 +67,9 @@
         <div class="autograph" id="enType">
             <label class="layui-form-label">工程类型</label>
             <div class="layui-input-inline">
-                <input type="text" name="en_type" placeholder="请选择工程类型" autocomplete="off" class="layui-input" disabled>
+                <input type="text" name="en_type" placeholder="请选择工程类型" autocomplete="off" class="layui-input typeZtreeBtn" readonly>
             </div>
-            <div class="layui-form-mid layui-word-aux" id="typeZtreeBtn">
+            <div class="layui-form-mid layui-word-aux typeZtreeBtn">
                 <i class="fa fa-navicon"></i>
             </div>
         </div>
@@ -98,6 +83,126 @@
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit lay-filter="save" id="save">保存</button>
+            <button type="button" class="layui-btn layui-btn-primary close">关闭</button>
+        </div>
+    </div>
+</form>
+<!-- 新增单元信息 -->
+<form action="" class="layui-form unit" id="unit" style="display: none">
+    <input type="hidden" name="type_ztree">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">单元工程流水号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="serial_number_before" placeholder="编码" autocomplete="off" class="layui-input" readonly>
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" name="serial_number" placeholder="流水号" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">单元工程部位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="site" placeholder="请输入单元工程部位" lay-verify="required" autocomplete="off"lay-verify="required" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">系统编码</label>
+            <div class="layui-input-inline">
+                <input type="text" name="coding" placeholder="请输入系统编码" lay-verify="required" autocomplete="off" class="layui-input" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">施工依据</label>
+            <div class="layui-input-inline">
+                <input type="text" name="ma_bases" placeholder="请选择施工依据" lay-verify="required" autocomplete="off" class="layui-input" readonly>
+            </div>
+            <div class="layui-form-mid layui-word-aux icon">
+                <i class="fa fa-navicon"></i>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">补充依据</label>
+            <div class="layui-input-inline">
+                <input type="text" name="su_basis" placeholder="请输入补充依据" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">关键部位</label>
+            <div class="layui-input-inline">
+                <select name="hinge" lay-verify="required">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">工程类型</label>
+            <div class="layui-input-inline">
+                <input type="text" name="en_type" placeholder="请选择工程类型" lay-verify="required" autocomplete="off" class="layui-input typeZtreeBtn" readonly>
+            </div>
+            <div class="layui-form-mid layui-word-aux icon typeZtreeBtn">
+                <i class="fa fa-navicon"></i>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">高程（起）</label>
+            <div class="layui-form-mid layui-word-aux">
+                EL.
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" name="el_start" placeholder="请输入高程（起）" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">高程（止）</label>
+            <div class="layui-form-mid layui-word-aux" >
+                EL.
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" name="el_cease" placeholder="请输入高程（止）" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">工程量</label>
+            <div class="layui-input-inline">
+                <input type="text" name="quantities" placeholder="请输入工程量" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">起止桩号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="pile_number" placeholder="请输入起止桩号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">开工日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="start_date" placeholder="请选择开工日期" autocomplete="off" class="layui-input" id="start_date">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">完工日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="completion_date" placeholder="请选择完工日期" autocomplete="off" class="layui-input" id="completion_date">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="save" id="saveUnit">保存</button>
             <button type="button" class="layui-btn layui-btn-primary close">关闭</button>
         </div>
     </div>

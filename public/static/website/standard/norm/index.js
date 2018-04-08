@@ -1,15 +1,17 @@
 //初始化layui组件
 var initUi = layui.use('form','laydate');
 //工程标准及规范树
-$.ztree();
+$.ztree({
+    zTreeOnClick:function(event, treeId, treeNode){
+        $.clicknode({
+            treeNode:treeNode,
+            tablePath:'/standard/common/datatablesPre?tableName=norm_file',
+            isLoadPath:false,
+        });
+    }
+});
 //点击节点
-function zTreeOnClick(event, treeId, treeNode){
-    $.clicknode({
-        treeNode:treeNode,
-        tablePath:'/standard/common/datatablesPre?tableName=norm_file',
-        isLoadPath:false
-    });
-}
+
 //工程标准及规范表格
 $.datatable({
     ajax:{
