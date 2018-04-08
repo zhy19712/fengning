@@ -163,12 +163,29 @@ class Common extends Controller
         $year = input('year')?input('year'):"";//年
         $month = input('month')?input('month'):"";//月
         $day = input('day')?input('day'):"";//日
+        if(!$year && !$month && !$day)//如果年月日都不存在
+        {
+            $search_data = "";
+        }else if($year && $month && $day)//如果年月日都存在
+        {
+            $search_data = [
+                "year" => $year,
+                "month" => $month,
+                "day" => $day
+            ];
+        }else if($year && !$month && !$day)//如果年都存在
+        {
+            $search_data = [
+                "year" => $year
+            ];
+        }else if($year && $month && !$day)//如果年月都存在
+        {
+            $search_data = [
+                "year" => $year,
+                "month" => $month
+            ];
+        }
 
-        $search_data = [
-            "year" => $year,
-            "month" => $month,
-            "day" => $day
-        ];
 
         //表的总记录数 必要
         $recordsTotal = 0;
