@@ -170,13 +170,13 @@ class Common extends Controller
             //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("position,filename,date,owner,company")->where('selfid',$selfid)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where('selfid',$selfid)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         }else{
             //没有搜索条件的情况
             if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->field("position,filename,date,owner,company")->where('selfid',$selfid)->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where('selfid',$selfid)->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
