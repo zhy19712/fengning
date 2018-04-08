@@ -155,7 +155,7 @@ class Division extends Permissions{
             }else{
                 $data['id'] = $edit_id;
                 // 编码 和 名称 必须 是 唯一的
-                $is_unique = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_code',$param['d_code'])->whereOr('d_name',$param['d_name'])->value('id');
+                $is_unique = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_code',$param['d_code'])->whereOr('d_name',$param['d_name'])->where('id','neq',$edit_id)->value('id');
                 if(!empty($is_unique)){
                     return json(['code' => -1,'msg' => '编码或名称已存在']);
                 }
@@ -541,7 +541,7 @@ class Division extends Permissions{
                 return json($flag);
             }else{
                 // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
-                $is_unique = Db::name('quality_unit')->where('id','neq',$param['id'])->where('serial_number',$param['serial_number'])->whereOr('coding',$param['coding'])->value('id');
+                $is_unique = Db::name('quality_unit')->where('id','neq',$param['id'])->where('serial_number',$param['serial_number'])->whereOr('coding',$param['coding'])->where('id','neq',$param['id'])->value('id');
                 if(!empty($is_unique)){
                     return json(['code' => -1,'msg' => '流水号 或 系统编码已存在']);
                 }
