@@ -122,7 +122,6 @@ class Common extends Controller
 
                 } else {
                     $wherestr['use'] = $_use;
-
                 }
                 $recordsFilteredResult = Db::name($table)
                     ->where($wherestr)
