@@ -165,10 +165,16 @@ class Common extends Controller
         $day = input('day')?input('day'):"";//日
 
         $admin_group_id = input('admin_group_id')?input('admin_group_id'):"";
+        if($admin_group_id)
+        {
+            $group_data = [
+                "admin_group_id" => $admin_group_id
+            ];
+        }else{
+            $group_data = [
+            ];
+        }
 
-        $group_data = [
-            "admin_group_id" => $admin_group_id
-        ];
 
         if(!$year && !$month && !$day)//如果年月日都不存在
         {
