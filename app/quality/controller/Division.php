@@ -37,7 +37,7 @@ class Division extends Permissions{
 
     /**
      * 获取工程分类
-     * @return \think\response\Json
+     * @return string
      * @author hutao
      */
     public function getEnType()
@@ -56,8 +56,8 @@ class Division extends Permissions{
             $str .= '{ "id": "' . 9 . '", "pId":"' . 2 . '", "name":"' . '岩石边坡开挖' .'"},';
             $str .= '{ "id": "' . 10 . '", "pId":"' . 2 . '", "name":"' . '岩石地基开挖' .'"},';
             $str .= '{ "id": "' . 11 . '", "pId":"' . 3 . '", "name":"' . '锚喷支护' .'"},';
-            $str .= '{ "id": "' . 12 . '", "pId":"' . 3 . '", "name":"' . '锚筋桩' .'"}';
-            return json($str);
+            $str .= '{ "id": "' . 12 . '", "pId":"' . 3 . '", "name":"' . '锚筋桩' .'"},';
+            return "[" . substr($str, 0, -1) . "]";
         }
     }
 
