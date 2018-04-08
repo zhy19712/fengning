@@ -165,8 +165,7 @@ class Scenepicture extends Permissions
             }else{
                 //2.查询当前的月份是否存在,如果月份不存在时，新建一条月份记录
                 $search_info =[
-                    "year" => $year,
-                    "month" => $month
+                    "year" => $year
                 ];
                 $result = $model->getid($search_info);
                 if(!$result['id'])//如果当前的月份不存在就新建当前月的记录
