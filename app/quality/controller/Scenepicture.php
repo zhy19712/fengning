@@ -306,7 +306,6 @@ class Scenepicture extends Permissions
 
             $data_month = $model->getOne($data_info["pid"]);
 
-            $year_count = $model->getcount($data_month['pid']);
             //如果一个月份下只有一条的话就删除这个月份
             if($day_count < 2)
             {
@@ -315,6 +314,7 @@ class Scenepicture extends Permissions
             }
 
             //判断年份下只有一条的话就删除这个年份
+            $year_count = $model->getcount($data_month['pid']);
             if($year_count < 1)
             {
                 //如果一个年份下只有一条的话就删除这个年份
