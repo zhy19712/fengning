@@ -144,6 +144,11 @@ class Division extends Permissions{
             if($param['type'] == 3 && !empty($en_type)){
                 $data['en_type'] = $en_type;
             }
+
+            if(!empty($add_id) && !empty($edit_id)){
+                return json(['code' => -1,'msg' => '无法辨别是新增或编辑']);
+            }
+
             if(!empty($add_id)){
                 // 编码 和 名称 必须 是 唯一的
                 $is_unique_code = Db::name('quality_division')->where('d_code',$param['d_code'])->value('id');
