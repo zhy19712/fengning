@@ -95,13 +95,10 @@
 <div class="row">
     <div class="col-sm-12" style="background-color:#fff;">
         <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5></h5>
-            </div>
             <div class="ibox-content">
                 <!--新增用户信息开始-->
                 <form class="layui-form" name="memberAdd" id="memberAdd" method="post" action="#" onsubmit="return false">
-                    <input type="hidden" name="id" id="addId" value="">
+                    <input type="hidden" name="id" id="addId" value="{:$id}">
                     <div class="layui-form-item">
                         <label class="layui-form-label">模版编号</label>
                         <div class="layui-input-block" class="inpLength">
@@ -111,7 +108,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">标段名称</label>
                         <div class="layui-input-block" class="inpLength">
-                            <input type="text" name="name" id="TemName" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
+                            <input type="text" name="name" id="temName" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -149,26 +146,10 @@
 </body>
 <script>
 
-    // //页面元素初始化
-    // $(function () {
-    //     Init();
-    //     Initdata();
-    // });
-    //
-    // function Init() {
-
-    //     //所属合同的渲染
-    //     $.ajax({
-    //         type: "GET",
-    //         url: "{:url('Contract/getAll')}",
-    //         success: function (data) {
-    //             $(data).each(function () {
-    //                 $("#contractId").append($("<option/>").text(this.contractName).attr({"value": this.id}));
-    //             });
-    //             layui.form.render();
-    //         }
-    //     });
-    // }
+    //页面元素初始化
+    $(function () {
+        Initdata();
+    });
 
     //数据初始化
     function Initdata() {
@@ -176,24 +157,20 @@
         console.log(id);
         if (id.length>0) {
             $.ajax({
-                url: "{:url('./contract/section/getOne')}?id=" + id,
-                type: "post",
-                data: {id: id},
+                url: "{:url('./standard/templatemanage/getOne')}?id=" + id,
+                type: "get",
                 dataType: "json",
                 success: function (res) {
                     $('#addId').val(res.id);
-                    $('#temCode').val(res.shortName);
-                    $('#TemName').val(res.money);
-                    $('#tableType').val(res.contractId);
-                    $('#formUse').val(res.constructorId);
+                    $('#temCode').val(res.code);
+                    $('#temName').val(res.name);
+                    $('#tableType').val(res.type);
+                    $('#formUse').val(res.use);
                     layui.form.render();
                 }
             });
         }
     }
-    // if ($("#addId").val() == '') {
-    //     $("#addId").attr('name','');
-    // }
 
     var form;
     layui.use(['form', 'layedit', 'laydate'], function () {
@@ -215,7 +192,7 @@
                 // console.log($("#addId").val());
                 $.ajax({
                     type: "Post",
-                    url: "{:url('add')}",
+                    url: "{:url('templatemanage/add')}",
                     data: data.field,
                     success: function (res) {
                         console.log(res)
