@@ -101,13 +101,6 @@ class Scenepicture extends Permissions
 
             $param = input('post.');
 
-            //获取用户id
-            $admin_id = Session::get('current_id');
-            //根据用户id查询对应的组织机构的admin_group_id
-            $admininfo = $admin->getadmininfo($admin_id);
-            //获取组织机构id
-            $admin_group_id = $admininfo["admin_group_id"];
-
             //获取当前时间的年月日
             $year = date("Y");
             $month = date("m");
@@ -148,7 +141,8 @@ class Scenepicture extends Permissions
                 }else{
                     //3.如果当前的年份、月份都存在时，新增完整的一条现场图片信息
                     //查询当前登录的用户所属的组织机构名
-                    $admininfo = $admin->getadmininfo(Session::get('current_id'));
+                    $admin_id = Session::get('current_id');
+                    $admininfo = $admin->getadmininfo($admin_id);
                     $group = $group->getOne($admininfo["admin_group_id"]);
                     $data = [
                         "year" => $year,
