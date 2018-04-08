@@ -160,34 +160,23 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
 function conEdit(id) {
     layer.open({
         type: 1,
-        title: '现场图片管理',
+        title: '编辑',
         area: ['690px', '240px'],
         content:sceneDom
     });
     $("#addId").val(selfid);
 
-    // $.ajax({
-    //     type:"post",
-    //     url:"./getindex",
-    //     data:{id:id},
-    //     dataType:"json",
-    //     success:function (res) {
-    //         if(res.code===1){
-    //             $("#picture_number").val(res.data.picture_number);
-    //             $("#picture_name").val(res.data.picture_name);
-    //             $("#picture_papaer_num").val(res.data.picture_papaer_num);
-    //             $("#a1_picture").val(res.data.a1_picture);
-    //             $("#design_name").val(res.data.design_name);
-    //             $("#check_name").val(res.data.check_name);
-    //             $("#examination_name").val(res.data.examination_name);
-    //             $("#completion_date").val(res.data.completion_date);
-    //             $("#section").val(res.data.section);
-    //             $("#paper_category").val(res.data.paper_category);
-    //             $("#editId").val(res.data.id);
-    //             layui.form.render('select');
-    //         }
-    //     }
-    // })
+    $.ajax({
+        type:"post",
+        url:"./getindex",
+        data:{id:id},
+        dataType:"json",
+        success:function (res) {
+            if(res.code===1){
+                $("#filename").val(res.data.filename);
+            }
+        }
+    })
 }
 //点击删除
 function conDel(id){

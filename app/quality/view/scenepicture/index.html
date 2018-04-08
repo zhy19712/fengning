@@ -202,9 +202,23 @@
     $("div.selectdepartment").html('部门：'+selectdepartment);
     //新增
     $(".mybtn").html('<i class="fa fa-plus"></i>&nbsp;上传');
-
-
-
+    //拉取部门
+    $.ajax({
+        url:"./getAllgroup",
+        type:"get",
+        dataType:"json",
+        succcess:function (res) {
+            console.log(res)
+            // if(res.code===1){
+            //     var html = "<option value=''>全部</option>";
+            //     for(var i =0; i<res.data.length;i++){
+            //         html += `<option value=${res.data[i].name}>${res.data[i].name}</option>`;
+            //     }
+            //     console.log(html);
+            //     $(".selectdepartment").html(html);
+            // }
+        }
+    })
 </script>
 </body>
 </html>
