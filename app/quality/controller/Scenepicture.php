@@ -259,28 +259,33 @@ class Scenepicture extends Permissions
     public function downloadPicture()
     {
         if(request()->isAjax()){
+            $id = input('param.id');
+            $model = new ScenePictureModel();
+            $param = $model->getOne($id);
+            $filePath = '.' .$param['path'];
+            if(!file_exists($filePath)){
+                return json(['code' => '-1','msg' => '文件不存在']);
+            }
             return json(['code' => 1]);
         }
         $id = input('param.id');
         $model = new ScenePictureModel();
         $param = $model->getOne($id);
+
         $filePath = '.' . $param['path'];
-        if(!file_exists($filePath)){
-            return json(['code' => '-1','msg' => '文件不存在']);
-        }else{
-            $fileName = $param['filename'];
-            $file = fopen($filePath, "r"); //   打开文件
-            //输入文件标签
-            $fileName = iconv("utf-8","gb2312",$fileName);
-            Header("Content-type:application/octet-stream ");
-            Header("Accept-Ranges:bytes ");
-            Header("Accept-Length:   " . filesize($filePath));
-            Header("Content-Disposition:   attachment;   filename= " . $fileName);
-            //   输出文件内容
-            echo fread($file, filesize($filePath));
-            fclose($file);
-            exit;
-        }
+        $fileName = $param['filename'];
+        $file = fopen($filePath, "r"); //   打开文件
+        //输入文件标签
+        $fileName = iconv("utf-8","gb2312",$fileName);
+        Header("Content-type:application/octet-stream ");
+        Header("Accept-Ranges:bytes ");
+        Header("Accept-Length:   " . filesize($filePath));
+        Header("Content-Disposition:   attachment;   filename= " . $fileName);
+        //   输出文件内容
+        echo fread($file, filesize($filePath));
+        fclose($file);
+        exit;
+
     }
 
     /**
