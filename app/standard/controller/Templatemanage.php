@@ -47,6 +47,7 @@ class Templatemanage extends Permissions
                 return json(['code' => -1, 'data' => $res]);
             }
         }
+        $this->assign('id',$id);
         return $this->fetch();
     }
 
