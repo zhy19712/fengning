@@ -52,6 +52,9 @@ i.fa:hover:before{
     height: 95%;
     overflow-y: auto;
 }
+.layui-layer-content .ztree{
+    margin-top: 0;
+}
 /* 当前路径 */
 .current-path{
     margin-bottom: 10px;
@@ -76,7 +79,7 @@ i.fa:hover:before{
     padding: 0 !important;
     margin: 0 !important;
 }
-.layui-form-item .autograph .webuploader-pick{
+.layui-form-item .autograph .webuploader-pick{~
     padding: 9px 15px;
 }
 .layui-form-item .autograph .layui-input-inline{

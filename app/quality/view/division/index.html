@@ -46,6 +46,8 @@
 </div>
 <!-- 新增节点 -->
 <form action="" class="layui-form" id="nodeForm" style="display: none">
+    <input type="hidden" name="add_id" value="">
+    <input type="hidden" name="edit_id" value="">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">编码</label>
@@ -72,15 +74,15 @@
         <div class="layui-inline">
             <label class="layui-form-label">主要单位工程</label>
             <div class="layui-input-inline">
-                <input type="checkbox" name="primary" lay-skin="switch" lay-text="是|否" value="1">
+                <input type="checkbox" name="primary" lay-skin="switch" lay-filter="toggle" lay-text="是|否" value="0">
             </div>
         </div>
     </div>
     <div class="layui-form-item">
-        <div class="autograph">
+        <div class="autograph" id="enType">
             <label class="layui-form-label">工程类型</label>
             <div class="layui-input-inline">
-                <input type="text" name="en_type" placeholder="请选择工程类型" autocomplete="off" class="layui-input">
+                <input type="text" name="en_type" placeholder="请选择工程类型" autocomplete="off" class="layui-input" disabled>
             </div>
             <div class="layui-form-mid layui-word-aux" id="typeZtreeBtn">
                 <i class="fa fa-navicon"></i>
