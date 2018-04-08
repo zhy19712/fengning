@@ -129,7 +129,7 @@
                     <div class="layui-input-inline">
                         <select name="type">
                             <option value="">-请选择-</option>
-                            <option value="1" selected="">质量</option>
+                            <option value="1">质量</option>
                             <option value="2">其他</option>
                         </select>
                     </div>
@@ -180,7 +180,7 @@
         processing: true,
         serverSide: true,
         ajax: {
-            "url": "{:url('/standard/common/datatablesPre')}?tableName=quality_template"
+            "url":"{:url('/standard/common/datatablesPre')}?tableName=quality_template"
         },
         dom: '<"mybtn layui-btn layui-btn-sm">rtip',
         columns: [
@@ -271,14 +271,7 @@
             ,layer = layui.layer;
         //监听提交
         form.on('submit(demo1)', function(data){
-            $.ajax({
-                type: "get",
-                url: "{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+data.field.type+"&use="+data.field.use,
-                success: function (res) {
-                    console.log(res)
-
-                }
-            });
+            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+data.field.type+"&use="+data.field.use).load();
             return false;
         });
     });
