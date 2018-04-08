@@ -24,7 +24,7 @@ class ScenePictureModel extends Model
      */
     public function getall()
     {
-        return $this->field("id,name,pid")->select();
+        return $this->group('name,pid')->Distinct(true)->field("id,name,pid")->select();
     }
 
     /**
@@ -51,7 +51,7 @@ class ScenePictureModel extends Model
     public function insertScene($param)
     {
         try{
-            $result = $this->allowField(true)->save($param);
+            $result = $this->allowField(true)->insert($param);
             if(false === $result){
                 return ['code' => -1,'msg' => $this->getError()];
             }else{
@@ -59,6 +59,22 @@ class ScenePictureModel extends Model
             }
         }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+    /**
+     * 编辑一条图册记录
+     */
+    public function editScene($param)
+    {
+        try{
+            $result = $this->allowField(true)->save($param,['id' => $param['id']]);
+            if(false === $result){
+                return ['code' => -1,'msg' => $this->getError()];
+            }else{
+                return ['code' => 1, 'msg' => '编辑成功'];
+            }
+        }catch(PDOException $e){
+            return ['code' => 0, 'msg' => $e->getMessage()];
         }
     }
 }

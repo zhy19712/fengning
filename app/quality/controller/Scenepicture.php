@@ -45,9 +45,9 @@ class Scenepicture extends Permissions
             $data = $model->getall();
             $res = tree($data);
 
-            foreach ((array)$res as $k => $v) {
-                $v['id'] = strval($v['id']);
-                $res[$k] = json_encode($v);
+            foreach ((array)$res as $a => $b) {
+                $b['id'] = strval($b['id']);
+                $res[$a] = json_encode($b);
             }
 
             return json($res);
@@ -121,14 +121,54 @@ class Scenepicture extends Permissions
                 ];
                 //新增一条年份
                 $model -> insertScene($data);
-            }else{
-                //2.查询当前的月份是否存在,如果月份不存在时，新建一条月份记录
-                $search_info =[
+
+                //新建一条月份记录
+                $search_info1 =[
+                    "year" => $year,
+                ];
+                $result1 = $model->getid($search_info1);
+                $data1 = [
+                    "year" => $year,
+                    "month" => $month,
+                    "name" => $month."月",
+                    'pid' => $result1['id']
+                ];
+                //新增一条月份记录
+                $model -> insertScene($data1);
+
+                //新建一条日份记录
+                $search_info2 =[
                     "year" => $year,
                     "month" => $month
                 ];
-                $result1 = $model->getid($search_info);
-                if(!$result1['id'])//如果当前的月份不存在就新建当前月的记录
+                $result2 = $model->getid($search_info2);
+                $admin_id = Session::get('current_id');
+                $admininfo = $admin->getadmininfo($admin_id);
+                $group = $group->getOne($admininfo["admin_group_id"]);
+                $data2 = [
+                    "year" => $year,
+                    "month" => $month,
+                    "day" => $day,
+                    "name" => $day."日",
+                    "pid" => $result2['id'],
+                    "filename" => date("YmdHis"),//默认上传的文件名为日期
+                    "date" => date("Y-m-d H:i:s"),
+                    "owner" => Session::get('current_name'),
+                    "company" => $group["name"],//单位
+                    "admin_group_id" => $admininfo["admin_group_id"],
+                    "path" => $param['path']//路径
+                ];
+                $flag = $model->insertScene($data2);
+                return json($flag);
+
+
+            }else{
+                //2.查询当前的月份是否存在,如果月份不存在时，新建一条月份记录
+                $search_info =[
+                    "year" => $year
+                ];
+                $result = $model->getid($search_info);
+                if(!$result['id'])//如果当前的月份不存在就新建当前月的记录
                 {
                     $data = [
                         "year" => $year,
@@ -138,9 +178,39 @@ class Scenepicture extends Permissions
                     ];
                     //新增一条月份
                     $model -> insertScene($data);
+                    //新建一条日份记录
+                    $search_info1 =[
+                        "year" => $year,
+                        "month" => $month
+                    ];
+                    $result1 = $model->getid($search_info1);
+                    $admin_id = Session::get('current_id');
+                    $admininfo = $admin->getadmininfo($admin_id);
+                    $group = $group->getOne($admininfo["admin_group_id"]);
+                    $data1 = [
+                        "year" => $year,
+                        "month" => $month,
+                        "day" => $day,
+                        "name" => $day."日",
+                        "pid" => $result1['id'],
+                        "filename" => date("YmdHis"),//默认上传的文件名为日期
+                        "date" => date("Y-m-d H:i:s"),
+                        "owner" => Session::get('current_name'),
+                        "company" => $group["name"],//单位
+                        "admin_group_id" => $admininfo["admin_group_id"],
+                        "path" => $param['path']//路径
+                    ];
+                    $flag = $model->insertScene($data1);
+                    return json($flag);
+
                 }else{
                     //3.如果当前的年份、月份都存在时，新增完整的一条现场图片信息
                     //查询当前登录的用户所属的组织机构名
+                    $search_info =[
+                        "year" => $year,
+                        "month" => $month
+                    ];
+                    $result = $model->getid($search_info);
                     $admin_id = Session::get('current_id');
                     $admininfo = $admin->getadmininfo($admin_id);
                     $group = $group->getOne($admininfo["admin_group_id"]);
@@ -149,7 +219,7 @@ class Scenepicture extends Permissions
                         "month" => $month,
                         "day" => $day,
                         "name" => $day."日",
-                        "pid" => $result1['id'],
+                        "pid" => $result['id'],
                         "filename" => date("YmdHis"),//默认上传的文件名为日期
                         "date" => date("Y-m-d H:i:s"),
                         "owner" => Session::get('current_name'),
@@ -164,4 +234,109 @@ class Scenepicture extends Permissions
         }
     }
 
+    /**
+     * 编辑一条现场图片信息
+     */
+    public function editPicture()
+    {
+        if(request()->isAjax()){
+            $model = new ScenePictureModel();
+            $param = input('post.');
+                $data = [
+                    'id' => $param['id'],//现场图片自增id
+                    'filename' => $param['filename']//上传文件名
+                ];
+                $flag = $model->editScene($data);
+                return json($flag);
+
+        }
+    }
+
+    /**
+     * 下载一条现场图片信息
+     * @return \think\response\Json
+     */
+    public function downloadPicture()
+    {
+        if(request()->isAjax()){
+            $id = input('param.id');
+            $model = new ScenePictureModel();
+            $param = $model->getOne($id);
+            if(!$param['path'] || !file_exists("." .$param['path'])){
+                return json(['code' => '-1','msg' => '文件不存在']);
+            }
+            return json(['code' => 1]);
+        }
+        $id = input('param.id');
+        $model = new ScenePictureModel();
+        $param = $model->getOne($id);
+
+        $filePath = '.' . $param['path'];
+        $fileName = $param['filename'];
+        $file = fopen($filePath, "r"); //   打开文件
+        //输入文件标签
+        $fileName = iconv("utf-8","gb2312",$fileName);
+        Header("Content-type:application/octet-stream ");
+        Header("Accept-Ranges:bytes ");
+        Header("Accept-Length:   " . filesize($filePath));
+        Header("Content-Disposition:   attachment;   filename= " . $fileName);
+        //   输出文件内容
+        echo fread($file, filesize($filePath));
+        fclose($file);
+        exit;
+
+    }
+
+    /**
+     * 删除一条现场图片信息
+     */
+    public function delCateone()
+    {
+
+        if(request()->isAjax()) {
+            $param = input('post.');
+
+            //实例化model类型
+            $model = new AtlasCateModel();
+
+            //首先判断一下删除的该图册是否存在下级
+
+            $info = $model ->judge($param['id']);
+
+            if(empty($info))//没有下级直接删除
+            {
+                $data = $model->getOne($param['id']);
+
+                //先删除图片
+                $path = "." .$data['path'];
+                $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+                if(file_exists($path)){
+                    unlink($path); //删除文件图片
+                }
+
+                if(file_exists($pdf_path)){
+                    unlink($pdf_path); //删除生成的预览pdf
+                }
+
+                $flag = $model->delCate($param['id']);
+                //清除下载记录
+                $down = new AtlasDownloadModel();
+                $flag1 = $down->deldownloadall($param['id']);
+
+                if($flag1 || $flag)
+                {
+                    return $flag;
+                }
+
+            }else
+            {
+                return ['code' => -1, 'msg' => '当前图册下已有图纸，请先删除图纸！'];
+            }
+
+        }else
+        {
+            return $this->fetch();
+        }
+
+    }
 }
