@@ -57,6 +57,22 @@ class Templatemanage extends Permissions
      */
     public function getone($id)
     {
-        return json( TemplateModel::get($id));
+        return json(TemplateModel::get($id));
+    }
+
+    /**
+     * 删除模板
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function del($id)
+    {
+        $mod = TemplateModel::get($id);
+        if ($mod->delete()) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
     }
 }
