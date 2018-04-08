@@ -315,7 +315,7 @@ class Scenepicture extends Permissions
             }
 
             //判断年份下只有一条的话就删除这个年份
-            if($year_count < 2)
+            if($year_count < 1)
             {
                 //如果一个年份下只有一条的话就删除这个年份
                 $model -> delScene($data_month['pid']);
