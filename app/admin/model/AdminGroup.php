@@ -129,4 +129,12 @@ class AdminGroup extends Model
         }
         return $arr;
     }
+
+    /**
+     * 查询组织机构表中的所有的机构名，丰宁抽水蓄能电站下的所有机构名
+     */
+    public function getfengning()
+    {
+        return $this->field("id,name")->where("pid > 0")->select();
+    }
 }

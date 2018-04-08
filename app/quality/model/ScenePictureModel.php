@@ -18,12 +18,48 @@ use think\exception\PDOException;
 class ScenePictureModel extends Model
 {
     protected $name='scene_picture';
+
     /*
      * 查询现场图片管理表中的所有的数据
      */
-
     public function getall()
     {
         return $this->field("id,name,pid")->select();
+    }
+
+    /**
+     * 获取一条现场图片信息
+     */
+    public function getOne($id)
+    {
+        $data = $this->where('id', $id)->find();
+        return $data;
+    }
+
+    /**
+     * 查询表中的年是否存在
+     */
+    public function getyear($year)
+    {
+        $data = $this->field("id,name")->where("year",$year)->find();
+        return $data;
+    }
+
+    /**
+     * 查询表中的月是否存在
+     */
+    public function getmonth($month)
+    {
+        $data = $this->field("id,name")->where('month', $month)->find();
+        return $data;
+    }
+
+    /**
+     * 查询表中的日是否存在
+     */
+    public function getday($day)
+    {
+        $data = $this->field("id,name")->where('day', $day)->find();
+        return $data;
     }
 }
