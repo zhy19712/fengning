@@ -213,10 +213,8 @@
                 "targets": [4],
                 "render": function (data, type, row) {
                     var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='AssFile(this)'><i title='关联文件' class='fa fa-chain'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='reviewHistory(this)'><i title='审阅历史' class='fa fa-file-text'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='编辑' class='fa fa-pencil'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
             },
@@ -255,11 +253,14 @@
     //点击上传文件
     $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增模板</div>");
 
-    layui.use(['form', 'layedit', 'laydate'], function(){
+    var layer = layui.layer;
+    //查询提交
+    layui.use(['form', 'layedit', 'laydate','layer'], function(){
         var form = layui.form
             ,layer = layui.layer
             ,layedit = layui.layedit
             ,laydate = layui.laydate;
+
 
         //日期
         laydate.render({
@@ -268,15 +269,6 @@
         laydate.render({
             elem: '#date1'
         });
-
-        //监听指定开关
-        form.on('switch(switchTest)', function(data){
-            layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
-                offset: '6px'
-            });
-            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
-        });
-
         //监听提交
         form.on('submit(demo1)', function(data){
             layer.alert(JSON.stringify(data.field), {
@@ -286,6 +278,20 @@
         });
 
 
+    });
+
+    //点击新增模板
+    $("#tableContent .mybtn").click(function () {
+        layer.open({
+            type: 2,
+            title: '新增合同',
+            shadeClose: true,
+            area: ['780px', '550px'],
+            content: '{:url("add")}',
+            // end:function () {
+            //     tableItem.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
+            // }
+        });
     });
 
 </script>
