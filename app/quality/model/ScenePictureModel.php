@@ -24,7 +24,7 @@ class ScenePictureModel extends Model
      */
     public function getall()
     {
-        return $this->group('name')->Distinct(true)->field("id,name,pid")->select();
+        return $this->group('name,pid')->Distinct(true)->field("id,name,pid")->select();
     }
 
     /**
