@@ -37,29 +37,28 @@ class ScenePictureModel extends Model
     }
 
     /**
-     * 查询表中的年是否存在
+     * 查询表中的年、月、日是否存在
      */
-    public function getyear($year)
+    public function getid($search_info)
     {
-        $data = $this->field("id,name")->where("year",$year)->find();
+        $data = $this->field("id,pid")->where($search_info)->find();
         return $data;
     }
 
     /**
-     * 查询表中的月是否存在
+     * 新增一条现场图片表中的信息
      */
-    public function getmonth($month)
+    public function insertScene($param)
     {
-        $data = $this->field("id,name")->where('month', $month)->find();
-        return $data;
-    }
-
-    /**
-     * 查询表中的日是否存在
-     */
-    public function getday($day)
-    {
-        $data = $this->field("id,name")->where('day', $day)->find();
-        return $data;
+        try{
+            $result = $this->allowField(true)->save($param);
+            if(false === $result){
+                return ['code' => -1,'msg' => $this->getError()];
+            }else{
+                return ['code' => 1,'msg' => '添加成功'];
+            }
+        }catch (PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
     }
 }

@@ -232,7 +232,7 @@ class Common extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function scenepictureUpload($module = 'scenepicture', $use = 'scenepicture_thumb')
+    public function qualityUpload($module = 'quality', $use = 'quality_thumb')
     {
         if ($this->request->file('file')) {
             $file = $this->request->file('file');
