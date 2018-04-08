@@ -160,9 +160,9 @@ class Common extends Controller
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
-        $year = input('year');//年
-        $month = input('month');//月
-        $day = input('day');//日
+        $year = input('year')?input('year'):"";//年
+        $month = input('month')?input('month'):"";//月
+        $day = input('day')?input('day'):"";//日
 
         $search_data = [
             "year" => $year,
