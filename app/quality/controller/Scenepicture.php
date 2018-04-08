@@ -322,10 +322,10 @@ class Scenepicture extends Permissions
             }
 
             //最后删除这条现场图片信息
-            $path = $data_info['path'];
+            $path = "." .$data_info['path'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(file_exists($path)){
-                unlink("." .$path); //删除上传的图片或文件
+                unlink($path); //删除上传的图片或文件
             }
             if(file_exists($pdf_path)){
                 unlink($pdf_path); //删除生成的预览pdf
