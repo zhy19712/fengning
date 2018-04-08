@@ -302,23 +302,23 @@ class Scenepicture extends Permissions
             //首先判断一下删除的只一天所属的月份下是否有其他日子
             $data_info = $model->getOne($id);
 
-            //判断年份下只有一条的话就删除这个年份
+            $day_count = $model->getcount($data_info['pid']);
+
             $data_month = $model->getOne($data_info["pid"]);
 
             $year_count = $model->getcount($data_month['pid']);
+            //如果一个月份下只有一条的话就删除这个月份
+            if($day_count < 2)
+            {
+                $model -> delScene($data_info['pid']);
 
+            }
+
+            //判断年份下只有一条的话就删除这个年份
             if($year_count < 2)
             {
                 //如果一个年份下只有一条的话就删除这个年份
                 $model -> delScene($data_month['pid']);
-            }
-
-            $day_count = $model->getcount($data_info['pid']);
-            if($day_count < 2)
-            {
-                //如果一个月份下只有一条的话就删除这个月份
-                $model -> delScene($data_info['pid']);
-
             }
 
             //最后删除这条现场图片信息
