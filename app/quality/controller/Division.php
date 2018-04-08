@@ -144,20 +144,33 @@ class Division extends Permissions{
             if($param['type'] == 3 && !empty($en_type)){
                 $data['en_type'] = $en_type;
             }
+
+            if(!empty($add_id) && !empty($edit_id)){
+                return json(['code' => -1,'msg' => '无法辨别是新增或编辑']);
+            }
+
             if(!empty($add_id)){
                 // 编码 和 名称 必须 是 唯一的
-                $is_unique = Db::name('quality_division')->where('d_code',$param['d_code'])->whereOr('d_name',$param['d_name'])->value('id');
-                if(!empty($is_unique)){
-                    return json(['code' => -1,'msg' => '编码或名称已存在']);
+                $is_unique_code = Db::name('quality_division')->where('d_code',$param['d_code'])->value('id');
+                if(!empty($is_unique_code)){
+                    return json(['code' => -1,'msg' => '编码已存在']);
+                }
+                $is_unique_name = Db::name('quality_division')->where('d_name',$param['d_name'])->value('id');
+                if(!empty($is_unique_name)){
+                    return json(['code' => -1,'msg' => '名称已存在']);
                 }
                 $flag = $node->insertTb($data);
                 return json($flag);
             }else{
                 $data['id'] = $edit_id;
                 // 编码 和 名称 必须 是 唯一的
-                $is_unique = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_code',$param['d_code'])->whereOr('d_name',$param['d_name'])->where('id','neq',$edit_id)->value('id');
-                if(!empty($is_unique)){
-                    return json(['code' => -1,'msg' => '编码或名称已存在']);
+                $is_unique_code = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_code',$param['d_code'])->value('id');
+                if(!empty($is_unique_code)){
+                    return json(['code' => -1,'msg' => '编码已存在']);
+                }
+                $is_unique_name = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_name',$param['d_name'])->value('id');
+                if(!empty($is_unique_name)){
+                    return json(['code' => -1,'msg' => '名称已存在']);
                 }
                 $flag = $node->editTb($data);
                 return json($flag);
@@ -533,17 +546,25 @@ class Division extends Permissions{
              */
             if(empty($id)){
                 // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
-                $is_unique = Db::name('quality_unit')->where('serial_number',$param['serial_number'])->whereOr('coding',$param['coding'])->value('id');
-                if(!empty($is_unique)){
-                    return json(['code' => -1,'msg' => '流水号 或 系统编码已存在']);
+                $is_unique_number = Db::name('quality_unit')->where('serial_number',$param['serial_number'])->value('id');
+                if(!empty($is_unique_number)){
+                    return json(['code' => -1,'msg' => '流水号已存在']);
+                }
+                $is_unique_code = Db::name('quality_unit')->where('coding',$param['coding'])->value('id');
+                if(!empty($is_unique_code)){
+                    return json(['code' => -1,'msg' => '系统编码已存在']);
                 }
                 $flag = $unit->insertTb($param);
                 return json($flag);
             }else{
                 // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
-                $is_unique = Db::name('quality_unit')->where('id','neq',$param['id'])->where('serial_number',$param['serial_number'])->whereOr('coding',$param['coding'])->where('id','neq',$param['id'])->value('id');
-                if(!empty($is_unique)){
-                    return json(['code' => -1,'msg' => '流水号 或 系统编码已存在']);
+                $is_unique_number = Db::name('quality_unit')->where('id','neq',$param['id'])->where('coding',$param['coding'])->value('id');
+                if(!empty($is_unique_number)){
+                    return json(['code' => -1,'msg' => '流水号已存在']);
+                }
+                $is_unique_code = Db::name('quality_unit')->where('id','neq',$param['id'])->where('coding',$param['coding'])->value('id');
+                if(!empty($is_unique_code)){
+                    return json(['code' => -1,'msg' => '系统编码已存在']);
                 }
                 $flag = $unit->editTb($param);
                 return json($flag);
