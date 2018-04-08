@@ -1,15 +1,21 @@
 ;(function($){
     $.ztree = function (options) {
         var option = {
-            treeId:'ztree'
+            treeId:'ztree',
+            zTreeOnClick:function () {},
+            zTreeOnDblClick:function () {},
+            ajaxUrl:'./index',
+            type:'post',
+            enable:true,
+            dataType:'json'
         };
         $.extend(option,options);
         var setting = {
             async: {
-                enable : true,
-                type : "post",
-                url : "./index",
-                dataType :"json"
+                enable : option.enable,
+                type : option.type,
+                url : option.ajaxUrl,
+                dataType :option.dataType
             },
             data: {
                 simpleData: {
@@ -22,7 +28,8 @@
                 selectedMulti: false
             },
             callback:{
-                onClick:zTreeOnClick,
+                onClick:option.zTreeOnClick,
+                onDblClick:option.zTreeOnDblClick,
             },
             showLine:true,
             showTitle:true,

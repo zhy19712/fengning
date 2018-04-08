@@ -182,7 +182,6 @@
             var form = layui.form;
             //表单提交
             form.on('submit(save)', function(data){
-                option.data.pid = window.nodeId;
                 $.extend(true,data.field,option.data);
                 $.ajax({
                     url:option.ajaxUrl,
