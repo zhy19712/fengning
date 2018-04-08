@@ -604,7 +604,7 @@ function conPicshow(id){
     showPdf(id,'./atlascatePreview')
 
 }
-//拉取黑名单用户
+//拉取白名单用户
 function getAdminname(id) {
     $.ajax({
         type:"post",

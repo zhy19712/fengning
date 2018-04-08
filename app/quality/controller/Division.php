@@ -73,10 +73,11 @@ class Division extends Permissions{
         if(request()->isAjax()){
             $node = new DivisionModel();
             $param = input('param.');
-            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            $add_id = $this->request->has('add_id') ? $this->request->param('add_id', 0, 'intval') : 0;
+            $edit_id = $this->request->has('edit_id') ? $this->request->param('edit_id', 0, 'intval') : 0;
             $en_type = isset($param['en_type']) ? $param['en_type'] : '';
             if(request()->isGet()){
-                $data = $node->getOne($id);
+                $data = $node->getOne($edit_id);
                 $data['en_type_name'] = '';
                 if(!empty($data['en_type'])){
                     $arr = ['','丰宁抽水蓄能电站','开挖','支护','混凝土','填筑','灌浆工程','岩石平洞开挖','竖井（斜井）开挖','岩石边坡开挖','岩石地基开挖','锚喷支护','锚筋桩'];
@@ -88,7 +89,8 @@ class Division extends Permissions{
             // 验证规则
             $rule = [
                 ['section_id', 'require|number|gt:0', '请选择标段|标段只能是数字|请选择标段'],
-                ['pid', 'require|number', 'pid不能为空|pid只能是数字'],
+                ['add_id', 'number', 'pid只能是数字'],
+                ['edit_id', 'number', 'pid只能是数字'],
                 ['d_code', 'require|alphaDash', '编码不能为空|编码只能是字母、数字、下划线 _和破折号 - 的组合'],
                 ['d_name', 'require|max:100', '名称不能为空|名称不能超过100个字符'],
                 ['type', 'require|number|gt:0', '请选择分类|分类只能是数字|请选择分类'],
@@ -124,35 +126,51 @@ class Division extends Permissions{
              *               ( 然后再在后台判断 type= 2 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类 或者 继续保存 分部工程的工程分类默认与当前单元工程段号(单元划分) 一致 )
              *
              * 当新增 单位工程 , 子单位工程 ,分部工程  的时候
-             * 前台需要传递的是 section_id 标段编号 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,primary 是否主要工程,remark 描述
-             * 编辑 的时候 一定要 传递 id 编号
+             * 前台需要传递的是 section_id 标段编号 ,d_code 编码,d_name 名称,type 分类,primary 是否主要工程,remark 描述
+             * 编辑 的时候 一定要 传递 edit_id 编号
              *
              * 当新增 子分部工程,分项工程 和 单元工程 的时候 必须 选择 工程分类
-             * 前台需要传递的是 section_id 标段编号 pid 父级节点编号,d_code 编码,d_name 名称,type 分类,en_type 工程分类,primary 是否主要工程,remark 描述
-             * 编辑 的时候 一定要 传递 id 编号
+             * 前台需要传递的是 section_id 标段编号 ,d_code 编码,d_name 名称,type 分类,en_type 工程分类,primary 是否主要工程,remark 描述
+             * 编辑 的时候 一定要 传递 edit_id 编号
              *
              */
-            $data = ['section_id' => $param['section_id'],'pid' => $param['pid'],'d_code' => $param['d_code'],'d_name' => $param['d_name'],'type' => $param['type'],'primary' => $param['primary'],'remark' => $param['remark']];
+            $data = ['section_id' => $param['section_id'],'d_code' => $param['d_code'],'d_name' => $param['d_name'],'type' => $param['type'],'primary' => $param['primary'],'remark' => $param['remark']];
+            if(!empty($add_id)){
+                $data['pid'] = $add_id;
+            }
             if($param['type'] == 1){
                 $data['pid'] = 0;
             }
             if($param['type'] == 3 && !empty($en_type)){
                 $data['en_type'] = $en_type;
             }
-            if(empty($id)){
+
+            if(!empty($add_id) && !empty($edit_id)){
+                return json(['code' => -1,'msg' => '无法辨别是新增或编辑']);
+            }
+
+            if(!empty($add_id)){
                 // 编码 和 名称 必须 是 唯一的
-                $is_unique = Db::name('quality_division')->where('d_code',$param['d_code'])->whereOr('d_name',$param['d_name'])->value('id');
-                if(!empty($is_unique)){
-                    return json(['code' => -1,'msg' => '编码或名称已存在']);
+                $is_unique_code = Db::name('quality_division')->where('d_code',$param['d_code'])->value('id');
+                if(!empty($is_unique_code)){
+                    return json(['code' => -1,'msg' => '编码已存在']);
+                }
+                $is_unique_name = Db::name('quality_division')->where('d_name',$param['d_name'])->value('id');
+                if(!empty($is_unique_name)){
+                    return json(['code' => -1,'msg' => '名称已存在']);
                 }
                 $flag = $node->insertTb($data);
                 return json($flag);
             }else{
-                $data['id'] = $id;
+                $data['id'] = $edit_id;
                 // 编码 和 名称 必须 是 唯一的
-                $is_unique = Db::name('quality_division')->where('id','neq',$id)->where('d_code',$param['d_code'])->whereOr('d_name',$param['d_name'])->value('id');
-                if(!empty($is_unique)){
-                    return json(['code' => -1,'msg' => '编码或名称已存在']);
+                $is_unique_code = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_code',$param['d_code'])->value('id');
+                if(!empty($is_unique_code)){
+                    return json(['code' => -1,'msg' => '编码已存在']);
+                }
+                $is_unique_name = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_name',$param['d_name'])->value('id');
+                if(!empty($is_unique_name)){
+                    return json(['code' => -1,'msg' => '名称已存在']);
                 }
                 $flag = $node->editTb($data);
                 return json($flag);
@@ -528,17 +546,25 @@ class Division extends Permissions{
              */
             if(empty($id)){
                 // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
-                $is_unique = Db::name('quality_unit')->where('serial_number',$param['serial_number'])->whereOr('coding',$param['coding'])->value('id');
-                if(!empty($is_unique)){
-                    return json(['code' => -1,'msg' => '流水号 或 系统编码已存在']);
+                $is_unique_number = Db::name('quality_unit')->where('serial_number',$param['serial_number'])->value('id');
+                if(!empty($is_unique_number)){
+                    return json(['code' => -1,'msg' => '流水号已存在']);
+                }
+                $is_unique_code = Db::name('quality_unit')->where('coding',$param['coding'])->value('id');
+                if(!empty($is_unique_code)){
+                    return json(['code' => -1,'msg' => '系统编码已存在']);
                 }
                 $flag = $unit->insertTb($param);
                 return json($flag);
             }else{
                 // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
-                $is_unique = Db::name('quality_unit')->where('id','neq',$param['id'])->where('serial_number',$param['serial_number'])->whereOr('coding',$param['coding'])->value('id');
-                if(!empty($is_unique)){
-                    return json(['code' => -1,'msg' => '流水号 或 系统编码已存在']);
+                $is_unique_number = Db::name('quality_unit')->where('id','neq',$param['id'])->where('coding',$param['coding'])->value('id');
+                if(!empty($is_unique_number)){
+                    return json(['code' => -1,'msg' => '流水号已存在']);
+                }
+                $is_unique_code = Db::name('quality_unit')->where('id','neq',$param['id'])->where('coding',$param['coding'])->value('id');
+                if(!empty($is_unique_code)){
+                    return json(['code' => -1,'msg' => '系统编码已存在']);
                 }
                 $flag = $unit->editTb($param);
                 return json($flag);

@@ -30,16 +30,16 @@ class DivisionModel extends Model
         $str .= '},';
         foreach($section as $v){
             $id = $v['id'] + $num;
-            $str .= '{ "id": "' . $id . '", "pId":"' . -1 . '", "name":"' . $v['name'].'"' . ',"code":"' . $v['code'] .'"' . ',"section_id":"' . $v['id'] . '"';
+            $str .= '{ "id": "' . $id . '", "pId":"' . -1 . '", "name":"' . $v['name'].'"' . ',"code":"' . $v['code'] .'"' . ',"section_id":"' . $v['id'] . '"'. ',"add_id":"' . $v['id'] . '"';
             $str .= '},';
             // 分类 1单位 2分部 3分项
             foreach($division as $vo){
                 if($v['id'] == $vo['section_id']){
                     if($vo['type'] == 1){
-                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $id . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $id . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"';
                         $str .= '},';
                     }else{
-                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"';
                         $str .= '},';
                     }
                 }
