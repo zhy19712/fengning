@@ -9,6 +9,7 @@
 namespace app\standard\controller;
 
 use app\admin\controller\Permissions;
+use app\standard\model\MaterialTrackingDivision;
 
 /**
  * 标准库
@@ -25,5 +26,10 @@ class Library extends Permissions
     public function addcontrollpoint()
     {
         return $this->fetch();
+    }
+
+    public function GetDivsionTree($cat)
+    {
+        return MaterialTrackingDivision::all(['Cat'=>$cat]);
     }
 }
