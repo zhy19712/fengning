@@ -8,7 +8,10 @@
             ajax: {
                 "url":"/admin/common/datatablesPre?tableName=admin"
             },
-            dom:'lftipr'
+            dom:'lftipr',
+            serverSide:true,
+            processing:true,
+            tableItem:'tableItem'
         }
 
         $.extend(option,options);
@@ -18,10 +21,10 @@
                             '</div>';
         $('table.table').after(tbcontainer);
 
-        window.tableItem = $('#tableItem').DataTable( {
+        option.tableItem = $('#tableItem').DataTable( {
             pagingType: "full_numbers",
-            processing: true,
-            serverSide: true,
+            processing: option.processing,
+            serverSide: option.serverSide,
             dom: option.dom,
             ajax: option.ajax,
             columns: options.columns,

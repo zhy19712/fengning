@@ -290,53 +290,51 @@ class Scenepicture extends Permissions
     /**
      * 删除一条现场图片信息
      */
-    public function delCateone()
+    public function delPicture()
     {
 
-        if(request()->isAjax()) {
-            $param = input('post.');
+        if (request()->isAjax()) {
+
+            $id = input('post.id');//要删除的现场图片id
 
             //实例化model类型
-            $model = new AtlasCateModel();
+            $model = new ScenePictureModel();
+            //首先判断一下删除的只一天所属的月份下是否有其他日子
+            $data_info = $model->getOne($id);
 
-            //首先判断一下删除的该图册是否存在下级
+            $day_count = $model->getcount($data_info['pid']);
 
-            $info = $model ->judge($param['id']);
+            $data_month = $model->getOne($data_info["pid"]);
 
-            if(empty($info))//没有下级直接删除
+            $year_count = $model->getcount($data_month['pid']);
+            //如果一个月份下只有一条的话就删除这个月份
+            if($day_count < 2)
             {
-                $data = $model->getOne($param['id']);
+                $model -> delScene($data_info['pid']);
 
-                //先删除图片
-                $path = "." .$data['path'];
-                $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-                if(file_exists($path)){
-                    unlink($path); //删除文件图片
-                }
-
-                if(file_exists($pdf_path)){
-                    unlink($pdf_path); //删除生成的预览pdf
-                }
-
-                $flag = $model->delCate($param['id']);
-                //清除下载记录
-                $down = new AtlasDownloadModel();
-                $flag1 = $down->deldownloadall($param['id']);
-
-                if($flag1 || $flag)
-                {
-                    return $flag;
-                }
-
-            }else
-            {
-                return ['code' => -1, 'msg' => '当前图册下已有图纸，请先删除图纸！'];
             }
 
-        }else
-        {
-            return $this->fetch();
-        }
+            //判断年份下只有一条的话就删除这个年份
+            if($year_count < 2)
+            {
+                //如果一个年份下只有一条的话就删除这个年份
+                $model -> delScene($data_month['pid']);
+            }
 
+            //最后删除这条现场图片信息
+            $path = $data_info['path'];
+            $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+            if(file_exists($path)){
+                unlink("." .$path); //删除上传的图片或文件
+            }
+            if(file_exists($pdf_path)){
+                unlink($pdf_path); //删除生成的预览pdf
+            }
+
+            //最后删除这一条记录信息
+            $flag = $model->delScene($id);
+            return $flag;
+
+        }
     }
 }
