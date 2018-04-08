@@ -239,6 +239,16 @@ class Scenepicture extends Permissions
      */
     public function editPicture()
     {
+        if(request()->isAjax()){
+            $model = new ScenePictureModel();
+            $param = input('post.');
+                $data = [
+                    'id' => $param['id'],//现场图片自增id
+                    'filename' => $param['filename']//上传文件名
+                ];
+                $flag = $model->editScene($data);
+                return json($flag);
 
+        }
     }
 }

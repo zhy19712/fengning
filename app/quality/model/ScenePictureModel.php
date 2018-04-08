@@ -64,7 +64,7 @@ class ScenePictureModel extends Model
     /**
      * 编辑一条图册记录
      */
-    public function editCate($param)
+    public function editScene($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
