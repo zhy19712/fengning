@@ -406,7 +406,11 @@ class Atlas extends Permissions
         if(request()->isAjax()){
             $id = input('param.id');
             $model = new AtlasCateModel();
-
+            //查看文件路径是否存在
+            $param = $model->getOne($id);
+            if(!$param['path']){
+                return json(['code' => '-1','msg' => '文件不存在']);
+            }
             //查询当前用户是否被禁用下载图册
             $blacklist = $model->getbalcklist($id);
             if($blacklist['blacklist'])
