@@ -39,6 +39,10 @@ $('#addNode').click(function (){
         layer.msg('未选择标段');
         return false;
     }
+    if(window.treeNode.level>3){
+        layer.msg('请在标段上新建');
+        return false;
+    }
     whetherShow();
     $('input[type="hidden"][name="edit_id"]').val('');
     $('input[type="hidden"][name="add_id"]').val(window.nodeId);
@@ -75,14 +79,13 @@ $('#addNode').click(function (){
     });
 });
 //工程类型树
+var typeTreeNode;
 $.ztree({
     treeId:'typeZtree',
     ajaxUrl:'./getEnType',
     type:'GET',
-    zTreeOnDblClick:function (event, treeId, treeNode){
-        $('input[name="en_type"]').val(treeNode.name);
-        $('input[name="en_type"]').attr('id',treeNode.id);
-        layer.close(layer.index);
+    zTreeOnClick:function (event, treeId, treeNode){
+        typeTreeNode = treeNode;
     }
 });
 //是否显示工程类型
@@ -94,13 +97,26 @@ function whetherShow() {
     }
 }
 //展示工程类型树
-$('#typeZtreeBtn').click(function () {
+$('.typeZtreeBtn').click(function () {
     layer.open({
         title:'工程类型',
         id:'99',
         type:'1',
         area:['650px','400px'],
-        content:$('#ztreeLayer')
+        content:$('#ztreeLayer'),
+        btn:['保存','关闭'],
+        yes:function () {
+            if(typeTreeNode.level>1){
+                $('input[name="en_type"]').val(typeTreeNode.name);
+                $('input[name="en_type"]').attr('id',typeTreeNode.id);
+                layer.close(layer.index);
+            }else{
+                layer.msg('请选择工作项！');
+            }
+        },
+        cancel: function(index, layero){
+            layer.close(layer.index);
+        }
     });
 });
 //编辑节点
@@ -175,5 +191,71 @@ $('#save').click(function () {
             add_id:add_id,
             edit_id:edit_id
         }
+    });
+});
+
+//table数据
+$.datatable({
+    ajax:{
+        'url':'/quality/common/datatablesPre?tableName=quality_unit'
+    },
+    dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm">>tipr',
+    columns:[
+        {
+            name: "serial_number"
+        },
+        {
+            name: "site"
+        },
+        {
+            name: "coding"
+        },
+        {
+            name: "hinge"
+        },
+        {
+            name: "pile_number"
+        },
+        {
+            name: "start_date"
+        },
+        {
+            name: "completion_date"
+        },
+        {
+            name: "id"
+        }
+    ],
+    columnDefs:[
+        {
+            "searchable": false,
+            "orderable": false,
+            "targets": [7],
+            "render" :  function(data,type,row) {
+                var html = "<i class='fa fa-pencil' uid="+ data +" title='编辑' onclick='edit(this)'></i>" ;
+                html += "<i class='fa fa-trash' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
+                html += "<i class='fa fa-download' uid="+ data +" title='二维码' onclick='qrcode(this)'></i>" ;
+                return html;
+            }
+        }
+    ],
+});
+$('#add').html('新增');
+
+$.add({
+    formId:'unit',
+    area:['800px','700px'],
+    success:function () {
+        $('input[name="en_type"]').val('');
+    }
+});
+
+layui.use('laydate', function(){
+    var laydate = layui.laydate;
+    laydate.render({
+        elem: '#start_date'
+    });
+    laydate.render({
+        elem: '#completion_date'
     });
 });
