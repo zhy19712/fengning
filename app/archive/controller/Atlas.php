@@ -161,7 +161,7 @@ class Atlas extends Permissions
     }
     /**********************************右侧图册表************************/
     /*
-     * 获取一条设备设施验收信息
+     * 获取一条图册信息
      */
     public function getindex()
     {

@@ -303,12 +303,12 @@ class Admin extends Model
 
     }
     /**
-     * 根据admin表中的id查询用户名，用户id
+     * 根据admin表中的id查询用户名，用户id,组织机构admin_group_id
      */
 
     public function getadmininfo($id)
     {
-        $data = $this->field("id,nickname as name")->where("id",$id)->find();
+        $data = $this->field("id,nickname as name,admin_group_id")->where("id",$id)->find();
         return $data;
     }
 
