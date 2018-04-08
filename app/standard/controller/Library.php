@@ -55,7 +55,7 @@ class Library extends Permissions
 
     /**
      * 标准库划分树
-     * @param $cat
+     * @param $cat 标准库分类
      * @return false|static[]
      * @throws \think\exception\DbException
      */
