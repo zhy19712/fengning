@@ -77,6 +77,11 @@ class Division extends Permissions{
             $en_type = isset($param['en_type']) ? $param['en_type'] : '';
             if(request()->isGet()){
                 $data = $node->getOne($id);
+                $data['en_type_name'] = '';
+                if(!empty($data['en_type'])){
+                    $arr = ['','丰宁抽水蓄能电站','开挖','支护','混凝土','填筑','灌浆工程','岩石平洞开挖','竖井（斜井）开挖','岩石边坡开挖','岩石地基开挖','锚喷支护','锚筋桩'];
+                    $data['en_type_name'] = $arr[$data['en_type']];
+                }
                 return json($data);
             }
 
