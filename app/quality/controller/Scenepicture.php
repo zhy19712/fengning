@@ -121,14 +121,55 @@ class Scenepicture extends Permissions
                 ];
                 //新增一条年份
                 $model -> insertScene($data);
+
+                //新建一条月份记录
+                $search_info1 =[
+                    "year" => $year,
+                ];
+                $result1 = $model->getid($search_info1);
+                $data1 = [
+                    "year" => $year,
+                    "month" => $month,
+                    "name" => $month."月",
+                    'pid' => $result1['id']
+                ];
+                //新增一条月份记录
+                $model -> insertScene($data1);
+
+                //新建一条日份记录
+                $search_info2 =[
+                    "year" => $year,
+                    "month" => $month
+                ];
+                $result2 = $model->getid($search_info2);
+                $admin_id = Session::get('current_id');
+                $admininfo = $admin->getadmininfo($admin_id);
+                $group = $group->getOne($admininfo["admin_group_id"]);
+                $data2 = [
+                    "year" => $year,
+                    "month" => $month,
+                    "day" => $day,
+                    "name" => $day."日",
+                    "pid" => $result2['id'],
+                    "filename" => date("YmdHis"),//默认上传的文件名为日期
+                    "date" => date("Y-m-d H:i:s"),
+                    "owner" => Session::get('current_name'),
+                    "company" => $group["name"],//单位
+                    "admin_group_id" => $admininfo["admin_group_id"],
+                    "path" => $param['path']//路径
+                ];
+                $flag = $model->insertScene($data2);
+                return json($flag);
+
+
             }else{
                 //2.查询当前的月份是否存在,如果月份不存在时，新建一条月份记录
                 $search_info =[
                     "year" => $year,
                     "month" => $month
                 ];
-                $result1 = $model->getid($search_info);
-                if(!$result1['id'])//如果当前的月份不存在就新建当前月的记录
+                $result = $model->getid($search_info);
+                if(!$result['id'])//如果当前的月份不存在就新建当前月的记录
                 {
                     $data = [
                         "year" => $year,
@@ -138,9 +179,39 @@ class Scenepicture extends Permissions
                     ];
                     //新增一条月份
                     $model -> insertScene($data);
+                    //新建一条日份记录
+                    $search_info1 =[
+                        "year" => $year,
+                        "month" => $month
+                    ];
+                    $result1 = $model->getid($search_info1);
+                    $admin_id = Session::get('current_id');
+                    $admininfo = $admin->getadmininfo($admin_id);
+                    $group = $group->getOne($admininfo["admin_group_id"]);
+                    $data1 = [
+                        "year" => $year,
+                        "month" => $month,
+                        "day" => $day,
+                        "name" => $day."日",
+                        "pid" => $result1['id'],
+                        "filename" => date("YmdHis"),//默认上传的文件名为日期
+                        "date" => date("Y-m-d H:i:s"),
+                        "owner" => Session::get('current_name'),
+                        "company" => $group["name"],//单位
+                        "admin_group_id" => $admininfo["admin_group_id"],
+                        "path" => $param['path']//路径
+                    ];
+                    $flag = $model->insertScene($data1);
+                    return json($flag);
+
                 }else{
                     //3.如果当前的年份、月份都存在时，新增完整的一条现场图片信息
                     //查询当前登录的用户所属的组织机构名
+                    $search_info =[
+                        "year" => $year,
+                        "month" => $month
+                    ];
+                    $result = $model->getid($search_info);
                     $admin_id = Session::get('current_id');
                     $admininfo = $admin->getadmininfo($admin_id);
                     $group = $group->getOne($admininfo["admin_group_id"]);
@@ -149,7 +220,7 @@ class Scenepicture extends Permissions
                         "month" => $month,
                         "day" => $day,
                         "name" => $day."日",
-                        "pid" => $result1['id'],
+                        "pid" => $result['id'],
                         "filename" => date("YmdHis"),//默认上传的文件名为日期
                         "date" => date("Y-m-d H:i:s"),
                         "owner" => Session::get('current_name'),
