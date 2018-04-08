@@ -98,8 +98,9 @@
         color: black;
     }
     #department{
+        padding-top: 5px;
         height: 29px;
-        min-width: 150px;
+        min-width: 454px;
     }
 </style>
 <div data-options="region:'west',title:'现场图片',split:true" style="width:240px;">
@@ -174,7 +175,14 @@
             },
             {
                 "orderable": false,
-                "targets": [4]
+                "targets": [4],
+                "render":function (data) {
+                    if(data==1){
+                        return "<img src='__WEBSITE__/quality/scenepicture/setValid.png'>" ;
+                    }else{
+                        return "";
+                    }
+                }
             }
         ],
         language: {
@@ -198,26 +206,36 @@
         }
     });
     //选择部门
-    var selectdepartment ='<select id="department" class="form-control"></select>';
+    var selectdepartment ='<select id="department" class="form-control"><option value="">全部</option></select>';
     $("div.selectdepartment").html('部门：'+selectdepartment);
     //新增
     $(".mybtn").html('<i class="fa fa-plus"></i>&nbsp;上传');
+    //变色
+    $('#tableItem tbody').on( 'mouseover', 'td', function () {
+        $(this).parent("tr").addClass('highlight');
+    }).on( 'mouseleave', 'td', function () {
+        $(this).parent("tr").removeClass( 'highlight' );
+    });
     //拉取部门
     $.ajax({
         url:"./getAllgroup",
         type:"get",
         dataType:"json",
-        succcess:function (res) {
-            console.log(res)
-            // if(res.code===1){
-            //     var html = "<option value=''>全部</option>";
-            //     for(var i =0; i<res.data.length;i++){
-            //         html += `<option value=${res.data[i].name}>${res.data[i].name}</option>`;
-            //     }
-            //     console.log(html);
-            //     $(".selectdepartment").html(html);
-            // }
+        success:function (res) {
+            if(res.code===1){
+                var html = "<option value=''>全部</option>";
+                for(var i =0; i<res.data.length;i++){
+                    html += `<option value=${res.data[i].id}>${res.data[i].name}</option>`;
+                }
+                $("#department").html(html);
+            }
         }
+    })
+    //切换select
+    $('#department').change(function () {
+        admin_group_id = $(this).find("option:selected").val();
+        var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+        tableItem.ajax.url(url).load();
     })
 </script>
 </body>
