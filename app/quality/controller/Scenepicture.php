@@ -45,9 +45,9 @@ class Scenepicture extends Permissions
             $data = $model->getall();
             $res = tree($data);
 
-            foreach ((array)$res as $k => $v) {
-                $v['id'] = strval($v['id']);
-                $res[$k] = json_encode($v);
+            foreach ((array)$res as $a => $b) {
+                $b['id'] = strval($b['id']);
+                $res[$a] = json_encode($b);
             }
 
             return json($res);
@@ -164,4 +164,11 @@ class Scenepicture extends Permissions
         }
     }
 
+    /**
+     * 编辑一条现场图片信息
+     */
+    public function editPicture()
+    {
+
+    }
 }
