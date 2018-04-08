@@ -121,6 +121,7 @@
     #bodyBig .layui-tab-content {
         padding-left: 4px;
     }
+
 </style>
 <div id="bodyBig">
     <div class="layui-tab">
@@ -177,16 +178,11 @@
 
 {include file="../app/public/common_footer.html"}
 <!--<script src="__WEBSITE__/archive/document/index.js"></script>-->
-</body>
+<!--</body>-->
 <script type="text/javascript">
 
-    layui.use('element', function(){
-        var $ = layui.jquery
-            ,element = layui.element; //Tab的切换功能
-    });
-
     $("#kuan").css({"width":document.body.clientWidth,"height": $(window).height()-50});
-    // alert($(window).height())；//752
+    // alert(document.body.clientHeight);
 
     //组织结构表格
     var tableItem = $('#tableItem').DataTable({
@@ -196,9 +192,7 @@
         ajax: {
             "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
         },
-        dom: 'lf<"move layui-btn layui-btn-sm">' +
-        '<"assModel layui-btn layui-btn-sm">' +
-        '<"mybtn layui-btn layui-btn-sm">rtip',
+        dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
         columns: [
             {
                 name: "docname"
@@ -233,10 +227,8 @@
                 "targets": [4],
                 "render": function (data, type, row) {
                     var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='AssFile(this)'><i title='关联文件' class='fa fa-chain'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='reviewHistory(this)'><i title='审阅历史' class='fa fa-file-text'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='编辑' class='fa fa-pencil'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
             },
@@ -273,9 +265,16 @@
     });
 
     //点击上传文件
-    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>上传文件</div>");
-    $(".assModel").html("<div id='model'><i class='fa fa-plus'></i>关联模型</div>");
-    $(".move").html("<div id='moveClick'><i class='fa fa-plus'></i>移动</div>");
+    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
+
+    var layer = layui.layer;
+    //查询提交
+    layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer;
+        var $ = layui.jquery
+            ,element = layui.element; //Tab的切换功能
+    });
 
     //初始化树节点
     var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
@@ -288,18 +287,21 @@
         },
         async: {
             enable: true,
-            autoParam: ["pid"],
+            autoParam: ["Pid"],
             type: "post",
-            url: "{:url('archive/documenttype/getAll')}",
+            url: "{:url('standard/library/GetDivsionTree')}?cat=1",
             dataType: "json",
             // dataFilter: ajaxDataFilter
         },
         data: {
             simpleData: {
                 enable: true,
-                idkey: "id",
-                pIdKey: "pid",
+                idkey: "Id",
+                pIdKey: "Pid",
                 rootPId: 0
+            },
+            key:{
+                name:"Name"
             }
         },
         callback: {
@@ -314,31 +316,29 @@
         selectData = "";
         sNodes = zTreeObj.getSelectedNodes()[0];//选中节点
         console.log(sNodes);
-        selfid = zTreeObj.getSelectedNodes()[0].id;//当前id
-        nodeName = zTreeObj.getSelectedNodes()[0].name;//当前name
-        nodePid = zTreeObj.getSelectedNodes()[0].pid;//当前pid
-        console.log(selfid + '---id');
-        console.log(nodeName + '---name');
-        console.log(nodePid + '---pid');
-        var path = sNodes.name; //选中节点的名字
+        selfid = zTreeObj.getSelectedNodes()[0].Id;//当前id
+        nodeName = zTreeObj.getSelectedNodes()[0].Name;//当前name
+        nodePid = zTreeObj.getSelectedNodes()[0].Pid;//当前pid
+        console.log(selfid + '---Id');
+        console.log(nodeName + '---Name');
+        console.log(nodePid + '---Pid');
+        var path = sNodes.Name; //选中节点的名字
         node = sNodes.getParentNode();//获取父节点
-        //判断是否还有父节点
         if (node) {
             //判断是否还有父节点
             while (node) {
-                path = node.name + "-" + path;
+                path = node.Name + "-" + path;
                 node = node.getParentNode();
             }
         } else {
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
-        groupid = sNodes.pId //父节点的id
+        groupid = sNodes.PId ;//父节点的id
         var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
         tableItem.ajax.url(url).load();
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
-        $(".layout-panel-center .panel-title").text("当前路径:" + path)
-        getPathText(sNodes);
+        $(".layout-panel-center .panel-title").text("当前路径:" + path);
         clickTreeId = selfid;
     }
 
@@ -433,5 +433,29 @@
         zTreeObj.expandAll(false);
     });
 
+    //点击新增控制节点
+    $(".mybtn #test3").click(function () {
+        layer.open({
+            type: 2,
+            title: '添加控制点信息',
+            shadeClose: true,
+            area: ['780px', '550px'],
+            content: '{:url("addcontrollpoint")}',
+        });
+    });
+
+    //点击编辑模板
+    function editFile(id) {
+        layer.open({
+            type: 2,
+            title: '编辑控制点信息',
+            shadeClose: true,
+            area: ['780px', '550px'],
+            content: '{:url("addcontrollpoint")}?id='+id
+            // end:function () {
+            //     tableItem.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
+            // }
+        });
+    };
 </script>
 </html>
