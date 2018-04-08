@@ -203,7 +203,7 @@ class Common extends Controller
 
         //表的总记录数 必要
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->where($search_data)->where($group_data)->count(0);
+        $recordsTotal = Db::name($table)->where($search_data)->where($group_data)->where("admin_group_id > 0")->count(0);
         $recordsFilteredResult = array();
         if(strlen($search)>0){
             //有搜索条件的情况
