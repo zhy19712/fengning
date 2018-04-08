@@ -166,6 +166,10 @@ class Common extends Controller
 
         $admin_group_id = input('admin_group_id')?input('admin_group_id'):"";
 
+        $group_data = [
+            "admin_group_id" => $admin_group_id
+        ];
+
         if(!$year && !$month && !$day)//如果年月日都不存在
         {
             $search_data = [
@@ -193,19 +197,19 @@ class Common extends Controller
 
         //表的总记录数 必要
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id",$admin_group_id)->count(0);
+        $recordsTotal = Db::name($table)->where($search_data)->where($group_data)->count(0);
         $recordsFilteredResult = array();
         if(strlen($search)>0){
             //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where("admin_group_id",$admin_group_id)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($group_data)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         }else{
             //没有搜索条件的情况
             if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where("admin_group_id",$admin_group_id)->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($group_data)->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
