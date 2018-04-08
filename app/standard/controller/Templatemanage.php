@@ -38,12 +38,13 @@ class Templatemanage extends Permissions
             $mod = input('post.');
             if (empty($mod['id'])) {
                 $res = $this->templateService->allowField(true)->save($mod);
-            }
-            $res = $this->templateService->allowField(true)->save($mod, ['id' => $mod['id']]);
-            if ($res) {
-                return json(['code' => 1,'data'=>$res]);
             } else {
-                return json(['code' => -1,'data'=>$res]);
+                $res = $this->templateService->allowField(true)->save($mod, ['id' => $mod['id']]);
+            }
+            if ($res) {
+                return json(['code' => 1, 'data' => $res]);
+            } else {
+                return json(['code' => -1, 'data' => $res]);
             }
         }
         return $this->fetch();
