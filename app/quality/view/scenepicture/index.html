@@ -96,7 +96,6 @@
         margin-top: 3px;
         font-weight: bold;
         color: black;
-        line-height: 29px;
     }
     #department{
         height: 29px;
@@ -135,24 +134,24 @@
         serverSide: true,
         // scrollY: 600,
         ajax: {
-            "url":"{:url('admin/common/datatablesPre?tableName=admin_cate&id=')}"
+            "url":"{:url('quality/common/datatablesPre?tableName=scene_picture')}"
         },
-        dom: '<"myl"><"selectdepartment">lf<"mybtn layui-btn layui-btn-sm">rtip',
+        dom: '<"myl"><"selectdepartment">lf<"#upload.mybtn layui-btn layui-btn-sm ">rtip',
         columns:[
             {
-                name: "number_id"
-            },
-            {
-                name: "role_name"
-            },
-            {
-                name: "create_owner"
+                name: "filename"
             },
             {
                 name: "date"
             },
             {
-                name: "desc"
+                name: "owner"
+            },
+            {
+                name: "company"
+            },
+            {
+                name: "position"
             },
             {
                 name: "id"
@@ -166,7 +165,10 @@
                 "render" :  function(data,type,row) {
                     var a = data;
                     var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+data+")'><i class='fa fa-pencil'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-search'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPosition("+data+")'><i class='fa fa-gears'></i></a>" ;
                     return html;
                 }
             },
@@ -201,27 +203,7 @@
     //新增
     $(".mybtn").html('<i class="fa fa-plus"></i>&nbsp;上传');
 
-    $("#tableItem_wrapper .mybtn").click(function () {
 
-        var nowtime = new Date().Format("yyyy-MM-dd");
-        layer.open({
-            type: 1,
-            title: '角色管理—上传',
-            area: ['690px', '440px'],
-            content:dom
-        });
-        $("#roleform input").val("");
-        $("#roleform textarea").val("");
-        $("#pid").val(selfid);
-        $('#create_owner').val($("#current_name").html());
-        $('#date').val(nowtime);
-    });
-    //变色
-    $('#tableItem tbody').on( 'mouseover', 'td', function () {
-        $(this).parent("tr").addClass('highlight');
-    }).on( 'mouseleave', 'td', function () {
-        $(this).parent("tr").removeClass( 'highlight' );
-    });
 
 </script>
 </body>
