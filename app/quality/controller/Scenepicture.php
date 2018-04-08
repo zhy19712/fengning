@@ -36,7 +36,7 @@ class Scenepicture extends Permissions
      */
     public function picturetree()
     {
-//        if ($this->request->isAjax()) {
+        if ($this->request->isAjax()) {
             //实例化模型ScenePictureModel
             $model = new ScenePictureModel();
             //查询fengning_scene_picture现场图片表
@@ -49,7 +49,7 @@ class Scenepicture extends Permissions
             }
 
             return json($res);
-//        }
+        }
     }
 
 }
