@@ -5,26 +5,32 @@
     .panel{
         top: 96px;
     }
-
     #queryCriteria{
         width: 100%;
         height: 90px;
         /*border: 1px dotted #00c0ef;*/
     }
-
     #queryCriteria .title{
         margin-left: 10px;
         margin-top: 5px;
     }
-
     #queryCriteria .selectItem{
         margin-left: 250px;
         margin-top: 30px;
         position: relative;
     }
-
     #queryCriteria .selectItem .layui-select-title{
         width: 400px;
+    }
+    #queryCriteria .sea{
+        position: absolute;
+        right: 1%;
+        /*top: -62%;*/
+        top: 0%;
+    }
+    #queryCriteria .sea button{
+        background-color: #00c0ef;
+        color: #FFFFFF;
     }
 
     #tableContent .mybtn i.fa:before,#tableContent .assModel i.fa:before,#tableContent .move i.fa:before,#tableContent .file i.fa:before,#tableContent .oneKeyArchiv i.fa:before {
@@ -97,7 +103,7 @@
     #tableContent .dataTables_wrapper,#tableContent .tbcontainer{
         display: block;
     }
-    .tableHeadName{
+    #tableContent .tableHeadName{
         width: 100%;
         font-size: 14px;
         font-weight: 800;
@@ -109,20 +115,10 @@
         border-top: 1px solid #cecece ;
         margin: 4px 0 4px -5px;
     }
-    #queryCriteria .sea{
-        position: absolute;
-        right: 1%;
-        /*top: -62%;*/
-        top: 0%;
-    }
-    #queryCriteria .sea button{
-        background-color: #00c0ef;
-        color: #FFFFFF;
-    }
-</style>
-<!--<div id="bodyBig">-->
 
-<!--<div style="clear: both;"></div>-->
+</style>
+
+<!--<div id="bodyBig">-->
 <div id="tableContent" data-options="region:'center',title:'查询条件'" style="padding:5px;background:#ffffff;">
     <div id="queryCriteria">
         <div class="title"></div>
@@ -131,21 +127,21 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">表格类型</label>
                     <div class="layui-input-inline">
-                        <select name="quiz1">
+                        <select name="type">
                             <option value="">-请选择-</option>
-                            <option value="质量" selected="">质量</option>
-                            <option value="其他">其他</option>
+                            <option value="1" selected="">质量</option>
+                            <option value="2">其他</option>
                         </select>
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">表格用途</label>
                     <div class="layui-input-block">
-                        <select name="city2" lay-verify="">
+                        <select name="use" lay-verify="">
                             <option value="">-请选择-</option>
-                            <option value="单元工程质量评定表">单元工程质量评定表</option>
-                            <option value="分部工程质量评定表">分部工程质量评定表</option>
-                            <option value="单位工程质量评定表">单位工程质量评定表</option>
+                            <option value="1">单元工程质量评定表</option>
+                            <option value="2">分部工程质量评定表</option>
+                            <option value="3">单位工程质量评定表</option>
                         </select>
                     </div>
                 </div>
@@ -155,18 +151,16 @@
             </form>
         </div>
     </div>
-    <div class="tableHeadName">
-        模版信息列表
-    </div>
+    <div class="tableHeadName">模版信息列表</div>
     <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
         <thead>
-        <tr>
-            <th>模版编号</th>
-            <th>模版名称</th>
-            <th>表格类型</th>
-            <th>表格用途</th>
-            <th>操作</th>
-        </tr>
+            <tr>
+                <th>模版编号</th>
+                <th>模版名称</th>
+                <th>表格类型</th>
+                <th>表格用途</th>
+                <th>操作</th>
+            </tr>
         </thead>
     </table>
     <div class="tbcontainer">
@@ -174,7 +168,6 @@
     </div>
 </div>
 <!--</div>-->
-
 
 {include file="../app/public/common_footer.html"}
 <!--<script src="__WEBSITE__/archive/document/index.js"></script>-->
@@ -210,14 +203,17 @@
         columnDefs: [
             {
                 "searchable": false,
-                targets:[2]
+                targets:[2],
+                render: function (data, type, row) {
+                    if (data == 1) {
+                        return "质量";
+                    }else if(data == 2){
+                        return "其他";
+                    }
+                }
             },
             {
                 targets: [0],
-                render: function (data, type, row) {
-                    // return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[4]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
-                    return ''
-                }
             },
             {
                 "searchable": false,
@@ -234,7 +230,13 @@
                 "searchable": false,
                 targets: [3],
                 render: function (data, type, row) {
-                   return ''
+                    if (data == 1) {
+                        return "单元工程质量评定表";
+                    }else if(data == 2){
+                        return "分部工程质量评定表";
+                    }else if(data == 3){
+                        return "单位工程质量评定表";
+                    }
                 }
             }
         ],
@@ -269,9 +271,14 @@
             ,layer = layui.layer;
         //监听提交
         form.on('submit(demo1)', function(data){
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            })
+            $.ajax({
+                type: "get",
+                url: "{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+data.field.type+"&use="+data.field.use,
+                success: function (res) {
+                    console.log(res)
+
+                }
+            });
             return false;
         });
     });
@@ -280,15 +287,51 @@
     $("#tableContent .mybtn").click(function () {
         layer.open({
             type: 2,
-            title: '新增合同',
+            title: '新增模板',
             shadeClose: true,
             area: ['780px', '550px'],
             content: '{:url("add")}',
+        });
+    });
+
+    //点击编辑模板
+    function editFile(id) {
+        layer.open({
+            type: 2,
+            title: '编辑模板',
+            shadeClose: true,
+            area: ['780px', '550px'],
+            content: '{:url("add")}?id='+id
             // end:function () {
             //     tableItem.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
             // }
         });
-    });
+    };
+
+    //点击删除模板
+    function delFile(id) {
+        layer.confirm('该操作会将数据删除，是否确认删除？', function(index){
+            console.log(id);
+            $.ajax({
+                type: "post",
+                url: "{:url('templatemanage/del')}",
+                data: {id: id},
+                success: function (res) {
+                    if(res.code == 1){
+                        console.log(res)
+                        layer.msg("删除成功！")
+                        tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template").load();
+                    }else if(res.code==0){
+                        layer.msg(res.msg);
+                    }
+                },
+                error: function (data) {
+                    debugger;
+                }
+            })
+            layer.close(index);
+        });
+    };
 
 </script>
 </html>
