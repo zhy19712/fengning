@@ -27,7 +27,7 @@ class Common extends Controller
         $columnNum = sizeof($columns);
         $columnString = '';
         for ($i = 0; $i < $columnNum; $i++) {
-            if ($columns[$i]['searchable']=='true') {
+            if ($columns[$i]['searchable'] == 'true') {
                 $columnString = $columns[$i]['name'] . '|' . $columnString;
             }
         }
@@ -40,9 +40,9 @@ class Common extends Controller
         $order_dir = $this->request->param('order/a')['0']['dir'];
 
         $order = "";
-        if(isset($order_column)){
+        if (isset($order_column)) {
             $i = intval($order_column);
-            $order = $columns[$i]['name'].' '.$order_dir;
+            $order = $columns[$i]['name'] . ' ' . $order_dir;
         }
         //搜索
         //获取前台传过来的过滤条件
@@ -50,12 +50,12 @@ class Common extends Controller
         //分页
         $start = $this->request->has('start') ? $this->request->param('start', 0, 'intval') : 0;
         $length = $this->request->has('length') ? $this->request->param('length', 0, 'intval') : 0;
-        $limitFlag = isset($start) && $length != -1 ;
+        $limitFlag = isset($start) && $length != -1;
         //新建的方法名与数据库表名保持一致
-        return $this->$table($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
+        return $this->$table($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString);
     }
 
-    public function norm_file($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function norm_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
@@ -65,26 +65,26 @@ class Common extends Controller
         $idArr = $node->cateTree($id);
         $idArr[] = $id;
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->whereIn('nodeId',$idArr)->count(0);
-        if(strlen($search)>0){
+        $recordsTotal = Db::name($table)->whereIn('nodeId', $idArr)->count(0);
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
-                    ->whereIn('nodeId',$idArr)
+                    ->whereIn('nodeId', $idArr)
                     ->where($columnString, 'like', '%' . $search . '%')
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
-                    ->whereIn('nodeId',$idArr)
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->whereIn('nodeId', $idArr)
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -101,29 +101,40 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
-    public function quality_template($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function quality_template($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
+        $_type = $this->request->has('type') ? $this->request->param('type') : "";
+        $_use = $this->request->has('use') ? $this->request->param('use') : "";
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
         $recordsTotal = Db::name($table)->count(0);
-        if(strlen($search)>0){
+        if ((!empty($_type)) || (!empty($_use))) {
             //有搜索条件的情况
-            if($limitFlag){
-                //*****多表查询join改这里******
+            if ($limitFlag) {
+                if ((!empty($_type)) && (!empty($_use))) {
+                    $wherestr['type'] = $_type;
+                    $wherestr['use'] = $_use;
+                } else if (!empty($_type)) {
+                    $wherestr['type'] = $_type;
+
+                } else {
+                    $wherestr['use'] = $_use;
+
+                }
                 $recordsFilteredResult = Db::name($table)
-                    ->where($columnString, 'like', '%' . $search . '%')
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->where($wherestr)
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -140,19 +151,19 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
-    public function upload($module='admin',$use='admin_thumb')
+    public function upload($module = 'admin', $use = 'admin_thumb')
     {
-        if($this->request->file('file')){
+        if ($this->request->file('file')) {
             $file = $this->request->file('file');
-        }else{
-            $res['code']=1;
-            $res['msg']='没有上传文件';
+        } else {
+            $res['code'] = 1;
+            $res['msg'] = '没有上传文件';
             return json($res);
         }
         $module = $this->request->has('module') ? $this->request->param('module') : $module;//模块
-        $web_config = Db::name('webconfig')->where('web','web')->find();
-        $info = $file->validate(['size'=>$web_config['file_size']*1024,'ext'=>$web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . $module . DS . $use);
-        if($info) {
+        $web_config = Db::name('webconfig')->where('web', 'web')->find();
+        $info = $file->validate(['size' => $web_config['file_size'] * 1024, 'ext' => $web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . $module . DS . $use);
+        if ($info) {
             //写入到附件表
             $data = [];
             $data['module'] = $module;
@@ -163,7 +174,7 @@ class Common extends Controller
             $data['create_time'] = time();//时间
             $data['uploadip'] = $this->request->ip();//IP
             $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
-            if($data['module'] = 'admin') {
+            if ($data['module'] = 'admin') {
                 //通过后台上传的文件直接审核通过
                 $data['status'] = 1;
                 $data['admin_id'] = $data['user_id'];
@@ -177,7 +188,7 @@ class Common extends Controller
             return json($res);
         } else {
             // 上传失败获取错误信息
-            return $this->error('上传失败：'.$file->getError());
+            return $this->error('上传失败：' . $file->getError());
         }
     }
 
