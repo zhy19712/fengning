@@ -32,4 +32,9 @@ class Library extends Permissions
     {
         return MaterialTrackingDivision::all(['Cat'=>$cat]);
     }
+
+    public function chosetemplate()
+    {
+        return $this->fetch();
+    }
 }
