@@ -154,7 +154,7 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function scene_picture($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function scene_picture($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
