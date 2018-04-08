@@ -442,8 +442,6 @@ class Atlas extends Permissions
         $filePath = '.' . $param['path'];
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
-        }else if(request()->isAjax()){
-            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
         }else{
             $fileName = $param['filename'];
             $file = fopen($filePath, "r"); //   打开文件
