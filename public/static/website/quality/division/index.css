@@ -1,0 +1,36 @@
+.layui-form-label{
+    width: 85px;
+}
+.unit .layui-form-label{
+    width: 100px;
+}
+textarea[name="remark"]{
+    width: 95%;
+}
+input[name="en_type"]{
+
+}
+.ztree-title i.fa {
+    width: 18%;
+    text-align: center;
+}
+i.fa-navicon:before{
+    color: #FFF;
+    padding: 12px;
+    background: #00a0e9;
+}
+i.fa-navicon:hover:before{
+    color: #FFF;
+}
+.layui-form-item .autograph .layui-form-mid {
+    padding: 9px 0!important;
+}
+.autograph{
+    display: none;
+}
+div.icon{
+    margin-left: -11px;
+}
+div.icon i.fa-navicon::before{
+    padding: 11px;
+}

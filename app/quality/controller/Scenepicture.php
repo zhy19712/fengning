@@ -251,4 +251,92 @@ class Scenepicture extends Permissions
 
         }
     }
+
+    /**
+     * 下载一条现场图片信息
+     * @return \think\response\Json
+     */
+    public function downloadPicture()
+    {
+        if(request()->isAjax()){
+            $id = input('param.id');
+            $model = new ScenePictureModel();
+            $param = $model->getOne($id);
+            if(!$param['path'] || !file_exists("." .$param['path'])){
+                return json(['code' => '-1','msg' => '文件不存在']);
+            }
+            return json(['code' => 1]);
+        }
+        $id = input('param.id');
+        $model = new ScenePictureModel();
+        $param = $model->getOne($id);
+
+        $filePath = '.' . $param['path'];
+        $fileName = $param['filename'];
+        $file = fopen($filePath, "r"); //   打开文件
+        //输入文件标签
+        $fileName = iconv("utf-8","gb2312",$fileName);
+        Header("Content-type:application/octet-stream ");
+        Header("Accept-Ranges:bytes ");
+        Header("Accept-Length:   " . filesize($filePath));
+        Header("Content-Disposition:   attachment;   filename= " . $fileName);
+        //   输出文件内容
+        echo fread($file, filesize($filePath));
+        fclose($file);
+        exit;
+
+    }
+
+    /**
+     * 删除一条现场图片信息
+     */
+    public function delCateone()
+    {
+
+        if(request()->isAjax()) {
+            $param = input('post.');
+
+            //实例化model类型
+            $model = new AtlasCateModel();
+
+            //首先判断一下删除的该图册是否存在下级
+
+            $info = $model ->judge($param['id']);
+
+            if(empty($info))//没有下级直接删除
+            {
+                $data = $model->getOne($param['id']);
+
+                //先删除图片
+                $path = "." .$data['path'];
+                $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+                if(file_exists($path)){
+                    unlink($path); //删除文件图片
+                }
+
+                if(file_exists($pdf_path)){
+                    unlink($pdf_path); //删除生成的预览pdf
+                }
+
+                $flag = $model->delCate($param['id']);
+                //清除下载记录
+                $down = new AtlasDownloadModel();
+                $flag1 = $down->deldownloadall($param['id']);
+
+                if($flag1 || $flag)
+                {
+                    return $flag;
+                }
+
+            }else
+            {
+                return ['code' => -1, 'msg' => '当前图册下已有图纸，请先删除图纸！'];
+            }
+
+        }else
+        {
+            return $this->fetch();
+        }
+
+    }
 }

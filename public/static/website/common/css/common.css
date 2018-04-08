@@ -70,9 +70,9 @@ i.fa:hover:before{
 }
 /* layui表单 */
 
-.layui-input[disabled],.layui-textarea[disabled],.layui-disabled{
+.layui-input[disabled],.layui-textarea[disabled],.layui-disabled,.layui-input[readonly],.layui-textarea[readonly],.layui-readonly{
     cursor: not-allowed;
-    background: #cecece !important;
+    background: #e0e0e0 !important;
     color: #545454 !important;
 }
 .layui-form-item .autograph .layui-form-mid{
