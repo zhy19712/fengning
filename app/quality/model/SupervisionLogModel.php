@@ -16,7 +16,7 @@ use think\exception\PDOException;
 
 class SupervisionLogModel extends Model
 {
-    protected $name='supervision_log';
+    protected $name='quality_supervision_log';
 
     /**
      * 查询监理日志表中的所有的数据

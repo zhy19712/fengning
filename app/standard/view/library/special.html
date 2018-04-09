@@ -163,6 +163,7 @@
     <div class="tbcontainer">
         <div class="mark"></div>
     </div>
+    <input type="hidden" id="pruId" value="">
 </div>
 
 {include file="../app/public/common_footer.html"}
@@ -177,7 +178,7 @@
         processing: true,
         serverSide: true,
         ajax: {
-            "url": "{:url('/standard/common/datatablesPre')}?tableName=control_point&id="
+            "url": "{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="
         },
         dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
         columns: [
@@ -188,7 +189,7 @@
                 name: "name"
             },
             {
-                name: "IsImportant"
+                name: "isimportant"
             },
             {
                 name: "id"
@@ -207,7 +208,13 @@
             {
                 "searchable": false,
                 "orderable": false,
-                "targets": [2]
+                "targets": [2],
+                "render": function (data, type, row) {
+                    if (data == 1) {
+                        return "是";
+                    }
+                    return "否";
+                }
             },
             {
                 "searchable": false,
@@ -215,8 +222,9 @@
                 "targets": [3],
                 "render": function (data, type, row) {
                     var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='编辑' class='fa fa-pencil'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    // console.log(row)
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='编辑' class='fa fa-pencil'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
             }
@@ -254,7 +262,7 @@
     });
 
     //初始化树节点
-    var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
+    var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes, procedureId;
 
     var setting = {
         view: {
@@ -307,12 +315,13 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
-        var url = "{:url('/standard/common/datatablesPre')}?tableName=control_point&id="+selfid;
+        var url = "{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid;
         tableItem.ajax.url(url).load();
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
         $(".layout-panel-center .panel-title").text("当前路径:" + path);
         clickTreeId = selfid;
+        procedureId = selfid;
     }
 
     //点击新增控制节点
@@ -323,8 +332,12 @@
             shadeClose: true,
             area: ['780px', '550px'],
             content: '{:url("addcontrollpoint")}',
+            success: function(layero, index){
+                var body = layer.getChildFrame('body', index);
+                body.find("#denId").val(procedureId);
+            },
             end:function () {
-                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=control_point&id="+selfid).load();
+                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
             }
         });
     });
@@ -336,34 +349,34 @@
             title: '编辑控制点信息',
             shadeClose: true,
             area: ['780px', '550px'],
-            content: '{:url("addcontrollpoint")}?id='+id
-            // end:function () {
-            //     tableItem.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
-            // }
+            content: '{:url("addcontrollpoint")}?id='+id,
+            end:function () {
+                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
+            }
         });
     };
 
     //点击删除模板
     function delFile(id) {
-        layer.confirm("该操作会删除该数据，是否确认删除？", function () {
+        console.log(id);
+        layer.confirm('该操作会将数据删除，是否确认删除？', function(index){
             $.ajax({
-                url: "{:url('library/del')}",
                 type: "post",
+                url: "{:url('library/delcontrolpoint')}",
                 data: {id: id},
                 success: function (res) {
-                    if (res.code === 1) {
-                        layer.msg("删除节点成功", {time: 1500, shade: 0.1});
-                        //下面是更新列表
-                        // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
-                        // tableItem.ajax.url(url).load();
+                    if(res.code == 1){
+                        console.log(res)
+                        layer.msg("删除成功！")
+                        tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
+                    }else if(res.code==0){
+                        layer.msg(res.msg);
                     }
                 }
             });
+            layer.close(index);
         });
     };
-
-
-
 
 </script>
 </html>
