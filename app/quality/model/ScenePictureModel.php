@@ -6,7 +6,7 @@
  * Time: 9:22
  */
 /**
- * 日常质量管理，图片管理
+ * 日常质量管理，现场图片
  * Class ScenePictureModel
  * @package app\quality\controller
  */
@@ -16,7 +16,7 @@ use think\exception\PDOException;
 
 class ScenePictureModel extends Model
 {
-    protected $name='scene_picture';
+    protected $name='quality_scene_picture';
 
     /**
      * 查询现场图片管理表中的所有的数据

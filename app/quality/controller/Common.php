@@ -137,19 +137,28 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
-    public function upload($module='admin',$use='admin_thumb')
+    /**
+     * 质量管理文件上传
+     * @param string $module
+     * @param string $use
+     * @return \think\response\Json|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function upload($module = 'quality', $use = 'quality_thumb')
     {
-        if($this->request->file('file')){
+        if ($this->request->file('file')) {
             $file = $this->request->file('file');
-        }else{
-            $res['code']=1;
-            $res['msg']='没有上传文件';
+        } else {
+            $res['code'] = 1;
+            $res['msg'] = '没有上传文件';
             return json($res);
         }
         $module = $this->request->has('module') ? $this->request->param('module') : $module;//模块
-        $web_config = Db::name('webconfig')->where('web','web')->find();
-        $info = $file->validate(['size'=>$web_config['file_size']*1024,'ext'=>$web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . $module . DS . $use);
-        if($info) {
+        $web_config = Db::name('webconfig')->where('web', 'web')->find();
+        $info = $file->validate(['size' => $web_config['file_size'] * 1024, 'ext' => $web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . $module . DS . $use);
+        if ($info) {
             //写入到附件表
             $data = [];
             $data['module'] = $module;
@@ -160,7 +169,7 @@ class Common extends Controller
             $data['create_time'] = time();//时间
             $data['uploadip'] = $this->request->ip();//IP
             $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
-            if($data['module'] = 'admin') {
+            if ($data['module'] = 'atlas') {
                 //通过后台上传的文件直接审核通过
                 $data['status'] = 1;
                 $data['admin_id'] = $data['user_id'];
@@ -168,13 +177,14 @@ class Common extends Controller
             }
             $data['use'] = $this->request->has('use') ? $this->request->param('use') : $use;//用处
             $res['id'] = Db::name('attachment')->insertGetId($data);
+//            $res['filename'] = $info->getFilename();//文件名
             $res['src'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();
             $res['code'] = 2;
             addlog($res['id']);//记录日志
             return json($res);
         } else {
             // 上传失败获取错误信息
-            return $this->error('上传失败：'.$file->getError());
+            return $this->error('上传失败：' . $file->getError());
         }
     }
 
@@ -195,7 +205,7 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function scene_picture($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function quality_scene_picture($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
@@ -541,56 +551,4 @@ class Common extends Controller
 
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
-
-    /**
-     * 日常质量管理文件上传
-     * @param string $module
-     * @param string $use
-     * @return \think\response\Json|void
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function qualityUpload($module = 'quality', $use = 'quality_thumb')
-    {
-        if ($this->request->file('file')) {
-            $file = $this->request->file('file');
-        } else {
-            $res['code'] = 1;
-            $res['msg'] = '没有上传文件';
-            return json($res);
-        }
-        $module = $this->request->has('module') ? $this->request->param('module') : $module;//模块
-        $web_config = Db::name('webconfig')->where('web', 'web')->find();
-        $info = $file->validate(['size' => $web_config['file_size'] * 1024, 'ext' => $web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . $module . DS . $use);
-        if ($info) {
-            //写入到附件表
-            $data = [];
-            $data['module'] = $module;
-            $data['filename'] = $info->getFilename();//文件名
-            $data['filepath'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();//文件路径
-            $data['fileext'] = $info->getExtension();//文件后缀
-            $data['filesize'] = $info->getSize();//文件大小
-            $data['create_time'] = time();//时间
-            $data['uploadip'] = $this->request->ip();//IP
-            $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
-            if ($data['module'] = 'atlas') {
-                //通过后台上传的文件直接审核通过
-                $data['status'] = 1;
-                $data['admin_id'] = $data['user_id'];
-                $data['audit_time'] = time();
-            }
-            $data['use'] = $this->request->has('use') ? $this->request->param('use') : $use;//用处
-            $res['id'] = Db::name('attachment')->insertGetId($data);
-//            $res['filename'] = $info->getFilename();//文件名
-            $res['src'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();
-            $res['code'] = 2;
-            addlog($res['id']);//记录日志
-            return json($res);
-        } else {
-            // 上传失败获取错误信息
-            return $this->error('上传失败：' . $file->getError());
-        }
-    }
-
 }
