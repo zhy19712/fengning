@@ -135,7 +135,7 @@
         serverSide: true,
         // scrollY: 600,
         ajax: {
-            "url":"{:url('quality/common/datatablesPre?tableName=scene_picture')}"
+            "url":"{:url('quality/common/datatablesPre?tableName=quality_scene_picture')}"
         },
         dom: '<"myl"><"selectdepartment">lf<"#upload.mybtn layui-btn layui-btn-sm ">rtip',
         columns:[
@@ -234,7 +234,7 @@
     //切换select
     $('#department').change(function () {
         admin_group_id = $(this).find("option:selected").val();
-        var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+        var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
         tableItem.ajax.url(url).load();
     })
 </script>

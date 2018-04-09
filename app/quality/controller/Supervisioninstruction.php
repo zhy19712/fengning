@@ -3,21 +3,21 @@
  * Created by PhpStorm.
  * User: admin
  * Date: 2018/4/9
- * Time: 14:21
+ * Time: 11:44
  */
 /**
- * 日常质量管理，抽检记录
- * Class Sampling
+ * 日常质量管理，监理指令
+ * Class Supervisioninstruction
  * @package app\quality\controller
  */
 namespace app\quality\controller;
 use app\admin\controller\Permissions;
 use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
-use app\quality\model\SamplingModel;//抽检记录模型
+use app\quality\model\SupervisionInstructionModel;//监理指令模型
 use \think\Session;
 
-class Sampling extends Permissions
+class Supervisioninstruction extends Permissions
 {
     /**
      * 模板首页
@@ -28,17 +28,17 @@ class Sampling extends Permissions
         return $this->fetch();
     }
 
-    /**********************************抽检记录类型树************************/
+    /**********************************监理指令类型树************************/
     /**
-     * 抽检记录类型树
+     * 监理指令类型树
      * @return mixed|\think\response\Json
      */
     public function tree()
     {
         if ($this->request->isAjax()) {
             //实例化模型
-            $model = new SamplingModel();
-            //查询抽检记录表
+            $model = new SupervisionInstructionModel();
+            //查询监理指令表
             $data = $model->getall();
             $res = tree($data);
 
@@ -50,14 +50,14 @@ class Sampling extends Permissions
             return json($res);
         }
     }
-    /**********************************抽检记录************************/
+    /**********************************监理指令************************/
     /**
-     * 获取一条抽检记录信息
+     * 获取一条监理指令信息
      */
     public function getindex()
     {
         if(request()->isAjax()){
-            $model = new SamplingModel();
+            $model = new SupervisionInstructionModel();
             $param = input('post.');
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
@@ -66,14 +66,14 @@ class Sampling extends Permissions
     }
 
     /**
-     * 上传抽检记录
+     * 上传监理指令
      * @return \think\response\Json
      */
     public function add()
     {
         if(request()->isAjax()){
             //实例化模型类
-            $model = new SamplingModel();
+            $model = new SupervisionInstructionModel();
             $admin = new Admin();
             $group = new AdminGroup();
 
@@ -100,7 +100,7 @@ class Sampling extends Permissions
                     'pid' => 1
                 ];
                 //新增一条年份
-                $model -> insertSampling($data);
+                $model -> insertSupervision($data);
 
                 //新建一条月份记录
                 $search_info1 =[
@@ -116,7 +116,7 @@ class Sampling extends Permissions
                     'pid' => $result1['id']
                 ];
                 //新增一条月份记录
-                $model -> insertSampling($data1);
+                $model -> insertSupervision($data1);
 
                 //新建一条日份记录
                 $search_info2 =[
@@ -141,7 +141,7 @@ class Sampling extends Permissions
                     "admin_group_id" => $admininfo["admin_group_id"],
                     "path" => $param['path']//路径
                 ];
-                $flag = $model->insertSampling($data2);
+                $flag = $model->insertSupervision($data2);
                 return json($flag);
 
 
@@ -169,7 +169,7 @@ class Sampling extends Permissions
                         'pid' => $result1['id']
                     ];
                     //新增一条月份
-                    $model -> insertSampling($data1);
+                    $model -> insertSupervision($data1);
                     //新建一条日份记录
                     $search_info2 =[
                         "year" => $year,
@@ -193,7 +193,7 @@ class Sampling extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertSampling($data2);
+                    $flag = $model->insertSupervision($data2);
                     return json($flag);
 
                 }else{
@@ -221,7 +221,7 @@ class Sampling extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertSampling($data);
+                    $flag = $model->insertSupervision($data);
                     return json($flag);
                 }
             }
@@ -229,32 +229,32 @@ class Sampling extends Permissions
     }
 
     /**
-     * 编辑一条抽检记录信息
+     * 编辑一条监理指令信息
      */
     public function edit()
     {
         if(request()->isAjax()){
-            $model = new SamplingModel();
+            $model = new SupervisionInstructionModel();
             $param = input('post.');
             $data = [
-                'id' => $param['id'],//抽检记录自增id
+                'id' => $param['id'],//监理指令自增id
                 'filename' => $param['filename']//上传文件名
             ];
-            $flag = $model->editSampling($data);
+            $flag = $model->editSupervision($data);
             return json($flag);
 
         }
     }
 
     /**
-     * 下载一条抽检记录信息
+     * 下载一条监理指令信息
      * @return \think\response\Json
      */
     public function download()
     {
         if(request()->isAjax()){
             $id = input('param.id');
-            $model = new SamplingModel();
+            $model = new SupervisionInstructionModel();
             $param = $model->getOne($id);
             if(!$param['path'] || !file_exists("." .$param['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
@@ -262,7 +262,7 @@ class Sampling extends Permissions
             return json(['code' => 1]);
         }
         $id = input('param.id');
-        $model = new SamplingModel();
+        $model = new SupervisionInstructionModel();
         $param = $model->getOne($id);
 
         $filePath = '.' . $param['path'];
@@ -282,17 +282,17 @@ class Sampling extends Permissions
     }
 
     /**
-     * 删除一条抽检记录信息
+     * 删除一条监理指令信息
      */
     public function del()
     {
 
         if (request()->isAjax()) {
 
-            $id = input('post.id');//要删除的抽检记录id
+            $id = input('post.id');//要删除的监理指令id
 
             //实例化model类型
-            $model = new SamplingModel();
+            $model = new SupervisionInstructionModel();
             //首先判断一下删除的只一天所属的月份下是否有其他日子
             $data_info = $model->getOne($id);
 
@@ -303,7 +303,7 @@ class Sampling extends Permissions
             //如果一个月份下只有一条的话就删除这个月份
             if($day_count < 2)
             {
-                $model -> delSampling($data_info['pid']);
+                $model -> delSupervision($data_info['pid']);
 
             }
 
@@ -312,10 +312,10 @@ class Sampling extends Permissions
             if($year_count < 1)
             {
                 //如果一个年份下只有一条的话就删除这个年份
-                $model -> delSampling($data_month['pid']);
+                $model -> delSupervision($data_month['pid']);
             }
 
-            //最后删除这条抽检记录信息
+            //最后删除这条巡视记录信息
             $path = "." .$data_info['path'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(file_exists($path)){
@@ -326,19 +326,19 @@ class Sampling extends Permissions
             }
 
             //最后删除这一条记录信息
-            $flag = $model->delSampling($id);
+            $flag = $model->delSupervision($id);
             return $flag;
 
         }
     }
 
     /**
-     * 预览一条抽检记录信息
+     * 预览一条巡视记录信息
      * @return \think\response\Json
      */
     public function preview()
     {
-        $model = new SamplingModel();
+        $model = new SupervisionInstructionModel();
         if(request()->isAjax()) {
             $param = input('post.');
             $code = 1;
