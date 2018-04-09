@@ -10,7 +10,7 @@
             formId:'formLayer',
             layerId:'1',
             area:['660px','700px'],
-            others:function () {}
+            success:function () {}
         };
         $.extend(option,options);
         $('#'+option.btn).on('click',function(){
@@ -25,11 +25,9 @@
                 area:option.area,
                 title:'新增',
                 content:$('#'+ option.formId),
-                success:function(){
-                    option.others();
-                },
+                success:option.success,
                 cancel: function(index, layero){
-                    $('#'+option.formId).get(0).reset();
+                    $('#'+option.formId)[0].reset();
                 }
             });
         });
@@ -48,7 +46,7 @@
         $.extend(option,options);
         $('.'+option.btn).click(function () {
             $('#'+option.formId)[0].reset();
-            option.others();    //关闭的时候需要处理的其他事务R
+            option.others();    //关闭的时候需要处理的其他事务
             layer.closeAll('page');
         });
     };

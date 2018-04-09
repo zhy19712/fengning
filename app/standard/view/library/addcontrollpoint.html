@@ -90,6 +90,17 @@
             z-index: 7;
         }
 
+        #memberAdd #txtArea {
+            width: 73.5%;
+            height: 75px;
+            padding: 8px;
+        }
+
+        #memberAdd #selectTem {
+            width: 80%;
+            display: inline-block;
+        }
+
     </style>
 <body>
 <div class="row">
@@ -98,35 +109,45 @@
             <div class="ibox-content">
                 <!--新增用户信息开始-->
                 <form class="layui-form" name="memberAdd" id="memberAdd" method="post" action="#" onsubmit="return false">
-                    <input type="hidden" name="id" id="addId" value="{:$id}">
+                    <input type="hidden" name="id" id="addId" value="">
                     <div class="layui-form-item">
-                        <label class="layui-form-label">模版编号</label>
+                        <label class="layui-form-label">控制点编号</label>
                         <div class="layui-input-block" class="inpLength">
-                            <input type="text" name="code" id="temCode" lay-verify="title" autocomplete="off" placeholder="请输入模版编号" class="layui-input">
+                            <input type="text" name="code" id="temCode" lay-verify="title" autocomplete="off" placeholder="请输入工作序号" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">标段名称</label>
+                        <label class="layui-form-label">控制点名称</label>
                         <div class="layui-input-block" class="inpLength">
-                            <input type="text" name="name" id="temName" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
+                            <input type="text" name="name" id="temName" lay-verify="title" autocomplete="off" placeholder="请输入工作名称" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">表格类型</label>
-                        <select name="type" id="tableType">
+                        <label class="layui-form-label">是否重要控制点</label>
+                        <select name="type" id="itImportant">
                             <option value="">请选择</option>
-                            <option value="1">质量</option>
-                            <option value="2">其他</option>
+                            <option value="1">是</option>
+                            <option value="0">否</option>
                         </select>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">表格用途</label>
-                        <select name="use" id="formUse">
+                        <label class="layui-form-label">是否需要模版</label>
+                        <select name="use" id="itNeed">
                             <option value="">请选择</option>
-                            <option value="1">单元工程质量评定表</option>
-                            <option value="2">分部工程质量评定表</option>
-                            <option value="3">单位工程质量评定表</option>
+                            <option value="1">是</option>
+                            <option value="0">否</option>
                         </select>
+                    </div>
+                    <div class="layui-form-item" id="modelList">
+                        <label class="layui-form-label">选择模板</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" id="selectTem" lay-verify="title" class="layui-input layui-btn-disabled" placeholder="模板名称">
+                            <button id="modelId" class="layui-btn"><i class="fa fa-check"></i></button>&nbsp;&nbsp;
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">内容描述</label>
+                        <textarea name="txtArea" id="txtArea" placeholder="内容描述"></textarea>
                     </div>
 
                     <div class="layui-form-item">
@@ -154,7 +175,7 @@
     //数据初始化
     function Initdata() {
         var id = $("#addId").val();
-        console.log(id);
+        // console.log(id);
         if (id.length>0) {
             $.ajax({
                 url: "{:url('./standard/templatemanage/getOne')}?id=" + id,
@@ -176,6 +197,16 @@
     layui.use(['form', 'layedit', 'laydate'], function () {
         form = layui.form;
         var layer = layui.layer;
+
+        form.on('select()', function(data){
+            console.log(data.value); //得到被选中的值
+            if(data.value == 1){
+                $("#modelList").css("display",'block');
+            }else if(data.value == 0){
+                $("#modelList").css("display",'none');
+            }
+        });
+
         function closWin() {
             var index = parent.layer.getFrameIndex(window.name);
             parent.layer.close(index);
@@ -233,5 +264,18 @@
             closWin();
         })
     });
+
+    //点击添加模板
+    $("#modelId").click(function () {
+        layer.open({
+            type: 2,
+            title: '选择模板',
+            shadeClose: true,
+            area: ['780px', '500px'],
+            content: '{:url("chosetemplate")}',
+        });
+    });
+
+
 </script>
 </html>

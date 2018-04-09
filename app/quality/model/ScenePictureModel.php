@@ -24,7 +24,7 @@ class ScenePictureModel extends Model
      */
     public function getall()
     {
-        return $this->group('name')->Distinct(true)->field("id,name,pid")->select();
+        return $this->group('name,pid')->order("month","asc")->order("year","asc")->order("day","asc")->Distinct(true)->field("id,name,pid")->select();
     }
 
     /**
@@ -64,7 +64,7 @@ class ScenePictureModel extends Model
     /**
      * 编辑一条图册记录
      */
-    public function editCate($param)
+    public function editScene($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
@@ -76,5 +76,26 @@ class ScenePictureModel extends Model
         }catch(PDOException $e){
             return ['code' => 0, 'msg' => $e->getMessage()];
         }
+    }
+
+    /**
+     * 删除一条现场图片信息
+     */
+    public function delScene($id)
+    {
+        try{
+            $this->where("id",$id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * 获取所属同一个pid下的现场图片的数量
+     */
+    public function getcount($pid)
+    {
+        return $this->field("pid")->where("pid",$pid)->count();
     }
 }

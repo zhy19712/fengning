@@ -1,6 +1,6 @@
 var selfid,zTreeObj,groupid,sNodes,selectData="";//选中的节点id，ztree对象，父节点id，选中的节点，选中的表格的信息
 var uploadpath;
-var admin_group_id,year="",month="",day="";
+var admin_group_id="",year="",month="",day="";
 //编辑dom
 var sceneDom =[
     '<form  id="sceneform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">',
@@ -77,12 +77,12 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
     form.on('submit(demo1)', function(data){
         $.ajax({
             type: "post",
-            url:"./editAtlasCate",
+            url:"./editPicture",
             data:data.field,
             success: function (res) {
                 console.log(selfid)
                 if(res.code == 1) {
-                    var url = "/archive/common/datatablespre/tableName/atlas_cate/selfid/"+selfid+".shtml";
+                    var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
@@ -115,6 +115,11 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
                       layer.msg("上传成功");
                       var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                       tableItem.ajax.url(url).load();
+                      zTreeObj.reAsyncChildNodes(null, "refresh", false);
+                      setTimeout(function () {
+                          zTreeObj.expandAll(true);
+                      },200);
+
                   }
               }
           })
@@ -169,7 +174,7 @@ function conEdit(id) {
         area: ['690px', '240px'],
         content:sceneDom
     });
-    $("#addId").val(selfid);
+    $("#addId").val(id);
 
     $.ajax({
         type:"post",
@@ -187,14 +192,18 @@ function conEdit(id) {
 function conDel(id){
     $.ajax({
         type:"post",
-        url:"./delCateone",
+        url:"./delPicture",
         data:{id:id},
         dataType:"json",
         success:function (res) {
             if(res.code===1){
                 layer.msg("删除成功");
-                var url = "/archive/common/datatablespre/tableName/atlas_cate/selfid/"+selfid+".shtml";
+                var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                 tableItem.ajax.url(url).load();
+                zTreeObj.reAsyncChildNodes(null, "refresh", false);
+                setTimeout(function () {
+                    zTreeObj.expandAll(true);
+                },200);
             }else if(res.code===-1){
                 layer.msg(res.msg);
             }
@@ -214,6 +223,7 @@ function download(id,url) {
             if(res.code != 1){
                 layer.msg(res.msg);
             }else {
+                alert(123);
                 $("#form_container").empty();
                 var str = "";
                 str += ""
@@ -225,10 +235,6 @@ function download(id,url) {
                     + "</form>"
                 $("#form_container").append(str);
                 $("#form_container").find(".btn" + id).click();
-                var url = "/archive/common/datatablespre/tableName/atlas_download_record/id/"+id+".shtml";
-                setTimeout(function () {
-                    downlog.ajax.url(url).load();
-                },200);
             }
 
         }
@@ -236,7 +242,7 @@ function download(id,url) {
 }
 function conDown(id) {
 
-    download(id,"./atlascateDownload")
+    download(id,"./downloadPicture")
 }
 //预览
 function showPdf(id,url) {
@@ -251,7 +257,7 @@ function showPdf(id,url) {
                 console.log(res.path.split(".")[1]);
                 if(res.path.split(".")[1]==="pdf"){
                     window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
-                }else{
+                }else if(res.path.split(".")[1]==="png"||res.path.split(".")[1]==="jpg"||res.path.split(".")[1]==="jpeg"){
                     // var index = layer.open({
                     //     type: 2,
                     //     title: '文件在线预览：' ,
@@ -277,6 +283,8 @@ function showPdf(id,url) {
                         }
                         ,anim: Math.floor(Math.random()*7) //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
                     });
+                }else{
+                    layer.msg("不支持的文件格式");
                 }
 
             }else {
@@ -285,9 +293,9 @@ function showPdf(id,url) {
         }
     })
 }
-//预览图纸
+//预览
 function conPicshow(id){
-    showPdf(id,'./atlascatePreview')
+    showPdf(id,'./previewPicture')
 
 }
 //设置位置
