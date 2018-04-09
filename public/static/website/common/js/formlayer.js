@@ -6,30 +6,28 @@
      */
     $.add = function(options){
         var option = {
-            btn:'add',
             formId:'formLayer',
             layerId:'1',
             area:['660px','700px'],
             success:function () {}
         };
         $.extend(option,options);
-        $('#'+option.btn).on('click',function(){
-            var nodeId = window.nodeId;
-            if(!nodeId){
-                layer.msg('请选择节点');
-                return false;
+
+        var nodeId = window.nodeId;
+        if(!nodeId){
+            layer.msg('请选择节点');
+            return false;
+        }
+        layer.open({
+            id:option.layerId,
+            type:'1',
+            area:option.area,
+            title:'新增',
+            content:$('#'+ option.formId),
+            success:option.success,
+            cancel: function(index, layero){
+                $('#'+option.formId)[0].reset();
             }
-            layer.open({
-                id:option.layerId,
-                type:'1',
-                area:option.area,
-                title:'新增',
-                content:$('#'+ option.formId),
-                success:option.success,
-                cancel: function(index, layero){
-                    $('#'+option.formId)[0].reset();
-                }
-            });
         });
     };
     /**

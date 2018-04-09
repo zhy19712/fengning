@@ -11,7 +11,7 @@
             dom:'lftipr',
             serverSide:true,
             processing:true,
-            tableItem:'tableItem'
+            tableId:'tableItem'
         }
 
         $.extend(option,options);
@@ -21,7 +21,7 @@
                             '</div>';
         $('table.table').after(tbcontainer);
 
-        option.tableItem = $('#tableItem').DataTable( {
+       window.tableItem = $('#'+option.tableId).DataTable( {
             pagingType: "full_numbers",
             processing: option.processing,
             serverSide: option.serverSide,

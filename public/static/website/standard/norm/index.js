@@ -14,7 +14,6 @@ $.ztree({
 
 //工程标准及规范表格
 $.datatable({
-    tableItem:'tableItem',
     ajax:{
         'url':'/standard/common/datatablesPre?tableName=norm_file'
     },
@@ -55,8 +54,10 @@ $.datatable({
 });
 $('#add').html('新增');
 //新增弹层
-$.add({
-    area:['660px','400px']
+$('#add').click(function () {
+    $.add({
+        area:['660px','400px']
+    });
 });
 //关闭弹层
 $.close();
