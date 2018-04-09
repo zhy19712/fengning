@@ -153,10 +153,9 @@
     <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
         <thead>
         <tr>
-            <th>文件名称</th>
-            <th>上传人</th>
-            <th>上传时间</th>
-            <th>状态</th>
+            <th>编号</th>
+            <th>名称</th>
+            <th>是否重点</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -165,8 +164,6 @@
         <div class="mark"></div>
     </div>
 </div>
-
-
 
 {include file="../app/public/common_footer.html"}
 
@@ -180,21 +177,18 @@
         processing: true,
         serverSide: true,
         ajax: {
-            "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
+            "url": "{:url('/standard/common/datatablesPre')}?tableName=control_point&id="
         },
         dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
         columns: [
             {
-                name: "docname"
+                name: "code"
             },
             {
-                name: "nickname"
+                name: "name"
             },
             {
-                name: "create_time"
-            },
-            {
-                name: "status"
+                name: "IsImportant"
             },
             {
                 name: "id"
@@ -202,36 +196,31 @@
         ],
         columnDefs: [
             {
-                "searchable": false,
-                targets:[2]
+                "targets":[0],
+                "searchable": false
             },
             {
-                targets: [0],
-                render: function (data, type, row) {
-                    return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[4]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
-                }
+                "targets": [1],
+                "searchable": false,
+                "orderable": false
             },
             {
                 "searchable": false,
                 "orderable": false,
-                "targets": [4],
+                "targets": [2]
+            },
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [3],
                 "render": function (data, type, row) {
                     var a = data;
                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='编辑' class='fa fa-pencil'></i></a>";
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
-            },
-            {
-                "searchable": false,
-                targets: [3],
-                render: function (data, type, row) {
-                    if (data == 1) {
-                        return "已归档";
-                    }
-                    return "待归档";
-                }
             }
+
         ],
         language: {
             "lengthMenu": "_MENU_",
@@ -318,7 +307,7 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
-        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
+        var url = "{:url('/standard/common/datatablesPre')}?tableName=control_point&id="+selfid;
         tableItem.ajax.url(url).load();
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
@@ -334,6 +323,9 @@
             shadeClose: true,
             area: ['780px', '550px'],
             content: '{:url("addcontrollpoint")}',
+            end:function () {
+                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=control_point&id="+selfid).load();
+            }
         });
     });
 
@@ -348,6 +340,25 @@
             // end:function () {
             //     tableItem.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
             // }
+        });
+    };
+
+    //点击删除模板
+    function delFile(id) {
+        layer.confirm("该操作会删除该数据，是否确认删除？", function () {
+            $.ajax({
+                url: "{:url('library/del')}",
+                type: "post",
+                data: {id: id},
+                success: function (res) {
+                    if (res.code === 1) {
+                        layer.msg("删除节点成功", {time: 1500, shade: 0.1});
+                        //下面是更新列表
+                        // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
+                        // tableItem.ajax.url(url).load();
+                    }
+                }
+            });
         });
     };
 

@@ -43,6 +43,8 @@
     <div class="tbcontainer">
         <div class="mark"></div>
     </div>
+    <input type="hidden" name="inputId" id="hiddenValId" value="">
+    <input type="hidden" name="inputName" id="hiddenValName" value="">
 </div>
 
 {include file="../app/public/common_footer.html"}
@@ -86,7 +88,7 @@
                 "render": function (data, type, row) {
                     var a = data;
                     var html = "<a type='button' href='javasrcipt:;' class=''>" +
-                        "<input type='radio' name='sex' class='sex' checked onclick='checkFile("+row[0]+")'>" +
+                        "<input type='radio' name='sex' class='sex' checked onclick='checkFile(this)'>" +
                         "</a>";
                     return html;
                 }
@@ -152,130 +154,48 @@
     });
     //保存
     $(".mybtn").html("<div id='test3'>保存</div>");
+
     var checkId;
+    var checkName;
+    var flag;
     var form;
+
     layui.use(['form', 'layedit', 'laydate'], function () {
         form = layui.form;
         var layer = layui.layer;
-
-        form.on('select()', function(data){
-            // console.log(data.value); //得到被选中的值
-            if(data.value == 1){
-                $("#modelList").css("display",'block');
-            }else if(data.value == 0){
-                $("#modelList").css("display",'none');
-            }
-        });
 
         function closWin() {
             var index = parent.layer.getFrameIndex(window.name);
             parent.layer.close(index);
         };
 
-        function refreshSub() {
-            parent.tableItemChose.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template").load();
-        }
-        //监听提交
-        form.on('submit(demo1)', function (data) {
-            console.log($("#addId").val());
-            console.log(data);
-            if ($("#addId").val() == '') {
-                $.ajax({
-                    type: "Post",
-                    url: "{:url('templatemanage/add')}",
-                    data: data.field,
-                    success: function (res) {
-                        console.log(res)
-                        if (res.code == 1) {
-                            refreshSub();
-                            parent.layer.msg('保存成功！');
-                            closWin();
-                        }
-                    },
-                    error: function (data) {
-                        debugger;
-                    }
-                })
-            } else if ($("#addId").val() != '') {
+        //点击保存
+        $("#test3").click(function () {
+            // console.log($("#tableItemChose tbody td:nth-of-type(1) a"));
+            if(flag){
+                $("#hiddenValId").val(checkId);
+                $("#hiddenValName").val(checkName);
+                $(window.parent.document).find("#getValId").val(checkId);
+                $(window.parent.document).find("#getValName").val(checkName);
 
-                $.ajax({
-                    type: "Post",
-                    url: "{:url('add')}",
-                    data: data.field,
-                    success: function (res) {
-                        console.log(res)
-                        if (res.code == 1) {
-                            refreshSub();
-                            parent.layer.msg('编辑成功！');
-                            closWin();
-                            form.render('select');
-                        }
-                    },
-                    error: function (data) {
-                        debugger;
-                    }
-                })
+                $(window.parent.document).find("#selectTem").val(checkName);
 
+                setTimeout(function () {
+                    closWin();
+                },800)
             }
-            return false;
         });
-        $('button[type="reset"]').click(function () {
-            closWin();
-        })
     });
 
-    //驱虫
-    Array.prototype.removal = function(){
-        var newArr = [];
-        for (var i = 0; i < this.length; i++) {
-            if(newArr.indexOf(this[i]) == -1){
-                newArr.push(this[i]);
-            }
-        }
-        return newArr;
-    };
-    //删除数组中的指定元素
-    Array.prototype.remove = function(val){
-        for (var i = 0; i < this.length; i++) {
-            if(this[i] === val){
-                this.splice(i,1);
-                break;
-            }
-        }
-        return this;
-    };
-    var dataArr=[];
-    //获取选中行ID
-    function getDataId(that) {
-        var isChecked = $(that).prop('checked');
-        var id = $(that).parents('tr').find('td:eq(1)').text();
-        if(isChecked){
-            dataArr.push(id);
-            dataArr.removal(id);
-        }else {
-            dataArr.remove(id);
-            dataArr.removal(id);
-        }
-        console.log(dataArr)
-    }
-    //单选
-    function getRadioId(that) {
-        getDataId(that);
-        console.log(dataArr);
-    }
     //点击选中单选
-    function checkFile(id) {
-        console.log(id);
-        checkId = id;
-    };
-    //点击保存
-    $("#test3").click(function () {
-        console.log($("#tableItemChose tbody td:nth-of-type(1) a"));
-
-        if($(".sex").checked){
-            alert(434)
+    function checkFile(that) {
+        console.log(that);
+        if(that.checked){
+            flag = true;
+        }else{
+            flag = false;
         }
-    });
+    };
 
     //点击选中变色
     $("#tableItemChose").delegate("tbody tr","click",function (e) {
@@ -284,6 +204,8 @@
         }
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItemChose.row(".select-color").data();//获取选中行数据
+        checkId = selectData[0];
+        checkName = selectData[2];
     });
 </script>
 </html>
