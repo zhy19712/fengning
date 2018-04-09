@@ -152,7 +152,7 @@
     });
     //保存
     $(".mybtn").html("<div id='test3'>保存</div>");
-
+    var checkId;
     var form;
     layui.use(['form', 'layedit', 'laydate'], function () {
         form = layui.form;
@@ -233,7 +233,7 @@
             }
         }
         return newArr;
-    }
+    };
     //删除数组中的指定元素
     Array.prototype.remove = function(val){
         for (var i = 0; i < this.length; i++) {
@@ -243,7 +243,7 @@
             }
         }
         return this;
-    }
+    };
     var dataArr=[];
     //获取选中行ID
     function getDataId(that) {
@@ -263,17 +263,21 @@
         getDataId(that);
         console.log(dataArr);
     }
-
+    //点击选中单选
     function checkFile(id) {
         console.log(id);
-        var that = this;
-            console.log($(that).html());
-            debugger;
-        if($(this).checked){
-            alert(2423)
-        }
+        checkId = id;
     };
+    //点击保存
+    $("#test3").click(function () {
+        console.log($("#tableItemChose tbody td:nth-of-type(1) a"));
 
+        if($(".sex").checked){
+            alert(434)
+        }
+    });
+
+    //点击选中变色
     $("#tableItemChose").delegate("tbody tr","click",function (e) {
         if($(e.target).hasClass("dataTables_empty")){
             return;

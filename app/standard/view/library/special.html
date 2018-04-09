@@ -32,6 +32,9 @@
     #nodeZtree .ztree-title #add {
         margin-left: 6px;
     }
+    #nodeZtree #ztree{
+        margin-top: 0px;
+    }
 
     #tableContent .mybtn i.fa:before,#tableContent .assModel i.fa:before,#tableContent .move i.fa:before,#tableContent .file i.fa:before,#tableContent .oneKeyArchiv i.fa:before {
         background: #00c0ef;
@@ -100,9 +103,9 @@
     #tableContent #tableItem tr td a{
         color: #337ab7;
     }
-    #tableContent .dataTables_wrapper,#tableContent .tbcontainer{
-        display: block;
-    }
+    /*#tableContent .dataTables_wrapper,#tableContent .tbcontainer{*/
+        /*display: block;*/
+    /*}*/
     .tableHeadName{
         width: 100%;
         font-size: 14px;
@@ -137,13 +140,13 @@
 </div>
 
 <div id="nodeZtree" data-options="region:'west',title:'专项工程树',split:true" style="width:260px;">
-    <div class="ztree-title">
-        <i id="add" title="新增节点" class="fa fa-lg fa-sitemap" onclick="addNodetree()"></i>
-        <i title="编辑节点" class="fa fa-lg fa-pencil" onclick="editNodetree()"></i>
-        <i title="删除节点" class="fa fa-lg fa-trash" onclick="delNodetree()"></i>
-        <i title="展开所有" class="fa fa-lg fa-plus-square" id="openNode"></i>
-        <i title="收起所有" class="fa fa-lg fa-minus-square" id="closeNode"></i>
-    </div>
+    <!--<div class="ztree-title">-->
+        <!--<i id="add" title="新增节点" class="fa fa-lg fa-sitemap" onclick="addNodetree()"></i>-->
+        <!--<i title="编辑节点" class="fa fa-lg fa-pencil" onclick="editNodetree()"></i>-->
+        <!--<i title="删除节点" class="fa fa-lg fa-trash" onclick="delNodetree()"></i>-->
+        <!--<i title="展开所有" class="fa fa-lg fa-plus-square" id="openNode"></i>-->
+        <!--<i title="收起所有" class="fa fa-lg fa-minus-square" id="closeNode"></i>-->
+    <!--</div>-->
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div id="tableContent" data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#ffffff;">
@@ -166,12 +169,10 @@
 
 
 {include file="../app/public/common_footer.html"}
-<!--<script src="__WEBSITE__/archive/document/index.js"></script>-->
-<!--</body>-->
-<script type="text/javascript">
 
-    $("#kuan").css({"width":document.body.clientWidth,"height": $(window).height()-50});
-    // alert(document.body.clientHeight);
+<!--<script src="__WEBSITE__/archive/document/index.js"></script>-->
+
+<script type="text/javascript">
 
     //组织结构表格
     var tableItem = $('#tableItem').DataTable({
@@ -257,12 +258,10 @@
     $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
 
     var layer = layui.layer;
+
     //查询提交
     layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
-        var form = layui.form
-            ,layer = layui.layer;
-        var $ = layui.jquery
-            ,element = layui.element; //Tab的切换功能
+        var form = layui.form,layer = layui.layer;
     });
 
     //初始化树节点
@@ -278,9 +277,8 @@
             enable: true,
             autoParam: ["pid"],
             type: "post",
-            url: "{:url('standard/library/GetDivsionTree')}?cat=2",
-            dataType: "json",
-            // dataFilter: ajaxDataFilter
+            url: "{:url('standard/library/GetDivsionTree')}?cat=6",
+            dataType: "json"
         },
         data: {
             simpleData: {
@@ -328,97 +326,6 @@
         clickTreeId = selfid;
     }
 
-    //点击添加节点
-    function addNodetree() {
-        var pid = selfid ? selfid : 0;
-        layer.prompt({title: '请输入节点名称',}, function (value, index, elem) {
-            $.ajax({
-                url: "{:url('documenttype/addOrEdit')}",
-                type: "post",
-                data: {pid: pid, name: value},
-                success: function (res) {
-                    console.log(res)
-                    if (res.code === 1) {
-                        console.log(sNodes)
-                        if (sNodes) {
-                            zTreeObj.addNodes(sNodes, {"id":res.data,"pid":pid,"name":value});
-                        } else {
-                            zTreeObj.addNodes(null, {"id":res.data,"pid":pid,"name":value});
-                        }
-                    }
-                }
-            });
-            layer.close(index);
-        });
-    };
-
-    //编辑节点
-    function editNodetree() {
-        if (!selfid) {
-            layer.msg("请选择节点", {time: 1500, shade: 0.1});
-            return;
-        }
-        console.log(sNodes[0])
-        layer.prompt({
-            title: '编辑',
-            value: sNodes[0].name
-        }, function (value, index, elem) {
-            $.ajax({
-                url: "{:url('documenttype/addOrEdit')}",
-                type: "post",
-                data: {id: selfid, name: value},
-                success: function (res) {
-                    if (res.code === 1) {
-                        sNodes[0].name = value;
-                        zTreeObj.updateNode(sNodes[0]);//更新节点名称
-                        layer.msg("编辑成功")
-                    }
-                }
-            });
-            layer.close(index);
-        });
-    };
-
-    //删除节点
-    function delNodetree() {
-        if (!selfid) {
-            layer.msg("请选择节点");
-            return;
-        }
-        if (!sNodes[0].children) {
-            layer.confirm("该操作会将关联数据同步删除，是否确认删除？", function () {
-                $.ajax({
-                    url: "{:url('documenttype/del')}",
-                    type: "post",
-                    data: {id: selfid},
-                    success: function (res) {
-                        if (res.code === 1) {
-                            layer.msg("删除节点成功", {time: 1500, shade: 0.1});
-                            //下面是更新列表
-                            // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
-                            // tableItem.ajax.url(url).load();
-                            zTreeObj.removeNode(sNodes[0]);
-                            selfid = "";
-                        }
-                    }
-                });
-            });
-        } else {
-            layer.msg("包含下级，无法删除", {time: 1500, shade: 0.1});
-        }
-
-    };
-
-    //全部展开
-    $('#openNode').click(function () {
-        zTreeObj.expandAll(true);
-    });
-
-    //收起所有
-    $('#closeNode').click(function () {
-        zTreeObj.expandAll(false);
-    });
-
     //点击新增控制节点
     $(".mybtn #test3").click(function () {
         layer.open({
@@ -443,6 +350,10 @@
             // }
         });
     };
+
+
+
+
 </script>
 </html>
 
