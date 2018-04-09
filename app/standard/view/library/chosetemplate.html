@@ -52,8 +52,9 @@
     var tableItemChose = $('#tableItemChose').DataTable({
         pagingType: "full_numbers",
         processing: true,
-        // sScrollX:'400px',
-        sScrollY:'400px',
+        "scrollY": "336px",
+        "scrollCollapse": "true",
+        "paging": "false",
         serverSide: true,
         ajax: {
             "url":"{:url('/standard/common/datatablesPre')}?tableName=quality_template"
@@ -85,7 +86,7 @@
                 "render": function (data, type, row) {
                     var a = data;
                     var html = "<a type='button' href='javasrcipt:;' class=''>" +
-                        "<input type='radio' name='sex' checked>" +
+                        "<input type='radio' name='sex' class='sex' checked onclick='checkFile("+row[0]+")'>" +
                         "</a>";
                     return html;
                 }
@@ -223,9 +224,55 @@
         })
     });
 
-    $("#modelId").click(function () {
+    //驱虫
+    Array.prototype.removal = function(){
+        var newArr = [];
+        for (var i = 0; i < this.length; i++) {
+            if(newArr.indexOf(this[i]) == -1){
+                newArr.push(this[i]);
+            }
+        }
+        return newArr;
+    }
+    //删除数组中的指定元素
+    Array.prototype.remove = function(val){
+        for (var i = 0; i < this.length; i++) {
+            if(this[i] === val){
+                this.splice(i,1);
+                break;
+            }
+        }
+        return this;
+    }
+    var dataArr=[];
+    //获取选中行ID
+    function getDataId(that) {
+        var isChecked = $(that).prop('checked');
+        var id = $(that).parents('tr').find('td:eq(1)').text();
+        if(isChecked){
+            dataArr.push(id);
+            dataArr.removal(id);
+        }else {
+            dataArr.remove(id);
+            dataArr.removal(id);
+        }
+        console.log(dataArr)
+    }
+    //单选
+    function getRadioId(that) {
+        getDataId(that);
+        console.log(dataArr);
+    }
 
-    })
+    function checkFile(id) {
+        console.log(id);
+        var that = this;
+            console.log($(that).html());
+            debugger;
+        if($(this).checked){
+            alert(2423)
+        }
+    };
 
     $("#tableItemChose").delegate("tbody tr","click",function (e) {
         if($(e.target).hasClass("dataTables_empty")){
@@ -233,7 +280,6 @@
         }
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItemChose.row(".select-color").data();//获取选中行数据
-
     });
 </script>
 </html>

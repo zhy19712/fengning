@@ -33,6 +33,30 @@ class Library extends Permissions
         return $this->fetch();
     }
 
+    public function com()
+    {
+        return $this->fetch();
+    }
+
+    public function branch()
+    {
+        return $this->fetch();
+    }
+
+    public function item()
+    {
+        return $this->fetch();
+    }
+
+    public function unit()
+    {
+        return $this->fetch();
+    }
+    public function special()
+    {
+        return $this->fetch();
+    }
+
     /**
      * 新增编辑控制点
      * @return mixed
