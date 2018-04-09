@@ -81,7 +81,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
             data:data.field,
             success: function (res) {
                 if(res.code == 1) {
-                    var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+                    var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
@@ -96,7 +96,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
     //上传图片
     upload.render({
         elem: '#upload',
-        url: '../../quality/common/qualityUpload?module=quality&use=quality_thumb',
+        url: '../../quality/common/upload?module=quality&use=quality_thumb',
         accept: 'file',//普通文件
         before: function(obj){
             obj.preview(function(index, file, result){
@@ -111,7 +111,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
               success:function (res) {
                   if(res.code===1){
                       layer.msg("上传成功");
-                      var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+                      var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                       tableItem.ajax.url(url).load();
                       zTreeObj.reAsyncChildNodes(null, "refresh", false);
                       setTimeout(function () {
@@ -148,7 +148,7 @@ function onClick(e, treeId, node) {
      year = path.split("-")[1]?path.split("-")[1].substr(0,path.split("-")[1].length-1):"";
      month = path.split("-")[2]?path.split("-")[2].substr(0,path.split("-")[2].length-1):"";
      day = path.split("-")[3]?path.split("-")[3].substr(0,path.split("-")[3].length-1):"";
-    var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+    var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
     tableItem.ajax.url(url).load();
     $(".layout-panel-center .panel-title").text("当前路径:"+path)
 };
@@ -196,7 +196,7 @@ function conDel(id){
         success:function (res) {
             if(res.code===1){
                 layer.msg("删除成功");
-                var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+                var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                 tableItem.ajax.url(url).load();
                 zTreeObj.reAsyncChildNodes(null, "refresh", false);
                 setTimeout(function () {

@@ -96,7 +96,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
     //上传图片
     upload.render({
         elem: '#upload',
-        url: '../../quality/common/qualityUpload?module=quality&use=quality_thumb',
+        url: '../../quality/common/upload?module=quality&use=quality_thumb',
         accept: 'file',//普通文件
         before: function(obj){
             obj.preview(function(index, file, result){
