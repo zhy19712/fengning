@@ -61,6 +61,25 @@ class Division extends Permissions{
         }
     }
 
+    /**
+     * 获取系统编码
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function getCodeing()
+    {
+        $add_id = $this->request->has('add_id') ? $this->request->param('add_id', 0, 'intval') : 0;
+        if($add_id){
+            $node = new DivisionModel();
+            $data = $node->getOne($add_id);
+            $num = Db::name('quality_unit')->where('division_id',$add_id)->count();
+            $codeing = $data['d_code'] . '-' . ($num + 1);
+            return json(['code' => 1,'codeing' => $codeing,'msg' => '系统编码']);
+        }else{
+            return json(['code' => -1,'msg' => '编号有误']);
+        }
+    }
+
 
     /**
      * GET 提交方式 :  获取一条节点数据
@@ -68,17 +87,19 @@ class Division extends Permissions{
      * @return mixed|\think\response\Json
      * @author hutao
      */
-    public function editNode()
+    public function editNodeTest()
     {
         if(request()->isAjax()){
             $node = new DivisionModel();
             $param = input('param.');
             $add_id = $this->request->has('add_id') ? $this->request->param('add_id', 0, 'intval') : 0;
             $edit_id = $this->request->has('edit_id') ? $this->request->param('edit_id', 0, 'intval') : 0;
+            $type = $this->request->has('type') ? $this->request->param('type', 0, 'intval') : 0;
             $en_type = isset($param['en_type']) ? $param['en_type'] : '';
             if(request()->isGet()){
                 $data = $node->getOne($edit_id);
                 $data['en_type_name'] = '';
+                // Todo 工程分类
                 if(!empty($data['en_type'])){
                     $arr = ['','丰宁抽水蓄能电站','开挖','支护','混凝土','填筑','灌浆工程','岩石平洞开挖','竖井（斜井）开挖','岩石边坡开挖','岩石地基开挖','锚喷支护','锚筋桩'];
                     $data['en_type_name'] = $arr[$data['en_type']];
@@ -96,8 +117,8 @@ class Division extends Permissions{
                 ['type', 'require|number|gt:0', '请选择分类|分类只能是数字|请选择分类'],
                 ['primary', 'number|egt:0', '请选择是否是主要工程|是否是主要工程只能是数字|请选择是否是主要工程']
             ];
-            // 分类 1单位 2分部 3子分部，分项，单元
-            if($param['type'] != 3 && empty($en_type)){
+            // 分类 1单位,2子单位工程,3分部,4子分部工程,5分项工程,6单元工程
+            if($type < 4 && empty($en_type)){
                 $validate = new \think\Validate($rule);
             }else{
                 array_push($rule,['en_type', 'require|number', '请选择工程分类|工程类型只能是数字']);
@@ -115,15 +136,15 @@ class Division extends Permissions{
              *
              * 顶级节点 -》标段 下面 新增的是 -》单位工程 type = 1 , d_code 是自定义的
              *                                   单位工程 下面 新增的是 =》 子单位工程 type = 2 , d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
-             *                                                           =》 分部工程  type = 2 , d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
-             *                                                               分部工程 下面 新增的是 -》 子分部工程 type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
-             *                                                                                      -》 分项工程   type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
-             *                                                                                      -》 单元工程   type = 3 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                           =》 分部工程  type = 3 , d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                               分部工程 下面 新增的是 -》 子分部工程 type = 4 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                                                      -》 分项工程   type = 5 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
+             *                                                                                      -》 单元工程   type = 6 ,d_code 前一部分 继承父级节点的编码,后面拼接自己的编码
              *                                                                                           ——》 这三项 可以 新建 单元工程段号(单元划分) (也就是右侧的table列表)
              *
              *          注意:如果分部工程直接新建 -》 单元工程段号(单元划分) 的时候,  也必须 选择 工程分类
-             *               ( 这个可以前台判断 type= 2 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类 )
-             *               ( 然后再在后台判断 type= 2 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类 或者 继续保存 分部工程的工程分类默认与当前单元工程段号(单元划分) 一致 )
+             *               ( 这个可以前台判断 type = 3 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类 )
+             *               ( 然后再在后台判断 type = 3 时新增 单元工程段号(单元划分) 提示 请先给分部工程选择 工程分类 或者 继续保存 分部工程的工程分类默认与当前单元工程段号(单元划分) 一致 )
              *
              * 当新增 单位工程 , 子单位工程 ,分部工程  的时候
              * 前台需要传递的是 section_id 标段编号 ,d_code 编码,d_name 名称,type 分类,primary 是否主要工程,remark 描述
@@ -136,13 +157,16 @@ class Division extends Permissions{
              */
             $data = ['section_id' => $param['section_id'],'d_code' => $param['d_code'],'d_name' => $param['d_name'],'type' => $param['type'],'primary' => $param['primary'],'remark' => $param['remark']];
             if(!empty($add_id)){
-                $data['pid'] = $add_id;
+                $data['pid'] = $add_id; // 新增的时候，把当前节点的编号作为子节点的pid
             }
             if($param['type'] == 1){
-                $data['pid'] = 0;
+                $data['pid'] = 0; // 单位工程的pid 默认是0 [前台的树节点是后台拼接起来的]
             }
-            if($param['type'] == 3 && !empty($en_type)){
-                $data['en_type'] = $en_type;
+            if($type > 3){
+                if(empty($en_type)){
+                    return json(['code' => -1,'msg' => '请选择工程分类']);
+                }
+                $data['en_type'] = $en_type; // 子分部工程,分项工程 和 单元工程 必须选择 工程分类
             }
 
             if(!empty($add_id) && !empty($edit_id)){
