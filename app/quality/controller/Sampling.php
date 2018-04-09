@@ -37,7 +37,7 @@ class Sampling extends Permissions
     {
         if ($this->request->isAjax()) {
             //实例化模型
-            $model = new SideReportingModel();
+            $model = new SamplingModel();
             //查询抽检记录表
             $data = $model->getall();
             $res = tree($data);
@@ -57,7 +57,7 @@ class Sampling extends Permissions
     public function getindex()
     {
         if(request()->isAjax()){
-            $model = new SideReportingModel();
+            $model = new SamplingModel();
             $param = input('post.');
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
@@ -73,7 +73,7 @@ class Sampling extends Permissions
     {
         if(request()->isAjax()){
             //实例化模型类
-            $model = new SideReportingModel();
+            $model = new SamplingModel();
             $admin = new Admin();
             $group = new AdminGroup();
 
@@ -100,7 +100,7 @@ class Sampling extends Permissions
                     'pid' => 1
                 ];
                 //新增一条年份
-                $model -> insertSide($data);
+                $model -> insertSampling($data);
 
                 //新建一条月份记录
                 $search_info1 =[
@@ -116,7 +116,7 @@ class Sampling extends Permissions
                     'pid' => $result1['id']
                 ];
                 //新增一条月份记录
-                $model -> insertSide($data1);
+                $model -> insertSampling($data1);
 
                 //新建一条日份记录
                 $search_info2 =[
@@ -141,7 +141,7 @@ class Sampling extends Permissions
                     "admin_group_id" => $admininfo["admin_group_id"],
                     "path" => $param['path']//路径
                 ];
-                $flag = $model->insertSide($data2);
+                $flag = $model->insertSampling($data2);
                 return json($flag);
 
 
@@ -169,7 +169,7 @@ class Sampling extends Permissions
                         'pid' => $result1['id']
                     ];
                     //新增一条月份
-                    $model -> insertSide($data1);
+                    $model -> insertSampling($data1);
                     //新建一条日份记录
                     $search_info2 =[
                         "year" => $year,
@@ -193,7 +193,7 @@ class Sampling extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertSide($data2);
+                    $flag = $model->insertSampling($data2);
                     return json($flag);
 
                 }else{
@@ -221,7 +221,7 @@ class Sampling extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertSide($data);
+                    $flag = $model->insertSampling($data);
                     return json($flag);
                 }
             }
@@ -234,13 +234,13 @@ class Sampling extends Permissions
     public function edit()
     {
         if(request()->isAjax()){
-            $model = new SideReportingModel();
+            $model = new SamplingModel();
             $param = input('post.');
             $data = [
                 'id' => $param['id'],//抽检记录自增id
                 'filename' => $param['filename']//上传文件名
             ];
-            $flag = $model->editSide($data);
+            $flag = $model->editSampling($data);
             return json($flag);
 
         }
@@ -254,7 +254,7 @@ class Sampling extends Permissions
     {
         if(request()->isAjax()){
             $id = input('param.id');
-            $model = new SideReportingModel();
+            $model = new SamplingModel();
             $param = $model->getOne($id);
             if(!$param['path'] || !file_exists("." .$param['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
@@ -262,7 +262,7 @@ class Sampling extends Permissions
             return json(['code' => 1]);
         }
         $id = input('param.id');
-        $model = new SideReportingModel();
+        $model = new SamplingModel();
         $param = $model->getOne($id);
 
         $filePath = '.' . $param['path'];
@@ -292,7 +292,7 @@ class Sampling extends Permissions
             $id = input('post.id');//要删除的抽检记录id
 
             //实例化model类型
-            $model = new SideReportingModel();
+            $model = new SamplingModel();
             //首先判断一下删除的只一天所属的月份下是否有其他日子
             $data_info = $model->getOne($id);
 
@@ -303,7 +303,7 @@ class Sampling extends Permissions
             //如果一个月份下只有一条的话就删除这个月份
             if($day_count < 2)
             {
-                $model -> delSide($data_info['pid']);
+                $model -> delSampling($data_info['pid']);
 
             }
 
@@ -312,7 +312,7 @@ class Sampling extends Permissions
             if($year_count < 1)
             {
                 //如果一个年份下只有一条的话就删除这个年份
-                $model -> delSide($data_month['pid']);
+                $model -> delSampling($data_month['pid']);
             }
 
             //最后删除这条抽检记录信息
@@ -326,7 +326,7 @@ class Sampling extends Permissions
             }
 
             //最后删除这一条记录信息
-            $flag = $model->delSide($id);
+            $flag = $model->delSampling($id);
             return $flag;
 
         }
@@ -338,7 +338,7 @@ class Sampling extends Permissions
      */
     public function preview()
     {
-        $model = new SideReportingModel();
+        $model = new SamplingModel();
         if(request()->isAjax()) {
             $param = input('post.');
             $code = 1;
