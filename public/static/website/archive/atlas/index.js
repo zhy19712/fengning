@@ -174,7 +174,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
             success: function (res) {
                 console.log(selfid)
                 if(res.code == 1) {
-                    var url = "/archive/common/datatablespre/tableName/atlas_cate/selfid/"+selfid+".shtml";
+                    var url = "/archive/common/datatablespre/tableName/archive_atlas_cate/selfid/"+selfid+".shtml";
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
@@ -195,7 +195,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
             success: function (res) {
                 console.log(selfid)
                 if(res.code == 1) {
-                    var url = "/archive/common/datatablespre/tableName/atlas_cate/selfid/"+selfid+".shtml";
+                    var url = "/archive/common/datatablespre/tableName/archive_atlas_cate/selfid/"+selfid+".shtml";
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
@@ -268,7 +268,7 @@ function onClick(e, treeId, node) {
         $(".layout-panel-center .panel-title").text(sNodes[0].name);
     }
     groupid = sNodes[0].pId //父节点的id
-    var url = "/archive/common/datatablespre/tableName/atlas_cate/selfid/"+selfid+".shtml";
+    var url = "/archive/common/datatablespre/tableName/archive_atlas_cate/selfid/"+selfid+".shtml";
     // tableItem.clear();
     tableItem.ajax.url(url).load();
     $(".layout-panel-center .panel-title").text("当前路径:"+path)
@@ -440,7 +440,7 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
         drawingId = $(this).data("sid");
         $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+$(this).find("td:nth-child(3)").html());
         //下载记录
-        var url = "/archive/common/datatablespre/tableName/atlas_download_record/id/"+drawingId+".shtml";
+        var url = "/archive/common/datatablespre/tableName/archive_atlas_download_record/id/"+drawingId+".shtml";
         downlog.ajax.url(url).load();
         getAdminname(drawingId);
     }else{
@@ -449,7 +449,7 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
         selectData = tableItem.row(".select-color").data();//获取选中行数据
         $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[2]);
         //下载记录
-        var url = "/archive/common/datatablespre/tableName/atlas_download_record/id/"+selectData[13]+".shtml";
+        var url = "/archive/common/datatablespre/tableName/archive_atlas_download_record/id/"+selectData[13]+".shtml";
         downlog.ajax.url(url).load();
         getAdminname(selectData[13]);
     }
@@ -504,7 +504,7 @@ function conDel(id){
         success:function (res) {
          if(res.code===1){
              layer.msg("删除成功");
-             var url = "/archive/common/datatablespre/tableName/atlas_cate/selfid/"+selfid+".shtml";
+             var url = "/archive/common/datatablespre/tableName/archive_atlas_cate/selfid/"+selfid+".shtml";
              tableItem.ajax.url(url).load();
          }else if(res.code===-1){
              layer.msg(res.msg);
@@ -536,7 +536,7 @@ function download(id,url) {
                     + "</form>"
                 $("#form_container").append(str);
                 $("#form_container").find(".btn" + id).click();
-                var url = "/archive/common/datatablespre/tableName/atlas_download_record/id/"+id+".shtml";
+                var url = "/archive/common/datatablespre/tableName/archive_atlas_download_record/id/"+id+".shtml";
                 setTimeout(function () {
                     downlog.ajax.url(url).load();
                 },200);

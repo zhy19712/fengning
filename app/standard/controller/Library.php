@@ -88,9 +88,14 @@ class Library extends Permissions
     {
         $mod = input('post.');
         if (empty($mod['id'])) {
-            $res = $this->materialTrackingDivesionService->allowField(true)->save($mod);
+            $res = $this->materialTrackingDivesionService->allowField(true)->insertGetId($mod);
         } else {
             $res = $this->materialTrackingDivesionService->allowField(true)->save($mod, ['id' => $mod['id']]);
+        }
+        if ($res) {
+            return json(['code' => 1, 'data' => $res]);
+        } else {
+            return json(['code' => -1]);
         }
     }
 
@@ -103,6 +108,23 @@ class Library extends Permissions
     public function GetDivsionTree($cat)
     {
         return MaterialTrackingDivision::all(['cat' => $cat]);
+    }
+
+    /**
+     * 删除划分树节点
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function deldivsion($id)
+    {
+        if (count(MaterialTrackingDivision::all(['pid' => $id]))) {
+            return json(['code' => -1, 'msg' => '请先删除子节点']);
+        }
+        if (count(ControlPoint::all(['procedureid' => $id]))) {
+            return json(['code' => -1, 'msg' => '请先删除节点下控制点']);
+        }
+        return MaterialTrackingDivision::destroy($id) ? json(['code' => 1]) : json(['code' => -1, 'msg' => '删除失败']);
     }
 
     /**

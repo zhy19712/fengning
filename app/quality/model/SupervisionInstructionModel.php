@@ -6,17 +6,17 @@
  * Time: 11:44
  */
 /**
- * 日常质量管理，巡视记录
- * Class PatrolRecordModel
+ * 日常质量管理，监理指令
+ * Class SupervisionInstructionModel
  * @package app\quality\controller
  */
 namespace app\quality\model;
 use think\Model;
 use think\exception\PDOException;
 
-class PatrolRecordModel extends Model
+class SupervisionInstructionModel extends Model
 {
-    protected $name='quality_patrol_record';
+    protected $name='quality_supervision_instruction';
 
     /**
      * 查询巡视记录表中的所有的数据
@@ -27,7 +27,7 @@ class PatrolRecordModel extends Model
     }
 
     /**
-     * 获取一条巡视记录信息
+     * 获取一条监理指令信息
      */
     public function getOne($id)
     {
@@ -45,9 +45,9 @@ class PatrolRecordModel extends Model
     }
 
     /**
-     * 新增一条巡视记录表中的信息
+     * 新增一条监理指令表中的信息
      */
-    public function insertPatrol($param)
+    public function insertSupervision($param)
     {
         try{
             $result = $this->allowField(true)->insert($param);
@@ -62,9 +62,9 @@ class PatrolRecordModel extends Model
     }
 
     /**
-     * 编辑一条巡视记录记录
+     * 编辑一条监理指令记录
      */
-    public function editPatrol($param)
+    public function editSupervision($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
@@ -79,9 +79,9 @@ class PatrolRecordModel extends Model
     }
 
     /**
-     * 删除一条巡视记录信息
+     * 删除一条监理指令信息
      */
-    public function delPatrol($id)
+    public function delSupervision($id)
     {
         try{
             $this->where("id",$id)->delete();
@@ -92,7 +92,7 @@ class PatrolRecordModel extends Model
     }
 
     /**
-     * 获取所属同一个pid下的巡视记录的数量
+     * 获取所属同一个pid下的监理指令的数量
      */
     public function getcount($pid)
     {
