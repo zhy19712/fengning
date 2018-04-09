@@ -19,7 +19,7 @@ class ControlPoint extends Model
      */
     public function getChilds($id)
     {
-        $list=ControlPoint::all();
+        $list=MaterialTrackingDivision::all();
         if ($list)
         {
             return $this->_getChilds($list,$id);
