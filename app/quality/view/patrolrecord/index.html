@@ -115,7 +115,7 @@
 <div id="form_container" style="display: none;"></div>
 {include file="../app/public/common_footer.html"}
 <script>
-    var tableName = "patrol_record";
+    var tableName = "quality_patrol_record";
 </script>
 <script src="__WEBSITE__/quality/supervisionlog/index.js"></script>
 <script>
@@ -126,7 +126,7 @@
         serverSide: true,
         // scrollY: 600,
         ajax: {
-            "url":"{:url('quality/common/datatablesPre?tableName=supervision_log')}"
+            "url":"{:url('quality/common/datatablesPre?tableName=quality_patrol_record')}"
         },
         dom: '<"myl">lf<"#upload.mybtn layui-btn layui-btn-sm ">rtip',
         columns:[

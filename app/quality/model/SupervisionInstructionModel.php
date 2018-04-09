@@ -3,23 +3,23 @@
  * Created by PhpStorm.
  * User: admin
  * Date: 2018/4/9
- * Time: 13:32
+ * Time: 11:44
  */
 /**
- * 日常质量管理，旁站记录
- * Class SideReportingModel
+ * 日常质量管理，监理指令
+ * Class SupervisionInstructionModel
  * @package app\quality\controller
  */
 namespace app\quality\model;
 use think\Model;
 use think\exception\PDOException;
 
-class SideReportingModel extends Model
+class SupervisionInstructionModel extends Model
 {
-    protected $name='quality_side_reporting';
+    protected $name='quality_supervision_instruction';
 
     /**
-     * 查询旁站记录表中的所有的数据
+     * 查询巡视记录表中的所有的数据
      */
     public function getall()
     {
@@ -27,7 +27,7 @@ class SideReportingModel extends Model
     }
 
     /**
-     * 获取一条旁站记录信息
+     * 获取一条监理指令信息
      */
     public function getOne($id)
     {
@@ -45,9 +45,9 @@ class SideReportingModel extends Model
     }
 
     /**
-     * 新增一条旁站记录中的信息
+     * 新增一条监理指令表中的信息
      */
-    public function insertSide($param)
+    public function insertSupervision($param)
     {
         try{
             $result = $this->allowField(true)->insert($param);
@@ -62,9 +62,9 @@ class SideReportingModel extends Model
     }
 
     /**
-     * 编辑一条旁站记录记录
+     * 编辑一条监理指令记录
      */
-    public function editSide($param)
+    public function editSupervision($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
@@ -79,9 +79,9 @@ class SideReportingModel extends Model
     }
 
     /**
-     * 删除一条旁站记录信息
+     * 删除一条监理指令信息
      */
-    public function delSide($id)
+    public function delSupervision($id)
     {
         try{
             $this->where("id",$id)->delete();
@@ -92,7 +92,7 @@ class SideReportingModel extends Model
     }
 
     /**
-     * 获取所属同一个pid下的旁站记录的数量
+     * 获取所属同一个pid下的监理指令的数量
      */
     public function getcount($pid)
     {
