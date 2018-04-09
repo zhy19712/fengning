@@ -9,6 +9,7 @@
 namespace app\standard\controller;
 
 
+use app\standard\model\ControlPoint;
 use app\standard\model\NormModel;
 use think\Controller;
 use think\Db;
@@ -194,6 +195,9 @@ class Common extends Controller
     public function control_point($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
+        $c=new ControlPoint();
+        $idArr = $c->getChilds($id);
+        $idArr[] = $id;
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
@@ -203,7 +207,7 @@ class Common extends Controller
             //有搜索条件的情况
             if ($limitFlag) {
                 $recordsFilteredResult = Db::name('controlpoint')
-                    ->where(['ProcedureId'=>$id])
+                    ->whereIn('ProcedureId', $idArr)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -212,6 +216,7 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name('controlpoint')
+                    ->whereIn('ProcedureId', $idArr)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
