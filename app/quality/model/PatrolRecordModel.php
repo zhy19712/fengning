@@ -16,7 +16,7 @@ use think\exception\PDOException;
 
 class PatrolRecordModel extends Model
 {
-    protected $name='patrol_record';
+    protected $name='quality_patrol_record';
 
     /**
      * 查询巡视记录表中的所有的数据
