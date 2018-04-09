@@ -533,6 +533,7 @@ class Division extends Permissions{
                 // 流水号在页面里是分开的,所以这里要截取分开
                 $parent_d_code = Db::name('quality_division')->where('id',$data['division_id'])->value('d_code');
                 $serial_number = explode($parent_d_code.'-',$data['serial_number']);
+                $data['serial_number_before'] = $parent_d_code;
                 $data['serial_number'] = $serial_number[1];
                 /**
                  * 工程高程（起）高程（止）  都要加上 EL.
