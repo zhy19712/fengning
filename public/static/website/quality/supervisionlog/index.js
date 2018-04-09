@@ -1,6 +1,6 @@
 var selfid,zTreeObj,groupid,sNodes,selectData="";//选中的节点id，ztree对象，父节点id，选中的节点，选中的表格的信息
 var uploadpath;
-var admin_group_id="",year="",month="",day="";
+var year="",month="",day="";
 //编辑dom
 var sceneDom =[
     '<form  id="sceneform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">',
@@ -43,7 +43,7 @@ var setting = {
         enable : true,
         autoParam: ["pid"],
         type : "post",
-        url : "./picturetree",
+        url : "./tree",
         dataType :"json",
         dataFilter: ajaxDataFilter
     },
@@ -77,11 +77,11 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
     form.on('submit(demo1)', function(data){
         $.ajax({
             type: "post",
-            url:"./editPicture",
+            url:"./edit",
             data:data.field,
             success: function (res) {
                 if(res.code == 1) {
-                    var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+                    var url = "/quality/common/datatablespre/tableName/"+tableName+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
@@ -103,24 +103,24 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
             })
         },
         done:function (res) {
-          $.ajax({
-              type:"post",
-              data:{path:res.src},
-              url:"./addPicture",
-              dataType:"json",
-              success:function (res) {
-                  if(res.code===1){
-                      layer.msg("上传成功");
-                      var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
-                      tableItem.ajax.url(url).load();
-                      zTreeObj.reAsyncChildNodes(null, "refresh", false);
-                      setTimeout(function () {
-                          zTreeObj.expandAll(true);
-                      },700);
+            $.ajax({
+                type:"post",
+                data:{path:res.src},
+                url:"./add",
+                dataType:"json",
+                success:function (res) {
+                    if(res.code===1){
+                        layer.msg("上传成功");
+                        var url = "/quality/common/datatablespre/tableName/"+tableName+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+                        tableItem.ajax.url(url).load();
+                        zTreeObj.reAsyncChildNodes(null, "refresh", false);
+                        setTimeout(function () {
+                            zTreeObj.expandAll(true);
+                        },700);
 
-                  }
-              }
-          })
+                    }
+                }
+            })
         }
     });
 });
@@ -145,10 +145,10 @@ function onClick(e, treeId, node) {
     }
     groupid = sNodes[0].pId; //父节点的id
     //获取年月日
-     year = path.split("-")[1]?path.split("-")[1].substr(0,path.split("-")[1].length-1):"";
-     month = path.split("-")[2]?path.split("-")[2].substr(0,path.split("-")[2].length-1):"";
-     day = path.split("-")[3]?path.split("-")[3].substr(0,path.split("-")[3].length-1):"";
-    var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+    year = path.split("-")[1]?path.split("-")[1].substr(0,path.split("-")[1].length-1):"";
+    month = path.split("-")[2]?path.split("-")[2].substr(0,path.split("-")[2].length-1):"";
+    day = path.split("-")[3]?path.split("-")[3].substr(0,path.split("-")[3].length-1):"";
+    var url = "/quality/common/datatablespre/tableName/"+tableName+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
     tableItem.ajax.url(url).load();
     $(".layout-panel-center .panel-title").text("当前路径:"+path)
 };
@@ -160,9 +160,9 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
     selectData="";
     $(".path").html("");
     $(this).addClass("select-color").siblings().removeClass("select-color");
-        $(this).addClass("select-color").siblings().removeClass("select-color");
-        selectData = tableItem.row(".select-color").data();//获取选中行数据
-        $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[2]);
+    $(this).addClass("select-color").siblings().removeClass("select-color");
+    selectData = tableItem.row(".select-color").data();//获取选中行数据
+    $(".path").html($(".layout-panel-center .panel-title").html().split("-").pop()+"-"+selectData[2]);
 });
 //点击编辑
 function conEdit(id) {
@@ -190,13 +190,13 @@ function conEdit(id) {
 function conDel(id){
     $.ajax({
         type:"post",
-        url:"./delPicture",
+        url:"./del",
         data:{id:id},
         dataType:"json",
         success:function (res) {
             if(res.code===1){
                 layer.msg("删除成功");
-                var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+                var url = "/quality/common/datatablespre/tableName/"+tableName+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                 tableItem.ajax.url(url).load();
                 zTreeObj.reAsyncChildNodes(null, "refresh", false);
                 setTimeout(function () {
@@ -239,7 +239,7 @@ function download(id,url) {
 }
 function conDown(id) {
 
-    download(id,"./downloadPicture")
+    download(id,"./download")
 }
 //预览
 function showPdf(id,url) {
@@ -253,15 +253,6 @@ function showPdf(id,url) {
                 if(res.path.split(".")[1]==="pdf"){
                     window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
                 }else if(res.path.split(".")[1]==="png"||res.path.split(".")[1]==="jpg"||res.path.split(".")[1]==="jpeg"){
-                    // var index = layer.open({
-                    //     type: 2,
-                    //     title: '文件在线预览：' ,
-                    //     shadeClose: true,
-                    //     shade: 0.8,
-                    //     area: ['980px', '600px'],
-                    //     content: './pictureshow?url=' //iframe的url
-                    // });
-                    // layer.full(index);
                     layer.photos({
                         photos: {
                             "title": "", //相册标题
@@ -290,7 +281,7 @@ function showPdf(id,url) {
 }
 //预览
 function conPicshow(id){
-    showPdf(id,'./previewPicture')
+    showPdf(id,'./preview')
 
 }
 //设置位置
@@ -300,6 +291,6 @@ function conPosition(id) {
         shadeClose: true,
         title: "空间位置设置",
         area: ["90%", "90%"],
-        content: "./PositionSet?id=" + id
+        content: "../scenepicture/PositionSet?id=" + id
     });
 }

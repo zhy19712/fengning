@@ -90,20 +90,8 @@
     .fa.fa-save:before ,.fa.fa-close:before,.fa.fa-save:hover:before,.fa.fa-close:hover:before{
         color: white;
     }
-    .selectdepartment{
-        float: left;
-        margin-left: 20px;
-        margin-top: 3px;
-        font-weight: bold;
-        color: black;
-    }
-    #department{
-        padding-top: 5px;
-        height: 29px;
-        min-width: 454px;
-    }
 </style>
-<div data-options="region:'west',title:'现场图片',split:true" style="width:240px;">
+<div data-options="region:'west',title:'监理日志',split:true" style="width:240px;">
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#fff;">
@@ -124,9 +112,12 @@
         <div class="mark"></div>
     </div>
 </div>
-
+<div id="form_container" style="display: none;"></div>
 {include file="../app/public/common_footer.html"}
-<script src="__WEBSITE__/quality/scenepicture/index.js"></script>
+<script>
+    var tableName = "supervision_log";
+</script>
+<script src="__WEBSITE__/quality/supervisionlog/index.js"></script>
 <script>
 
     var tableItem = $('#tableItem').DataTable( {
@@ -135,9 +126,9 @@
         serverSide: true,
         // scrollY: 600,
         ajax: {
-            "url":"{:url('quality/common/datatablesPre?tableName=scene_picture')}"
+            "url":"{:url('quality/common/datatablesPre?tableName=supervision_log')}"
         },
-        dom: '<"myl"><"selectdepartment">lf<"#upload.mybtn layui-btn layui-btn-sm ">rtip',
+        dom: '<"myl">lf<"#upload.mybtn layui-btn layui-btn-sm ">rtip',
         columns:[
             {
                 name: "filename"
@@ -205,9 +196,6 @@
             $('#tableItem_paginate').insertBefore(".mark");
         }
     });
-    //选择部门
-    var selectdepartment ='<select id="department" class="form-control"><option value="">全部</option></select>';
-    $("div.selectdepartment").html('部门：'+selectdepartment);
     //新增
     $(".mybtn").html('<i class="fa fa-plus"></i>&nbsp;上传');
     //变色
@@ -216,27 +204,6 @@
     }).on( 'mouseleave', 'td', function () {
         $(this).parent("tr").removeClass( 'highlight' );
     });
-    //拉取部门
-    $.ajax({
-        url:"./getAllgroup",
-        type:"get",
-        dataType:"json",
-        success:function (res) {
-            if(res.code===1){
-                var html = "<option value=''>全部</option>";
-                for(var i =0; i<res.data.length;i++){
-                    html += `<option value=${res.data[i].id}>${res.data[i].name}</option>`;
-                }
-                $("#department").html(html);
-            }
-        }
-    })
-    //切换select
-    $('#department').change(function () {
-        admin_group_id = $(this).find("option:selected").val();
-        var url = "/quality/common/datatablespre/tableName/scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
-        tableItem.ajax.url(url).load();
-    })
 </script>
 </body>
 </html>
