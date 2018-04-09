@@ -25,4 +25,16 @@ class ControlPoint extends Model
             return $this->_getChilds($list,$id);
         }
     }
+    function _getChilds($list,$id)
+    {
+        $nodeArray=array();
+        foreach ($list as $item)
+        {
+            if ($item['pid']==$id){
+                $nodeArray[]=$item['id'];
+                $nodeArray= array_merge($nodeArray, $this->_getChilds($list,$item['id']));
+            }
+        }
+        return $nodeArray;
+    }
 }
