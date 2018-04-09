@@ -106,6 +106,23 @@ class Library extends Permissions
     }
 
     /**
+     * 删除划分树节点
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function deldivsion($id)
+    {
+        if (MaterialTrackingDivision::get($id)) {
+            return json(['code' => -1, 'msg' => '请先删除子节点']);
+        }
+        if (ControlPoint::all(['procedureid' => $id])) {
+            return json(['code' => -1, 'msg' => '请先删除节点下控制点']);
+        }
+        return MaterialTrackingDivision::destroy($id) ? json(['code' => 1]) : json(['code' => -1, 'msg' => '删除失败']);
+    }
+
+    /**
      * 选择模板
      * @return mixed
      */
