@@ -257,7 +257,7 @@ function showPdf(id,url) {
                 console.log(res.path.split(".")[1]);
                 if(res.path.split(".")[1]==="pdf"){
                     window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
-                }else{
+                }else if(res.path.split(".")[1]==="png"||res.path.split(".")[1]==="jpg"||res.path.split(".")[1]==="jpeg"){
                     // var index = layer.open({
                     //     type: 2,
                     //     title: '文件在线预览：' ,
@@ -283,6 +283,8 @@ function showPdf(id,url) {
                         }
                         ,anim: Math.floor(Math.random()*7) //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
                     });
+                }else{
+                    layer.msg("不支持的文件格式");
                 }
 
             }else {
@@ -291,9 +293,9 @@ function showPdf(id,url) {
         }
     })
 }
-//预览图纸
+//预览
 function conPicshow(id){
-    showPdf(id,'./atlascatePreview')
+    showPdf(id,'./previewPicture')
 
 }
 //设置位置
