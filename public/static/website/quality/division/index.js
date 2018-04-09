@@ -240,7 +240,7 @@ $.datatable({
             "render" :  function(data,type,row) {
                 var html = "<i class='fa fa-pencil' uid="+ data +" title='编辑' onclick='edit(this)'></i>" ;
                 html += "<i class='fa fa-trash' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
-                html += "<i class='fa fa-download' uid="+ data +" title='二维码' onclick='qrcode(this)'></i>" ;
+                html += "<i class='fa fa-qrcode' uid="+ data +" title='二维码' onclick='qrcode(this)'></i>" ;
                 return html;
             }
         }
@@ -318,6 +318,13 @@ function maBasesTable() {
         },
         columns:[
             {
+                name: "id",
+                "render": function(data, type, full, meta) {
+                    var ipt = "<input type='checkbox' name='checkList' idv='"+data+"' onclick='getSelectId(this)'>";
+                    return ipt;
+                },
+            },
+            {
                 name: "picture_number"
             },
             {
@@ -347,22 +354,7 @@ function maBasesTable() {
             {
                 name: "paper_category"
             },
-            {
-                name: "id"
-            }
         ],
-        columnDefs:[
-            {
-                searchable: false,
-                targets:0,
-                data:null,
-                render:function () {
-                    var ipt = "<input type='checkbox' name='checkList' onclick='getSelectId(this)'>";
-                    return ipt;
-                }
-            },
-        ],
-
     });
     //取消全选的事件绑定
     $("thead tr th:first-child").unbind();
@@ -382,7 +374,7 @@ function maBasesTable() {
 var idArr = [];
 function getId(that) {
     var isChecked = $(that).prop('checked');
-    var id = $(that).parents('tr').find('td:eq(1)').text();
+    var id = $(that).attr('idv');
     var checkedLen = $('input[type="checkbox"][name="checkList"]:checked').length;
     var checkboxLen = $('input[type="checkbox"][name="checkList"]').length;
     if(checkedLen===checkboxLen){
@@ -425,7 +417,7 @@ $("#all_checked").on("click", function () {
     console.log(idArr);
 });
 
-//保存新增
+//单元工程段号新增
 $('#saveUnit').click(function () {
     var tableItem = $('#tableItem').DataTable();
     var serial_number_before = $('input[name="serial_number_before"]').val();
@@ -433,7 +425,6 @@ $('#saveUnit').click(function () {
     var serial_number = serial_number_before + serial_number_val;
     var en_type = $('input[name="en_type"]').attr('id');
     var division_id = window.treeNode.add_id;
-    console.log(division_id);
     $.submit({
         tableItem:tableItem,
         tablePath:'/quality/common/datatablesPre?tableName=quality_unit',
@@ -442,7 +433,44 @@ $('#saveUnit').click(function () {
         data:{
             serial_number:serial_number,
             en_type:en_type,
-            division_id:division_id
+            division_id:division_id,
+            id:window.rowId
+
         },
     });
 });
+
+//单元工程段号编辑
+function edit(that) {
+    $.edit({
+        that:that,
+        formId:'unit',
+        ajaxUrl:'./editUnit',
+        area:['800px','700px'],
+        others:function (res) {
+            $('input[name="coding"]').val(res.coding);
+            $('input[name="completion_date"]').val(res.completion_date);
+            $('input[name="create_time"]').val(res.create_time);
+            $('input[name="el_cease"]').val(res.el_cease);
+            $('input[name="el_start"]').val(res.el_start);
+            $('input[name="en_type"]').val(res.en_type);
+            $('select[name="hinge"]').val(res.hinge);
+            $('input[name="ma_bases"]').val(res.ma_bases);
+            $('input[name="pile_number"]').val(res.pile_number);
+            $('input[name="quantities"]').val(res.quantities);
+            $('input[name="serial_number"]').val(res.serial_number);
+            $('input[name="site"]').val(res.site);
+            $('input[name="start_date"]').val(res.start_date);
+            $('input[name="su_basis"]').val(res.su_basis);
+        }
+    });
+}
+
+//单元工程段号删除
+function del(that) {
+    $.deleteData({
+        that:that,
+        ajaxUrl:'./delUnit',
+        tablePath:'/quality/common/datatablesPre?tableName=quality_unit'
+    });
+}
