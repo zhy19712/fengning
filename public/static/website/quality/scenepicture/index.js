@@ -203,7 +203,7 @@ function conDel(id){
                 zTreeObj.reAsyncChildNodes(null, "refresh", false);
                 setTimeout(function () {
                     zTreeObj.expandAll(true);
-                },200);
+                },400);
             }else if(res.code===-1){
                 layer.msg(res.msg);
             }
@@ -223,7 +223,6 @@ function download(id,url) {
             if(res.code != 1){
                 layer.msg(res.msg);
             }else {
-                alert(123);
                 $("#form_container").empty();
                 var str = "";
                 str += ""
