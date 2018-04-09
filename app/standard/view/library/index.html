@@ -100,9 +100,7 @@
     #tableContent #tableItem tr td a{
         color: #337ab7;
     }
-    #tableContent .dataTables_wrapper,#tableContent .tbcontainer{
-        display: block;
-    }
+
     .tableHeadName{
         width: 100%;
         font-size: 14px;
@@ -256,7 +254,7 @@
     });
 
     //初始化树节点
-    var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
+    var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes, procedureId;
 
     var setting = {
         view: {
@@ -308,12 +306,12 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
-        var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
-        tableItem.ajax.url(url).load();
+        tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
         $(".layout-panel-center .panel-title").text("当前路径:" + path);
         clickTreeId = selfid;
+        procedureId = selfid;
     }
 
     //点击添加节点
@@ -406,6 +404,7 @@
 
     //点击新增控制节点
     $(".mybtn #test3").click(function () {
+        console.log(procedureId);
         layer.open({
             type: 2,
             title: '添加控制点信息',
