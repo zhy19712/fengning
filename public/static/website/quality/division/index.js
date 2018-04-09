@@ -253,6 +253,22 @@ $('#add').click(function () {
         layer.msg('请选择分项工程');
         return false;
     }
+    //系统编码
+    var add_id = window.treeNode.add_id;
+    $.ajax({
+        url: "./getCodeing",
+        type: "post",
+        data: {
+            add_id:add_id
+        },
+        dataType: "json",
+        success: function (res) {
+            $('input[name="coding"]').val(res.codeing);
+        }
+    });
+    //单元工程流水号编码
+    $('input[name="serial_number_before"]').val(window.treeNode.d_code);
+    //新增弹层
     $.add({
         formId:'unit',
         area:['800px','700px'],
@@ -261,8 +277,6 @@ $('#add').click(function () {
         }
     });
 });
-
-
 
 layui.use('laydate', function(){
     var laydate = layui.laydate;
@@ -279,15 +293,15 @@ $('.maBasesBtn').click(function () {
         title:'添加施工依据',
         id:'100',
         type:'1',
-        area:['650px','400px'],
+        area:['1024px','650px'],
         content:$('#maBasesLayer'),
-        btn:['保存','关闭'],
+        btn:['保存'],
         success:function () {
             maBasesTable();
-            console.log(tableItem);
         },
         yes:function () {
-
+            $('input[name="ma_bases"]').val(idArr);
+            layer.close(layer.index);
         },
         cancel: function(index, layero){
             layer.close(layer.index);
@@ -299,32 +313,39 @@ $('.maBasesBtn').click(function () {
 function maBasesTable() {
     $.datatable({
         tableId:'maBasesItem',
-        serverSide:false,
-        /*ajax:{
-            'url':'/quality/common/datatablesPre?tableName=quality_unit'
-        },*/
-        dom: 'lf<".current-path"<"#saveMaBases.add layui-btn layui-btn-normal layui-btn-sm">>tipr',
+        ajax:{
+            'url':'/quality/common/datatablesPre?tableName=archive_atlas_cate'
+        },
         columns:[
             {
-                name: "serial_number"
+                name: "picture_number"
             },
             {
-                name: "site"
+                name: "picture_name"
             },
             {
-                name: "coding"
+                name: "picture_papaer_num"
             },
             {
-                name: "hinge"
+                name: "a1_picture"
             },
             {
-                name: "pile_number"
+                name: "design_name"
             },
             {
-                name: "start_date"
+                name: "check_name"
+            },
+            {
+                name: "examination_name"
             },
             {
                 name: "completion_date"
+            },
+            {
+                name: "section"
+            },
+            {
+                name: "paper_category"
             },
             {
                 name: "id"
@@ -341,9 +362,85 @@ function maBasesTable() {
                 }
             },
         ],
+
     });
-    $('#saveMaBases').html('保存');
+    //取消全选的事件绑定
+    $("thead tr th:first-child").unbind();
+
+    //删除自构建分页位置
+    $('#maBasesLayer').show().find('.tbcontainer').remove();
+
+    //翻页事件
+    tableItem.on('draw',function () {
+        $('input[type="checkbox"][name="checkList"]').prop("checked",false);
+        $('#all_checked').prop('checked',false);
+        idArr.length=0;
+    });
 }
 
-//取消全选的事件绑定
-$("thead tr th:first-child").unbind();
+//获取选中行ID
+var idArr = [];
+function getId(that) {
+    var isChecked = $(that).prop('checked');
+    var id = $(that).parents('tr').find('td:eq(1)').text();
+    var checkedLen = $('input[type="checkbox"][name="checkList"]:checked').length;
+    var checkboxLen = $('input[type="checkbox"][name="checkList"]').length;
+    if(checkedLen===checkboxLen){
+        $('#all_checked').prop('checked',true);
+    }else{
+        $('#all_checked').prop('checked',false);
+    }
+    if(isChecked){
+        idArr.push(id);
+        idArr.removalArray();
+    }else{
+        idArr.remove(id);
+        idArr.removalArray();
+        $('#all_checked').prop('checked',false);
+    }
+}
+
+//单选
+function getSelectId(that) {
+    getId(that);
+    console.log(idArr);
+}
+
+//checkbox全选
+$("#all_checked").on("click", function () {
+    var that = $(this);
+    if (that.prop("checked") === true) {
+        $("input[name='checkList']").prop("checked", that.prop("checked"));
+        $('#tableItem tbody tr').addClass('selected');
+        $('input[name="checkList"]').each(function(){
+            getId(this);
+        });
+    } else {
+        $("input[name='checkList']").prop("checked", false);
+        $('#tableItem tbody tr').removeClass('selected');
+        $('input[name="checkList"]').each(function(){
+            getId(this);
+        });
+    }
+    console.log(idArr);
+});
+
+//保存新增
+$('#saveUnit').click(function () {
+    var serial_number_before = $('input[name="serial_number_before"]').val();
+    var serial_number_val = $('input[name="serial_number"]').val();
+    var serial_number = serial_number_before + serial_number_val;
+    var en_type = $('input[name="en_type"]').attr('id');
+    var division_id = window.treeNode.add_id;
+    console.log(division_id);
+    $.submit({
+        tableItem:maBasesItem,
+        formId:'unit',
+        ajaxUrl:'./editUnit',
+        data:{
+            serial_number:serial_number,
+            en_type:en_type,
+            division_id:division_id
+        },
+    });
+});

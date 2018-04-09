@@ -22,6 +22,7 @@
         $('table.table').after(tbcontainer);
 
        window.tableItem = $('#'+option.tableId).DataTable( {
+            retrieve: true,
             pagingType: "full_numbers",
             processing: option.processing,
             serverSide: option.serverSide,

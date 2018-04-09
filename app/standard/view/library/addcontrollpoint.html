@@ -112,7 +112,8 @@
             <div class="ibox-content">
                 <!--新增用户信息开始-->
                 <form class="layui-form" name="memberAdd" id="memberAdd" method="post" action="#" onsubmit="return false">
-                    <input type="hidden" name="id" id="addId" value="">
+                    <input type="hidden" name="id" id="addId" value="{$id}">
+                    <input type="hidden" name="procedureid" id="denId" value="">
                     <div class="layui-form-item">
                         <label class="layui-form-label">控制点编号</label>
                         <div class="layui-input-block" class="inpLength">
@@ -127,7 +128,7 @@
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">是否重要控制点</label>
-                        <select name="IsImportant" id="itImportant">
+                        <select name="isimportant" id="itImportant">
                             <option value="">请选择</option>
                             <option value="1">是</option>
                             <option value="0">否</option>
@@ -135,7 +136,7 @@
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">是否需要模版</label>
-                        <select name="IsNeedTemplate" id="itNeed" lay-filter="aihao">
+                        <select name="isneedtemplate" id="itNeed" lay-filter="aihao">
                             <option value="">请选择</option>
                             <option value="1">是</option>
                             <option value="0">否</option>
@@ -144,14 +145,14 @@
                     <div class="layui-form-item" id="modelList">
                         <label class="layui-form-label">选择模板</label>
                         <div class="layui-input-block">
-                            <input type="hidden" name="QualityTemplateId" id="getValId" value="">
+                            <input type="hidden" name="qualitytemplateid" id="getValId" value="">
                             <input type="text"  id="selectTem" lay-verify="title"  readonly class="layui-input layui-btn-disabled" placeholder="模板名称">
                             <button id="modelId" class="layui-btn"><i class="fa fa-check"></i></button>&nbsp;&nbsp;
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">内容描述</label>
-                        <textarea name="Remark" id="txtArea" placeholder="内容描述"></textarea>
+                        <textarea name="remark" id="txtArea" placeholder="内容描述"></textarea>
                     </div>
 
                     <div class="layui-form-item">
@@ -185,15 +186,29 @@
         // console.log(id);
         if (id.length>0) {
             $.ajax({
-                url: "{:url('./standard/templatemanage/getOne')}?id=" + id,
+                url: "{:url('./standard/library/getcontrolpoint')}?id=" + id,
                 type: "get",
                 dataType: "json",
                 success: function (res) {
+                    console.log(res);
+                    if(res.qualitytemplateid != ""){
+                        var quId =res.qualitytemplateid;
+                        $.ajax({
+                            url: "{:url('./standard/library/gettemplatename')}?id=" + quId,
+                            type: "get",
+                            dataType: "json",
+                            success: function (res) {
+                                console.log(res);
+                                $('#selectTem').val(res.name);
+                            }
+                        });
+                    }
                     $('#addId').val(res.id);
                     $('#temCode').val(res.code);
                     $('#temName').val(res.name);
-                    $('#tableType').val(res.type);
-                    $('#formUse').val(res.use);
+                    $('#itImportant').val(res.isimportant);
+                    $('#itNeed').val(res.isneedtemplate);
+                    $('#txtArea').val(res.remark);
                     layui.form.render();
                 }
             });
@@ -222,6 +237,7 @@
         // function refreshSub() {
         //     parent.tableItem.ajax.url("{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=").load();
         // }
+
         //监听提交
         form.on('submit(demo1)', function (data) {
             console.log($("#addId").val());
