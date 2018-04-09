@@ -266,13 +266,13 @@ $('#add').click(function () {
             $('input[name="coding"]').val(res.codeing);
         }
     });
-    //单元工程流水号编码
-    $('input[name="serial_number_before"]').val(window.treeNode.d_code);
     //新增弹层
     $.add({
         formId:'unit',
         area:['800px','700px'],
         success:function () {
+            //单元工程流水号编码
+            $('input[name="serial_number_before"]').val(window.treeNode.d_code);
             $('input[name="en_type"]').val('');
         }
     });
@@ -422,7 +422,7 @@ $('#saveUnit').click(function () {
     var tableItem = $('#tableItem').DataTable();
     var serial_number_before = $('input[name="serial_number_before"]').val();
     var serial_number_val = $('input[name="serial_number"]').val();
-    var serial_number = serial_number_before + serial_number_val;
+    var serial_number = serial_number_before + '-' + serial_number_val;
     var en_type = $('input[name="en_type"]').attr('id');
     var division_id = window.treeNode.add_id;
     $.submit({
@@ -436,7 +436,7 @@ $('#saveUnit').click(function () {
             division_id:division_id,
             id:window.rowId
 
-        },
+        }
     });
 });
 
@@ -448,22 +448,19 @@ function edit(that) {
         ajaxUrl:'./editUnit',
         area:['800px','700px'],
         others:function (res) {
-            var dCodeLen = window.treeNode.d_code.length;
-            var serial_number = res.serial_number.slice(dCodeLen);
-            var serial_number_before = res.serial_number.slice(0,dCodeLen);
-
             $('input[name="coding"]').val(res.coding);
             $('input[name="completion_date"]').val(res.completion_date);
             $('input[name="create_time"]').val(res.create_time);
             $('input[name="el_cease"]').val(res.el_cease);
             $('input[name="el_start"]').val(res.el_start);
-            $('input[name="en_type"]').val(res.en_type);
+            $('input[name="en_type"]').val(res.en_type_name);
+            $('input[name="en_type"]').attr('id',res.en_type);
             $('select[name="hinge"]').val(res.hinge);
             $('input[name="ma_bases"]').val(res.ma_bases);
             $('input[name="pile_number"]').val(res.pile_number);
             $('input[name="quantities"]').val(res.quantities);
-            $('input[name="serial_number"]').val(serial_number);
-            $('input[name="serial_number_before"]').val(serial_number_before);
+            $('input[name="serial_number"]').val(res.serial_number);
+            $('input[name="serial_number_before"]').val(res.serial_number_before);
             $('input[name="site"]').val(res.site);
             $('input[name="start_date"]').val(res.start_date);
             $('input[name="su_basis"]').val(res.su_basis);
@@ -471,11 +468,18 @@ function edit(that) {
     });
 }
 
+//关闭弹层
+$.close({
+    formId:'unit'
+});
+
 //单元工程段号删除
 function del(that) {
+    var tableItem = $('#tableItem').DataTable();
     $.deleteData({
+        tableItem:tableItem,
         that:that,
         ajaxUrl:'./delUnit',
-        tablePath:'/quality/common/datatablesPre?tableName=quality_unit'
+        tablePath:'/quality/common/datatablesPre?tableName=quality_unit&edit_id='
     });
 }

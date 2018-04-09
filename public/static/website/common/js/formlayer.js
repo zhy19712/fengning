@@ -12,7 +12,7 @@
             success:function () {}
         };
         $.extend(option,options);
-
+        $('#'+option.formId)[0].reset();
         var nodeId = window.nodeId;
         if(!nodeId){
             layer.msg('请选择节点');
@@ -132,11 +132,14 @@
         });
     };
     /**
-     *
+     * 删除
+     * @param options
+     * @author wyang
      */
     $.deleteData = function (options) {
         window.rowId = $(options.that).attr('uid');
         var option = {
+            tableItem:window.tableItem,
             ajaxUrl:'./standardDel',
             data:{
                 id:window.rowId
@@ -145,6 +148,7 @@
             others:function(){}
         };
         $.extend(option,options);
+        debugger;
         layer.confirm('确认删除此条记录吗?', {icon: 3, title:'提示'}, function(index){
             $.ajax({
                 url: option.ajaxUrl,
