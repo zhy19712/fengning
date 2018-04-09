@@ -6,6 +6,7 @@ $.ztree({
     //点击节点
     zTreeOnClick:function (event, treeId, treeNode){
         $.clicknode({
+            tableItem:tableItem,
             treeNode:treeNode,
             tablePath:'/quality/common/datatablesPre?tableName=quality_unit',
             isLoadPath:false
@@ -33,6 +34,7 @@ $('#closeNode').click(function(){
 $('#delNode').click(function () {
     $.delnode();
 });
+
 //新增节点弹层
 $('#addNode').click(function (){
     if(!window.treeNode||window.treeNode.level==0){
@@ -78,6 +80,7 @@ $('#addNode').click(function (){
         }
     });
 });
+
 //工程类型树
 var typeTreeNode;
 $.ztree({
@@ -88,6 +91,7 @@ $.ztree({
         typeTreeNode = treeNode;
     }
 });
+
 //是否显示工程类型
 function whetherShow() {
     if(window.treeNode.level>2){
@@ -96,6 +100,7 @@ function whetherShow() {
         $('#enType').hide();
     }
 }
+
 //展示工程类型树
 $('.typeZtreeBtn').click(function () {
     layer.open({
@@ -119,6 +124,7 @@ $('.typeZtreeBtn').click(function () {
         }
     });
 });
+
 //编辑节点
 $('#editNode').click(function () {
     if(!window.treeNode||window.treeNode.level==0){
@@ -134,7 +140,6 @@ $('#editNode').click(function () {
             edit_id:window.nodeId
         },
         others:function (res) {
-            console.log(res);
             $('input[name="d_name"]').val(res.d_name);
             $('select[name="type"] option:selected').val(res.type);
             if(res.primary==1){
@@ -149,6 +154,7 @@ $('#editNode').click(function () {
         }
     });
 });
+
 //关闭弹层
 $.close({
     formId:'nodeForm'
@@ -196,7 +202,6 @@ $('#save').click(function () {
 
 //table数据
 $.datatable({
-    tableItem:'tableItem',
     ajax:{
         'url':'/quality/common/datatablesPre?tableName=quality_unit'
     },
@@ -243,13 +248,21 @@ $.datatable({
 });
 $('#add').html('新增');
 
-$.add({
-    formId:'unit',
-    area:['800px','700px'],
-    success:function () {
-        $('input[name="en_type"]').val('');
+$('#add').click(function () {
+    if(window.treeNode.level<4){
+        layer.msg('请选择分项工程');
+        return false;
     }
+    $.add({
+        formId:'unit',
+        area:['800px','700px'],
+        success:function () {
+            $('input[name="en_type"]').val('');
+        }
+    });
 });
+
+
 
 layui.use('laydate', function(){
     var laydate = layui.laydate;
@@ -271,6 +284,7 @@ $('.maBasesBtn').click(function () {
         btn:['保存','关闭'],
         success:function () {
             maBasesTable();
+            console.log(tableItem);
         },
         yes:function () {
 
@@ -284,7 +298,7 @@ $('.maBasesBtn').click(function () {
 //构建弹层表格
 function maBasesTable() {
     $.datatable({
-        tableItem:'maBasesItem',
+        tableId:'maBasesItem',
         serverSide:false,
         /*ajax:{
             'url':'/quality/common/datatablesPre?tableName=quality_unit'

@@ -7,7 +7,19 @@
     //管理员分组id
     var admin_cate_id;
     //组织结构树
-    $.ztree();
+    $.ztree({
+        //点击节点
+        zTreeOnClick:function (event, treeId, treeNode) {
+            admin_group_id = treeNode.id;
+            admin_group_name = treeNode.name;
+            $('#groupId').val(treeNode.id);
+
+            $.clicknode({
+                treeNode:treeNode,
+                tablePath:'/admin/common/datatablesPre?tableName=admin'
+            });
+        }
+    });
 
     //添加节点
     $('#addNode').click(function () {
@@ -370,17 +382,7 @@
         });
     });
 
-    //点击节点
-    function zTreeOnClick(event, treeId, treeNode) {
-        admin_group_id = treeNode.id;
-        admin_group_name = treeNode.name;
-        $('#groupId').val(treeNode.id);
 
-        $.clicknode({
-            treeNode:treeNode,
-            tablePath:'/admin/common/datatablesPre?tableName=admin'
-        });
-    };
 
     //组织结构表格
     $.datatable({
@@ -640,11 +642,13 @@
     $.fn.zTree.init($("#groupZtree"), groupSetting, null);
 
     //新增弹层
-    $.add({
-        formId:'org',
-        others:function(){
-            $('input[name="admin_group_id"]').val(admin_group_name);
-        }
+    $('#add').click(function () {
+        $.add({
+            formId:'org',
+            success:function(){
+                $('input[name="admin_group_id"]').val(admin_group_name);
+            }
+        });
     });
 
     //表单提交方法
