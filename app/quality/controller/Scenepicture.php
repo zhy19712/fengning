@@ -5,19 +5,18 @@
  * Date: 2018/4/8
  * Time: 9:06
  */
+/**
+ * 日常质量管理，图片管理
+ * Class Scenepicture
+ * @package app\quality\controller
+ */
 namespace app\quality\controller;
-
 use app\admin\controller\Permissions;
 use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
 use app\quality\model\ScenePictureModel;//现场图片模型
 use \think\Session;
 
-/**
- * 日常质量管理，图片管理
- * Class Scenepicture
- * @package app\quality\controller
- */
 class Scenepicture extends Permissions
 {
     /**

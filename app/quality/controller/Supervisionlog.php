@@ -5,19 +5,18 @@
  * Date: 2018/4/9
  * Time: 10:33
  */
-namespace app\quality\controller;
-
-use app\admin\controller\Permissions;
-use app\admin\model\AdminGroup;//组织机构
-use app\admin\model\Admin;//用户表
-use app\quality\model\ScenePictureModel;//现场图片模型
-use \think\Session;
-
 /**
  * 日常质量管理，监理日志
  * Class Supervisionlog
  * @package app\quality\controller
  */
+namespace app\quality\controller;
+use app\admin\controller\Permissions;
+use app\admin\model\AdminGroup;//组织机构
+use app\admin\model\Admin;//用户表
+use app\quality\model\SupervisionLogModel;//监理日志模型
+use \think\Session;
+
 class Supervisionlog extends Permissions
 {
     /**
@@ -30,4 +29,25 @@ class Supervisionlog extends Permissions
     }
 
     /**********************************监理日志类型树************************/
+    /**
+     * 监理日志类型树
+     * @return mixed|\think\response\Json
+     */
+    public function tree()
+    {
+        if ($this->request->isAjax()) {
+            //实例化模型ScenePictureModel
+            $model = new SupervisionLogModel();
+            //查询fengning_scene_picture现场图片表
+            $data = $model->getall();
+            $res = tree($data);
+
+            foreach ((array)$res as $a => $b) {
+                $b['id'] = strval($b['id']);
+                $res[$a] = json_encode($b);
+            }
+
+            return json($res);
+        }
+    }
 }

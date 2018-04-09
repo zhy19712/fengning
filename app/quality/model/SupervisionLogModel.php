@@ -2,24 +2,24 @@
 /**
  * Created by PhpStorm.
  * User: admin
- * Date: 2018/4/8
- * Time: 9:22
+ * Date: 2018/4/9
+ * Time: 10:41
  */
 /**
- * 日常质量管理，图片管理
- * Class ScenePictureModel
+ * 日常质量管理，监理日志
+ * Class SupervisionLogModel
  * @package app\quality\controller
  */
 namespace app\quality\model;
 use think\Model;
 use think\exception\PDOException;
 
-class ScenePictureModel extends Model
+class SupervisionLogModel extends Model
 {
-    protected $name='scene_picture';
+    protected $name='supervision_log';
 
     /**
-     * 查询现场图片管理表中的所有的数据
+     * 查询监理日志表中的所有的数据
      */
     public function getall()
     {
@@ -45,9 +45,9 @@ class ScenePictureModel extends Model
     }
 
     /**
-     * 新增一条现场图片表中的信息
+     * 新增一条监理日志表中的信息
      */
-    public function insertScene($param)
+    public function insertLog($param)
     {
         try{
             $result = $this->allowField(true)->insert($param);
@@ -62,9 +62,9 @@ class ScenePictureModel extends Model
     }
 
     /**
-     * 编辑一条现场图片信息
+     * 编辑一条监理日志记录
      */
-    public function editScene($param)
+    public function editLog($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
@@ -79,9 +79,9 @@ class ScenePictureModel extends Model
     }
 
     /**
-     * 删除一条现场图片信息
+     * 删除一条监理日志信息
      */
-    public function delScene($id)
+    public function delLog($id)
     {
         try{
             $this->where("id",$id)->delete();
@@ -92,7 +92,7 @@ class ScenePictureModel extends Model
     }
 
     /**
-     * 获取所属同一个pid下的现场图片的数量
+     * 获取所属同一个pid下的监理日志的数量
      */
     public function getcount($pid)
     {
