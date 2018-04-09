@@ -34,3 +34,33 @@ div.icon{
 div.icon i.fa-navicon::before{
     padding: 11px;
 }
+.ma-bases-layer{
+    padding: 10px;
+}
+.ma-bases-layer .dataTables_wrapper,.ma-bases-layer .tbcontainer{
+    display: block;
+    height: 490px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    padding: 0 !important;
+}
+/*
+.ma-bases-layer .dataTables_info,.ma-bases-layer .dataTables_paginate{
+    position: absolute;
+    bottom: 0;
+}
+.ma-bases-layer .dataTables_info{
+    padding: 0;
+    height: 40px;
+    line-height: 40px;
+}
+.ma-bases-layer .dataTables_paginate{
+    right: 0;
+}
+.ma-bases-layer table.table{
+    height: 380px;
+    overflow-y: auto;
+}*/
+input[name="ma_bases"],input[name="en_type"]{
+    cursor: pointer !important;
+}
