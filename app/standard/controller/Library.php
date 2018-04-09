@@ -85,7 +85,7 @@ class Library extends Permissions
      */
     public function GetDivsionTree($cat)
     {
-        return MaterialTrackingDivision::all(['Cat' => $cat]);
+        return MaterialTrackingDivision::all(['cat' => $cat]);
     }
 
     /**
