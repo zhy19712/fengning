@@ -366,9 +366,10 @@ class Scenepicture extends Permissions
             $code = 1;
             $msg = '预览成功';
             $data = $model->getOne($param['id']);
-
+            if(!$data['path'] || !file_exists("." .$data['path'])){
+                return json(['code' => '-1','msg' => '文件不存在']);
+            }
             $path = $data['path'];
-
             $extension = strtolower(get_extension(substr($path,1)));
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(!file_exists($pdf_path)){
