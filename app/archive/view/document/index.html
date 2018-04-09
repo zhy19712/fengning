@@ -934,10 +934,10 @@
                 layer.msg("请选择节点", {time: 1500, shade: 0.1});
                 return;
             }
-            console.log(sNodes[0])
+            console.log(sNodes);
             layer.prompt({
                 title: '编辑',
-                value: sNodes[0].name
+                value: sNodes.name
             }, function (value, index, elem) {
                 $.ajax({
                     url: "{:url('documenttype/addOrEdit')}",
@@ -945,8 +945,8 @@
                     data: {id: selfid, name: value},
                     success: function (res) {
                         if (res.code === 1) {
-                            sNodes[0].name = value;
-                            zTreeObj.updateNode(sNodes[0]);//更新节点名称
+                            sNodes.name = value;
+                            zTreeObj.updateNode(sNodes);//更新节点名称
                             layer.msg("编辑成功")
                         }
                     }
@@ -961,7 +961,7 @@
                 layer.msg("请选择节点");
                 return;
             }
-            if (!sNodes[0].children) {
+            if (!sNodes.children) {
                 layer.confirm("该操作会将关联数据同步删除，是否确认删除？", function () {
                     $.ajax({
                         url: "{:url('documenttype/del')}",
@@ -973,7 +973,7 @@
                                 //下面是更新列表
                                 // var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
                                 // tableItem.ajax.url(url).load();
-                                zTreeObj.removeNode(sNodes[0]);
+                                zTreeObj.removeNode(sNodes);
                                 selfid = "";
                             }
                         }
