@@ -16,7 +16,7 @@ use \think\Model;
 
 class AtlasDownloadModel extends Model
 {
-    protected $name='atlas_download_record';
+    protected $name='archive_atlas_download_record';
 
     /**
      * 新增下载记录

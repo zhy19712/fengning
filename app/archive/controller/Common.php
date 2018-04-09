@@ -143,7 +143,7 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function atlas_cate($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function archive_atlas_cate($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
@@ -211,7 +211,7 @@ class Common extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function atlas_download_record($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function archive_atlas_download_record($draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
 
         //查询
