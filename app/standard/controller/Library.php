@@ -21,10 +21,12 @@ use think\Request;
 class Library extends Permissions
 {
     protected $controlPointService;
+    protected $materialTrackingDivesionService;
 
     public function __construct(Request $request = null)
     {
         parent::__construct($request);
+        $this->materialTrackingDivesionService = new MaterialTrackingDivision();
         $this->controlPointService = new ControlPoint();
     }
 
@@ -52,6 +54,7 @@ class Library extends Permissions
     {
         return $this->fetch();
     }
+
     public function special()
     {
         return $this->fetch();
@@ -75,6 +78,19 @@ class Library extends Permissions
 
         $this->assign('id', $id);
         return $this->fetch();
+    }
+
+    /**
+     * 编辑划分树
+     */
+    public function adddivsiontree()
+    {
+        $mod = input('post.');
+        if (empty($mod['id'])) {
+            $res = $this->materialTrackingDivesionService->allowField(true)->save($mod);
+        } else {
+            $res = $this->materialTrackingDivesionService->allowField(true)->save($mod, ['id' => $mod['id']]);
+        }
     }
 
     /**
