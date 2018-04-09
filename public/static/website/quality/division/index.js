@@ -483,3 +483,19 @@ function del(that) {
         tablePath:'/quality/common/datatablesPre?tableName=quality_unit&edit_id='
     });
 }
+
+//生成二维码
+function qrcode(that) {
+    var id = $(that).attr('uid');
+    $.ajax({
+        url: "./qrCode",
+        type: "post",
+        data: {
+            id:id
+        },
+        dataType: "json",
+        success: function (res) {
+            console.log(res);
+        }
+    })
+}
