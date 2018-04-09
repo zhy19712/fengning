@@ -305,7 +305,7 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function supervision_log($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function quality_supervision_log($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
