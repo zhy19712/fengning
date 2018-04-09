@@ -92,6 +92,11 @@ class Library extends Permissions
         } else {
             $res = $this->materialTrackingDivesionService->allowField(true)->save($mod, ['id' => $mod['id']]);
         }
+        if ($res) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
     }
 
     /**
