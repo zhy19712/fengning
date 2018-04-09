@@ -16,7 +16,7 @@ use \think\Model;
 
 class AtlasCateModel extends Model
 {
-    protected $name='atlas_cate';
+    protected $name='archive_atlas_cate';
 
     /**
      * 新增一条图册记录

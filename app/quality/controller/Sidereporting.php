@@ -197,7 +197,7 @@ class Sidereporting extends Permissions
                     return json($flag);
 
                 }else{
-                    //3.如果当前的年份、月份都存在时，新增完整的一条现场图片信息
+                    //3.如果当前的年份、月份都存在时，新增完整的一条信息
                     //查询当前登录的用户所属的组织机构名
                     $search_info =[
                         "year" => $year,

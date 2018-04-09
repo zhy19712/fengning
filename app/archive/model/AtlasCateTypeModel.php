@@ -17,7 +17,7 @@ use \think\Model;
 class AtlasCateTypeModel extends Model
 {
 
-    protected $name='atlas_cate_type';
+    protected $name='archive_atlas_cate_type';
 
     /*
      * 查询所有的图册类型表中的数据
