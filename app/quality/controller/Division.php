@@ -529,15 +529,29 @@ class Division extends Permissions{
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
             if(request()->isGet()){
                 $data = $unit->getOne($id);
+
+                // 流水号在页面里是分开的,所以这里要截取分开
+                $parent_d_code = Db::name('quality_division')->where('id',$data['division_id'])->value('d_code');
+                $serial_number = explode($parent_d_code.'-',$data['serial_number']);
+                $data['serial_number'] = $serial_number[1];
+                /**
+                 * 工程高程（起）高程（止）  都要加上 EL.
+                 * 在这个界面上 还 分开 展示
+                 * 在别的地方就是连在一起的
+                 */
                 if(!empty($data['el_start'])){
                     $el_start = explode('EL.',$data['el_start']);
-                    $data['el_start'] = $el_start[0];
+                    $data['el_start'] = $el_start[1];
                 }
                 if(!empty($data['el_cease'])){
                     $el_cease = explode('EL.',$data['el_cease']);
-                    $data['el_cease'] = $el_cease[0];
+                    $data['el_cease'] = $el_cease[1];
                 }
                 // Todo 工程类型
+                if(!empty($data['en_type'])){
+                    $arr = ['','丰宁抽水蓄能电站','开挖','支护','混凝土','填筑','灌浆工程','岩石平洞开挖','竖井（斜井）开挖','岩石边坡开挖','岩石地基开挖','锚喷支护','锚筋桩'];
+                    $data['en_type_name'] = $arr[$data['en_type']];
+                }
                 return json($data);
             }
 
@@ -626,7 +640,7 @@ class Division extends Permissions{
      * @return \think\response\Json
      * @author hutao
      */
-    protected function delUnit()
+    public function delUnit()
     {
         /**
          * 前台只需要给我传递 要删除的 单元工程段号(单元划分) 的 id 编号

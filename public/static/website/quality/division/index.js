@@ -448,6 +448,10 @@ function edit(that) {
         ajaxUrl:'./editUnit',
         area:['800px','700px'],
         others:function (res) {
+            var dCodeLen = window.treeNode.d_code.length;
+            var serial_number = res.serial_number.slice(dCodeLen);
+            var serial_number_before = res.serial_number.slice(0,dCodeLen);
+
             $('input[name="coding"]').val(res.coding);
             $('input[name="completion_date"]').val(res.completion_date);
             $('input[name="create_time"]').val(res.create_time);
@@ -458,7 +462,8 @@ function edit(that) {
             $('input[name="ma_bases"]').val(res.ma_bases);
             $('input[name="pile_number"]').val(res.pile_number);
             $('input[name="quantities"]').val(res.quantities);
-            $('input[name="serial_number"]').val(res.serial_number);
+            $('input[name="serial_number"]').val(serial_number);
+            $('input[name="serial_number_before"]').val(serial_number_before);
             $('input[name="site"]').val(res.site);
             $('input[name="start_date"]').val(res.start_date);
             $('input[name="su_basis"]').val(res.su_basis);
