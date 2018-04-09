@@ -182,7 +182,6 @@
             var form = layui.form;
             //表单提交
             form.on('submit(save)', function(data){
-                option.data.pid = window.nodeId;
                 $.extend(true,data.field,option.data);
                 $.ajax({
                     url:option.ajaxUrl,
@@ -216,6 +215,13 @@
 
         var treeObj = $.fn.zTree.getZTreeObj(option.treeId);
         var nodes = treeObj.getSelectedNodes();
+
+        //是否选择节点
+        if(nodes==''){
+            layer.msg('请选择节点');
+            return false;
+        }
+
         var id = nodes[0].id;
         var isParent;
 
@@ -223,11 +229,6 @@
 
         $.extend(option,options);
 
-        //是否选择节点
-        if(nodes==''){
-            layer.msg('请选择节点');
-            return false;
-        }
         //是否是父节点
         if (nodes.length > 0) {
             isParent = nodes[0].isParent;

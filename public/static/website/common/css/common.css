@@ -52,6 +52,9 @@ i.fa:hover:before{
     height: 95%;
     overflow-y: auto;
 }
+.layui-layer-content .ztree{
+    margin-top: 0;
+}
 /* 当前路径 */
 .current-path{
     margin-bottom: 10px;
@@ -67,16 +70,16 @@ i.fa:hover:before{
 }
 /* layui表单 */
 
-.layui-input[disabled],.layui-textarea[disabled],.layui-disabled{
+.layui-input[disabled],.layui-textarea[disabled],.layui-disabled,.layui-input[readonly],.layui-textarea[readonly],.layui-readonly{
     cursor: not-allowed;
-    background: #cecece !important;
+    background: #e0e0e0 !important;
     color: #545454 !important;
 }
 .layui-form-item .autograph .layui-form-mid{
     padding: 0 !important;
     margin: 0 !important;
 }
-.layui-form-item .autograph .webuploader-pick{
+.layui-form-item .autograph .webuploader-pick{~
     padding: 9px 15px;
 }
 .layui-form-item .autograph .layui-input-inline{
