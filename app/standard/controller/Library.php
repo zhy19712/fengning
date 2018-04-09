@@ -11,6 +11,7 @@ namespace app\standard\controller;
 use app\admin\controller\Permissions;
 use app\standard\model\ControlPoint;
 use app\standard\model\MaterialTrackingDivision;
+use app\standard\model\TemplateModel;
 use think\Request;
 
 /**
@@ -136,5 +137,16 @@ class Library extends Permissions
         } else {
             return json(['code' => -1]);
         }
+    }
+
+    /**
+     * 获取模板名
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function gettemplatename($id)
+    {
+        return json(TemplateModel::get($id));
     }
 }

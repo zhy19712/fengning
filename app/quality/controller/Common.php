@@ -53,7 +53,7 @@ class Common extends Controller
         return $this->$table($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
     }
 
-    public function atlas_cate($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function archive_atlas_cate($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
         //查询
         //条件过滤后记录数 必要
