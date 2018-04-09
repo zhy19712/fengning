@@ -88,12 +88,12 @@ class Library extends Permissions
     {
         $mod = input('post.');
         if (empty($mod['id'])) {
-            $res = $this->materialTrackingDivesionService->allowField(true)->save($mod);
+            $res= $this->materialTrackingDivesionService->allowField(true)->insertGetId($mod);
         } else {
             $res = $this->materialTrackingDivesionService->allowField(true)->save($mod, ['id' => $mod['id']]);
         }
         if ($res) {
-            return json(['code' => 1]);
+            return json(['code' => 1,'data'=>$res]);
         } else {
             return json(['code' => -1]);
         }
