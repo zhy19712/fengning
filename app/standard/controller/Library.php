@@ -112,4 +112,29 @@ class Library extends Permissions
     {
         return $this->fetch();
     }
+
+    /**
+     * 获取控制点
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getcontrolpoint($id)
+    {
+        return json(ControlPoint::get($id));
+    }
+
+    /**
+     * 删除控制点
+     * @param $id
+     * @return \think\response\Json
+     */
+    public function delcontrolpoint($id)
+    {
+        if (ControlPoint::destroy($id)) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
+    }
 }
