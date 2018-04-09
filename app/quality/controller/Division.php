@@ -72,8 +72,15 @@ class Division extends Permissions{
         if($add_id){
             $node = new DivisionModel();
             $data = $node->getOne($add_id);
-            $num = Db::name('quality_unit')->where('division_id',$add_id)->count();
-            $codeing = $data['d_code'] . '-' . ($num + 1);
+            $num = Db::name('quality_unit')->where('division_id',$add_id)->count() + 1;
+            if($num >= 10 && $num < 100){
+                $new_num = '0'.$num;
+            }else if($num < 10){
+                $new_num = '00'.$num;
+            }else{
+                $new_num = $num;
+            }
+            $codeing = $data['d_code'] . '-' . $new_num;
             return json(['code' => 1,'codeing' => $codeing,'msg' => '系统编码']);
         }else{
             return json(['code' => -1,'msg' => '编号有误']);
@@ -521,10 +528,17 @@ class Division extends Permissions{
             $param = input('param.');
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
             if(request()->isGet()){
-                $info['node'] = $unit->getOne($id);
-                // Todo 施工依据
+                $data = $unit->getOne($id);
+                if(!empty($data['el_start'])){
+                    $el_start = explode('EL.',$data['el_start']);
+                    $data['el_start'] = $el_start[0];
+                }
+                if(!empty($data['el_cease'])){
+                    $el_cease = explode('EL.',$data['el_cease']);
+                    $data['el_cease'] = $el_cease[0];
+                }
                 // Todo 工程类型
-                return json($info);
+                return json($data);
             }
 
             // 验证规则
@@ -568,6 +582,16 @@ class Division extends Permissions{
              * 编辑 的时候 一定要 传递 id 编号
              *
              */
+
+            /**
+             * 工程高程（起）高程（止）  都要加上 EL.
+             * 在这个界面上 还 分开 展示
+             * 在别的地方就是连在一起的
+             */
+            $param['el_start'] = 'EL.' . $param['el_start'];
+            $param['el_cease'] = 'EL.' . $param['el_cease'];
+
+
             if(empty($id)){
                 // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
                 $is_unique_number = Db::name('quality_unit')->where('serial_number',$param['serial_number'])->value('id');
