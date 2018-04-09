@@ -427,6 +427,7 @@ $("#all_checked").on("click", function () {
 
 //保存新增
 $('#saveUnit').click(function () {
+    var tableItem = $('#tableItem').DataTable();
     var serial_number_before = $('input[name="serial_number_before"]').val();
     var serial_number_val = $('input[name="serial_number"]').val();
     var serial_number = serial_number_before + serial_number_val;
@@ -434,7 +435,8 @@ $('#saveUnit').click(function () {
     var division_id = window.treeNode.add_id;
     console.log(division_id);
     $.submit({
-        tableItem:maBasesItem,
+        tableItem:tableItem,
+        tablePath:'/quality/common/datatablesPre?tableName=quality_unit',
         formId:'unit',
         ajaxUrl:'./editUnit',
         data:{
