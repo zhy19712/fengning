@@ -118,7 +118,7 @@ class Library extends Permissions
      */
     public function deldivsion($id)
     {
-        if (MaterialTrackingDivision::get(['pid'=>$id])) {
+        if (MaterialTrackingDivision::all(['pid'=>$id])) {
             return json(['code' => -1, 'msg' => '请先删除子节点']);
         }
         if (ControlPoint::all(['procedureid' => $id])) {
