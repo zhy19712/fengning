@@ -533,7 +533,7 @@ class Division extends Permissions{
                 // 流水号在页面里是分开的,所以这里要截取分开
                 $parent_d_code = Db::name('quality_division')->where('id',$data['division_id'])->value('d_code');
                 $serial_number = explode($parent_d_code.'-',$data['serial_number']);
-                $data['serial_number'] = $serial_number[0];
+                $data['serial_number'] = $serial_number[1];
                 /**
                  * 工程高程（起）高程（止）  都要加上 EL.
                  * 在这个界面上 还 分开 展示
@@ -541,11 +541,11 @@ class Division extends Permissions{
                  */
                 if(!empty($data['el_start'])){
                     $el_start = explode('EL.',$data['el_start']);
-                    $data['el_start'] = $el_start[0];
+                    $data['el_start'] = $el_start[1];
                 }
                 if(!empty($data['el_cease'])){
                     $el_cease = explode('EL.',$data['el_cease']);
-                    $data['el_cease'] = $el_cease[0];
+                    $data['el_cease'] = $el_cease[1];
                 }
                 // Todo 工程类型
                 if(!empty($data['en_type'])){
@@ -640,7 +640,7 @@ class Division extends Permissions{
      * @return \think\response\Json
      * @author hutao
      */
-    protected function delUnit()
+    public function delUnit()
     {
         /**
          * 前台只需要给我传递 要删除的 单元工程段号(单元划分) 的 id 编号
