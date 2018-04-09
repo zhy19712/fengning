@@ -16,7 +16,7 @@ use think\exception\PDOException;
 
 class SamplingModel extends Model
 {
-    protected $name='sampling';
+    protected $name='quality_sampling';
 
     /**
      * 查询抽检记录表中的所有的数据

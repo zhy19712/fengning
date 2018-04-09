@@ -16,7 +16,7 @@ use think\exception\PDOException;
 
 class SideReportingModel extends Model
 {
-    protected $name='side_reporting';
+    protected $name='quality_side_reporting';
 
     /**
      * 查询旁站记录表中的所有的数据
