@@ -639,4 +639,92 @@ class Common extends Controller
 
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+
+    /**
+     * 日常质量管理-监理指令
+     * @param $draw
+     * @param $table
+     * @param $search
+     * @param $start
+     * @param $length
+     * @param $limitFlag
+     * @param $order
+     * @param $columns
+     * @param $columnString
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+
+    public function quality_supervision_instruction($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //表的总记录数 必要
+        $year = input('year')?input('year'):"";//年
+        $month = input('month')?input('month'):"";//月
+        $day = input('day')?input('day'):"";//日
+
+        if(!$year && !$month && !$day)//如果年月日都不存在
+        {
+            $search_data = [
+            ];
+        }else if($year && $month && $day)//如果年月日都存在
+        {
+            $search_data = [
+                "year" => $year,
+                "month" => $month,
+                "day" => $day
+            ];
+        }else if($year && !$month && !$day)//如果年都存在
+        {
+            $search_data = [
+                "year" => $year
+            ];
+        }else if($year && $month && !$day)//如果年月都存在
+        {
+            $search_data = [
+                "year" => $year,
+                "month" => $month
+            ];
+        }
+
+
+        //表的总记录数 必要
+        $recordsTotal = 0;
+        $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id > 0")->count(0);
+        $recordsFilteredResult = array();
+        if(strlen($search)>0){
+            //有搜索条件的情况
+            if($limitFlag){
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        }else{
+            //没有搜索条件的情况
+            if($limitFlag){
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            //计算列长度
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+
+        }
+
+
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
 }
