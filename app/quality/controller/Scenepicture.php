@@ -11,13 +11,11 @@ use app\admin\controller\Permissions;
 use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
 use app\quality\model\ScenePictureModel;//现场图片模型
-
-use \think\Db;
 use \think\Session;
 
 /**
  * 日常质量管理，图片管理
- * Class Atlas
+ * Class Scenepicture
  * @package app\quality\controller
  */
 class Scenepicture extends Permissions
@@ -54,7 +52,7 @@ class Scenepicture extends Permissions
         }
     }
 
-    /**********************************现场图片类型树************************/
+    /**********************************现场图片************************/
     /**
      * 获取一条现场图片信息
      */

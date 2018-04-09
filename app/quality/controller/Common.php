@@ -238,7 +238,7 @@ class Common extends Controller
     }
 
     /**
-     * 日常质量管理上传
+     * 日常质量管理文件上传
      * @param string $module
      * @param string $use
      * @return \think\response\Json|void
