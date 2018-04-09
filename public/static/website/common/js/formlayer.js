@@ -58,6 +58,7 @@
             formId:'formLayer',
             ajaxUrl:'./publish',
             data:{},
+            tableItem:window.tableItem,
             others:function(){}
 
         };
@@ -82,7 +83,7 @@
                         window.rowId = '';
                         option.others();    //表单提交成功后需要处理的事务
                         layer.msg(res.msg);
-                        tableItem.ajax.url(options.tablePath+"&id="+ nodeId).load();
+                        option.tableItem.ajax.url(options.tablePath+"&id="+ nodeId).load();
                     }
                 });
                 return false;
@@ -157,7 +158,7 @@
                 success: function (res) {
                     if(res.code == 1){
                         layer.msg(res.msg,{icon:1,time:1500,shade: 0.1});
-                        tableItem.ajax.url(option.tablePath + window.nodeId).load();
+                        option.tableItem.ajax.url(option.tablePath + window.nodeId).load();
                     }else{
                         layer.msg(res.msg,{icon:0,time:1500,shade: 0.1});
                     }
