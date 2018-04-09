@@ -3,21 +3,21 @@
  * Created by PhpStorm.
  * User: admin
  * Date: 2018/4/9
- * Time: 11:44
+ * Time: 13:31
  */
 /**
- * 日常质量管理，巡视记录
- * Class Patrolrecord
+ * 日常质量管理，旁站记录
+ * Class Sidereporting
  * @package app\quality\controller
  */
 namespace app\quality\controller;
 use app\admin\controller\Permissions;
 use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
-use app\quality\model\PatrolRecordModel;//巡视记录模型
+use app\quality\model\SideReportingModel;//旁站记录模型
 use \think\Session;
 
-class Patrolrecord extends Permissions
+class Sidereporting extends Permissions
 {
     /**
      * 模板首页
@@ -28,17 +28,17 @@ class Patrolrecord extends Permissions
         return $this->fetch();
     }
 
-    /**********************************巡视记录类型树************************/
+    /**********************************旁站记录类型树************************/
     /**
-     * 巡视记录类型树
+     * 旁站记录类型树
      * @return mixed|\think\response\Json
      */
     public function tree()
     {
         if ($this->request->isAjax()) {
             //实例化模型
-            $model = new PatrolRecordModel();
-            //查询巡视记录表
+            $model = new SideReportingModel();
+            //查询旁站记录表
             $data = $model->getall();
             $res = tree($data);
 
@@ -50,14 +50,14 @@ class Patrolrecord extends Permissions
             return json($res);
         }
     }
-    /**********************************巡视记录************************/
+    /**********************************旁站记录************************/
     /**
-     * 获取一条巡视记录信息
+     * 获取一条旁站记录信息
      */
     public function getindex()
     {
         if(request()->isAjax()){
-            $model = new PatrolRecordModel();
+            $model = new SideReportingModel();
             $param = input('post.');
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
@@ -66,14 +66,14 @@ class Patrolrecord extends Permissions
     }
 
     /**
-     * 上传巡视记录
+     * 上传旁站记录
      * @return \think\response\Json
      */
     public function add()
     {
         if(request()->isAjax()){
             //实例化模型类
-            $model = new PatrolRecordModel();
+            $model = new SideReportingModel();
             $admin = new Admin();
             $group = new AdminGroup();
 
@@ -100,7 +100,7 @@ class Patrolrecord extends Permissions
                     'pid' => 1
                 ];
                 //新增一条年份
-                $model -> insertPatrol($data);
+                $model -> insertSide($data);
 
                 //新建一条月份记录
                 $search_info1 =[
@@ -116,7 +116,7 @@ class Patrolrecord extends Permissions
                     'pid' => $result1['id']
                 ];
                 //新增一条月份记录
-                $model -> insertPatrol($data1);
+                $model -> insertSide($data1);
 
                 //新建一条日份记录
                 $search_info2 =[
@@ -141,7 +141,7 @@ class Patrolrecord extends Permissions
                     "admin_group_id" => $admininfo["admin_group_id"],
                     "path" => $param['path']//路径
                 ];
-                $flag = $model->insertPatrol($data2);
+                $flag = $model->insertSide($data2);
                 return json($flag);
 
 
@@ -169,7 +169,7 @@ class Patrolrecord extends Permissions
                         'pid' => $result1['id']
                     ];
                     //新增一条月份
-                    $model -> insertPatrol($data1);
+                    $model -> insertSide($data1);
                     //新建一条日份记录
                     $search_info2 =[
                         "year" => $year,
@@ -193,7 +193,7 @@ class Patrolrecord extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertPatrol($data2);
+                    $flag = $model->insertSide($data2);
                     return json($flag);
 
                 }else{
@@ -221,7 +221,7 @@ class Patrolrecord extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertPatrol($data);
+                    $flag = $model->insertSide($data);
                     return json($flag);
                 }
             }
@@ -229,32 +229,32 @@ class Patrolrecord extends Permissions
     }
 
     /**
-     * 编辑一条巡视记录信息
+     * 编辑一条旁站记录信息
      */
     public function edit()
     {
         if(request()->isAjax()){
-            $model = new PatrolRecordModel();
+            $model = new SideReportingModel();
             $param = input('post.');
             $data = [
-                'id' => $param['id'],//巡视记录自增id
+                'id' => $param['id'],//旁站记录自增id
                 'filename' => $param['filename']//上传文件名
             ];
-            $flag = $model->editPatrol($data);
+            $flag = $model->editSide($data);
             return json($flag);
 
         }
     }
 
     /**
-     * 下载一条巡视记录信息
+     * 下载一条旁站记录信息
      * @return \think\response\Json
      */
     public function download()
     {
         if(request()->isAjax()){
             $id = input('param.id');
-            $model = new PatrolRecordModel();
+            $model = new SideReportingModel();
             $param = $model->getOne($id);
             if(!$param['path'] || !file_exists("." .$param['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
@@ -262,7 +262,7 @@ class Patrolrecord extends Permissions
             return json(['code' => 1]);
         }
         $id = input('param.id');
-        $model = new PatrolRecordModel();
+        $model = new SideReportingModel();
         $param = $model->getOne($id);
 
         $filePath = '.' . $param['path'];
@@ -282,17 +282,17 @@ class Patrolrecord extends Permissions
     }
 
     /**
-     * 删除一条巡视记录信息
+     * 删除一条旁站记录信息
      */
     public function del()
     {
 
         if (request()->isAjax()) {
 
-            $id = input('post.id');//要删除的巡视记录id
+            $id = input('post.id');//要删除的旁站记录id
 
             //实例化model类型
-            $model = new PatrolRecordModel();
+            $model = new SideReportingModel();
             //首先判断一下删除的只一天所属的月份下是否有其他日子
             $data_info = $model->getOne($id);
 
@@ -303,7 +303,7 @@ class Patrolrecord extends Permissions
             //如果一个月份下只有一条的话就删除这个月份
             if($day_count < 2)
             {
-                $model -> delPatrol($data_info['pid']);
+                $model -> delSide($data_info['pid']);
 
             }
 
@@ -312,10 +312,10 @@ class Patrolrecord extends Permissions
             if($year_count < 1)
             {
                 //如果一个年份下只有一条的话就删除这个年份
-                $model -> delPatrol($data_month['pid']);
+                $model -> delSide($data_month['pid']);
             }
 
-            //最后删除这条巡视记录信息
+            //最后删除这条旁站记录信息
             $path = "." .$data_info['path'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(file_exists($path)){
@@ -326,19 +326,19 @@ class Patrolrecord extends Permissions
             }
 
             //最后删除这一条记录信息
-            $flag = $model->delPatrol($id);
+            $flag = $model->delSide($id);
             return $flag;
 
         }
     }
 
     /**
-     * 预览一条巡视记录信息
+     * 预览一条旁站记录信息
      * @return \think\response\Json
      */
     public function preview()
     {
-        $model = new PatrolRecordModel();
+        $model = new SideReportingModel();
         if(request()->isAjax()) {
             $param = input('post.');
             $code = 1;
