@@ -276,7 +276,7 @@
             enable: true,
             autoParam: ["pid"],
             type: "post",
-            url: "{:url('standard/library/GetDivsionTree')}?cat=2",
+            url: "{:url('standard/library/GetDivsionTree')}?cat=1",
             dataType: "json",
             // dataFilter: ajaxDataFilter
         },
@@ -331,7 +331,7 @@
         var pid = selfid ? selfid : 0;
         layer.prompt({title: '请输入节点名称',}, function (value, index, elem) {
             $.ajax({
-                url: "{:url('documenttype/addOrEdit')}",
+                url: "{:url('library/addcontrollpoint')}",
                 type: "post",
                 data: {pid: pid, name: value},
                 success: function (res) {

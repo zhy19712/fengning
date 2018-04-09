@@ -3,21 +3,21 @@
  * Created by PhpStorm.
  * User: admin
  * Date: 2018/4/9
- * Time: 10:33
+ * Time: 13:31
  */
 /**
- * 日常质量管理，监理日志
- * Class Supervisionlog
+ * 日常质量管理，旁站记录
+ * Class Sidereporting
  * @package app\quality\controller
  */
 namespace app\quality\controller;
 use app\admin\controller\Permissions;
 use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
-use app\quality\model\SupervisionLogModel;//监理日志模型
+use app\quality\model\SideReportingModel;//旁站记录模型
 use \think\Session;
 
-class Supervisionlog extends Permissions
+class Sidereporting extends Permissions
 {
     /**
      * 模板首页
@@ -28,17 +28,17 @@ class Supervisionlog extends Permissions
         return $this->fetch();
     }
 
-    /**********************************监理日志类型树************************/
+    /**********************************旁站记录类型树************************/
     /**
-     * 监理日志类型树
+     * 旁站记录类型树
      * @return mixed|\think\response\Json
      */
     public function tree()
     {
         if ($this->request->isAjax()) {
             //实例化模型
-            $model = new SupervisionLogModel();
-            //查询监理日志表
+            $model = new SideReportingModel();
+            //查询旁站记录表
             $data = $model->getall();
             $res = tree($data);
 
@@ -50,14 +50,14 @@ class Supervisionlog extends Permissions
             return json($res);
         }
     }
-    /**********************************监理日志************************/
+    /**********************************旁站记录************************/
     /**
-     * 获取一条监理日志信息
+     * 获取一条旁站记录信息
      */
     public function getindex()
     {
         if(request()->isAjax()){
-            $model = new SupervisionLogModel();
+            $model = new SideReportingModel();
             $param = input('post.');
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
@@ -66,14 +66,14 @@ class Supervisionlog extends Permissions
     }
 
     /**
-     * 上传监理日志
+     * 上传旁站记录
      * @return \think\response\Json
      */
     public function add()
     {
         if(request()->isAjax()){
             //实例化模型类
-            $model = new SupervisionLogModel();
+            $model = new SideReportingModel();
             $admin = new Admin();
             $group = new AdminGroup();
 
@@ -100,7 +100,7 @@ class Supervisionlog extends Permissions
                     'pid' => 1
                 ];
                 //新增一条年份
-                $model -> insertLog($data);
+                $model -> insertSide($data);
 
                 //新建一条月份记录
                 $search_info1 =[
@@ -116,7 +116,7 @@ class Supervisionlog extends Permissions
                     'pid' => $result1['id']
                 ];
                 //新增一条月份记录
-                $model -> insertLog($data1);
+                $model -> insertSide($data1);
 
                 //新建一条日份记录
                 $search_info2 =[
@@ -141,7 +141,7 @@ class Supervisionlog extends Permissions
                     "admin_group_id" => $admininfo["admin_group_id"],
                     "path" => $param['path']//路径
                 ];
-                $flag = $model->insertLog($data2);
+                $flag = $model->insertSide($data2);
                 return json($flag);
 
 
@@ -169,7 +169,7 @@ class Supervisionlog extends Permissions
                         'pid' => $result1['id']
                     ];
                     //新增一条月份
-                    $model -> insertLog($data1);
+                    $model -> insertSide($data1);
                     //新建一条日份记录
                     $search_info2 =[
                         "year" => $year,
@@ -193,7 +193,7 @@ class Supervisionlog extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertLog($data2);
+                    $flag = $model->insertSide($data2);
                     return json($flag);
 
                 }else{
@@ -221,7 +221,7 @@ class Supervisionlog extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertLog($data);
+                    $flag = $model->insertSide($data);
                     return json($flag);
                 }
             }
@@ -229,32 +229,32 @@ class Supervisionlog extends Permissions
     }
 
     /**
-     * 编辑一条监理日志信息
+     * 编辑一条旁站记录信息
      */
     public function edit()
     {
         if(request()->isAjax()){
-            $model = new SupervisionLogModel();
+            $model = new SideReportingModel();
             $param = input('post.');
             $data = [
-                'id' => $param['id'],//监理日志自增id
+                'id' => $param['id'],//旁站记录自增id
                 'filename' => $param['filename']//上传文件名
             ];
-            $flag = $model->editLog($data);
+            $flag = $model->editSide($data);
             return json($flag);
 
         }
     }
 
     /**
-     * 下载一条监理日志信息
+     * 下载一条旁站记录信息
      * @return \think\response\Json
      */
     public function download()
     {
         if(request()->isAjax()){
             $id = input('param.id');
-            $model = new SupervisionLogModel();
+            $model = new SideReportingModel();
             $param = $model->getOne($id);
             if(!$param['path'] || !file_exists("." .$param['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
@@ -262,7 +262,7 @@ class Supervisionlog extends Permissions
             return json(['code' => 1]);
         }
         $id = input('param.id');
-        $model = new SupervisionLogModel();
+        $model = new SideReportingModel();
         $param = $model->getOne($id);
 
         $filePath = '.' . $param['path'];
@@ -282,17 +282,17 @@ class Supervisionlog extends Permissions
     }
 
     /**
-     * 删除一条监理日志信息
+     * 删除一条旁站记录信息
      */
     public function del()
     {
 
         if (request()->isAjax()) {
 
-            $id = input('post.id');//要删除的监理日志id
+            $id = input('post.id');//要删除的旁站记录id
 
             //实例化model类型
-            $model = new SupervisionLogModel();
+            $model = new SideReportingModel();
             //首先判断一下删除的只一天所属的月份下是否有其他日子
             $data_info = $model->getOne($id);
 
@@ -303,7 +303,7 @@ class Supervisionlog extends Permissions
             //如果一个月份下只有一条的话就删除这个月份
             if($day_count < 2)
             {
-                $model -> delLog($data_info['pid']);
+                $model -> delSide($data_info['pid']);
 
             }
 
@@ -312,10 +312,10 @@ class Supervisionlog extends Permissions
             if($year_count < 1)
             {
                 //如果一个年份下只有一条的话就删除这个年份
-                $model -> delLog($data_month['pid']);
+                $model -> delSide($data_month['pid']);
             }
 
-            //最后删除这条监理日志信息
+            //最后删除这条旁站记录信息
             $path = "." .$data_info['path'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(file_exists($path)){
@@ -326,19 +326,19 @@ class Supervisionlog extends Permissions
             }
 
             //最后删除这一条记录信息
-            $flag = $model->delLog($id);
+            $flag = $model->delSide($id);
             return $flag;
 
         }
     }
 
     /**
-     * 预览一条监理日志信息
+     * 预览一条旁站记录信息
      * @return \think\response\Json
      */
     public function preview()
     {
-        $model = new SupervisionLogModel();
+        $model = new SideReportingModel();
         if(request()->isAjax()) {
             $param = input('post.');
             $code = 1;
