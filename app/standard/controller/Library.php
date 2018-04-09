@@ -88,12 +88,12 @@ class Library extends Permissions
     {
         $mod = input('post.');
         if (empty($mod['id'])) {
-            $res= $this->materialTrackingDivesionService->allowField(true)->insertGetId($mod);
+            $res = $this->materialTrackingDivesionService->allowField(true)->insertGetId($mod);
         } else {
             $res = $this->materialTrackingDivesionService->allowField(true)->save($mod, ['id' => $mod['id']]);
         }
         if ($res) {
-            return json(['code' => 1,'data'=>$res]);
+            return json(['code' => 1, 'data' => $res]);
         } else {
             return json(['code' => -1]);
         }
@@ -118,10 +118,10 @@ class Library extends Permissions
      */
     public function deldivsion($id)
     {
-        if (MaterialTrackingDivision::all(['pid'=>$id])) {
+        if (count(MaterialTrackingDivision::all(['pid' => $id]))) {
             return json(['code' => -1, 'msg' => '请先删除子节点']);
         }
-        if (ControlPoint::all(['procedureid' => $id])) {
+        if (count(ControlPoint::all(['procedureid' => $id]))) {
             return json(['code' => -1, 'msg' => '请先删除节点下控制点']);
         }
         return MaterialTrackingDivision::destroy($id) ? json(['code' => 1]) : json(['code' => -1, 'msg' => '删除失败']);
