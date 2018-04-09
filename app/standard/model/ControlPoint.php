@@ -10,5 +10,5 @@ use think\Model;
 
 class ControlPoint extends Model
 {
-    protected $name='ControlPoint';
+    protected $name='controlpoint';
 }
