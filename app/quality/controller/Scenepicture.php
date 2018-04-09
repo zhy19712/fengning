@@ -109,7 +109,9 @@ class Scenepicture extends Permissions
             //根据当前的上传时间获取父级节点id
             //1.查询当前的年份是否存在,如果年份不存在时，新建一条年份记录
             $search_info =[
-                "year" => $year
+                "year" => $year,
+                "month" => "",
+                "day" => ""
             ];
             $result = $model->getid($search_info);
             if(!$result['id'])//如果当前的年份不存在就新建当前年的记录
@@ -125,6 +127,8 @@ class Scenepicture extends Permissions
                 //新建一条月份记录
                 $search_info1 =[
                     "year" => $year,
+                    "month" => "",
+                    "day" => ""
                 ];
                 $result1 = $model->getid($search_info1);
                 $data1 = [
@@ -139,7 +143,8 @@ class Scenepicture extends Permissions
                 //新建一条日份记录
                 $search_info2 =[
                     "year" => $year,
-                    "month" => $month
+                    "month" => $month,
+                    "day" => ""
                 ];
                 $result2 = $model->getid($search_info2);
                 $admin_id = Session::get('current_id');
@@ -165,34 +170,44 @@ class Scenepicture extends Permissions
             }else{
                 //2.查询当前的月份是否存在,如果月份不存在时，新建一条月份记录
                 $search_info =[
-                    "year" => $year
+                    "year" => $year,
+                    "month" => $month,
+                    "day" => ""
                 ];
                 $result = $model->getid($search_info);
                 if(!$result['id'])//如果当前的月份不存在就新建当前月的记录
                 {
-                    $data = [
+                    $search_info1 =[
+                        "year" => $year,
+                        "month" => "",
+                        "day" => ""
+                    ];
+                    $result1 = $model->getid($search_info1);
+
+                    $data1 = [
                         "year" => $year,
                         "month" => $month,
                         "name" => $month."月",
-                        'pid' => $result['id']
+                        'pid' => $result1['id']
                     ];
                     //新增一条月份
-                    $model -> insertScene($data);
+                    $model -> insertScene($data1);
                     //新建一条日份记录
-                    $search_info1 =[
+                    $search_info2 =[
                         "year" => $year,
-                        "month" => $month
+                        "month" => $month,
+                        "day" => ""
                     ];
-                    $result1 = $model->getid($search_info1);
+                    $result2 = $model->getid($search_info2);
                     $admin_id = Session::get('current_id');
                     $admininfo = $admin->getadmininfo($admin_id);
                     $group = $group->getOne($admininfo["admin_group_id"]);
-                    $data1 = [
+                    $data2 = [
                         "year" => $year,
                         "month" => $month,
                         "day" => $day,
                         "name" => $day."日",
-                        "pid" => $result1['id'],
+                        "pid" => $result2['id'],
                         "filename" => date("YmdHis"),//默认上传的文件名为日期
                         "date" => date("Y-m-d H:i:s"),
                         "owner" => Session::get('current_name'),
@@ -200,7 +215,7 @@ class Scenepicture extends Permissions
                         "admin_group_id" => $admininfo["admin_group_id"],
                         "path" => $param['path']//路径
                     ];
-                    $flag = $model->insertScene($data1);
+                    $flag = $model->insertScene($data2);
                     return json($flag);
 
                 }else{
@@ -208,7 +223,8 @@ class Scenepicture extends Permissions
                     //查询当前登录的用户所属的组织机构名
                     $search_info =[
                         "year" => $year,
-                        "month" => $month
+                        "month" => $month,
+                        "day" => ""
                     ];
                     $result = $model->getid($search_info);
                     $admin_id = Session::get('current_id');
