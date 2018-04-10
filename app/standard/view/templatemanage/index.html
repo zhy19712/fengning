@@ -131,6 +131,9 @@
     table td{word-break:break-all;}
 
     table{table-layout:fixed;}
+    #tableContent .layui-input[disabled], .layui-textarea[disabled], .layui-disabled, .layui-input[readonly], .layui-textarea[readonly], .layui-readonly{
+        background: #FFFFFF !important;
+    }
 </style>
 
 <div id="tableContent" data-options="region:'center',title:'查询条件'" style="padding:5px;background:#ffffff;">
@@ -139,20 +142,20 @@
         <div class="selectItem">
             <form class="layui-form" action="">
                 <div class="layui-inline">
-                    <label class="layui-form-label">表格类型</label>
+                    <label class="layui-form-label"></label>
                     <div class="layui-input-inline">
                         <select name="type" lay-filter="type">
-                            <option value="">-请选择-</option>
+                            <option value="">-请选择表格类型-</option>
                             <option value="1">质量</option>
                             <option value="2">其他</option>
                         </select>
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label">表格用途</label>
+                    <label class="layui-form-label"></label>
                     <div class="layui-input-block">
                         <select name="use" lay-verify="" lay-filter="purpose">
-                            <option value="">-请选择-</option>
+                            <option value="">-请选择表格用途-</option>
                             <option value="1">单元工程质量评定表</option>
                             <option value="2">分部工程质量评定表</option>
                             <option value="3">单位工程质量评定表</option>
@@ -283,21 +286,31 @@
     $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增模板</div>");
 
     var layer = layui.layer;
+    var typeId;
+    var purposeId;
     //查询提交
     layui.use(['form', 'layedit', 'laydate','layer'], function(){
         var form = layui.form
             ,layer = layui.layer;
-        var typeId;
-        var purposeId;
-        form.on('select()', function(data){
-            console.log(data.value);
-            typeId = data.value
-            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId+"&use="+purposeId).load();
+
+        form.on('select(type)', function(data){
+            // console.log(data.value);
+            typeId = data.value;
+            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
         });
+        console.log(typeId);
+
         form.on('select(purpose)', function(data){
-            console.log(data.value);
+            // console.log(data.value);
             purposeId = data.value;
-            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId+"&use="+purposeId).load();
+            console.log(typeId);
+            console.log(purposeId);
+
+            if(purposeId == ""){
+                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
+            }else{
+                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId+"&use="+purposeId).load();
+            }
         });
 
         //监听提交
