@@ -64,3 +64,12 @@ div.icon i.fa-navicon::before{
 input[name="ma_bases"],input[name="en_type"]{
     cursor: pointer !important;
 }
+
+.webuploader-pick{
+    padding: 0;
+    background: none;
+}
+i.fa-download:before{
+    padding-right: 5px;
+    color: #FFF;
+}

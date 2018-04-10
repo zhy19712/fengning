@@ -435,7 +435,6 @@ $('#saveUnit').click(function () {
             en_type:en_type,
             division_id:division_id,
             id:window.rowId
-
         }
     });
 });
@@ -499,3 +498,24 @@ function qrcode(that) {
         }
     })
 }
+
+//导入弹层
+$('#importExcel').click(function () {
+    layer.open({
+        id:'100',
+        type:'1',
+        area:['300px','200px'],
+        title:'数据导入',
+        content:$('#importExcelLayer'),
+        success:function(){
+        },
+        cancel: function(index, layero){
+        }
+    });
+});
+$('#importExcelBtn').
+$.upload({
+    btnId:'#importExcelBtn',
+    server: "/quality/Division/importExcel",
+    btnText:'选择文件',
+});
