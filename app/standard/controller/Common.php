@@ -202,12 +202,13 @@ class Common extends Controller
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->count(0);
-        if ((!empty($id))) {
+        $recordsTotal = Db::name($table)->whereIn('ProcedureId',$idArr)->count(0);
+        if (strlen($search)>0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 $recordsFilteredResult = Db::name($table)
                     ->whereIn('ProcedureId', $idArr)
+                    ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
