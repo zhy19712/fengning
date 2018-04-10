@@ -203,7 +203,7 @@ class Common extends Controller
         $recordsFilteredResult = array();
         //表的总记录数 必要
         $recordsTotal = Db::name($table)->count(0);
-        if ((!empty($_type)) || (!empty($_use))) {
+        if ((!empty($id))) {
             //有搜索条件的情况
             if ($limitFlag) {
                 $recordsFilteredResult = Db::name($table)
