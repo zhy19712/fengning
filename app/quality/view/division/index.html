@@ -27,7 +27,7 @@
         </thead>
     </table>
 </div>
-<div data-options="region:'east',title:'二维码',split:true" style="width:260px;">
+<div data-options="region:'east',title:'二维码',split:true" id="qrCode" style="width:260px;">
 
 </div>
 <!-- 新增节点 -->
@@ -238,10 +238,11 @@
 <div id="importExcelLayer" class="import-excel" style="display: none">
     <div class="btn-wrap">
         <a class="layui-btn layui-btn-warm" id="importExcelBtn">选择文件</a>
-        <a class="layui-btn layui-btn-normal" id="excelDownloadBtn"><i class="fa fa-download"></i>模板下载</a>
+        <a class="layui-btn layui-btn-normal" id="exceldownloadBtn"><i class="fa fa-download"></i>模板下载</a>
     </div>
     <p>提示：选择文件之前，请先下载模版，按照模版的样式进行导入。</p>
 </div>
+<div id="form_container" style="display: none;"></div>
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/quality/division/index.js"></script>
 </body>
