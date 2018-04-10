@@ -8,7 +8,7 @@
 /**
  * 日常质量管理，监理指令
  * Class SupervisionInstructionModel
- * @package app\quality\controller
+ * @package app\quality\model
  */
 namespace app\quality\model;
 use think\Model;
