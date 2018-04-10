@@ -111,9 +111,6 @@
         line-height: 34px;
         background: #FFF;
     }
-    .dataTables_wrapper,.tbcontainer{
-        display: block;
-    }
 </style>
 <div data-options="region:'west',title:'图册文件树',split:true" style="width:240px;">
     <div class="ztree-title">
@@ -302,7 +299,7 @@
         ajax: {
             "url":"{:url('archive/common/datatablesPre?tableName=archive_atlas_cate&selfid=-1')}"
         },
-        dom: 'lf<"mybtnDrawing mybtn layui-btn layui-btn-sm"><"mybtnAtlas mybtn layui-btn layui-btn-sm">rtip',
+        dom: 'f<"mybtnDrawing mybtn layui-btn layui-btn-sm"><"mybtnAtlas mybtn layui-btn layui-btn-sm">rtlip',
         columns:[
             {
                 name: "cate_number"
@@ -393,6 +390,7 @@
             $('#tableItem_length').insertBefore(".mark");
             $('#tableItem_info').insertBefore(".mark");
             $('#tableItem_paginate').insertBefore(".mark");
+            $('.dataTables_wrapper,.tbcontainer').css("display","block");
 
         },
         "fnDrawCallback":function () {

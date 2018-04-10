@@ -84,9 +84,6 @@
     #tableItem .even{
         background-color: white;
     }
-    .dataTables_wrapper,.tbcontainer{
-        display: block;
-    }
     .fa.fa-save:before ,.fa.fa-close:before,.fa.fa-save:hover:before,.fa.fa-close:hover:before{
         color: white;
     }
@@ -137,7 +134,7 @@
         ajax: {
             "url":"{:url('quality/common/datatablesPre?tableName=quality_scene_picture')}"
         },
-        dom: '<"myl"><"selectdepartment">lf<"#upload.mybtn layui-btn layui-btn-sm ">rtip',
+        dom: '<"myl"><"selectdepartment">f<"#upload.mybtn layui-btn layui-btn-sm ">rtlip',
         columns:[
             {
                 name: "filename"
@@ -203,6 +200,7 @@
             $('#tableItem_length').insertBefore(".mark");
             $('#tableItem_info').insertBefore(".mark");
             $('#tableItem_paginate').insertBefore(".mark");
+            $('.dataTables_wrapper,.tbcontainer').css("display","block");
         }
     });
     //选择部门
