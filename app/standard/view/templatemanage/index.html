@@ -152,7 +152,7 @@
         <div class="title"></div>
         <div class="selectItem">
             <form class="layui-form" action="">
-                <div class="layui-inline" style="margin-left: -100px">
+                <div class="layui-inline" style="margin-left: -3%">
                     <label class="layui-form-label"></label>
                     <div class="layui-input-inline">
                         <select name="type" lay-filter="type">
@@ -162,7 +162,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline" style="margin-left: 220px">
+                <div class="layui-inline" style="margin-left: 5%">
                     <label class="layui-form-label"></label>
                     <div class="layui-input-block">
                         <select name="use" lay-verify="" lay-filter="purpose">
@@ -209,7 +209,7 @@
         ajax: {
             "url":"{:url('/standard/common/datatablesPre')}?tableName=quality_template"
         },
-        dom: '<"mybtn layui-btn layui-btn-sm">rtip',
+        dom: 'l<"mybtn layui-btn layui-btn-sm">rtip',
         columns: [
             {
                 name: "code"
@@ -305,13 +305,11 @@
             ,layer = layui.layer;
 
         form.on('select(type)', function(data){
-            // console.log(data.value);
             typeId = data.value;
             tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
         });
 
         form.on('select(purpose)', function(data){
-            // console.log(data.value);
             purposeId = data.value;
             console.log(typeId);
             console.log(purposeId);
@@ -337,7 +335,7 @@
             title: '新增模板',
             shadeClose: true,
             area: ['780px', '550px'],
-            content: '{:url("add")}',
+            content: '{:url("add")}'
         });
     });
 
