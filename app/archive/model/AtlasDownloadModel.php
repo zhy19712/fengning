@@ -7,11 +7,9 @@
  */
 /*
  * 记录下载信息
- * @package app\archive\controller
+ * @package app\archive\model
  */
 namespace app\archive\model;
-
-use think\Db;
 use \think\Model;
 
 class AtlasDownloadModel extends Model
