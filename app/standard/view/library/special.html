@@ -109,9 +109,6 @@
     #tableContent .odd {
         background-color: #f9f9f9;
     }
-    /*#tableContent .dataTables_wrapper,#tableContent .tbcontainer{*/
-        /*display: block;*/
-    /*}*/
     .tableHeadName{
         width: 100%;
         font-size: 14px;
@@ -203,13 +200,10 @@
         ],
         columnDefs: [
             {
-                "targets":[0],
-                "searchable": false
+                "targets":[0]
             },
             {
-                "targets": [1],
-                "searchable": false,
-                "orderable": false
+                "targets": [1]
             },
             {
                 "searchable": false,
@@ -228,7 +222,6 @@
                 "targets": [3],
                 "render": function (data, type, row) {
                     var a = data;
-                    // console.log(row)
                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='编辑' class='fa fa-pencil'></i></a>";
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
