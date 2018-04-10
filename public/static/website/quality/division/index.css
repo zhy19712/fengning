@@ -65,11 +65,19 @@ input[name="ma_bases"],input[name="en_type"]{
     cursor: pointer !important;
 }
 
+.import-excel p{
+    padding-top: 20px;
+    color: #F00;
+    text-align: center;
+}
+.btn-wrap{
+    text-align: center;
+}
 .webuploader-pick{
     padding: 0;
     background: none;
 }
-i.fa-download:before{
+i.fa-download:before,i.fa-plus:before,i.fa-download:hover:before,i.fa-plus:hover:before{
     padding-right: 5px;
     color: #FFF;
 }
