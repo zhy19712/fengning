@@ -9,7 +9,7 @@
             btnText:'上传',
             server: "/standard/common/upload",
             inputName:'file_name',
-            others:function(){}
+            uploadSuccess:function(){}
         };
         $.extend(option,options);
         uploader = WebUploader.create({
@@ -33,9 +33,15 @@
             resize: false
         });
         uploader.on( 'uploadSuccess', function( file ,res) {
-            layer.msg(file.name+'已上传成功');
+            option.uploadSuccess(res);
             $('input[name='+ option.inputName +']').val(file.name);
             window.file_id = res.id;
+        });
+        uploader.on( 'uploadError', function( file ) {
+            layer.msg('上传失败');
+        });
+        uploader.on("uploadStart",function () {
+            option.uploadStart(uploader);
         });
     }
 })(jQuery);

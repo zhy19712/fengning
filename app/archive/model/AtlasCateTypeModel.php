@@ -7,11 +7,9 @@
  */
 /*
  * 图纸文档管理，图册类型
- * @package app\archive\controller
+ * @package app\archive\model
  */
 namespace app\archive\model;
-
-use think\Db;
 use \think\Model;
 
 class AtlasCateTypeModel extends Model
@@ -19,7 +17,7 @@ class AtlasCateTypeModel extends Model
 
     protected $name='archive_atlas_cate_type';
 
-    /*
+    /**
      * 查询所有的图册类型表中的数据
      */
     public function getall()
@@ -34,7 +32,6 @@ class AtlasCateTypeModel extends Model
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-
     public function getNodeInfo()
     {
 
@@ -58,7 +55,7 @@ class AtlasCateTypeModel extends Model
         return "[" . substr($str, 0, -1) . "]";
     }
 
-    /*
+    /**
      * 添加图册类型节点
      */
     public function insertCatetype($param)
@@ -86,7 +83,7 @@ class AtlasCateTypeModel extends Model
         }
     }
 
-    /*
+    /**
      * 编辑图册类型节点
      */
     public function editCatetype($param)
@@ -103,7 +100,7 @@ class AtlasCateTypeModel extends Model
         }
     }
 
-    /*
+    /**
      * 删除图册类型节点
      */
     public function delCatetype($id)
@@ -116,7 +113,7 @@ class AtlasCateTypeModel extends Model
         }
     }
 
-    /*
+    /**
      * 获取一个图册类型节点信息
      */
     public function getOne($id)
@@ -124,7 +121,6 @@ class AtlasCateTypeModel extends Model
         $data = $this->find($id);
         return $data;
     }
-
 
     /**
      * 采用递归方法获得所有的节点

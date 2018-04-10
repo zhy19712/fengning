@@ -1,4 +1,4 @@
-{include file="../../admin/view/public/common_header"}
+{include file="../../public/common_header"}
 <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="__PUBLIC__/layui/css/modules/layer/default/layer.css" media="all">
 <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all">
@@ -56,12 +56,11 @@
             overflow-x: auto;
         }
         #secTable #mytable1_wrapper table{
-            /*border-top: 1px solid #00c0ef;*/
             margin-top: 12px;
         }
         #secTable .layui-btn-sm {
             height: 28px;
-            line-height: 30px;
+            line-height: 34px;
             padding: 0 10px;
             font-size: 12px;
         }
@@ -131,6 +130,9 @@
         #secTable .dataTables_wrapper .dataTables_paginate .paginate_button {
             border: none;
         }
+        #secTable .dataTables_wrapper, .tbcontainer {
+            display: block;
+        }
     </style>
 <!--<body class="easyui-layout" style="overflow-y:hidden;">-->
 <!--表格-->
@@ -162,7 +164,7 @@
 </div>
 
 <!--</body>-->
-{include file="../../admin/view/public/common_footer"}
+{include file="../../public/common_footer"}
 <script type="text/javascript">
 
     var admin_table = $('#admin_table').DataTable({
@@ -226,7 +228,7 @@
             }
         }
     });
-    $("div.mybtn").html('<div><span style="font-size: 22px">+</span>&nbsp;新增</div>');
+    $("div.mybtn").html('<div><span style="font-size: 22px;float: left;">+</span><span>&nbsp;新增</span></div>');
     //变色
     $('#admin_table tbody').on( 'mouseover', 'td', function () {
             $(this).parent("tr").addClass('highlight');

@@ -22,6 +22,9 @@
     #queryCriteria .selectItem .layui-select-title{
         width: 400px;
     }
+    #queryCriteria .selectItem .layui-form-label{
+        font-weight: bolder;
+    }
     #queryCriteria .sea{
         position: absolute;
         right: 1%;
@@ -83,6 +86,12 @@
         font-size: 16px;
         display: inline-block;
     }
+    #tableContent .even {
+        background-color: #ffffff;
+    }
+    #tableContent .odd {
+        background-color: #f9f9f9;
+    }
     #tableContent .ibox-tools {
         float: right;
         margin-right: 30px;
@@ -125,41 +134,48 @@
     #tableItem table{
         width: 800px;
     }
-    table td{word-break:break-all;}
+    table td{
+        word-break:break-all;
+    }
 
-    table{table-layout:fixed;}
+    table{
+        table-layout:fixed;
+    }
+
+    #tableContent .layui-input[disabled], .layui-textarea[disabled], .layui-disabled, .layui-input[readonly], .layui-textarea[readonly], .layui-readonly{
+        background: #FFFFFF !important;
+    }
 </style>
 
-<!--<div id="bodyBig">-->
 <div id="tableContent" data-options="region:'center',title:'查询条件'" style="padding:5px;background:#ffffff;">
     <div id="queryCriteria">
         <div class="title"></div>
         <div class="selectItem">
             <form class="layui-form" action="">
-                <div class="layui-inline">
-                    <label class="layui-form-label">表格类型</label>
+                <div class="layui-inline" style="margin-left: -3%">
+                    <label class="layui-form-label"></label>
                     <div class="layui-input-inline">
-                        <select name="type">
-                            <option value="">-请选择-</option>
+                        <select name="type" lay-filter="type">
+                            <option value="">-请选择表格类型-</option>
                             <option value="1">质量</option>
                             <option value="2">其他</option>
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">表格用途</label>
+                <div class="layui-inline" style="margin-left: 5%">
+                    <label class="layui-form-label"></label>
                     <div class="layui-input-block">
-                        <select name="use" lay-verify="">
-                            <option value="">-请选择-</option>
+                        <select name="use" lay-verify="" lay-filter="purpose">
+                            <option value="">-请选择表格用途-</option>
                             <option value="1">单元工程质量评定表</option>
                             <option value="2">分部工程质量评定表</option>
                             <option value="3">单位工程质量评定表</option>
                         </select>
                     </div>
                 </div>
-                <div class="sea">
-                    <button class="layui-btn" lay-submit="" lay-filter="demo1">查询</button>
-                </div>
+                <!--<div class="sea">-->
+                    <!--<button class="layui-btn" lay-submit="" lay-filter="demo1">查询</button>-->
+                <!--</div>-->
             </form>
         </div>
     </div>
@@ -179,7 +195,6 @@
         <div class="mark"></div>
     </div>
 </div>
-<!--</div>-->
 
 {include file="../app/public/common_footer.html"}
 <!--<script src="__WEBSITE__/archive/document/index.js"></script>-->
@@ -194,7 +209,7 @@
         ajax: {
             "url":"{:url('/standard/common/datatablesPre')}?tableName=quality_template"
         },
-        dom: '<"mybtn layui-btn layui-btn-sm">rtip',
+        dom: 'l<"mybtn layui-btn layui-btn-sm">rtip',
         columns: [
             {
                 name: "code"
@@ -215,11 +230,11 @@
         columnDefs: [
             {
                 targets: [0],
-                width:'250px',
+                width:'250px'
             },
             {
                 targets: [1],
-                width:'250px',
+                width:'250px'
             },
             {
                 "searchable": false,
@@ -282,15 +297,35 @@
     $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增模板</div>");
 
     var layer = layui.layer;
+    var typeId;
+    var purposeId;
     //查询提交
     layui.use(['form', 'layedit', 'laydate','layer'], function(){
         var form = layui.form
             ,layer = layui.layer;
-        //监听提交
-        form.on('submit(demo1)', function(data){
-            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+data.field.type+"&use="+data.field.use).load();
-            return false;
+
+        form.on('select(type)', function(data){
+            typeId = data.value;
+            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
         });
+
+        form.on('select(purpose)', function(data){
+            purposeId = data.value;
+            console.log(typeId);
+            console.log(purposeId);
+
+            if(purposeId == ""){
+                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
+            }else{
+                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId+"&use="+purposeId).load();
+            }
+        });
+
+        //监听提交
+        // form.on('submit(demo1)', function(data){
+        //     tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+data.field.type+"&use="+data.field.use).load();
+        //     return false;
+        // });
     });
 
     //点击新增模板
@@ -300,7 +335,7 @@
             title: '新增模板',
             shadeClose: true,
             area: ['780px', '550px'],
-            content: '{:url("add")}',
+            content: '{:url("add")}'
         });
     });
 

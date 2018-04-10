@@ -62,23 +62,12 @@
     .dataTables_wrapper{
         margin-bottom: 20px;
     }
-    /*#tableItem_length{*/
-        /*float: left;*/
-    /*}*/
-    /*#tableItem_paginate,#tableItem_paginate ul li{*/
-        /*margin-left: 10px;*/
-        /*float: left;*/
-    /*}*/
     #tableItem{
         padding-top: 10px           ;
     }
     #tableItem_paginate ul li{
         line-height: 18px;
     }
-    /*#tableItem_info{*/
-        /*float: left;*/
-        /*margin-left: 20px;*/
-    /*}*/
     #tableItem_filter{
         font-weight: bold;
     }
@@ -90,17 +79,6 @@
     }
     #tableItem .even{
         background-color: white;
-    }
-    /*.tbcontainer{*/
-        /*font-weight: bold;*/
-        /*margin-left: -2px;*/
-        /*background-color: #c0c0c0;*/
-        /*position: fixed;*/
-        /*width: 100%;*/
-        /*bottom: 0;*/
-    /*}*/
-    .dataTables_wrapper,.tbcontainer{
-        display: block;
     }
     .fa.fa-save:before ,.fa.fa-close:before,.fa.fa-save:hover:before,.fa.fa-close:hover:before{
         color: white;
@@ -226,7 +204,7 @@
         ajax: {
             "url":"{:url('admin/common/datatablesPre?tableName=admin_cate&id=')}"
         },
-        dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
+        dom: 'f<"mybtn layui-btn layui-btn-sm">rtlip',
         columns:[
             {
                 name: "number_id"
@@ -282,6 +260,7 @@
             $('#tableItem_length').insertBefore(".mark");
             $('#tableItem_info').insertBefore(".mark");
             $('#tableItem_paginate').insertBefore(".mark");
+            $('.dataTables_wrapper,.tbcontainer').css("display","block");
         }
     });
     //新增

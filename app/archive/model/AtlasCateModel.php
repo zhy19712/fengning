@@ -7,11 +7,9 @@
  */
 /*
  * 图纸文档管理，图册文件
- * @package app\archive\controller
+ * @package app\archive\model
  */
 namespace app\archive\model;
-
-use think\Db;
 use \think\Model;
 
 class AtlasCateModel extends Model
@@ -34,6 +32,7 @@ class AtlasCateModel extends Model
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
+
     /**
      * 查询同一类别，同一selfid下的最大序号cate_number
      */
@@ -42,6 +41,7 @@ class AtlasCateModel extends Model
         $catenumber = $this->where("selfid",$selfid)->max("cate_number");
         return $catenumber;
     }
+
     /**
      * 编辑一条图册记录
      */
@@ -58,6 +58,7 @@ class AtlasCateModel extends Model
             return ['code' => 0, 'msg' => $e->getMessage()];
         }
     }
+
     /*
      * 根据图册id删除一条图册记录
      */
@@ -70,6 +71,7 @@ class AtlasCateModel extends Model
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
+
     /**
     * 获取一条图册类型信息
     */
@@ -87,6 +89,7 @@ class AtlasCateModel extends Model
         $data = $this->where('pid', $id)->find();
         return $data;
     }
+
     /**
      * 查询一条图册下的所有的图片信息
      */
@@ -171,7 +174,6 @@ class AtlasCateModel extends Model
     /**
      * 查询当前图册下是否有图纸文件
      */
-
     public function getpic($id)
     {
         $data = $this->where("pid",$id)->find();
@@ -181,7 +183,6 @@ class AtlasCateModel extends Model
     /**
      * 根据传过来的fengning_atlas_cate图册表中的id,admin表中的id,
      */
-
     public function delblacklist($param)
     {
 
@@ -216,8 +217,6 @@ class AtlasCateModel extends Model
         //把处理过得数据重新插入数组中
         $result = $this->allowField(true)->save(['blacklist'=>$str],['id' => $param['id']]);
 
-
-
         if($result)
         {
             return ['code' => 1,'msg' => "删除成功"];
@@ -230,7 +229,6 @@ class AtlasCateModel extends Model
     /**
      * 添加用户到白名单
      */
-
     public function insertAdminid($param)
     {
         try {
@@ -248,7 +246,4 @@ class AtlasCateModel extends Model
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
-
-
-
 }

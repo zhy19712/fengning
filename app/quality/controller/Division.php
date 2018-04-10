@@ -309,7 +309,7 @@ class Division extends Permissions{
      * @author hutao
      */
     public function importExcel(){
-        $section_id = input('param.section_id');// 标段编号
+        $section_id = input('param.add_id');// 标段编号
         if(empty($section_id)){
             return  json(['code' => 0,'data' => '','msg' => '请选择标段']);
         }
@@ -656,6 +656,23 @@ class Division extends Permissions{
         }else{
             return json(['code' => 0,'msg' => '编号有误']);
         }
+    }
+
+    /**
+     * 二维码
+     * @return \think\response\Json|void
+     * @author hutao
+     */
+    public function qrCode()
+    {
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+        if($this->request->isAjax()){
+            return json(['code' => 1,'name' => '','msg' => '二维码']);
+        }
+        $text = url('quality/division/editUnit/'.$id);
+        Loader::import('phpqrcode\phpqrcode', EXTEND_PATH);
+        $enc = \QRencode::factory('L', 5, 4);
+        return $enc->encodePNG($text, false, false);
     }
 
 }
