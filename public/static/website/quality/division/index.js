@@ -500,22 +500,45 @@ function qrcode(that) {
 }
 
 //导入弹层
+var index;
 $('#importExcel').click(function () {
-    layer.open({
+    if(!window.treeNode){
+        layer.msg('未选择标段');
+        return false;
+    }
+    if(window.treeNode.level==0){
+        layer.msg('只能从标段导入');
+        return false;
+    }
+    index = layer.open({
         id:'100',
         type:'1',
-        area:['300px','200px'],
+        area:['500px','170px'],
         title:'数据导入',
         content:$('#importExcelLayer'),
         success:function(){
+            $.upload({
+                btnId:'#importExcelBtn',
+                server: "/quality/Division/importExcel",
+                btnText:'选择文件',
+                formData:{
+                    add_id:''
+                },
+                uploadSuccess:function (res) {
+                    layer.msg(res.msg);
+                    if(res.code!=0){
+                        layer.close(index);
+                    }
+                },
+                uploadStart:function(uploader){
+                    uploader.options.formData.add_id = window.treeNode.add_id;
+                }
+            });
+            $('#importExcelBtn .webuploader-pick').prepend('<i class="fa fa-plus"></i>');
         },
         cancel: function(index, layero){
+            $('#importExcelBtn .webuploader-pick i').remove();
+            uploader.destroy();
         }
     });
-});
-$('#importExcelBtn').
-$.upload({
-    btnId:'#importExcelBtn',
-    server: "/quality/Division/importExcel",
-    btnText:'选择文件',
 });
