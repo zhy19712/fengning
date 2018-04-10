@@ -3,7 +3,6 @@
         var file_id = $(options.that).attr('uid');
         var option = {
             url:'',
-            tablePath:'',
             data:{
                 file_id:file_id
             }

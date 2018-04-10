@@ -500,7 +500,6 @@ function qrcode(that) {
 }
 
 //导入弹层
-var index;
 $('#importExcel').click(function () {
     if(!window.treeNode){
         layer.msg('未选择标段');
@@ -510,7 +509,7 @@ $('#importExcel').click(function () {
         layer.msg('只能从标段导入');
         return false;
     }
-    index = layer.open({
+   var index = layer.open({
         id:'100',
         type:'1',
         area:['500px','170px'],
@@ -540,5 +539,12 @@ $('#importExcel').click(function () {
             $('#importExcelBtn .webuploader-pick i').remove();
             uploader.destroy();
         }
+    });
+});
+
+//模板下载
+$('#excelDownloadBtn').click(function () {
+    $.download({
+        url:'./excelDownload'
     });
 });
