@@ -8,7 +8,7 @@
 /**
  * 日常质量管理，旁站记录
  * Class SideReportingModel
- * @package app\quality\controller
+ * @package app\quality\model
  */
 namespace app\quality\model;
 use think\Model;

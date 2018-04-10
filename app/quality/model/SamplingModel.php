@@ -8,7 +8,7 @@
 /**
  * 日常质量管理，抽检记录
  * Class SamplingModel
- * @package app\quality\controller
+ * @package app\quality\model
  */
 namespace app\quality\model;
 use think\Model;

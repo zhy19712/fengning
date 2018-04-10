@@ -8,7 +8,7 @@
 /**
  * 日常质量管理，巡视记录
  * Class PatrolRecordModel
- * @package app\quality\controller
+ * @package app\quality\model
  */
 namespace app\quality\model;
 use think\Model;
