@@ -5,17 +5,18 @@
  * Date: 2018/3/23
  * Time: 15:05
  */
-/*
+/**
  * 角色管理
+ * Class Rolemanagement
+ * @package app\admin\controller
  */
 namespace app\admin\controller;
-
 use \think\Db;
 use \think\Session;
-use app\admin\model\AdminCateType;
+use app\admin\model\AdminCateType;//角色类型
 use app\admin\model\Admin as adminModel;//管理员模型
 use app\admin\model\AdminCate;
-use app\admin\model\AdminGroup;
+use app\admin\model\AdminGroup;//组织机构
 
 class Rolemanagement extends Permissions
 {

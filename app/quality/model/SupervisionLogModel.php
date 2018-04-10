@@ -8,7 +8,7 @@
 /**
  * 日常质量管理，监理日志
  * Class SupervisionLogModel
- * @package app\quality\controller
+ * @package app\quality\model
  */
 namespace app\quality\model;
 use think\Model;

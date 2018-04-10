@@ -8,7 +8,7 @@
 /**
  * 日常质量管理，现场图片
  * Class ScenePictureModel
- * @package app\quality\controller
+ * @package app\quality\model
  */
 namespace app\quality\model;
 use think\Model;

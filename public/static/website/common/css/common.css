@@ -75,6 +75,9 @@ i.fa:hover:before{
     background: #e0e0e0 !important;
     color: #545454 !important;
 }
+.layui-form-select .layui-input{
+    cursor: pointer !important;
+}
 .layui-form-item .autograph .layui-form-mid{
     padding: 0 !important;
     margin: 0 !important;

@@ -59,7 +59,7 @@ var setting = {
         onClick: this.onClick
     }
 };
-
+//初始化树
 zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
 
 layui.use(['element',"layer",'form','laydate','upload'], function(){
@@ -294,3 +294,89 @@ function conPosition(id) {
         content: "../scenepicture/PositionSet?id=" + id
     });
 }
+//datatables表格
+var tableItem = $('#tableItem').DataTable( {
+    pagingType: "full_numbers",
+    processing: true,
+    serverSide: true,
+    // scrollY: 600,
+    ajax: {
+        "url":"/quality/common/datatablespre/tableName/"+tableName+".shtml"
+    },
+    dom: '<"myl">f<"#upload.mybtn layui-btn layui-btn-sm ">rtlip',
+    columns:[
+        {
+            name: "filename"
+        },
+        {
+            name: "date"
+        },
+        {
+            name: "owner"
+        },
+        {
+            name: "company"
+        },
+        {
+            name: "position"
+        },
+        {
+            name: "id"
+        }
+    ],
+    columnDefs: [
+        {
+            "searchable": false,
+            "orderable": false,
+            "targets": [5],
+            "render" :  function(data,type,row) {
+                var a = data;
+                var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+data+")'><i class='fa fa-pencil'></i></a>" ;
+                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
+                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
+                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-search'></i></a>" ;
+                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPosition("+data+")'><i class='fa fa-gears'></i></a>" ;
+                return html;
+            }
+        },
+        {
+            "orderable": false,
+            "targets": [4],
+            "render":function (data) {
+                if(data==1){
+                    return "<img src='__WEBSITE__/quality/scenepicture/setValid.png'>" ;
+                }else{
+                    return "";
+                }
+            }
+        }
+    ],
+    language: {
+        "lengthMenu": "_MENU_",
+        "zeroRecords": "没有找到记录",
+        "info": "第 _PAGE_ 页 ( 共 _PAGES_ 页, _TOTAL_ 项 )",
+        "infoEmpty": "无记录",
+        "search": "搜索：",
+        "infoFiltered": "(从 _MAX_ 条记录过滤)",
+        "paginate": {
+            "sFirst": "<<",
+            "sPrevious": "<",
+            "sNext": ">",
+            "sLast": ">>"
+        }
+    },
+    "fnInitComplete": function (oSettings, json) {
+        $('#tableItem_length').insertBefore(".mark");
+        $('#tableItem_info').insertBefore(".mark");
+        $('#tableItem_paginate').insertBefore(".mark");
+        $('.dataTables_wrapper,.tbcontainer').css("display","block");
+    }
+});
+//新增
+$(".mybtn").html('<i class="fa fa-plus"></i>&nbsp;上传');
+//变色
+$('#tableItem tbody').on( 'mouseover', 'td', function () {
+    $(this).parent("tr").addClass('highlight');
+}).on( 'mouseleave', 'td', function () {
+    $(this).parent("tr").removeClass( 'highlight' );
+});

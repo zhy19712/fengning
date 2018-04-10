@@ -7,6 +7,7 @@
         <i title="删除节点" class="fa fa-lg fa-trash" id="delNode"></i>
         <i title="展开所有" class="fa fa-lg fa-plus-square" id="openNode"></i>
         <i title="收起所有" class="fa fa-lg fa-minus-square" id="closeNode"></i>
+        <i title="导入" class="fa fa-lg fa-external-link" id="importExcel"></i>
     </div>
     <ul class="ztree" id="ztree"></ul>
 </div>
@@ -232,6 +233,14 @@
         </tr>
         </thead>
     </table>
+</div>
+<!-- 数据导入 -->
+<div id="importExcelLayer" class="import-excel" style="display: none">
+    <div class="btn-wrap">
+        <a class="layui-btn layui-btn-warm" id="importExcelBtn">选择文件</a>
+        <a class="layui-btn layui-btn-normal" id="excelDownloadBtn"><i class="fa fa-download"></i>模板下载</a>
+    </div>
+    <p>提示：选择文件之前，请先下载模版，按照模版的样式进行导入。</p>
 </div>
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/quality/division/index.js"></script>
