@@ -148,7 +148,6 @@
             others:function(){}
         };
         $.extend(option,options);
-        debugger;
         layer.confirm('确认删除此条记录吗?', {icon: 3, title:'提示'}, function(index){
             $.ajax({
                 url: option.ajaxUrl,
