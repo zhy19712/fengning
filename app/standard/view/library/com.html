@@ -2,30 +2,6 @@
 <script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
 
-    .panel{
-        top: 96px;
-    }
-
-    #queryCriteria{
-        width: 100%;
-        height: 90px;
-        /*border: 1px dotted #00c0ef;*/
-    }
-
-    #queryCriteria .title{
-        margin-left: 10px;
-        margin-top: 5px;
-    }
-
-    #queryCriteria .selectItem{
-        margin-left: 250px;
-        margin-top: 30px;
-    }
-
-    #queryCriteria .selectItem .layui-select-title{
-        width: 400px;
-    }
-
     #nodeZtree .ztree-title i.fa {
         width: 12%;
     }
@@ -97,30 +73,15 @@
         top: 15px;
         border-top: 1px dotted #cecece;
     }
-    #tableContent #tableItem tr td a{
-        color: #337ab7;
-    }
     #tableContent .even {
         background-color: #ffffff;
     }
     #tableContent .odd {
         background-color: #f9f9f9;
     }
-
-    .tableHeadName{
-        width: 100%;
-        font-size: 14px;
-        font-weight: 800;
-        color: #0E2D5F;
-        height: 22px;
-        padding: 5px;
-        border-bottom: 1px solid #cecece;
-        line-height: 22px;
-        border-top: 1px solid #cecece ;
-        margin: 4px 0 4px -5px;
-    }
     #bodyBig .layui-this{
-        background: darkseagreen;
+        background: #00c0ef;
+        color: white;
     }
     #bodyBig .layui-tab-content {
         padding-left: 4px;
@@ -131,7 +92,7 @@
     <div class="layui-tab">
         <ul class="layui-tab-title">
             <li><a href="./index.shtml">标段</a></li>
-            <li class="layui-this"><a>单位工程</a></li>
+            <li class="layui-this">单位工程</li>
             <li><a href="./branch.shtml">分部工程</a></li>
             <li><a href="./item.shtml">分项工程</a></li>
             <li><a href="./unit.shtml">单元工程</a></li>
@@ -196,13 +157,10 @@
         ],
         columnDefs: [
             {
-                "targets":[0],
-                "searchable": false
+                "targets":[0]
             },
             {
-                "targets": [1],
-                "searchable": false,
-                "orderable": false
+                "targets": [1]
             },
             {
                 "searchable": false,
@@ -265,16 +223,14 @@
     var setting = {
         view: {
             showLine: true, //设置 zTree 是否显示节点之间的连线。
-            selectedMulti: false, //设置是否允许同时选中多个节点。
-            // dblClickExpand: true //双击节点时，是否自动展开父节点的标识。
+            selectedMulti: false //设置是否允许同时选中多个节点。
         },
         async: {
             enable: true,
             autoParam: ["pid"],
             type: "post",
             url: "{:url('standard/library/GetDivsionTree')}?cat=2",
-            dataType: "json",
-            // dataFilter: ajaxDataFilter
+            dataType: "json"
         },
         data: {
             simpleData: {

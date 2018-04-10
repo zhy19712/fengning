@@ -129,6 +129,11 @@ class Common extends Controller
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
+        } else if (strlen($search) > 0) {
+            $recordsFilteredResult = Db::name($table)
+                ->where($columnString, 'like', '%' . $search . '%')
+                ->order($order)->limit(intval($start), intval($length))->select();
+            $recordsFiltered = $recordsTotal;
         } else {
             //没有搜索条件的情况
             if ($limitFlag) {
@@ -195,19 +200,20 @@ class Common extends Controller
     public function controlpoint($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
-        $c=new ControlPoint();
+        $c = new ControlPoint();
         $idArr = $c->getChilds($id);
         $idArr[] = $id;
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->count(0);
-        if ((!empty($_type)) || (!empty($_use))) {
+        $recordsTotal = Db::name($table)->whereIn('ProcedureId', $idArr)->count(0);
+        if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 $recordsFilteredResult = Db::name($table)
                     ->whereIn('ProcedureId', $idArr)
+                    ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }

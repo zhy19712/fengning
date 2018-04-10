@@ -88,9 +88,9 @@
         columnDefs: [
             {
                 targets: [0],
+                width:'50px',
                 "searchable": false,
                 "orderable": false,
-                width:'50px',
                 "render": function (data, type, row) {
                     var a = data;
                     var html = "<a type='button' href='javasrcipt:;' class=''>" +
@@ -100,14 +100,10 @@
                 }
             },
             {
-                "searchable": false,
-                "orderable": false,
                 "targets": [1],
                 width:'150px'
             },
             {
-                "searchable": false,
-                "orderable": false,
                 "targets": [2],
                 width:'150px'
             },
