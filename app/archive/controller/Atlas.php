@@ -5,23 +5,21 @@
  * Date: 2018/3/29
  * Time: 9:19
  */
-namespace app\archive\controller;
-
-use app\admin\controller\Permissions;
-use app\archive\model\AtlasCateTypeModel;//左侧节点树
-use app\archive\model\AtlasCateModel;//右侧图册类型
-use app\archive\model\AtlasDownloadModel;//下载记录
-
-use app\admin\model\Admin as adminModel;//管理员模型
-use app\admin\model\AdminGroup;//组织机构
-
-use \think\Db;
-use \think\Session;
 /**
  * 图纸文档管理，图册管理
  * Class Atlas
  * @package app\archive\controller
  */
+namespace app\archive\controller;
+use app\admin\controller\Permissions;
+use app\archive\model\AtlasCateTypeModel;//左侧节点树
+use app\archive\model\AtlasCateModel;//右侧图册类型
+use app\archive\model\AtlasDownloadModel;//下载记录
+use app\admin\model\Admin as adminModel;//管理员模型
+use app\admin\model\AdminGroup;//组织机构
+use \think\Db;
+use \think\Session;
+
 class Atlas extends Permissions
 {
     /**
@@ -183,9 +181,6 @@ class Atlas extends Permissions
         return json(['code'=>1,'data'=>$data]);
     }
 
-
-
-
     /**
      * 新增/编辑图册
      * @return mixed|\think\response\Json
@@ -226,8 +221,6 @@ class Atlas extends Permissions
             }else{
                 $data = [
                     'id' => $param['id'],//图册类型表自增id
-//                    'selfid' => $param['selfid'],//admin_cate_type表中的id,区分图册节点树
-//                    'cate_number' => $max_cate_number + 1,//序号
                     'picture_number' => $param['picture_number'],//图号
                     'picture_name' => $param['picture_name'],//图名
                     'picture_papaer_num' => $param['picture_papaer_num'],//图纸张数(输入数字)
@@ -238,8 +231,6 @@ class Atlas extends Permissions
                     'completion_date' => $param['completion_date'],//完成日期
                     'section' => $param['section'],//标段
                     'paper_category' => $param['paper_category']//图纸类别
-//                    'owner' => Session::get('current_nickname'),//上传人
-//                    'date' => date("Y-m-d H:i:s")//上传日期
                 ];
                 $flag = $model->editCate($data);
                 return json($flag);
@@ -271,6 +262,7 @@ class Atlas extends Permissions
                     //先删除图片
                     $path = "." .$data['path'];
                     $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+
                     if(file_exists($path)){
                         unlink($path); //删除文件图片
                     }
@@ -315,13 +307,9 @@ class Atlas extends Permissions
             $info = $model->getOne($id);
 
                 $data = [
-
                     'attachmentId'=>$param['attachmentId'],//文件关联attachment表中的id
-
                     'selfid' => $info['selfid'],//admin_cate_type表中的id,区分图册节点树
-
                     'pid' => $id,//pid为父级id
-
                     'picture_number' => $param['picture_number'],//图号
                     'picture_name' => $param['picture_name'],//图名
                     'picture_papaer_num' => 1,//图纸张数(输入数字),默认1
@@ -337,8 +325,6 @@ class Atlas extends Permissions
         }
     }
 
-
-
     /**
      * 获取所有的下载记录信息
      * @return \think\response\Json
@@ -346,7 +332,6 @@ class Atlas extends Permissions
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-
     public function getAlldownrec()
     {
         if(request()->isAjax()) {
@@ -459,7 +444,6 @@ class Atlas extends Permissions
 
     }
 
-
     /**
      * 图册打包下载
      */
@@ -519,13 +503,8 @@ class Atlas extends Permissions
         ];
 
         $download->insertDownload($data);
-
-
-
         $model = new AtlasCateModel();
-
         $datalist = $model->getallpath($id);
-
         $zip = new \ZipArchive;
         //压缩文件名
         $zipName = './uploads/atlas/atlas_thumb/download.zip';
@@ -558,8 +537,7 @@ class Atlas extends Permissions
         @readfile($zipName);
     }
 
-    /**********************************下载黑名单************************/
-
+    /**********************************下载白名单************************/
     /**
      * 白名单首页
      */
@@ -630,7 +608,6 @@ class Atlas extends Permissions
      */
     public function getOrganization()
     {
-
         if(request()->isAjax()) {
             // 获取左侧的树结构
             $model = new AdminGroup();
@@ -677,7 +654,6 @@ class Atlas extends Permissions
      */
     public function addAdminname()
     {
-
         if(request()->isAjax()) {
             $model = new AtlasCateModel();
             $param = input('post.');//需要前台传过来用户数组admin_id,cate表中的id
@@ -685,8 +661,4 @@ class Atlas extends Permissions
             return json($data);
         }
     }
-
-
-
-
 }
