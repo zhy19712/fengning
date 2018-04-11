@@ -43,21 +43,9 @@ class Division extends Permissions{
     public function getEnType()
     {
         if(request()->isAjax()){
-            // Todo 工程分类
-            // 这里是 假的 用来做测试的
-            $str = '{ "id": "' . 1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"},';
-            $str .= '{ "id": "' . 2 . '", "pId":"' . 1 . '", "name":"' . '开挖' .'"},';
-            $str .= '{ "id": "' . 3 . '", "pId":"' . 1 . '", "name":"' . '支护' .'"},';
-            $str .= '{ "id": "' . 4 . '", "pId":"' . 1 . '", "name":"' . '混凝土' .'"},';
-            $str .= '{ "id": "' . 5 . '", "pId":"' . 1 . '", "name":"' . '填筑' .'"},';
-            $str .= '{ "id": "' . 6 . '", "pId":"' . 1 . '", "name":"' . '灌浆工程' .'"},';
-            $str .= '{ "id": "' . 7 . '", "pId":"' . 2 . '", "name":"' . '岩石平洞开挖' .'"},';
-            $str .= '{ "id": "' . 8 . '", "pId":"' . 2 . '", "name":"' . '竖井（斜井）开挖' .'"},';
-            $str .= '{ "id": "' . 9 . '", "pId":"' . 2 . '", "name":"' . '岩石边坡开挖' .'"},';
-            $str .= '{ "id": "' . 10 . '", "pId":"' . 2 . '", "name":"' . '岩石地基开挖' .'"},';
-            $str .= '{ "id": "' . 11 . '", "pId":"' . 3 . '", "name":"' . '锚喷支护' .'"},';
-            $str .= '{ "id": "' . 12 . '", "pId":"' . 3 . '", "name":"' . '锚筋桩' .'"},';
-            return "[" . substr($str, 0, -1) . "]";
+            $division = new DivisionModel();
+            $node = $division->getEnType();
+            return json($node);
         }
     }
 
@@ -94,7 +82,7 @@ class Division extends Permissions{
      * @return mixed|\think\response\Json
      * @author hutao
      */
-    public function editNodeTest()
+    public function editNode()
     {
         if(request()->isAjax()){
             $node = new DivisionModel();
@@ -106,10 +94,9 @@ class Division extends Permissions{
             if(request()->isGet()){
                 $data = $node->getOne($edit_id);
                 $data['en_type_name'] = '';
-                // Todo 工程分类
+                // 工程分类名称
                 if(!empty($data['en_type'])){
-                    $arr = ['','丰宁抽水蓄能电站','开挖','支护','混凝土','填筑','灌浆工程','岩石平洞开挖','竖井（斜井）开挖','岩石边坡开挖','岩石地基开挖','锚喷支护','锚筋桩'];
-                    $data['en_type_name'] = $arr[$data['en_type']];
+                    $data['en_type_name'] = Db::name('materialtrackingdivision')->where('id',$data['en_type'])->value('name');
                 }
                 return json($data);
             }
@@ -181,12 +168,12 @@ class Division extends Permissions{
             }
 
             if(!empty($add_id)){
-                // 编码 和 名称 必须 是 唯一的
-                $is_unique_code = Db::name('quality_division')->where('d_code',$param['d_code'])->value('id');
+                // 在同一个标段下 编码 和 名称 必须 是 唯一的
+                $is_unique_code = Db::name('quality_division')->where([ 'd_code' => $param['d_code'],'section_id' => $param['section_id'] ])->value('id');
                 if(!empty($is_unique_code)){
                     return json(['code' => -1,'msg' => '编码已存在']);
                 }
-                $is_unique_name = Db::name('quality_division')->where('d_name',$param['d_name'])->value('id');
+                $is_unique_name = Db::name('quality_division')->where([ 'd_name' => $param['d_name'],'section_id' => $param['section_id'] ])->value('id');
                 if(!empty($is_unique_name)){
                     return json(['code' => -1,'msg' => '名称已存在']);
                 }
@@ -194,12 +181,12 @@ class Division extends Permissions{
                 return json($flag);
             }else{
                 $data['id'] = $edit_id;
-                // 编码 和 名称 必须 是 唯一的
-                $is_unique_code = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_code',$param['d_code'])->value('id');
+                // 在同一个标段下 编码 和 名称 必须 是 唯一的
+                $is_unique_code = Db::name('quality_division')->where([ 'id'=>['neq',$edit_id],'d_code' => $param['d_code'],'section_id' => $param['section_id'] ])->value('id');
                 if(!empty($is_unique_code)){
                     return json(['code' => -1,'msg' => '编码已存在']);
                 }
-                $is_unique_name = Db::name('quality_division')->where('id','neq',$edit_id)->where('d_name',$param['d_name'])->value('id');
+                $is_unique_name = Db::name('quality_division')->where([ 'id' => ['neq',$edit_id],'d_name' => $param['d_name'],'section_id' => $param['section_id'] ])->value('id');
                 if(!empty($is_unique_name)){
                     return json(['code' => -1,'msg' => '名称已存在']);
                 }
@@ -397,6 +384,7 @@ class Division extends Permissions{
             $new_excel_array = $this->delArrayNull($excel_array); // 删除空数据
             $path = './uploads/quality/division/import/' . str_replace("\\","/",$exclePath);
             $pid = $zpid = 0;
+            // 单位工程 type = 1 子单位工程 type = 2 分部工程  type = 3 子分部工程 type = 4 分项工程   type = 5 单元工程   type = 6
             foreach($new_excel_array as $k=>$v){
                 if($k > 1){ // 前两行都是标题和说明
                     // 单位工程
@@ -444,7 +432,7 @@ class Division extends Permissions{
                     $insert_parcel_data['d_code'] = $v[$fcode_index];
                     $insert_parcel_data['section_id'] = $section_id; // 标段编号
                     $insert_parcel_data['filepath'] = $path;
-                    $insert_parcel_data['type'] = '2';
+                    $insert_parcel_data['type'] = '3';
                     // 已经插入了，就不需要重复插入了
                     $flag = Db::name('quality_division')->where(['d_name'=>$v[$fname_index],'d_code'=>$v[$fcode_index],'section_id'=>$section_id,'type'=>'2'])->find();
                     if(empty($flag) && !empty($v[$fname_index])){
@@ -464,7 +452,7 @@ class Division extends Permissions{
                     $insert_subdivision_data['d_code'] = $v[$z_fcode_index];
                     $insert_subdivision_data['section_id'] = $section_id; // 标段编号
                     $insert_subdivision_data['filepath'] = $path;
-                    $insert_subdivision_data['type'] = '3';
+                    $insert_subdivision_data['type'] = '4';
                     // 已经插入了，就不需要重复插入了
                     $flag = Db::name('quality_division')->where(['d_name'=>$v[$z_fname_index],'d_code'=>$v[$z_fcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
                     if(empty($flag) && !empty($v[$z_fname_index])){
@@ -480,7 +468,7 @@ class Division extends Permissions{
                     $insert_subitem_data['d_code'] = $v[$f_xcode_index];
                     $insert_subitem_data['section_id'] = $section_id; // 标段编号
                     $insert_subitem_data['filepath'] = $path;
-                    $insert_subitem_data['type'] = '3';
+                    $insert_subitem_data['type'] = '5';
                     // 已经插入了，就不需要重复插入了
                     $flag = Db::name('quality_division')->where(['d_name'=>$v[$f_xname_index],'d_code'=>$v[$f_xcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
                     if(empty($flag) && !empty($v[$f_xname_index])){
@@ -548,10 +536,9 @@ class Division extends Permissions{
                     $el_cease = explode('EL.',$data['el_cease']);
                     $data['el_cease'] = $el_cease[1];
                 }
-                // Todo 工程类型
+                // 工程类型名称
                 if(!empty($data['en_type'])){
-                    $arr = ['','丰宁抽水蓄能电站','开挖','支护','混凝土','填筑','灌浆工程','岩石平洞开挖','竖井（斜井）开挖','岩石边坡开挖','岩石地基开挖','锚喷支护','锚筋桩'];
-                    $data['en_type_name'] = $arr[$data['en_type']];
+                    $data['en_type_name'] = Db::name('materialtrackingdivision')->where('id',$data['en_type'])->value('name');
                 }
                 return json($data);
             }
@@ -608,24 +595,24 @@ class Division extends Permissions{
 
 
             if(empty($id)){
-                // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
-                $is_unique_number = Db::name('quality_unit')->where('serial_number',$param['serial_number'])->value('id');
+                // 同一个归属工程下的 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
+                $is_unique_number = Db::name('quality_unit')->where([ 'serial_number' => $param['serial_number'],'division_id' => $param['division_id'] ])->value('id');
                 if(!empty($is_unique_number)){
                     return json(['code' => -1,'msg' => '流水号已存在']);
                 }
-                $is_unique_code = Db::name('quality_unit')->where('coding',$param['coding'])->value('id');
+                $is_unique_code = Db::name('quality_unit')->where([ 'coding',$param['coding'],'division_id' => $param['division_id'] ])->value('id');
                 if(!empty($is_unique_code)){
                     return json(['code' => -1,'msg' => '系统编码已存在']);
                 }
                 $flag = $unit->insertTb($param);
                 return json($flag);
             }else{
-                // 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
-                $is_unique_number = Db::name('quality_unit')->where('id','neq',$param['id'])->where('coding',$param['coding'])->value('id');
+                // 同一个归属工程下的 单元工程段号(单元划分)流水号 和 系统编码 必须 是 唯一的
+                $is_unique_number = Db::name('quality_unit')->where([ 'id' => ['neq',$param['id']],'serial_number' => $param['serial_number'],'division_id' => $param['division_id'] ])->value('id');
                 if(!empty($is_unique_number)){
                     return json(['code' => -1,'msg' => '流水号已存在']);
                 }
-                $is_unique_code = Db::name('quality_unit')->where('id','neq',$param['id'])->where('coding',$param['coding'])->value('id');
+                $is_unique_code = Db::name('quality_unit')->where(['id' => ['neq',$param['id']],'coding' => $param['coding'],'division_id' => $param['division_id'] ])->value('id');
                 if(!empty($is_unique_code)){
                     return json(['code' => -1,'msg' => '系统编码已存在']);
                 }
@@ -648,8 +635,6 @@ class Division extends Permissions{
          */
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         if($id != 0){
-            //Todo 如果 单元工程段号(单元划分) 下面 还包含其他的数据 那么 也要关联删除
-
             $unit = new DivisionUnitModel();
             $flag = $unit->deleteTb($id);
             return json($flag);

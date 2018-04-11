@@ -2,30 +2,6 @@
 <script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
 
-    .panel{
-        top: 96px;
-    }
-
-    #queryCriteria{
-        width: 100%;
-        height: 90px;
-        /*border: 1px dotted #00c0ef;*/
-    }
-
-    #queryCriteria .title{
-        margin-left: 10px;
-        margin-top: 5px;
-    }
-
-    #queryCriteria .selectItem{
-        margin-left: 250px;
-        margin-top: 30px;
-    }
-
-    #queryCriteria .selectItem .layui-select-title{
-        width: 400px;
-    }
-
     #nodeZtree .ztree-title i.fa {
         width: 12%;
     }
@@ -109,20 +85,9 @@
     #tableContent .odd {
         background-color: #f9f9f9;
     }
-    .tableHeadName{
-        width: 100%;
-        font-size: 14px;
-        font-weight: 800;
-        color: #0E2D5F;
-        height: 22px;
-        padding: 5px;
-        border-bottom: 1px solid #cecece;
-        line-height: 22px;
-        border-top: 1px solid #cecece ;
-        margin: 4px 0 4px -5px;
-    }
     #bodyBig .layui-this{
-        background: darkseagreen;
+        background: #00c0ef;
+        color: white;
     }
     #bodyBig .layui-tab-content {
         padding-left: 4px;
@@ -143,13 +108,6 @@
 </div>
 
 <div id="nodeZtree" data-options="region:'west',title:'专项工程树',split:true" style="width:260px;">
-    <!--<div class="ztree-title">-->
-        <!--<i id="add" title="新增节点" class="fa fa-lg fa-sitemap" onclick="addNodetree()"></i>-->
-        <!--<i title="编辑节点" class="fa fa-lg fa-pencil" onclick="editNodetree()"></i>-->
-        <!--<i title="删除节点" class="fa fa-lg fa-trash" onclick="delNodetree()"></i>-->
-        <!--<i title="展开所有" class="fa fa-lg fa-plus-square" id="openNode"></i>-->
-        <!--<i title="收起所有" class="fa fa-lg fa-minus-square" id="closeNode"></i>-->
-    <!--</div>-->
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div id="tableContent" data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#ffffff;">

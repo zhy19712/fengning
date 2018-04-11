@@ -22,7 +22,7 @@ class DivisionModel extends Model
     public function getNodeInfo()
     {
         $section = Db::name('section')->column('id,code,name'); // 标段列表
-        $division = $this->column('id,pid,d_name,section_id,type,d_code'); // 工程列表
+        $division = $this->column('id,pid,d_name,section_id,type,en_type,d_code'); // 工程列表
         $num = $this->count() + Db::name('section')->count() + 10000;
 
         $str = "";
@@ -36,10 +36,10 @@ class DivisionModel extends Model
             foreach($division as $vo){
                 if($v['id'] == $vo['section_id']){
                     if($vo['type'] == 1){
-                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $id . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $id . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"'. ',"type":"' . $vo['type'] . '"'. ',"en_type":"' . $vo['en_type'] . '"';
                         $str .= '},';
                     }else{
-                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"'. ',"type":"' . $vo['type'] . '"'. ',"en_type":"' . $vo['en_type'] . '"';
                         $str .= '},';
                     }
                 }
@@ -100,6 +100,17 @@ class DivisionModel extends Model
     {
         $data = $this->find($id);
         return $data;
+    }
+
+    public function getEnType()
+    {
+        $data = Db::name('materialtrackingdivision')->where(['cat'=>5,'type'=>['lt',3]])->whereOr(['cat'=>5,'type'=>'IS NULL'])->column('id,pid,name');
+        $str = '';
+        foreach($data as $v){
+            $str .= '{ "id": "' . $v['id'] . '", "pId":"' . $v['pid'] . '", "name":"' . $v['name'].'"';
+            $str .= '},';
+        }
+        return "[" . substr($str, 0, -1) . "]";
     }
 
 }

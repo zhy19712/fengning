@@ -2,30 +2,6 @@
 <script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
 
-    .panel{
-        top: 96px;
-    }
-
-    #queryCriteria{
-        width: 100%;
-        height: 90px;
-        /*border: 1px dotted #00c0ef;*/
-    }
-
-    #queryCriteria .title{
-        margin-left: 10px;
-        margin-top: 5px;
-    }
-
-    #queryCriteria .selectItem{
-        margin-left: 250px;
-        margin-top: 30px;
-    }
-
-    #queryCriteria .selectItem .layui-select-title{
-        width: 400px;
-    }
-
     #nodeZtree .ztree-title i.fa {
         width: 12%;
     }
@@ -106,20 +82,9 @@
     #tableContent .odd {
         background-color: #f9f9f9;
     }
-    .tableHeadName{
-        width: 100%;
-        font-size: 14px;
-        font-weight: 800;
-        color: #0E2D5F;
-        height: 22px;
-        padding: 5px;
-        border-bottom: 1px solid #cecece;
-        line-height: 22px;
-        border-top: 1px solid #cecece ;
-        margin: 4px 0 4px -5px;
-    }
     #bodyBig .layui-this{
-        background: darkseagreen;
+        background: #00c0ef;
+        color: white;
     }
     #bodyBig .layui-tab-content {
         padding-left: 4px;
@@ -285,7 +250,7 @@
 
     //点击获取路径
     function nodeClick(e, treeId, node) {
-        console.log(node);
+        // console.log(node);
         selectData = "";
         sNodes = zTreeObj.getSelectedNodes()[0];//选中节点
         console.log(sNodes);
@@ -307,12 +272,18 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
-        tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
-        $("#tableContent .dataTables_wrapper").css('display','block');
-        $("#tableContent .tbcontainer").css('display','block');
-        $(".layout-panel-center .panel-title").text("当前路径:" + path);
         clickTreeId = selfid;
         procedureId = selfid;
+        if(sNodes.level == 3){
+            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
+            $("#tableContent .dataTables_wrapper").css('display','block');
+            $("#tableContent .tbcontainer").css('display','block');
+            $(".layout-panel-center .panel-title").text("当前路径:" + path);
+        }else if(sNodes.level != 3){
+            $("#tableContent .dataTables_wrapper").css('display','none');
+            $("#tableContent .tbcontainer").css('display','none');
+            $(".layout-panel-center .panel-title").text("当前路径:");
+        }
     }
 
     //点击添加节点
