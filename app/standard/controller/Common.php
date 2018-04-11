@@ -112,35 +112,56 @@ class Common extends Controller
         $recordsFilteredResult = array();
         //表的总记录数 必要
         $recordsTotal = Db::name($table)->count(0);
-        if ((!empty($_type)) || (!empty($_use))) {
-            //有搜索条件的情况
-            if ($limitFlag) {
-                if ((!empty($_type)) && (!empty($_use))) {
-                    $wherestr['type'] = $_type;
-                    $wherestr['use'] = $_use;
-                } else if (!empty($_type)) {
-                    $wherestr['type'] = $_type;
+        if (strlen($search) > 0) {
 
-                } else {
-                    $wherestr['use'] = $_use;
+            if ((!empty($_type)) || (!empty($_use))) {
+                if ($limitFlag) {
+                    if ((!empty($_type)) && (!empty($_use))) {
+                        $wherestr['type'] = $_type;
+                        $wherestr['use'] = $_use;
+                    } else if (!empty($_type)) {
+                        $wherestr['type'] = $_type;
+
+                    } else {
+                        $wherestr['use'] = $_use;
+                    }
+                    $recordsFilteredResult = Db::name($table)
+                        ->where($wherestr)
+                        ->where($columnString, 'like', '%' . $search . '%')
+                        ->order($order)->limit(intval($start), intval($length))->select();
+                    $recordsFiltered = sizeof($recordsFilteredResult);
                 }
+            }else{
                 $recordsFilteredResult = Db::name($table)
-                    ->where($wherestr)
+                    ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        } else if (strlen($search) > 0) {
-            $recordsFilteredResult = Db::name($table)
-                ->where($columnString, 'like', '%' . $search . '%')
-                ->order($order)->limit(intval($start), intval($length))->select();
-            $recordsFiltered = $recordsTotal;
         } else {
             //没有搜索条件的情况
             if ($limitFlag) {
-                //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)
-                    ->order($order)->limit(intval($start), intval($length))->select();
-                $recordsFiltered = $recordsTotal;
+                if ((!empty($_type)) || (!empty($_use))) {
+                    if ($limitFlag) {
+                        if ((!empty($_type)) && (!empty($_use))) {
+                            $wherestr['type'] = $_type;
+                            $wherestr['use'] = $_use;
+                        } else if (!empty($_type)) {
+                            $wherestr['type'] = $_type;
+
+                        } else {
+                            $wherestr['use'] = $_use;
+                        }
+                        $recordsFilteredResult = Db::name($table)
+                            ->where($wherestr)
+                            ->order($order)->limit(intval($start), intval($length))->select();
+                        $recordsFiltered = $recordsTotal;
+                    }
+                }else
+                {
+                    $recordsFilteredResult = Db::name($table)
+                        ->order($order)->limit(intval($start), intval($length))->select();
+                    $recordsFiltered = $recordsTotal;
+                }
             }
         }
         $temp = array();
