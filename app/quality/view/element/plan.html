@@ -1,6 +1,10 @@
 {include file="../app/public/common_header.html"}
 
 <style>
+    #division .ztree,#unitWork .ztree{
+        height: 100%;
+        padding-bottom: 5px;
+    }
     #division #ztree,#unitWork #ztreeUnit{
         margin-top: 0px;
     }
@@ -138,7 +142,6 @@
                     return html;
                 }
             }
-
         ],
         language: {
             "lengthMenu": "_MENU_",
@@ -165,6 +168,7 @@
     $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
 
     /*==========开始初始化工程划分树节点=============*/
+
     var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
 
     var setting = {
@@ -224,16 +228,17 @@
     $('#openNode').click(function () {
         zTreeObj.expandAll(true);
     });
+
     /*==========结束初始化 工程划分树节点 =============*/
 
-    // console.log(selfid);
 
-    /**
-     * ==========开始初始化 单元工树 =============
-     * */
 
+    /**==========开始初始化 单元工树 =================*/
+
+    //声明单元树的变量
     var selfidUnit, nodeNameUnit, nodePidUnit, zTreeObjUnit, groupidUnit, sNodesUnit;
 
+    //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
         if (responseData) {
             for(var i =0; i < responseData.length; i++) {
@@ -275,8 +280,6 @@
         zTreeObjUnit = $.fn.zTree.init($("#ztreeUnit"), settingUnit, null);
     }
 
-
-
     //点击获取路径
     function nodeClickUnit(e, treeId, node) {
         // console.log(node);
@@ -306,9 +309,8 @@
         $("#tableContent .tbcontainer").css('display','block');
         $("#tableContent .imgList").css('display','block');
     }
-    /**
-     * ==========结束初始化 单元工树 =============
-     * */
+
+    /**==========结束初始化 单元工树 =============*/
 
 
 </script>
