@@ -9,6 +9,7 @@
 namespace app\quality\controller;
 
 use app\admin\controller\Permissions;
+use app\quality\model\DivisionUnitModel;
 
 class Element extends Permissions
 {
@@ -37,5 +38,16 @@ class Element extends Permissions
     public function check()
     {
         return $this->fetch();
+    }
+
+    /**
+     * 获取检验批列表
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getDivisionUnitTree($id)
+    {
+        return json(DivisionUnitModel::all(['division_id' => $id]));
     }
 }
