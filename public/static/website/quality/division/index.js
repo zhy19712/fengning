@@ -196,8 +196,8 @@ $('#save').click(function () {
             add_id:add_id,
             edit_id:edit_id
         },
-        others:function () {
-            if(edit_id!=''){
+        others:function (res) {
+            if(edit_id!=''&&res.code!=-1){
                 $('#'+window.treeNode.tId+'_span').html(d_name);
                 window.treeNode.en_type = en_type;
             }

@@ -189,11 +189,16 @@
                     type:'POST',
                     data:option.data,
                     success:function(res){
-                        option.others();
+                        if(res.code!=1){
+                            layer.msg(res.msg);
+                            return false;
+                        }
+                        option.others(res);
                         treeObj.addNodes(nodes[0], res.data);
                         $('#'+option.formId)[0].reset();
-                        layer.msg(res.msg);
                         layer.closeAll('page');
+                        layer.msg(res.msg);
+
                     }
                 });
                 return false;
