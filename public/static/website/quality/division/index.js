@@ -198,7 +198,9 @@ $('#save').click(function () {
             edit_id:edit_id
         },
         others:function () {
-            $('#'+window.treeNode.tId+'_span').html(d_name);
+            if(edit_id!=''){
+                $('#'+window.treeNode.tId+'_span').html(d_name);
+            }
         }
     });
 });
