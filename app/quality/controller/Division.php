@@ -163,6 +163,10 @@ class Division extends Permissions{
                 $data['en_type'] = $en_type; // 子分部工程,分项工程 和 单元工程 必须选择 工程分类
             }
 
+            if($type == 3 && !empty($en_type)){
+                $data['en_type'] = $en_type; // 如果分部工程直接新建 -》 单元工程段号(单元划分) 的时候,  也可以 选择 工程分类
+            }
+
             if(!empty($add_id) && !empty($edit_id)){
                 return json(['code' => -1,'msg' => '无法辨别是新增或编辑']);
             }
