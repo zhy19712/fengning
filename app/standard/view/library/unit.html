@@ -250,7 +250,7 @@
 
     //点击获取路径
     function nodeClick(e, treeId, node) {
-        console.log(node);
+        // console.log(node);
         selectData = "";
         sNodes = zTreeObj.getSelectedNodes()[0];//选中节点
         console.log(sNodes);
@@ -272,12 +272,20 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
-        tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
-        $("#tableContent .dataTables_wrapper").css('display','block');
-        $("#tableContent .tbcontainer").css('display','block');
-        $(".layout-panel-center .panel-title").text("当前路径:" + path);
+
+
         clickTreeId = selfid;
         procedureId = selfid;
+        if(sNodes.level == 3){
+            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
+            $("#tableContent .dataTables_wrapper").css('display','block');
+            $("#tableContent .tbcontainer").css('display','block');
+            $(".layout-panel-center .panel-title").text("当前路径:" + path);
+        }else if(sNodes.level != 3){
+            $("#tableContent .dataTables_wrapper").css('display','none');
+            $("#tableContent .tbcontainer").css('display','none');
+            $(".layout-panel-center .panel-title").text("当前路径:");
+        }
     }
 
     //点击添加节点
