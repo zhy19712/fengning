@@ -19,7 +19,7 @@ class DivisionModel extends Model
     //自动写入创建、更新时间 insertGetId和update方法中无效，只能用于save方法
     protected $autoWriteTimestamp = true;
 
-    public function getNodeInfo()
+    public function getNodeInfo($type = 1)
     {
         $section = Db::name('section')->column('id,code,name'); // 标段列表
         $division = $this->column('id,pid,d_name,section_id,type,en_type,d_code'); // 工程列表
@@ -39,8 +39,15 @@ class DivisionModel extends Model
                         $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $id . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"'. ',"type":"' . $vo['type'] . '"'. ',"en_type":"' . $vo['en_type'] . '"';
                         $str .= '},';
                     }else{
-                        $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"'. ',"type":"' . $vo['type'] . '"'. ',"en_type":"' . $vo['en_type'] . '"';
-                        $str .= '},';
+                        if($type == 2){
+                            if($vo['type'] == $type){
+                                $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"'. ',"type":"' . $vo['type'] . '"'. ',"en_type":"' . $vo['en_type'] . '"';
+                                $str .= '},';
+                            }
+                        }else{
+                            $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"'. ',"type":"' . $vo['type'] . '"'. ',"en_type":"' . $vo['en_type'] . '"';
+                            $str .= '},';
+                        }
                     }
                 }
             }
