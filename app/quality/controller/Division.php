@@ -604,7 +604,7 @@ class Division extends Permissions{
                 if(!empty($is_unique_number)){
                     return json(['code' => -1,'msg' => '流水号已存在']);
                 }
-                $is_unique_code = Db::name('quality_unit')->where([ 'coding',$param['coding'],'division_id' => $param['division_id'] ])->value('id');
+                $is_unique_code = Db::name('quality_unit')->where([ 'coding' => $param['coding'],'division_id' => $param['division_id'] ])->value('id');
                 if(!empty($is_unique_code)){
                     return json(['code' => -1,'msg' => '系统编码已存在']);
                 }
