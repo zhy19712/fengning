@@ -5,6 +5,7 @@ var form = layui.form;
 $.ztree({
     //点击节点
     zTreeOnClick:function (event, treeId, treeNode){
+        tableInfo();
         $.clicknode({
             tableItem:tableItem,
             treeNode:treeNode,
@@ -94,7 +95,7 @@ $.ztree({
 
 //是否显示工程类型
 function whetherShow() {
-    if(window.treeNode.level>2){
+    if(window.treeNode.type>2){
         $('#enType').show();
     }else{
         $('#enType').hide();
@@ -206,51 +207,55 @@ $('#save').click(function () {
 });
 
 //table数据
-$.datatable({
-    ajax:{
-        'url':'/quality/common/datatablesPre?tableName=quality_unit'
-    },
-    dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm">>tipr',
-    columns:[
-        {
-            name: "serial_number"
+function tableInfo() {
+    $.datatable({
+        tableId:'tableItem',
+        ajax:{
+            'url':'/quality/common/datatablesPre?tableName=quality_unit'
         },
-        {
-            name: "site"
-        },
-        {
-            name: "coding"
-        },
-        {
-            name: "hinge"
-        },
-        {
-            name: "pile_number"
-        },
-        {
-            name: "start_date"
-        },
-        {
-            name: "completion_date"
-        },
-        {
-            name: "id"
-        }
-    ],
-    columnDefs:[
-        {
-            "searchable": false,
-            "orderable": false,
-            "targets": [7],
-            "render" :  function(data,type,row) {
-                var html = "<i class='fa fa-pencil' uid="+ data +" title='编辑' onclick='edit(this)'></i>" ;
-                html += "<i class='fa fa-trash' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
-                html += "<i class='fa fa-qrcode' uid="+ data +" title='二维码' onclick='qrcode(this)'></i>" ;
-                return html;
+        dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm">>tipr',
+        columns:[
+            {
+                name: "serial_number"
+            },
+            {
+                name: "site"
+            },
+            {
+                name: "coding"
+            },
+            {
+                name: "hinge"
+            },
+            {
+                name: "pile_number"
+            },
+            {
+                name: "start_date"
+            },
+            {
+                name: "completion_date"
+            },
+            {
+                name: "id"
             }
-        }
-    ],
-});
+        ],
+        columnDefs:[
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [7],
+                "render" :  function(data,type,row) {
+                    var html = "<i class='fa fa-pencil' uid="+ data +" title='编辑' onclick='edit(this)'></i>" ;
+                    html += "<i class='fa fa-trash' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
+                    html += "<i class='fa fa-qrcode' uid="+ data +" title='二维码' onclick='qrcode(this)'></i>" ;
+                    return html;
+                }
+            }
+        ],
+    });
+}
+tableInfo();
 $('#add').html('新增');
 
 $('#add').click(function () {
@@ -300,6 +305,7 @@ layui.use('laydate', function(){
 });
 
 $('.maBasesBtn').click(function () {
+    $('.tbcontainer:last-child').remove();
     layer.open({
         title:'添加施工依据',
         id:'100',
@@ -546,10 +552,12 @@ $('#importExcel').click(function () {
                     }
                     var zTree = $.fn.zTree.getZTreeObj("ztree");
                     var nodes = zTree.getSelectedNodes();
-                    setTimeout(function () {
-                        zTree.reAsyncChildNodes(nodes[0], 'refresh', true);
-                    },1000);
-
+                    var type = "refresh";
+                    var silent = false;
+                    zTree.reAsyncChildNodes(null,type, silent,function () {
+                        var newNode = zTree.getNodesByParam('add_id',window.treeNode.add_id,null);
+                        zTree.expandNode(newNode[0], true, false , false );
+                    });
 
                 },
                 uploadStart:function(uploader){
