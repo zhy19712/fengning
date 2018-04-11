@@ -71,4 +71,10 @@ class DivisionUnitModel extends Model
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
+
+    public function getEnTypeArr($idArr)
+    {
+        $en_type = $this->whereIn('division_id',$idArr)->group('en_type')->column('en_type');
+        return $en_type;
+    }
 }

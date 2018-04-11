@@ -19,20 +19,26 @@ class DivisionModel extends Model
     //自动写入创建、更新时间 insertGetId和update方法中无效，只能用于save方法
     protected $autoWriteTimestamp = true;
 
+    /**
+     * 工程划分 type = 1 ，单位质量管理 type = 2 ，分部质量管理 type = 4 共用 树节点
+     * @param int $type
+     * @return string
+     * @author hutao
+     */
     public function getNodeInfo($type = 1)
     {
         $section = Db::name('section')->column('id,code,name'); // 标段列表
         $division = $this->column('id,pid,d_name,section_id,type,en_type,d_code'); // 工程列表
         $num = $this->count() + Db::name('section')->count() + 10000;
 
-        $str = "";
-        $str .= '{ "id": "' . -1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"';
+        $str = "";$open = 'true';
+        $str .= '{ "id": "' . -1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"' . ',"open":"' . $open . '"';
         $str .= '},';
         foreach($section as $v){
             $id = $v['id'] + $num;
             $str .= '{ "id": "' . $id . '", "pId":"' . -1 . '", "name":"' . $v['name'].'"' . ',"code":"' . $v['code'] .'"' . ',"section_id":"' . $v['id'] . '"'. ',"add_id":"' . $v['id'] . '"';
             $str .= '},';
-            // 分类 1单位 2分部 3分项
+            // 单位工程 type = 1 子单位工程 type = 2 分部工程  type = 3 子分部工程 type = 4 分项工程   type = 5 单元工程   type = 6
             foreach($division as $vo){
                 if($v['id'] == $vo['section_id']){
                     if($vo['type'] == 1){
@@ -41,6 +47,11 @@ class DivisionModel extends Model
                     }else{
                         if($type == 2){
                             if($vo['type'] == $type){
+                                $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"'. ',"type":"' . $vo['type'] . '"'. ',"en_type":"' . $vo['en_type'] . '"';
+                                $str .= '},';
+                            }
+                        }else if($type == 4){
+                            if($vo['type'] >= 4){
                                 $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['d_name'].'"' . ',"d_code":"' . $vo['d_code'] . '"' . ',"section_id":"' . $vo['section_id'] . '"' . ',"add_id":"' . $vo['id'] . '"' . ',"edit_id":"' . $vo['id'] . '"'. ',"type":"' . $vo['type'] . '"'. ',"en_type":"' . $vo['en_type'] . '"';
                                 $str .= '},';
                             }
@@ -111,13 +122,38 @@ class DivisionModel extends Model
 
     public function getEnType()
     {
-        $data = Db::name('materialtrackingdivision')->where(['cat'=>5,'type'=>['lt',3]])->whereOr(['cat'=>5,'type'=>'IS NULL'])->column('id,pid,name');
+        $data = Db::name('materialtrackingdivision')->where(['cat'=>5,'type'=>['lt',3]])->column('id,pid,name');
         $str = '';
         foreach($data as $v){
             $str .= '{ "id": "' . $v['id'] . '", "pId":"' . $v['pid'] . '", "name":"' . $v['name'].'"';
             $str .= '},';
         }
         return "[" . substr($str, 0, -1) . "]";
+    }
+
+    public function cateTree($id){
+        $res = $this->column('id,pid');
+        if($res){
+            $result=$this->sort($res, $id);
+            return $result;
+        }
+    }
+    public function sort($data,$id){
+        static $arr = array();
+        foreach ($data as $key => $value){
+            if($value == $id){
+                $arr[] = $key;
+                $this->sort($data,$key);
+            }
+        }
+        return $arr;
+    }
+
+    public function getEnTypeById($idArr)
+    {
+        $en_type = $this->whereIn('id',$idArr)->group('en_type')->column('en_type');
+        $en_type = array_filter($en_type);
+        return $en_type;
     }
 
 }
