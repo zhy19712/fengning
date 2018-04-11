@@ -196,6 +196,9 @@ $('#save').click(function () {
             en_type:en_type,
             add_id:add_id,
             edit_id:edit_id
+        },
+        others:function () {
+            $('#'+window.treeNode.tId+'_span').html(d_name);
         }
     });
 });
