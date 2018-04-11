@@ -94,7 +94,7 @@ $.ztree({
 
 //是否显示工程类型
 function whetherShow() {
-    if(window.treeNode.level>2){
+    if(window.treeNode.type>2){
         $('#enType').show();
     }else{
         $('#enType').hide();
