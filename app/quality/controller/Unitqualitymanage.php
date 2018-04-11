@@ -11,7 +11,7 @@ namespace app\quality\controller;
 
 use app\admin\controller\Permissions;
 use app\quality\model\DivisionModel;
-// 质量管理
+// 单位质量管理
 
 class Unitqualitymanage extends Permissions
 {
@@ -25,7 +25,7 @@ class Unitqualitymanage extends Permissions
     {
         if(request()->isAjax()){
             $node = new DivisionModel();
-            $nodeStr = $node->getNodeInfo(2); // 只取到子单位工程
+            $nodeStr = $node->getNodeInfo(2); // 2 只取到子单位工程
             return json($nodeStr);
         }
         if($type==1){
