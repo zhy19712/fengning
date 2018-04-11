@@ -546,10 +546,12 @@ $('#importExcel').click(function () {
                     }
                     var zTree = $.fn.zTree.getZTreeObj("ztree");
                     var nodes = zTree.getSelectedNodes();
-                    setTimeout(function () {
-                        zTree.reAsyncChildNodes(nodes[0], 'refresh', true);
-                    },1000);
-
+                    var type = "refresh";
+                    var silent = false;
+                    zTree.reAsyncChildNodes(null,type, silent,function () {
+                        var newNode = zTree.getNodesByParam('add_id',window.treeNode.add_id,null);
+                        zTree.expandNode(newNode[0], true, false , false );
+                    });
 
                 },
                 uploadStart:function(uploader){
