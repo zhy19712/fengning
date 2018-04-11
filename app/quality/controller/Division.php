@@ -384,6 +384,7 @@ class Division extends Permissions{
             $new_excel_array = $this->delArrayNull($excel_array); // 删除空数据
             $path = './uploads/quality/division/import/' . str_replace("\\","/",$exclePath);
             $pid = $zpid = 0;
+            // 单位工程 type = 1 子单位工程 type = 2 分部工程  type = 3 子分部工程 type = 4 分项工程   type = 5 单元工程   type = 6
             foreach($new_excel_array as $k=>$v){
                 if($k > 1){ // 前两行都是标题和说明
                     // 单位工程
@@ -431,7 +432,7 @@ class Division extends Permissions{
                     $insert_parcel_data['d_code'] = $v[$fcode_index];
                     $insert_parcel_data['section_id'] = $section_id; // 标段编号
                     $insert_parcel_data['filepath'] = $path;
-                    $insert_parcel_data['type'] = '2';
+                    $insert_parcel_data['type'] = '3';
                     // 已经插入了，就不需要重复插入了
                     $flag = Db::name('quality_division')->where(['d_name'=>$v[$fname_index],'d_code'=>$v[$fcode_index],'section_id'=>$section_id,'type'=>'2'])->find();
                     if(empty($flag) && !empty($v[$fname_index])){
@@ -451,7 +452,7 @@ class Division extends Permissions{
                     $insert_subdivision_data['d_code'] = $v[$z_fcode_index];
                     $insert_subdivision_data['section_id'] = $section_id; // 标段编号
                     $insert_subdivision_data['filepath'] = $path;
-                    $insert_subdivision_data['type'] = '3';
+                    $insert_subdivision_data['type'] = '4';
                     // 已经插入了，就不需要重复插入了
                     $flag = Db::name('quality_division')->where(['d_name'=>$v[$z_fname_index],'d_code'=>$v[$z_fcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
                     if(empty($flag) && !empty($v[$z_fname_index])){
@@ -467,7 +468,7 @@ class Division extends Permissions{
                     $insert_subitem_data['d_code'] = $v[$f_xcode_index];
                     $insert_subitem_data['section_id'] = $section_id; // 标段编号
                     $insert_subitem_data['filepath'] = $path;
-                    $insert_subitem_data['type'] = '3';
+                    $insert_subitem_data['type'] = '5';
                     // 已经插入了，就不需要重复插入了
                     $flag = Db::name('quality_division')->where(['d_name'=>$v[$f_xname_index],'d_code'=>$v[$f_xcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
                     if(empty($flag) && !empty($v[$f_xname_index])){
