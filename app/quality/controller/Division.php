@@ -434,7 +434,7 @@ class Division extends Permissions{
                     $insert_parcel_data['filepath'] = $path;
                     $insert_parcel_data['type'] = '3';
                     // 已经插入了，就不需要重复插入了
-                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$fname_index],'d_code'=>$v[$fcode_index],'section_id'=>$section_id,'type'=>'2'])->find();
+                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$fname_index],'d_code'=>$v[$fcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
                     if(empty($flag) && !empty($v[$fname_index])){
                         $insert_parcel_data['pid'] = $pid;
                         $node = new DivisionModel();
@@ -454,7 +454,7 @@ class Division extends Permissions{
                     $insert_subdivision_data['filepath'] = $path;
                     $insert_subdivision_data['type'] = '4';
                     // 已经插入了，就不需要重复插入了
-                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$z_fname_index],'d_code'=>$v[$z_fcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
+                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$z_fname_index],'d_code'=>$v[$z_fcode_index],'section_id'=>$section_id,'type'=>'4'])->find();
                     if(empty($flag) && !empty($v[$z_fname_index])){
                         $insert_subdivision_data['pid'] = $zpid;
                         $node = new DivisionModel();
@@ -470,7 +470,7 @@ class Division extends Permissions{
                     $insert_subitem_data['filepath'] = $path;
                     $insert_subitem_data['type'] = '5';
                     // 已经插入了，就不需要重复插入了
-                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$f_xname_index],'d_code'=>$v[$f_xcode_index],'section_id'=>$section_id,'type'=>'3'])->find();
+                    $flag = Db::name('quality_division')->where(['d_name'=>$v[$f_xname_index],'d_code'=>$v[$f_xcode_index],'section_id'=>$section_id,'type'=>'5'])->find();
                     if(empty($flag) && !empty($v[$f_xname_index])){
                         $insert_subitem_data['pid'] = $zpid;
                         $node = new DivisionModel();
