@@ -64,6 +64,12 @@
     #tableContent .listName h3{
         font-weight: 800;
     }
+    .layui-layer-content {
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-bottom:15px;
+        padding-top: 0px;
+    }
 
 </style>
 
@@ -166,6 +172,13 @@
 
     //点击上传文件
     $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
+
+    var layer = layui.layer;
+    //查询提交
+    layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer;
+    });
 
     /*==========开始初始化工程划分树节点=============*/
 
@@ -312,6 +325,24 @@
 
     /**==========结束初始化 单元工树 =============*/
 
+
+    //点击新增控制节点
+    $(".mybtn #test3").click(function () {
+        layer.open({
+            type: 2,
+            title: '控制点选择',
+            shadeClose: true,
+            area: ['980px', '673px'],
+            content: '{:url("addplan")}',
+            // success: function(layero, index){
+            //     var body = layer.getChildFrame('body', index);
+            //     body.find("#denId").val(procedureId);
+            // },
+            // end:function () {
+            //     tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
+            // }
+        });
+    });
 
 </script>
 </html>
