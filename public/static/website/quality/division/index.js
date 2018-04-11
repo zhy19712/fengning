@@ -55,8 +55,8 @@ $('#addNode').click(function (){
             //type = 1 单位工程 / type = 2 [子单位工程|分部工程] / type = 3 [子分部工程|分项工程]
             var options = [];
             var unitArr = [{type:1,name:"单位工程"}];
-            var branchArr = [{type:2,name:"子单位工程"},{type:2,name:"分部工程"}];
-            var itemArr = [{type:3,name:"子分部工程"},{type:3,name:"分项工程"},{type:3,name:"单元工程"}];
+            var branchArr = [{type:2,name:"子单位工程"},{type:3,name:"分部工程"}];
+            var itemArr = [{type:4,name:"子分部工程"},{type:5,name:"分项工程"},{type:6,name:"单元工程"}];
             if(window.treeNode.level==1){
                 options.push('<option value='+ unitArr[0].type +'>'+ unitArr[0].name +'</option>');
             }
@@ -494,7 +494,7 @@ function qrcode(that) {
         },
         dataType: "json",
         success: function (res) {
-            console.log(res);
+            $('#qrCode').html('<img src="./qrCode/'+id+'">');
         }
     })
 }
@@ -505,7 +505,7 @@ $('#importExcel').click(function () {
         layer.msg('未选择标段');
         return false;
     }
-    if(window.treeNode.level==0){
+    if(window.treeNode.level!==1){
         layer.msg('只能从标段导入');
         return false;
     }
@@ -523,11 +523,23 @@ $('#importExcel').click(function () {
                 formData:{
                     add_id:''
                 },
+                accept: {
+                    title: 'excel',
+                    extensions: 'xls,xlsx',
+                    mimeTypes: '.xls,.xlsx'
+                },
                 uploadSuccess:function (res) {
                     layer.msg(res.msg);
                     if(res.code!=0){
                         layer.close(index);
                     }
+                    var zTree = $.fn.zTree.getZTreeObj("ztree");
+                    var nodes = zTree.getSelectedNodes();
+                    setTimeout(function () {
+                        zTree.reAsyncChildNodes(nodes[0], 'refresh', true);
+                    },1000);
+
+
                 },
                 uploadStart:function(uploader){
                     uploader.options.formData.add_id = window.treeNode.add_id;
@@ -543,8 +555,8 @@ $('#importExcel').click(function () {
 });
 
 //模板下载
-$('#excelDownloadBtn').click(function () {
+$('#exceldownloadBtn').click(function () {
     $.download({
         url:'./excelDownload'
-    });
+    })
 });
