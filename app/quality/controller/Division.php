@@ -43,21 +43,9 @@ class Division extends Permissions{
     public function getEnType()
     {
         if(request()->isAjax()){
-            // Todo 工程分类
-            // 这里是 假的 用来做测试的
-            $str = '{ "id": "' . 1 . '", "pId":"' . 0 . '", "name":"' . '丰宁抽水蓄能电站' .'"},';
-            $str .= '{ "id": "' . 2 . '", "pId":"' . 1 . '", "name":"' . '开挖' .'"},';
-            $str .= '{ "id": "' . 3 . '", "pId":"' . 1 . '", "name":"' . '支护' .'"},';
-            $str .= '{ "id": "' . 4 . '", "pId":"' . 1 . '", "name":"' . '混凝土' .'"},';
-            $str .= '{ "id": "' . 5 . '", "pId":"' . 1 . '", "name":"' . '填筑' .'"},';
-            $str .= '{ "id": "' . 6 . '", "pId":"' . 1 . '", "name":"' . '灌浆工程' .'"},';
-            $str .= '{ "id": "' . 7 . '", "pId":"' . 2 . '", "name":"' . '岩石平洞开挖' .'"},';
-            $str .= '{ "id": "' . 8 . '", "pId":"' . 2 . '", "name":"' . '竖井（斜井）开挖' .'"},';
-            $str .= '{ "id": "' . 9 . '", "pId":"' . 2 . '", "name":"' . '岩石边坡开挖' .'"},';
-            $str .= '{ "id": "' . 10 . '", "pId":"' . 2 . '", "name":"' . '岩石地基开挖' .'"},';
-            $str .= '{ "id": "' . 11 . '", "pId":"' . 3 . '", "name":"' . '锚喷支护' .'"},';
-            $str .= '{ "id": "' . 12 . '", "pId":"' . 3 . '", "name":"' . '锚筋桩' .'"},';
-            return "[" . substr($str, 0, -1) . "]";
+            $division = new DivisionModel();
+            $node = $division->getEnType();
+            return json($node);
         }
     }
 
@@ -106,10 +94,9 @@ class Division extends Permissions{
             if(request()->isGet()){
                 $data = $node->getOne($edit_id);
                 $data['en_type_name'] = '';
-                // Todo 工程分类
+                // 工程分类名称
                 if(!empty($data['en_type'])){
-                    $arr = ['','丰宁抽水蓄能电站','开挖','支护','混凝土','填筑','灌浆工程','岩石平洞开挖','竖井（斜井）开挖','岩石边坡开挖','岩石地基开挖','锚喷支护','锚筋桩'];
-                    $data['en_type_name'] = $arr[$data['en_type']];
+                    $data['en_type_name'] = Db::name('materialtrackingdivision')->where('id',$data['en_type'])->value('name');
                 }
                 return json($data);
             }
@@ -548,10 +535,9 @@ class Division extends Permissions{
                     $el_cease = explode('EL.',$data['el_cease']);
                     $data['el_cease'] = $el_cease[1];
                 }
-                // Todo 工程类型
+                // 工程类型名称
                 if(!empty($data['en_type'])){
-                    $arr = ['','丰宁抽水蓄能电站','开挖','支护','混凝土','填筑','灌浆工程','岩石平洞开挖','竖井（斜井）开挖','岩石边坡开挖','岩石地基开挖','锚喷支护','锚筋桩'];
-                    $data['en_type_name'] = $arr[$data['en_type']];
+                    $data['en_type_name'] = Db::name('materialtrackingdivision')->where('id',$data['en_type'])->value('name');
                 }
                 return json($data);
             }
@@ -648,8 +634,6 @@ class Division extends Permissions{
          */
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         if($id != 0){
-            //Todo 如果 单元工程段号(单元划分) 下面 还包含其他的数据 那么 也要关联删除
-
             $unit = new DivisionUnitModel();
             $flag = $unit->deleteTb($id);
             return json($flag);

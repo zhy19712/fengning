@@ -102,4 +102,15 @@ class DivisionModel extends Model
         return $data;
     }
 
+    public function getEnType()
+    {
+        $data = Db::name('materialtrackingdivision')->where('cat',5)->column('id,pid,name');
+        $str = '';
+        foreach($data as $v){
+            $str .= '{ "id": "' . $v['id'] . '", "pId":"' . $v['pid'] . '", "name":"' . $v['name'].'"';
+            $str .= '},';
+        }
+        return "[" . substr($str, 0, -1) . "]";
+    }
+
 }
