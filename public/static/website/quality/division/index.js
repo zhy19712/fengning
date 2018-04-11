@@ -111,7 +111,7 @@ $('.typeZtreeBtn').click(function () {
         content:$('#ztreeLayer'),
         btn:['保存','关闭'],
         yes:function () {
-            if(typeTreeNode.level>1){
+            if(!typeTreeNode.isParent){
                 $('input[name="en_type"]').val(typeTreeNode.name);
                 $('input[name="en_type"]').attr('id',typeTreeNode.id);
                 layer.close(layer.index);
@@ -147,8 +147,7 @@ $('#editNode').click(function () {
             }else{
                 $('input[name="primary"]').attr('checked',false);
             }
-            $('input[name="en_type"]').val(res.en_type_name);
-            $('input[name="en_type"]').attr('id',res.en_type);
+            $('input[name="en_type"]').val(res.en_type_name).attr('id',res.en_type);
             $('input[name="d_code"]').val(res.d_code);
             $('textarea[name="remark"]').val(res.remark);
         }
@@ -200,6 +199,7 @@ $('#save').click(function () {
         others:function () {
             if(edit_id!=''){
                 $('#'+window.treeNode.tId+'_span').html(d_name);
+                window.treeNode.en_type = en_type;
             }
         }
     });
@@ -254,9 +254,15 @@ $.datatable({
 $('#add').html('新增');
 
 $('#add').click(function () {
-    if(window.treeNode.level<4){
+    if(window.treeNode.level<3||window.treeNode.type<3){
         layer.msg('请选择分项工程');
         return false;
+    }
+    if(window.treeNode.type==3){
+        if(window.treeNode.en_type==''){
+            layer.msg('请选择工程类型');
+            return false;
+        }
     }
     //系统编码
     var add_id = window.treeNode.add_id;
