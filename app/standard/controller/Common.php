@@ -131,6 +131,11 @@ class Common extends Controller
                         ->order($order)->limit(intval($start), intval($length))->select();
                     $recordsFiltered = sizeof($recordsFilteredResult);
                 }
+            }else{
+                $recordsFilteredResult = Db::name($table)
+                    ->where($columnString, 'like', '%' . $search . '%')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
             //没有搜索条件的情况
@@ -151,6 +156,11 @@ class Common extends Controller
                             ->order($order)->limit(intval($start), intval($length))->select();
                         $recordsFiltered = $recordsTotal;
                     }
+                }else
+                {
+                    $recordsFilteredResult = Db::name($table)
+                        ->order($order)->limit(intval($start), intval($length))->select();
+                    $recordsFiltered = $recordsTotal;
                 }
             }
         }
