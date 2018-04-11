@@ -82,7 +82,7 @@ class Division extends Permissions{
      * @return mixed|\think\response\Json
      * @author hutao
      */
-    public function editNodeTest()
+    public function editNode()
     {
         if(request()->isAjax()){
             $node = new DivisionModel();
