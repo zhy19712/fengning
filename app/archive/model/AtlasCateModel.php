@@ -96,36 +96,39 @@ class AtlasCateModel extends Model
      */
     public function getAllpicture($id)
     {
-        //定义一个空的数组
-        $children = array();
+        try{
+            //定义一个空的数组
+            $children = array();
 
-        $data = $this
-            ->field('picture_number,picture_name,picture_papaer_num,date,paper_category,owner,completion_date,id,pid')
-            ->where('pid', $id)
-            ->select();
-        if($data)
-        {
-            foreach ($data as $k=>$v)
+            $data = $this
+                ->field('picture_number,picture_name,picture_papaer_num,date,paper_category,owner,completion_date,id,pid')
+                ->where('pid', $id)
+                ->select();
+            if($data)
             {
-                $children[$k][] = '';
-                $children[$k][] = $v['picture_number'];
-                $children[$k][] = $v['picture_name'];
-                $children[$k][] = $v['picture_papaer_num'];
-                $children[$k][] = '';
-                $children[$k][] = '';
-                $children[$k][] = '';
-                $children[$k][] = '';
-                $children[$k][] = $v['completion_date'];
-                $children[$k][] = '';
-                $children[$k][] = $v['paper_category'];
-                $children[$k][] = $v['owner'];
-                $children[$k][] = $v['date'];
-                $children[$k][] = $v['id'];
-                $children[$k][] = $v['pid'];
+                foreach ($data as $k=>$v)
+                {
+                    $children[$k][] = '';
+                    $children[$k][] = $v['picture_number'];
+                    $children[$k][] = $v['picture_name'];
+                    $children[$k][] = $v['picture_papaer_num'];
+                    $children[$k][] = '';
+                    $children[$k][] = '';
+                    $children[$k][] = '';
+                    $children[$k][] = '';
+                    $children[$k][] = $v['completion_date'];
+                    $children[$k][] = '';
+                    $children[$k][] = $v['paper_category'];
+                    $children[$k][] = $v['owner'];
+                    $children[$k][] = $v['date'];
+                    $children[$k][] = $v['id'];
+                    $children[$k][] = $v['pid'];
+                }
             }
+            return $children;
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
         }
-
-        return $children;
     }
 
     /**
