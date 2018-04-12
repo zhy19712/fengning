@@ -11,6 +11,7 @@ namespace app\quality\controller;
 use app\admin\controller\Permissions;
 use app\quality\model\DivisionUnitModel;
 use app\standard\model\ControlPoint;
+use app\standard\model\MaterialTrackingDivision;
 use think\Db;
 
 class Element extends Permissions
@@ -56,6 +57,17 @@ class Element extends Permissions
     public function getDivisionUnitTree($id)
     {
         return json(DivisionUnitModel::all(['division_id' => $id]));
+    }
+
+    /**
+     * 获取检验批列表
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getProcedures($id)
+    {
+        return json(MaterialTrackingDivision::all(['pid' => $id, 'type' => 3]));
     }
 
     /**
