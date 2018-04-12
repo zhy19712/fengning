@@ -52,7 +52,7 @@ class Element extends Permissions
                 return json(['code' => -1]);
             }
         }
-        $this->assign('division', $Division);
+        $this->assign('Division', $Division);
         $this->assign('TrackingDivision', $TrackingDivision);
         return $this->fetch();
     }
