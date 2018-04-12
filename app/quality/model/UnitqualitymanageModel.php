@@ -17,6 +17,14 @@ class UnitqualitymanageModel extends Model
 {
     protected $name = 'quality_division_controlpoint_relation';
 
+    /**
+     * @param $add_id
+     * @param $ma_division_id
+     * @param $id
+     * @return array
+     * @throws \think\Exception
+     * @author hutao
+     */
     public function associationDeletion($add_id,$ma_division_id,$id)
     {
         try{
@@ -32,8 +40,30 @@ class UnitqualitymanageModel extends Model
              *
              * type 类型:1 检验批 0 工程划分
              */
-            $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=>$id,'type'=>0])->value('id');
-            if(!empty($relation_id)){
+            if($id == 0){ // 全部删除
+                $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'type'=>0])->column('id');
+            }else{
+                $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=>$id,'type'=>0])->value('id');
+            }
+            if(is_array($relation_id) && sizeof($relation_id)){
+                $data = Db::name('quality_upload')->where('contr_relation_id',$relation_id)->column('id,attachment_id');
+                if(is_array($data)){
+                    $id_arr = array_keys($data);
+                    $attachment_id_arr = array_values($data);
+                    $att = Db::name('attachment')->whereIn('id',$attachment_id_arr)->column('filepath');
+                    foreach ($att as $v){
+                        $pdf_path = './uploads/temp/' . basename($v) . '.pdf';
+                        if(file_exists($v)){
+                            unlink($v); //删除文件
+                        }
+                        if(file_exists($pdf_path)){
+                            unlink($pdf_path); //删除生成的预览pdf
+                        }
+                    }
+                    Db::name('attachment')->delete('attachment_id_arr');
+                    $this->delete($id_arr);
+                }
+            }else{
                 $data = Db::name('quality_upload')->where('contr_relation_id',$relation_id)->column('id,attachment_id');
                 if(is_array($data)){
                     $id_arr = array_keys($data);

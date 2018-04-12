@@ -108,6 +108,7 @@ class Unitqualitymanage extends Permissions
      *
      * type 类型:1 检验批 0 工程划分
      * @return \think\response\Json
+     * @throws \think\Exception
      * @author hutao
      */
     public function controlDel()
@@ -116,8 +117,8 @@ class Unitqualitymanage extends Permissions
         $param = input('param.');
         $add_id = isset($param['add_id']) ? $param['add_id'] : 0;
         $ma_division_id = isset($param['ma_division_id']) ? $param['ma_division_id'] : -1; // 工序作业编号是0
-        $id = isset($param['id']) ? $param['id'] : 0;
-        if($add_id || ($ma_division_id == -1) || $id){
+        $id = isset($param['id']) ? $param['id'] : -1; // id 等于0 表示 全部删除
+        if($add_id || ($ma_division_id == -1) || ($id == -1)){
             return json(['code' => '-1','msg' => '编号有误']);
         }
         if(request()->isAjax()) {
