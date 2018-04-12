@@ -257,7 +257,8 @@
     //声明单元树的变量
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
-        eTypeId ,controlPointId ,controlPointName;
+        eTypeId ,controlPointId ,controlPointName ,
+        conThisId;
 
     //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
@@ -383,6 +384,7 @@
 
     //点击工序第一个控制点名字
     function clickConNameOne(id) {
+        conThisId = id;
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
         console.log(id);
@@ -398,6 +400,7 @@
 
     //点击工序控制点名字
     function clickConName(id) {
+        conThisId = id;
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
         console.log(id);
@@ -413,12 +416,13 @@
 
     //点击新增控制节点
     $(".mybtn #test3").click(function () {
+        console.log(conThisId)
         layer.open({
             type: 2,
             title: '控制点选择',
             shadeClose: true,
             area: ['980px', '673px'],
-            content: '{:url("addplan")}?Division='+ selfid + '&TrackingDivision='+ selfidUnit,
+            content: '{:url("addplan")}?Division='+ selfidUnit + '&TrackingDivision='+ conThisId,
             // success: function(layero, index){
             //     var body = layer.getChildFrame('body', index);
             //     body.find("#denId").val(procedureId);
