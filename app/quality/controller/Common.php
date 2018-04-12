@@ -731,20 +731,20 @@ class Common extends Controller
 
     public function unit_quality_control($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
-        $table = 'materialtrackingdivision';
+        $table = 'controlpoint';
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->where('division_id',$id)->count();
+        $recordsTotal = Db::name($table)->where('procedureid',$id)->count();
         if(strlen($search)>0){
             //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('serial_number,site,coding,hinge,pile_number,start_date,completion_date,id')
-                    ->where('division_id',$id)
+                    ->field('code,name,id')
+                    ->where('procedureid',$id)
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -754,8 +754,8 @@ class Common extends Controller
             if($limitFlag){
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('serial_number,site,coding,hinge,pile_number,start_date,completion_date,id')
-                    ->where('division_id',$id)
+                    ->field('code,name,id')
+                    ->where('procedureid',$id)
                     ->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
