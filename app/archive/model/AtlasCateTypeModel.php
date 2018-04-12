@@ -11,7 +11,6 @@
  */
 namespace app\archive\model;
 use \think\Model;
-use think\exception\PDOException;
 
 class AtlasCateTypeModel extends Model
 {

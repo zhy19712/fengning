@@ -62,6 +62,7 @@ class Sampling extends Permissions
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }
+        return $this->fetch();
     }
 
     /**

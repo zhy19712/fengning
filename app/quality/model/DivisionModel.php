@@ -131,29 +131,4 @@ class DivisionModel extends Model
         return "[" . substr($str, 0, -1) . "]";
     }
 
-    public function cateTree($id){
-        $res = $this->column('id,pid');
-        if($res){
-            $result=$this->sort($res, $id);
-            return $result;
-        }
-    }
-    public function sort($data,$id){
-        static $arr = array();
-        foreach ($data as $key => $value){
-            if($value == $id){
-                $arr[] = $key;
-                $this->sort($data,$key);
-            }
-        }
-        return $arr;
-    }
-
-    public function getEnTypeById($idArr)
-    {
-        $en_type = $this->whereIn('id',$idArr)->group('en_type')->column('en_type');
-        $en_type = array_filter($en_type);
-        return $en_type;
-    }
-
 }
