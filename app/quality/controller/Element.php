@@ -42,7 +42,7 @@ class Element extends Permissions
      * @param $TrackingDivision 工序
      * @return mixed
      */
-    public function addplan($Division, $TrackingDivision)
+    public function addplan($Division=null, $TrackingDivision=null)
     {
         if ($this->request->isAjax()) {
             $mod = input('post.');
