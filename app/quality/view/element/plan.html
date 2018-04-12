@@ -113,71 +113,6 @@
 {include file="../app/public/common_footer.html"}
 <script type="text/javascript">
 
-    //组织结构表格
-    var tableItem = $('#tableItem').DataTable({
-        pagingType: "full_numbers",
-        processing: true,
-        serverSide: true,
-        ajax: {
-            "url": "{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="
-        },
-        dom: 'lf<"mybtn layui-btn layui-btn-sm"><"bitCodes layui-btn layui-btn-sm">rtip',
-        columns: [
-            {
-                name: "code"
-            },
-            {
-                name: "name"
-            },
-            {
-                name: "id",
-                width:"10%"
-            }
-        ],
-        columnDefs: [
-            {
-                "targets":[0]
-            },
-            {
-                "targets": [1]
-            },
-            {
-                "searchable": false,
-                "orderable": false,
-                "targets": [2],
-                "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[2]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[2]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    return html;
-                }
-            }
-        ],
-        language: {
-            "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            "infoEmpty": "无记录",
-            "search": "搜索：",
-            "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            "paginate": {
-                "sFirst": "<<",
-                "sPrevious": "<",
-                "sNext": ">",
-                "sLast": ">>"
-            }
-        },
-        "fnInitComplete": function (oSettings, json) {
-            $('#tableItem_length').insertBefore(".mark");
-            $('#tableItem_info').insertBefore(".mark");
-            $('#tableItem_paginate').insertBefore(".mark");
-        }
-    });
-
-    //点击上传文件
-    $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二位码</div>");
-    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
-
     var layer = layui.layer;
     //查询提交
     layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
@@ -385,17 +320,18 @@
     //点击工序第一个控制点名字
     function clickConNameOne(id) {
         conThisId = id;
+        tableFun(selfidUnit,id);
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
         console.log(id);
-        $.ajax({
-            type: "post",
-            url: "{:url('quality/element/getProcedures')}",
-            data: {id: id},
-            success: function (res) {
-                console.log(res);
-            }
-        })
+        // $.ajax({
+        //     type: "post",
+        //     url: "{:url('quality/element/getProcedures')}",
+        //     data: {id: id},
+        //     success: function (res) {
+        //         console.log(res);
+        //     }
+        // })
     }
 
     //点击工序控制点名字
@@ -404,15 +340,88 @@
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
         console.log(id);
-        $.ajax({
-            type: "post",
-            url: "{:url('quality/element/getProcedures')}",
-            data: {id: id},
-            success: function (res) {
-                console.log(res);
-            }
-        })
+        // $.ajax({
+        //     type: "post",
+        //     url: "{:url('quality/element/getProcedures')}",
+        //     data: {id: id},
+        //     success: function (res) {
+        //         console.log(res);
+        //     }
+        // })
     }
+
+    //组织结构表格
+    function tableFun(selfidUnit,conThisId) {
+        var url;
+        if(conThisId == undefined || conThisId == null){
+            url = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit;
+        }else{
+            url = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId;
+        }
+        var tableItem = $('#tableItem').DataTable({
+            pagingType: "full_numbers",
+            processing: true,
+            serverSide: true,
+            ajax: {
+                "url": url
+            },
+            dom: 'lf<"mybtn layui-btn layui-btn-sm"><"bitCodes layui-btn layui-btn-sm">rtip',
+            columns: [
+                {
+                    name: "code"
+                },
+                {
+                    name: "name"
+                },
+                {
+                    name: "id",
+                    width:"10%"
+                }
+            ],
+            columnDefs: [
+                {
+                    "targets":[0]
+                },
+                {
+                    "targets": [1]
+                },
+                {
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": [2],
+                    "render": function (data, type, row) {
+                        var a = data;
+                        var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[2]+")'><i title='下载' class='fa fa-download'></i></a>";
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[2]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                        return html;
+                    }
+                }
+            ],
+            language: {
+                "lengthMenu": "_MENU_",
+                "zeroRecords": "没有找到记录",
+                "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+                "infoEmpty": "无记录",
+                "search": "搜索：",
+                "infoFiltered": "(从 _MAX_ 条记录过滤)",
+                "paginate": {
+                    "sFirst": "<<",
+                    "sPrevious": "<",
+                    "sNext": ">",
+                    "sLast": ">>"
+                }
+            },
+            "fnInitComplete": function (oSettings, json) {
+                $('#tableItem_length').insertBefore(".mark");
+                $('#tableItem_info').insertBefore(".mark");
+                $('#tableItem_paginate').insertBefore(".mark");
+            }
+        });
+    }
+
+    //点击上传文件
+    $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二位码</div>");
+    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
 
     //点击新增控制节点
     $(".mybtn #test3").click(function () {
