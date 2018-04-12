@@ -27,10 +27,14 @@ class Element extends Permissions
 
     /**
      * 新增控制点
+     * @param $Division 划分树
+     * @param $TrackingDivision 工序
      * @return mixed
      */
-    public function addplan()
+    public function addplan($Division,$TrackingDivision)
     {
+        $this->assign('division',$Division);
+        $this->assign('TrackingDivision',$TrackingDivision);
         return $this->fetch();
     }
 
@@ -81,15 +85,5 @@ class Element extends Permissions
     public function getControlPointsByProcedureId($id)
     {
         return json(ControlPoint::all(['procedureid' => $id]));
-    }
-
-    /**
-     * 获取控制点
-     * @param $id 检验批Id
-     */
-    public function getCPByDivisionId($id)
-    {
-        $ids[] = Db::name('fengning_materialtrackingdivision')->where(['pid' => $id])->field('id');
-        return json(Db::name('controlpoint')->whereIn('procedureid', $ids));
     }
 }

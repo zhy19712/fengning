@@ -39,16 +39,4 @@ class ControlPoint extends Model
         }
         return $nodeArray;
     }
-
-    /**
-     * 执行状态输出器
-     * @param $value
-     * @param $data
-     * @return mixed
-     */
-    public function getisexecutedTxtAttr($value, $data)
-    {
-        $status = [1 => '已执行', 2 => '未执行'];
-        return $status[$data['isexecuted']];
-    }
 }
