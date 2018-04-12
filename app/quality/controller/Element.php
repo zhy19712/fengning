@@ -14,6 +14,7 @@ use app\quality\model\DivisionUnitModel;
 use app\standard\model\ControlPoint;
 use app\standard\model\MaterialTrackingDivision;
 use think\Db;
+use think\Exception;
 use think\Request;
 
 class Element extends Permissions
@@ -45,12 +46,21 @@ class Element extends Permissions
     {
         if ($this->request->isAjax()) {
             $mod = input('post.');
-            $res = $this->divisionControlPointService->allowField(true)->save($mod);
-            if ($res) {
-                return json(['code' => 1]);
-            } else {
-                return json(['code' => -1]);
+            {
+                foreach ($mod['control_id'] as $item) {
+                    $_item['division_id'] = $mod['division_id'];
+                    $_item['ma_division_id'] = $mod['ma_division_id'];
+                    $_item['type'] = 1;
+                    $_item['control_id'] = $item;
+                    $_mod[] = $_item;
+                }
+                try {
+                    $this->divisionControlPointService->allowField(true)->saveAll($_mod);
+                } catch (Exception $e) {
+                    return json(['code'=>-1,msg=>$e->getMessage()]);
+                }
             }
+            return json(['code' => 1]);
         }
         $this->assign('Division', $Division);
         $this->assign('TrackingDivision', $TrackingDivision);
@@ -61,7 +71,8 @@ class Element extends Permissions
      * 单位管控
      * @return mixed
      */
-    public function controll()
+    public
+    function controll()
     {
         return $this->fetch();
     }
@@ -70,7 +81,8 @@ class Element extends Permissions
      * 单位验评
      * @return mixed
      */
-    public function check()
+    public
+    function check()
     {
         return $this->fetch();
     }
@@ -81,7 +93,8 @@ class Element extends Permissions
      * @return \think\response\Json
      * @throws \think\exception\DbException
      */
-    public function getDivisionUnitTree($id)
+    public
+    function getDivisionUnitTree($id)
     {
         return json(DivisionUnitModel::all(['division_id' => $id]));
     }
@@ -92,7 +105,8 @@ class Element extends Permissions
      * @return \think\response\Json
      * @throws \think\exception\DbException
      */
-    public function getProcedures($id)
+    public
+    function getProcedures($id)
     {
         return json(MaterialTrackingDivision::all(['pid' => $id, 'type' => 3]));
     }
@@ -104,13 +118,14 @@ class Element extends Permissions
      * @return \think\response\Json
      * @throws \think\exception\DbException
      */
-    public function getControl($Division, $TrackingDivision = null)
+    public
+    function getControl($Division, $TrackingDivision = null)
     {
-        $par['type']=1;
+        $par['type'] = 1;
         $par['division_id'] = $Division;
         if (!empty($TrackingDivision)) {
             $par['ma_division_id'] = $TrackingDivision;
         }
-       return json( $this->divisionControlPointService->with('ControlPoint')->where($par));
+        return json($this->divisionControlPointService->with('ControlPoint')->where($par));
     }
 }
