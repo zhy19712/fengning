@@ -792,19 +792,18 @@ class Common extends Controller
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = DivisionControlPointModel::with("ControlPoint")
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('controlpoint b','a.control_id=b.id','left')
                     ->where($par)
                     ->order($order)->limit(intval($start), intval($length))->select();
-                //$recordsFilteredResult = Db::name($table)->with("ControlPoint")
-                //    ->where($par)
-                //    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
             //没有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = DivisionControlPointModel::with("ControlPoint")
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('controlpoint b','a.control_id=b.id','left')
                     ->where($par)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
