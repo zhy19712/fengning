@@ -1,13 +1,20 @@
 {include file="../app/public/common_header.html"}
-<link rel="stylesheet" href="__WEBSITE__/quality/unitqualitymanage/common.css">
+<link rel="stylesheet" href="__WEBSITE__/quality/unitqualitymanage/common/common.css">
 <div data-options="region:'west',title:'工程划分',split:true" style="width:260px;">
     <ul id="ztree" class="ztree"></ul>
 </div>
-<div data-options="region:'center',title:'控制点：'" style="padding:5px;">
+<div data-options="region:'center',title:''" style="padding:5px;">
+    <div class="current-path">
+        <h3><i class="fa fa-dot-circle-o"></i>控制点</h3>
+    </div>
+    <div class="control-point" id="controlPoint">
 
+        <div class="control-point-item" id="controlPointItem"></div>
+    </div>
 </div>
 
 {include file="../app/public/common_footer.html"}
+<script src="__WEBSITE__/quality/unitqualitymanage/common/common.js"></script>
 <script src="__WEBSITE__/quality/unitqualitymanage/control.js"></script>
 </body>
 </html>
