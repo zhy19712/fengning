@@ -285,7 +285,7 @@
             $.ajax({
                 url: "{:url('/standard/library/adddivsiontree')}",
                 type: "post",
-                data: {pid: pid, name: value, cat:2},
+                data: {pid: pid, name: value, cat:2,type:3},
                 success: function (res) {
                     console.log(res);
                     if (res.code === 1) {
