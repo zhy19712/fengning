@@ -85,7 +85,7 @@ class Element extends Permissions
      */
     public function getCPByDivisionId($id)
     {
-        $ids[] = Db::name('quality_division')->where(['pid' => $id])->field('id');
+        $ids[] = Db::name('fengning_materialtrackingdivision')->where(['pid' => $id])->field('id');
         return json(Db::name('controlpoint')->whereIn('procedureid', $ids));
     }
 }
