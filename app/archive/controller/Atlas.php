@@ -43,7 +43,6 @@ class Atlas extends Permissions
             $nodeStr = $node->getNodeInfo();
             return json($nodeStr);
         }
-        return $this->fetch();
     }
 
     /**
@@ -75,7 +74,6 @@ class Atlas extends Permissions
                 return json($flag);
             }
         }
-        return $this->fetch();
     }
 
     /**
@@ -120,9 +118,6 @@ class Atlas extends Permissions
 
             $flag = $model->delCatetype($param['id']);
             return json($flag);
-        }else
-        {
-            return $this->fetch();
         }
 
     }
@@ -155,7 +150,6 @@ class Atlas extends Permissions
 
 
         }
-        return $this->fetch();
     }
     /**********************************右侧图册表************************/
     /*
@@ -169,7 +163,6 @@ class Atlas extends Permissions
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }
-        return $this->fetch();
     }
 
     /**
@@ -286,9 +279,6 @@ class Atlas extends Permissions
                     return ['code' => -1, 'msg' => '当前图册下已有图纸，请先删除图纸！'];
                 }
 
-            }else
-            {
-                return $this->fetch();
             }
 
     }
@@ -596,9 +586,6 @@ class Atlas extends Permissions
 
             return json($flag);
 
-        }else
-        {
-            return $this->fetch();
         }
     }
 
