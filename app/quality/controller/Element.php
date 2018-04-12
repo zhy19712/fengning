@@ -9,13 +9,23 @@
 namespace app\quality\controller;
 
 use app\admin\controller\Permissions;
+use app\quality\model\DivisionControlPointModel;
 use app\quality\model\DivisionUnitModel;
 use app\standard\model\ControlPoint;
 use app\standard\model\MaterialTrackingDivision;
 use think\Db;
+use think\Request;
 
 class Element extends Permissions
 {
+    protected $divisionControlPointService;
+
+    public function __construct(Request $request = null)
+    {
+        $this->divisionControlPointService = new DivisionControlPointModel();
+        parent::__construct($request);
+    }
+
     /**
      * 单位策划
      * @return mixed
@@ -31,10 +41,19 @@ class Element extends Permissions
      * @param $TrackingDivision 工序
      * @return mixed
      */
-    public function addplan($Division,$TrackingDivision)
+    public function addplan($Division, $TrackingDivision)
     {
-        $this->assign('division',$Division);
-        $this->assign('TrackingDivision',$TrackingDivision);
+        if ($this->request->isAjax()) {
+            $mod = input('post.');
+            $res = $this->divisionControlPointService->allowField(true)->save($mod);
+            if ($res) {
+                return json(['code' => 1]);
+            } else {
+                return json(['code' => -1]);
+            }
+        }
+        $this->assign('division', $Division);
+        $this->assign('TrackingDivision', $TrackingDivision);
         return $this->fetch();
     }
 
