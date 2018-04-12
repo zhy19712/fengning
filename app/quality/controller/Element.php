@@ -22,6 +22,11 @@ class Element extends Permissions
         return $this->fetch();
     }
 
+    public function addplan()
+    {
+        return $this->fetch();
+    }
+
     /**
      * 单位管控
      * @return mixed
