@@ -11,6 +11,7 @@
  */
 namespace app\archive\model;
 use \think\Model;
+use think\exception\PDOException;
 
 class AtlasCateModel extends Model
 {
@@ -123,7 +124,6 @@ class AtlasCateModel extends Model
                 $children[$k][] = $v['pid'];
             }
         }
-
 
         return $children;
     }
