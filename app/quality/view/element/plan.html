@@ -50,6 +50,9 @@
         padding: 5px 3px;
 
     }
+    #tableContent .imgList #imgListLeft, #tableContent .imgList #imgListRight {
+        display: inline-block;
+    }
     #tableContent .imgList img {
         border-radius: 50%;
     }
@@ -78,18 +81,19 @@
     <ul class="ztree" id="ztree"></ul>
 </div>
 
-<div id="unitWork" data-options="region:'center',title:' 单元工'" style="width:240px;background:#fff;">
+<div class="fa fa-cutlery" id="unitWork" data-options="region:'center',title:' 单元工'" style="width:240px;background:#fff;">
     <ul class="ztree" id="ztreeUnit"></ul>
 </div>
 
 <div id="tableContent" data-options="region:'east',title:'控制点',split:true" style="width:1255px; position: relative;padding-top: 5px;">
     <div class="imgList">
-        <img src="__WEBSITE__/elementimg/work.png" alt="工作">
-        <span><a href="javascript:;">作业</a></span>
-        <img src="__WEBSITE__/elementimg/right.png" alt="箭头">
-        <img src="__WEBSITE__/elementimg/work.png" alt="工作">
-        <span><a href="javascript:;">单元工程质量验评</a></span>
-        <img src="__WEBSITE__/elementimg/right.png" alt="箭头">
+        <div class="imgListLeft" id="imgListLeft" style="margin-right: 15px">
+            <img src="__WEBSITE__/elementimg/work.png" alt="工作">
+            <span><a href="javascript:;">作业</a></span>
+        </div>
+        <div class="imgListRight" id="imgListRight">
+            
+        </div>
 
     </div>
     <div class="listName" style="padding-left: 1.5%"><h3>已选择控制标准列表</h3></div>
@@ -234,7 +238,8 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
-        initData(selfid);
+
+        initData(selfid);//调用单元工
     }
 
     //全部展开
@@ -249,14 +254,17 @@
     /**==========开始初始化 单元工树 =================*/
 
     //声明单元树的变量
-    var selfidUnit, nodeNameUnit, nodePidUnit, zTreeObjUnit, groupidUnit, sNodesUnit;
+    var selfidUnit ,nodeNameUnit ,nodePidUnit ,
+        zTreeObjUnit ,groupidUnit ,sNodesUnit ,
+        eTypeId ,controlPointId ,controlPointName;
 
     //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
         if (responseData) {
             for(var i =0; i < responseData.length; i++) {
-                console.log(responseData[i]);
+                // console.log(responseData[i]);
                 responseData[i].name = responseData[i].el_start + responseData[i].el_cease + responseData[i].pile_number + responseData[i].site;
+                eTypeId = responseData[i].en_type;
             }
         }
         return responseData;
@@ -317,13 +325,51 @@
             // $(".layout-panel-center .panel-title").text(sNodesUnit.name);
         }
         groupidUnit = sNodesUnit.pId ;//父节点的id
-        tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfidUnit).load();
+        if(eTypeId){
+            selfidName(eTypeId);
+        }
+        // tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfidUnit).load();
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
         $("#tableContent .imgList").css('display','block');
     }
 
+    //获取控制点name
+    function selfidName(id) {
+        $.ajax({
+            type: "post",
+            url: "{:url('quality/element/getProcedures')}",
+            data: {id: id},
+            success: function (res) {
+                // if(res.code == 1){
+                    console.log(res);
+                    var optionStr = '';
+                    var optionStrAfter = '';
+                    // $.each(res,function(index,value){
+                    for(var i = 0;i<res.length;i++) {
+                        $("#imgListRight").html('');
+                        controlPointId = res[i].id;
+                        controlPointName = res[i].name;
+                        if(i==0){
+                            optionStr +=
+                                "<img src=\"__WEBSITE__/elementimg/work.png\" alt=\"工作\">\n" +
+                                "<span id='spanAfter'><a href=\"javascript:;\">"+res[i].name+"</a><i style='display: none;'>"+res[i].id+"</i></span>\n";
+                        }
+                        optionStrAfter +=
+                            "<img class='imgNone' id='"+i+"' src=\"__WEBSITE__/elementimg/right.png\" alt=\"箭头\">"+
+                            "<img src=\"__WEBSITE__/elementimg/work.png\" alt=\"工作\">\n" +
+                            "<span><a href=\"javascript:;\">"+res[i].name+"</a><i style='display: none;'>"+res[i].id+"</i></span>\n";
+                    };
+                    $("#imgListRight").append(optionStr);
+                    $("#spanAfter").after(optionStrAfter);
+                // }else if(res.code==0){
+                //     layer.msg(res.msg);
+                // }
+            }
+        })
+    }
     /**==========结束初始化 单元工树 =============*/
+
 
 
     //点击新增控制节点
