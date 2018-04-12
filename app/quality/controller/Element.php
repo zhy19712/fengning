@@ -25,6 +25,10 @@ class Element extends Permissions
         return $this->fetch();
     }
 
+    /**
+     * 新增控制点
+     * @return mixed
+     */
     public function addplan()
     {
         return $this->fetch();
