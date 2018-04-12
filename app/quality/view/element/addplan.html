@@ -220,12 +220,11 @@
                 },
                 success: function (res) {
                     console.log(res);
+                    if(res.code ==1){
+                        closWin();
+                    }
                 }
             })
-            // console.log($("#tableItemChose tbody td:nth-of-type(1) a"));
-            // if(flag){
-            //     closWin();
-            // }
         });
     });
 
