@@ -9,6 +9,7 @@
 namespace app\quality\controller;
 
 
+use app\quality\model\UnitqualitymanageModel;
 use think\Controller;
 use think\Db;
 use think\Session;
@@ -729,23 +730,45 @@ class Common extends Controller
     }
 
 
+    // ht 单位质量管理 单位策划，单位管控 控制点列表
     public function unit_quality_control($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
     {
-        $table = 'materialtrackingdivision';
+        if(!stristr($id,'-')){
+            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
+        }
+        // 前台 传递 id 的 时候 注意一下  把 左侧的 节点 add_id 和 当前 点击的 工序 编号 以 - 组合到一起
+        $idArr = explode('-',$id);
+        $division_id = $idArr[0]; // 这里存放 工程划分 单位工程编号
+        $id = $idArr[1]; // 工序编号
+        $table = 'controlpoint';
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->where('division_id',$id)->count();
+        if($id==0){ // 等于0 说明是 作业 那就获取全部的 控制点 注意 这里不包含 单位策划里 追加的 关系数据
+            $id = Db::name('materialtrackingdivision')->where(['type'=>3,'cat'=>2])->column('id'); // 标准库单元工程下 所有的工序编号
+            $recordsTotal = Db::name($table)->whereIn('procedureid',$id)->count();
+            $new_control = '';
+            $where_val = 'whereIn';
+        }else{
+            $recordsTotal = Db::name($table)->where('procedureid',$id)->count();
+            // 合并 单位策划里 后来 添加的控制点
+            // 注意 ：这里的控制点是
+            // 存在于 quality_division_controlpoint_relation 单位质量管理 对应关系表里的 所以即使和 其他 工序下 的控制点重复也是正常的
+            $new_control = Db::name('quality_division_controlpoint_relation')->where(['division_id'=>$division_id,'type'=>0,'ma_division_id'=>$id])->column('control_id');
+            $recordsTotal = $recordsTotal + sizeof($new_control);
+            $where_val = 'where';
+        }
         if(strlen($search)>0){
             //有搜索条件的情况
             if($limitFlag){
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('serial_number,site,coding,hinge,pile_number,start_date,completion_date,id')
-                    ->where('division_id',$id)
+                    ->field('code,name,id')
+                    ->$where_val('procedureid',$id)
                     ->where($columnString, 'like', '%' . $search . '%')
+                    ->whereOr('id','IN',$new_control)
                     ->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -754,8 +777,9 @@ class Common extends Controller
             if($limitFlag){
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('serial_number,site,coding,hinge,pile_number,start_date,completion_date,id')
-                    ->where('division_id',$id)
+                    ->field('code,name,id')
+                    ->$where_val('procedureid',$id)
+                    ->whereOr('id','IN',$new_control)
                     ->order($order)->limit(intval($start),intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
