@@ -99,10 +99,18 @@ class Element extends Permissions
 
     /**
      * 获取控制点
-     * @param $id 工序Id
+     * @param $Division 检验批
+     * @param null $TrackingDivision 工序
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
      */
-    public function getControlPointsByProcedureId($id)
+    public function getControl($Division, $TrackingDivision = null)
     {
-        return json(ControlPoint::all(['procedureid' => $id]));
+        $par['type']=1;
+        $par['division_id'] = $Division;
+        if (!empty($TrackingDivision)) {
+            $par['ma_division_id'] = $TrackingDivision;
+        }
+       return json( $this->divisionControlPointService->with('ControlPoint')->where($par));
     }
 }
