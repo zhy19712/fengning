@@ -48,6 +48,7 @@ class Element extends Permissions
             $mod = input('post.');
             {
                 foreach ($mod['control_id'] as $item) {
+                    $_item=array();
                     $_item['division_id'] = $mod['division_id'];
                     $_item['ma_division_id'] = $mod['ma_division_id'];
                     $_item['type'] = 1;
