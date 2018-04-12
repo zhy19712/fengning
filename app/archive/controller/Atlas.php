@@ -190,7 +190,6 @@ class Atlas extends Permissions
             //然后在此基础上自动加1
             $max_cate_number = $model->maxcatenumber($param['selfid']);
 
-            //前台传过来的角色类型id
             if(empty($param['id']))//id为空时表示新增图册类型
             {
                 $data = [
