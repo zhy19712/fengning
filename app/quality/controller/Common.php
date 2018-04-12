@@ -780,8 +780,8 @@ class Common extends Controller
         $recordsFilteredResult = array();
         $par=array();
         $par['type'] = 1;
-        $par['division_id'] = $this->request->has('division')?$this->request('division'):"";
-        $par['ma_division_id'] = $this->request->has('ma_division_id')?$this->request('ma_division_id'):"";
+        $par['division_id'] = $this->request->has('division')?$this->request->param('division'):"";
+        $par['ma_division_id'] = $this->request->has('ma_division_id')?$this->request->param('ma_division_id'):"";
         if (!empty($TrackingDivision)) {
             $par['ma_division_id'] = $TrackingDivision;
         }
