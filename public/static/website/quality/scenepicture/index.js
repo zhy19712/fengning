@@ -229,7 +229,7 @@ function download(id,url) {
                     + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
                     + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                     + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
-                    + "<input class='file_url' style='display: none;' name='type_model' value="+ type_model +">"
+                    + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                     + "<button type='submit' class=btn" + id +"></button>"
                     + "</form>"
                 $("#form_container").append(str);
