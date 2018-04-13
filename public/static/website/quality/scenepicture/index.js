@@ -1,6 +1,7 @@
 var selfid,zTreeObj,groupid,sNodes,selectData="";//选中的节点id，ztree对象，父节点id，选中的节点，选中的表格的信息
 var uploadpath;
 var admin_group_id="",year="",month="",day="";
+var type_model = "ScenePictureModel";
 //编辑dom
 var sceneDom =[
     '<form  id="sceneform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">',
@@ -212,7 +213,6 @@ function conDel(id){
 //下载
 function download(id,url) {
     var url1 = url;
-    var type_model = "ScenePictureModel";
     $.ajax({
         url: url,
         type:"post",
@@ -248,7 +248,7 @@ function showPdf(id,url) {
     $.ajax({
         url: url,
         type: "post",
-        data: {id:id},
+        data: {id:id,type_model:type_model},
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
@@ -292,7 +292,7 @@ function showPdf(id,url) {
 }
 //预览
 function conPicshow(id){
-    showPdf(id,'./previewPicture')
+    showPdf(id,'../Common/preview')
 
 }
 //设置位置
