@@ -16,6 +16,7 @@ use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
 use app\quality\model\SideReportingModel;//旁站记录模型
 use \think\Session;
+use think\Db;
 
 class Sidereporting extends Permissions
 {
@@ -35,7 +36,7 @@ class Sidereporting extends Permissions
      */
     public function tree()
     {
-        if ($this->request->isAjax()) {
+        if ($this->request->isAjax()){
             //实例化模型
             $model = new SideReportingModel();
             //查询旁站记录表
@@ -46,7 +47,6 @@ class Sidereporting extends Permissions
                 $b['id'] = strval($b['id']);
                 $res[$a] = json_encode($b);
             }
-
             return json($res);
         }
     }
@@ -57,6 +57,7 @@ class Sidereporting extends Permissions
     public function getindex()
     {
         if(request()->isAjax()){
+            //实例化模型
             $model = new SideReportingModel();
             $param = input('post.');
             $data = $model->getOne($param['id']);
@@ -134,12 +135,12 @@ class Sidereporting extends Permissions
                     "day" => $day,
                     "name" => $day."日",
                     "pid" => $result2['id'],
+                    "attachment_id" => $param["attachment_id"],//对应attachment文件上传表中的id
                     "filename" => date("YmdHis"),//默认上传的文件名为日期
                     "date" => date("Y-m-d H:i:s"),
                     "owner" => Session::get('current_name'),
                     "company" => $group["name"],//单位
-                    "admin_group_id" => $admininfo["admin_group_id"],
-                    "path" => $param['path']//路径
+                    "admin_group_id" => $admininfo["admin_group_id"]
                 ];
                 $flag = $model->insertSide($data2);
                 return json($flag);
@@ -186,12 +187,12 @@ class Sidereporting extends Permissions
                         "day" => $day,
                         "name" => $day."日",
                         "pid" => $result2['id'],
+                        "attachment_id" => $param["attachment_id"],//对应attachment文件上传表中的id
                         "filename" => date("YmdHis"),//默认上传的文件名为日期
                         "date" => date("Y-m-d H:i:s"),
                         "owner" => Session::get('current_name'),
                         "company" => $group["name"],//单位
-                        "admin_group_id" => $admininfo["admin_group_id"],
-                        "path" => $param['path']//路径
+                        "admin_group_id" => $admininfo["admin_group_id"]
                     ];
                     $flag = $model->insertSide($data2);
                     return json($flag);
@@ -214,12 +215,12 @@ class Sidereporting extends Permissions
                         "day" => $day,
                         "name" => $day."日",
                         "pid" => $result['id'],
+                        "attachment_id" => $param["attachment_id"],//对应attachment文件上传表中的id
                         "filename" => date("YmdHis"),//默认上传的文件名为日期
                         "date" => date("Y-m-d H:i:s"),
                         "owner" => Session::get('current_name'),
                         "company" => $group["name"],//单位
-                        "admin_group_id" => $admininfo["admin_group_id"],
-                        "path" => $param['path']//路径
+                        "admin_group_id" => $admininfo["admin_group_id"]
                     ];
                     $flag = $model->insertSide($data);
                     return json($flag);
@@ -234,6 +235,7 @@ class Sidereporting extends Permissions
     public function edit()
     {
         if(request()->isAjax()){
+            //实例化模型
             $model = new SideReportingModel();
             $param = input('post.');
             $data = [
@@ -242,43 +244,7 @@ class Sidereporting extends Permissions
             ];
             $flag = $model->editSide($data);
             return json($flag);
-
         }
-    }
-
-    /**
-     * 下载一条旁站记录信息
-     * @return \think\response\Json
-     */
-    public function download()
-    {
-        if(request()->isAjax()){
-            $id = input('param.id');
-            $model = new SideReportingModel();
-            $param = $model->getOne($id);
-            if(!$param['path'] || !file_exists("." .$param['path'])){
-                return json(['code' => '-1','msg' => '文件不存在']);
-            }
-            return json(['code' => 1]);
-        }
-        $id = input('param.id');
-        $model = new SideReportingModel();
-        $param = $model->getOne($id);
-
-        $filePath = '.' . $param['path'];
-        $fileName = $param['filename'];
-        $file = fopen($filePath, "r"); //   打开文件
-        //输入文件标签
-        $fileName = iconv("utf-8","gb2312",$fileName);
-        Header("Content-type:application/octet-stream ");
-        Header("Accept-Ranges:bytes ");
-        Header("Accept-Length:   " . filesize($filePath));
-        Header("Content-Disposition:   attachment;   filename= " . $fileName);
-        //   输出文件内容
-        echo fread($file, filesize($filePath));
-        fclose($file);
-        exit;
-
     }
 
     /**
@@ -287,12 +253,10 @@ class Sidereporting extends Permissions
     public function del()
     {
 
-        if (request()->isAjax()) {
-
-            $id = input('post.id');//要删除的旁站记录id
-
+        if (request()->isAjax()){
             //实例化model类型
             $model = new SideReportingModel();
+            $id = input('post.id');//要删除的旁站记录id
             //首先判断一下删除的只一天所属的月份下是否有其他日子
             $data_info = $model->getOne($id);
 
@@ -316,7 +280,9 @@ class Sidereporting extends Permissions
             }
 
             //最后删除这条旁站记录信息
-            $path = "." .$data_info['path'];
+            //查询attachment表中的文件上传路径
+            $attachment = Db::name("attachment")->where("id",$data_info["attachment_id"])->find();
+            $path = "." .$attachment['filepath'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(file_exists($path)){
                 unlink($path); //删除上传的图片或文件
@@ -328,47 +294,6 @@ class Sidereporting extends Permissions
             //最后删除这一条记录信息
             $flag = $model->delSide($id);
             return $flag;
-
-        }
-    }
-
-    /**
-     * 预览一条旁站记录信息
-     * @return \think\response\Json
-     */
-    public function preview()
-    {
-        $model = new SideReportingModel();
-        if(request()->isAjax()) {
-            $param = input('post.');
-            $code = 1;
-            $msg = '预览成功';
-            $data = $model->getOne($param['id']);
-            if(!$data['path'] || !file_exists("." .$data['path'])){
-                return json(['code' => '-1','msg' => '文件不存在']);
-            }
-            $path = $data['path'];
-            $extension = strtolower(get_extension(substr($path,1)));
-            $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-            if(!file_exists($pdf_path)){
-                if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
-                    doc_to_pdf($path);
-                }else if($extension === 'xls' || $extension === 'xlsx'){
-                    excel_to_pdf($path);
-                }else if($extension === 'ppt' || $extension === 'pptx'){
-                    ppt_to_pdf($path);
-                }else if($extension === 'pdf'){
-                    $pdf_path = $path;
-                }else if($extension === "jpg" || $extension === "png" || $extension === "jpeg"){
-                    $pdf_path = $path;
-                }else {
-                    $code = 0;
-                    $msg = '不支持的文件格式';
-                }
-                return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }else{
-                return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }
         }
     }
 }
