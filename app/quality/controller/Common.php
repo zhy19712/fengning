@@ -10,6 +10,7 @@ namespace app\quality\controller;
 
 
 use app\quality\model\UnitqualitymanageModel;
+use app\quality\model\ScenePictureModel;
 use think\Controller;
 use think\Db;
 use think\Session;
@@ -198,7 +199,9 @@ class Common extends Controller
         if(request()->isAjax()){
             $id = input('param.id');//id
             $type_model = input('param.type_model');//model类名
-            $model = new $type_model();
+            //拼接model类的地址
+            $type_model = "app\\quality\\model\\".$type_model;
+            $model = new $type_model;
             $param = $model->getOne($id);
             //查询attachment文件上传表中的文件上传路径
             $attachment = Db::name("attachment")->where("id",$param["attachment_id"])->find();
@@ -211,6 +214,8 @@ class Common extends Controller
         }
         $id = input('param.id');
         $type_model = input('param.type_model');//model类名
+        //拼接model类的地址
+        $type_model = "app\\quality\\model\\".$type_model;
         $model = new $type_model();
         $param = $model->getOne($id);
         //查询attachment文件上传表中的文件上传路径
