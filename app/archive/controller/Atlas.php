@@ -43,6 +43,7 @@ class Atlas extends Permissions
             $nodeStr = $node->getNodeInfo();
             return json($nodeStr);
         }
+        return $this->fetch();
     }
 
     /**
@@ -74,6 +75,7 @@ class Atlas extends Permissions
                 return json($flag);
             }
         }
+        return $this->fetch();
     }
 
     /**
@@ -118,6 +120,9 @@ class Atlas extends Permissions
 
             $flag = $model->delCatetype($param['id']);
             return json($flag);
+        }else
+        {
+            return $this->fetch();
         }
 
     }
@@ -150,6 +155,7 @@ class Atlas extends Permissions
 
 
         }
+        return $this->fetch();
     }
     /**********************************右侧图册表************************/
     /*
@@ -163,6 +169,7 @@ class Atlas extends Permissions
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }
+        return $this->fetch();
     }
 
     /**
@@ -190,6 +197,7 @@ class Atlas extends Permissions
             //然后在此基础上自动加1
             $max_cate_number = $model->maxcatenumber($param['selfid']);
 
+            //前台传过来的角色类型id
             if(empty($param['id']))//id为空时表示新增图册类型
             {
                 $data = [
@@ -236,6 +244,7 @@ class Atlas extends Permissions
      */
     public function delCateone()
     {
+
             if(request()->isAjax()) {
                 $param = input('post.');
 
@@ -276,7 +285,12 @@ class Atlas extends Permissions
                 {
                     return ['code' => -1, 'msg' => '当前图册下已有图纸，请先删除图纸！'];
                 }
+
+            }else
+            {
+                return $this->fetch();
             }
+
     }
 
     /**
@@ -582,6 +596,9 @@ class Atlas extends Permissions
 
             return json($flag);
 
+        }else
+        {
+            return $this->fetch();
         }
     }
 

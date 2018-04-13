@@ -1,29 +1,3 @@
-$.ztree({
-    //点击节点
-    zTreeOnClick:function (event, treeId, treeNode){
-        tableInfo();
-        $.clicknode({
-            tableItem:tableItem,
-            treeNode:treeNode,
-            tablePath:'/quality/common/datatablesPre?tableName=quality_unit',
-            isLoadPath:false
-        });
-        $.ajax({
-            url: "./unitPlanning",
-            type: "post",
-            data: {
-                add_id:window.treeNode.add_id
-            },
-            dataType: "json",
-            success: function (res) {
-                if(res.code=1){
-
-                }
-            }
-        });
-    }
-});
-
 function tableInfo() {
     $.datatable({
         tableId:'tableItem',

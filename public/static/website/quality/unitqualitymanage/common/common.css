@@ -1,0 +1,27 @@
+.ztree{
+    margin-top: 0;
+}
+.current-path i.fa:before{
+    color: #0E2D5F;
+}
+.current-path{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.control-point i{
+    margin-right: 5px;
+}
+.control-point i.fa:before{
+    color: #333;
+}
+.control-point a{
+    margin-right: 10px;
+    font-size: 14px;
+}
+.control-point a:hover,.control-point a:hover i.fa:before,.control-point a.active,.control-point a.active i.fa:before{
+    color: #00c0ef;
+}
+.control-point-item{
+    display: inline-block;
+}

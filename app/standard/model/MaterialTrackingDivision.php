@@ -13,5 +13,4 @@ use think\Model;
 class MaterialTrackingDivision extends Model
 {
     protected $name = "materialtrackingdivision";
-
 }

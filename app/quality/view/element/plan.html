@@ -8,9 +8,9 @@
     #division #ztree,#unitWork #ztreeUnit{
         margin-top: 0px;
     }
-    .dataTables_wrapper, .tbcontainer,#tableContent .imgList {
-        display: none;
-    }
+    /*.dataTables_wrapper, .tbcontainer,#tableContent .imgList {*/
+        /*display: none;*/
+    /*}*/
     #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before{
         background: #00c0ef;
         color: #ffffff;
@@ -193,7 +193,7 @@
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
         eTypeId ,controlPointId ,controlPointName ,
-        conThisId;
+        conThisId ,tableItem;
 
     //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
@@ -266,10 +266,11 @@
             selfidName(eTypeId);
         }
         // tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfidUnit).load();
+        tableFun(selfidUnit);
+        $(".mybtn").css("display","none");
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
         $("#tableContent .imgList").css('display','block');
-        $(".mybtn").css("display","none");
     }
 
     //获取控制点name
@@ -320,9 +321,12 @@
     //点击工序第一个控制点名字
     function clickConNameOne(id) {
         conThisId = id;
-        tableFun(selfidUnit,id);
+        tableFun(selfidUnit,conThisId);
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
+        $("#tableContent .dataTables_wrapper").css('display','block');
+        $("#tableContent .tbcontainer").css('display','block');
+        $("#tableContent .imgList").css('display','block');
         console.log(id);
         // $.ajax({
         //     type: "post",
@@ -352,14 +356,16 @@
 
     //组织结构表格
     function tableFun(selfidUnit,conThisId) {
+        // $('#tableItem').dataTable({"destroy": true});
         var url;
         if(conThisId == undefined || conThisId == null){
             url = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit;
         }else{
             url = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId;
         }
-        var tableItem = $('#tableItem').DataTable({
+        tableItem = $('#tableItem').DataTable({
             pagingType: "full_numbers",
+            retrieve: true,
             processing: true,
             serverSide: true,
             ajax: {
@@ -417,15 +423,16 @@
                 $('#tableItem_paginate').insertBefore(".mark");
             }
         });
+        //点击上传文件
+        $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二维码</div>");
+        $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
     }
 
-    //点击上传文件
-    $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二位码</div>");
-    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
+
 
     //点击新增控制节点
-    $(".mybtn #test3").click(function () {
-        console.log(conThisId)
+    $("#tableContent").on("click",".mybtn #test3",function () {
+        console.log(conThisId);
         layer.open({
             type: 2,
             title: '控制点选择',
@@ -436,9 +443,9 @@
             //     var body = layer.getChildFrame('body', index);
             //     body.find("#denId").val(procedureId);
             // },
-            // end:function () {
-            //     tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
-            // }
+            end:function () {
+                tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+            }
         });
     });
 </script>
