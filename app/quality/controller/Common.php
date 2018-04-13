@@ -213,6 +213,7 @@ class Common extends Controller
             return json(['code' => 1]);
         }
         $id = input('param.id');
+
         $type_model = input('param.type_model');//model类名
         //拼接model类的地址
         $type_model = "app\\quality\\model\\".$type_model;
