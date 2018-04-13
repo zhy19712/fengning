@@ -916,7 +916,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
-                    ->field('a.id,b.code,b.name')
+                    ->field('a.id,b.code,b.name,a.status')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -927,7 +927,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
-                    ->field('a.id,b.code,b.name')
+                    ->field('a.id,b.code,b.name,a.status')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
