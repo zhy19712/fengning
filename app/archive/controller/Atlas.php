@@ -190,6 +190,7 @@ class Atlas extends Permissions
     public function editAtlasCate()
     {
         if(request()->isAjax()){
+            //实例化模型类
             $model = new AtlasCateModel();
             $param = input('post.');
 
@@ -236,7 +237,6 @@ class Atlas extends Permissions
                 return json($flag);
             }
         }
-
     }
 
     /**
@@ -245,10 +245,9 @@ class Atlas extends Permissions
     public function delCateone()
     {
             if(request()->isAjax()){
-                $param = input('post.');
                 //实例化model类型
                 $model = new AtlasCateModel();
-
+                $param = input('post.');
                 //首先判断一下删除的该图册是否存在下级
                 $info = $model ->judge($param['id']);
                 if(empty($info))//没有下级直接删除
@@ -291,12 +290,12 @@ class Atlas extends Permissions
     public function addPicture()
     {
         if(request()->isAjax()){
+            //实例化模型类
             $model = new AtlasCateModel();
             $param = input('post.');
             $id = $param['id'];//图册id
 
             $info = $model->getOne($id);
-
                 $data = [
                     'attachmentId'=>$param['attachmentId'],//文件关联attachment表中的id
                     'selfid' => $info['selfid'],//admin_cate_type表中的id,区分图册节点树
@@ -324,9 +323,10 @@ class Atlas extends Permissions
      */
     public function getAlldownrec()
     {
-        if(request()->isAjax()) {
-            $id = input('param.id');
+        if(request()->isAjax()){
+            //实例化模型类
             $model = new AtlasDownloadModel;
+            $id = input('param.id');
             $data = $model->getall($id);
             return json(['code' => 1, 'data' => $data]);
         }
@@ -339,8 +339,9 @@ class Atlas extends Permissions
      */
     public function atlascatePreview()
     {
-        $model = new AtlasCateModel();
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
+            //实例化模型类
+            $model = new AtlasCateModel();
             $param = input('post.');
             $code = 1;
             $msg = '预览成功';
@@ -381,8 +382,10 @@ class Atlas extends Permissions
     public function atlascateDownload()
     {
         if(request()->isAjax()){
-            $id = input('param.id');
+            //实例化模型类
             $model = new AtlasCateModel();
+            $id = input('param.id');
+
             //查看文件路径是否存在
             $param = $model->getOne($id);
             //查询attachment文件上传表中的文件上传路径
@@ -441,7 +444,6 @@ class Atlas extends Permissions
             echo fread($file, filesize($filePath));
             fclose($file);
             exit;
-
     }
 
     /**
@@ -450,9 +452,9 @@ class Atlas extends Permissions
     public function allDownload()
     {
         if(request()->isAjax()){
-
-            $id = input('param.id');
+            //实例化模型类
             $model = new AtlasCateModel();
+            $id = input('param.id');
 
             //查询当前用户是否被禁用下载图册
             $blacklist = $model->getbalcklist($id);
@@ -485,9 +487,7 @@ class Atlas extends Permissions
                {
                    return json(['code' => 1]);
                }
-
             }
-
         }
         //获取文件列表
         $id = input('param.id');
@@ -567,15 +567,13 @@ class Atlas extends Permissions
      */
     public function getAdminname()
     {
-
-        if(request()->isAjax()) {
-
-            $id = input('post.id');
-            //定义一个空数组
-            $res = array();
+        if(request()->isAjax()){
             //实例化模型类
             $model = new AtlasCateModel();
             $admin = new adminModel;
+            $id = input('post.id');
+            //定义一个空数组
+            $res = array();
             //先查询admin表中的所有的admin_cate_id
             $datainfo = $model->getOne($id);
 
@@ -593,7 +591,6 @@ class Atlas extends Permissions
             {
                 return json(['code' => -1, 'msg' => "没有白名单用户！"]);//返回json数据
             }
-
         }
     }
 
@@ -603,14 +600,12 @@ class Atlas extends Permissions
      */
     public function delAdminname()
     {
-        if(request()->isAjax()) {
-            $param = input('post.');
+        if(request()->isAjax()){
             //实例化model类型
             $model = new AtlasCateModel();
+            $param = input('post.');
             $flag = $model->delblacklist($param);
-
             return json($flag);
-
         }else
         {
             return $this->fetch();
@@ -659,7 +654,6 @@ class Atlas extends Permissions
 
                 return json($merge);
             }
-
         }
     }
 
@@ -669,7 +663,8 @@ class Atlas extends Permissions
      */
     public function addAdminname()
     {
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
+            //实例化模型类
             $model = new AtlasCateModel();
             $param = input('post.');//需要前台传过来用户数组admin_id,cate表中的id
             $data = $model->insertAdminid($param);
