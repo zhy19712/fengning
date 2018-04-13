@@ -16,6 +16,7 @@ use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
 use app\quality\model\ScenePictureModel;//现场图片模型
 use \think\Session;
+use think\Db;
 
 class Scenepicture extends Permissions
 {
@@ -46,7 +47,6 @@ class Scenepicture extends Permissions
                 $b['id'] = strval($b['id']);
                 $res[$a] = json_encode($b);
             }
-
             return json($res);
         }
     }
@@ -58,12 +58,12 @@ class Scenepicture extends Permissions
     public function getindex()
     {
         if(request()->isAjax()){
+            //实例化模型类
             $model = new ScenePictureModel();
             $param = input('post.');
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }
-        return $this->fetch();
     }
 
     /**
@@ -81,7 +81,6 @@ class Scenepicture extends Permissions
         {
             return json(['code'=>-1,'data'=>""]);
         }
-
     }
 
     /**
@@ -95,9 +94,7 @@ class Scenepicture extends Permissions
             $model = new ScenePictureModel();
             $admin = new Admin();
             $group = new AdminGroup();
-
             $param = input('post.');
-
             //获取当前时间的年月日
             $year = date("Y");
             $month = date("m");
@@ -153,16 +150,16 @@ class Scenepicture extends Permissions
                     "day" => $day,
                     "name" => $day."日",
                     "pid" => $result2['id'],
+                    "attachment_id" => $param["attachment_id"],//对应attachment文件上传表中的id
                     "filename" => date("YmdHis"),//默认上传的文件名为日期
                     "date" => date("Y-m-d H:i:s"),
                     "owner" => Session::get('current_name'),
                     "company" => $group["name"],//单位
-                    "admin_group_id" => $admininfo["admin_group_id"],
-                    "path" => $param['path']//路径
+                    "admin_group_id" => $admininfo["admin_group_id"]
+//                    "path" => $param['path']//路径
                 ];
                 $flag = $model->insertScene($data2);
                 return json($flag);
-
 
             }else{
                 //2.查询当前的月份是否存在,如果月份不存在时，新建一条月份记录
@@ -205,12 +202,13 @@ class Scenepicture extends Permissions
                         "day" => $day,
                         "name" => $day."日",
                         "pid" => $result2['id'],
+                        "attachment_id" => $param["attachment_id"],//对应attachment文件上传表中的id
                         "filename" => date("YmdHis"),//默认上传的文件名为日期
                         "date" => date("Y-m-d H:i:s"),
                         "owner" => Session::get('current_name'),
                         "company" => $group["name"],//单位
-                        "admin_group_id" => $admininfo["admin_group_id"],
-                        "path" => $param['path']//路径
+                        "admin_group_id" => $admininfo["admin_group_id"]
+//                        "path" => $param['path']//路径
                     ];
                     $flag = $model->insertScene($data2);
                     return json($flag);
@@ -233,12 +231,13 @@ class Scenepicture extends Permissions
                         "day" => $day,
                         "name" => $day."日",
                         "pid" => $result['id'],
+                        "attachment_id" => $param["attachment_id"],//对应attachment文件上传表中的id
                         "filename" => date("YmdHis"),//默认上传的文件名为日期
                         "date" => date("Y-m-d H:i:s"),
                         "owner" => Session::get('current_name'),
                         "company" => $group["name"],//单位
-                        "admin_group_id" => $admininfo["admin_group_id"],
-                        "path" => $param['path']//路径
+                        "admin_group_id" => $admininfo["admin_group_id"]
+//                        "path" => $param['path']//路径
                     ];
                     $flag = $model->insertScene($data);
                     return json($flag);
@@ -253,6 +252,7 @@ class Scenepicture extends Permissions
     public function editPicture()
     {
         if(request()->isAjax()){
+            //实例化模型类
             $model = new ScenePictureModel();
             $param = input('post.');
                 $data = [
@@ -261,19 +261,19 @@ class Scenepicture extends Permissions
                 ];
                 $flag = $model->editScene($data);
                 return json($flag);
-
         }
     }
 
     /**
-     * 下载一条现场图片信息
+     * 下载一条现场图片信息 放到Common中
      * @return \think\response\Json
      */
     public function downloadPicture()
     {
         if(request()->isAjax()){
-            $id = input('param.id');
+            //实例化模型类
             $model = new ScenePictureModel();
+            $id = input('param.id');
             $param = $model->getOne($id);
             if(!$param['path'] || !file_exists("." .$param['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
@@ -297,7 +297,6 @@ class Scenepicture extends Permissions
         echo fread($file, filesize($filePath));
         fclose($file);
         exit;
-
     }
 
     /**
@@ -307,11 +306,9 @@ class Scenepicture extends Permissions
     {
 
         if (request()->isAjax()) {
-
-            $id = input('post.id');//要删除的现场图片id
-
             //实例化model类型
             $model = new ScenePictureModel();
+            $id = input('post.id');//要删除的现场图片id
             //首先判断一下删除的只一天所属的月份下是否有其他日子
             $data_info = $model->getOne($id);
 
@@ -335,7 +332,9 @@ class Scenepicture extends Permissions
             }
 
             //最后删除这条现场图片信息
-            $path = "." .$data_info['path'];
+            //查询attachment表中的文件上传路径
+            $attachment = Db::name("attachment")->where("id",$data_info["attachment_id"])->find();
+            $path = "." .$attachment['filepath'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(file_exists($path)){
                 unlink($path); //删除上传的图片或文件
@@ -347,18 +346,18 @@ class Scenepicture extends Permissions
             //最后删除这一条记录信息
             $flag = $model->delScene($id);
             return $flag;
-
         }
     }
 
     /**
-     * 预览一条现场图片信息
+     * 预览一条现场图片信息 放到Common中
      * @return \think\response\Json
      */
     public function previewPicture()
     {
-        $model = new ScenePictureModel();
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
+            //实例化模型类
+            $model = new ScenePictureModel();
             $param = input('post.');
             $code = 1;
             $msg = '预览成功';
