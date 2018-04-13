@@ -115,11 +115,14 @@ class Element extends Permissions
      */
     public function delControlPointRelation($id)
     {
-       if( DivisionControlPointModel::destroy($id)){
-           return json(['code'=>1]);
-       }else
-       {
-           return json(['code'=>-1]);
-       }
+        $mod = DivisionControlPointModel::get($id);
+        if ($mod['status'] == 1) {
+            return json(['code' => -1, 'msg' => '控制点已执行']);
+        }
+        if ($mod->delete()) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
     }
 }
