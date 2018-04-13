@@ -273,12 +273,12 @@
         if(eTypeId){
             selfidName(eTypeId);
         }
-        // tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfidUnit).load();
-        // tableFun(selfidUnit);
+        tableFun(selfidUnit);
+        // tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
         $(".mybtn").css("display","none");
-        // $("#tableContent .dataTables_wrapper").css('display','block');
-        // $("#tableContent .tbcontainer").css('display','block');
-        // $("#tableContent #tableItem").css('display','block');
+        $("#tableContent .dataTables_wrapper").css('display','block');
+        $("#tableContent .tbcontainer").css('display','block');
+        $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -334,11 +334,11 @@
         tableFun(selfidUnit,conThisId);
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
-
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#tableContent #tableItem").css('display','block');
+        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         console.log(id);
         // $.ajax({
         //     type: "post",
