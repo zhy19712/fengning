@@ -5,15 +5,12 @@
  * Date: 2018/4/8
  * Time: 15:30
  */
-
 namespace app\standard\model;
-
 use think\Model;
 
 class ControlPoint extends Model
 {
-    protected $name = 'controlpoint';
-
+    protected $name='controlpoint';
     /**
      * 获取节点下所有子节点
      * @param $id
@@ -22,19 +19,20 @@ class ControlPoint extends Model
      */
     public function getChilds($id)
     {
-        $list = MaterialTrackingDivision::all();
-        if ($list) {
-            return $this->_getChilds($list, $id);
+        $list=MaterialTrackingDivision::all();
+        if ($list)
+        {
+            return $this->_getChilds($list,$id);
         }
     }
-
-    function _getChilds($list, $id)
+    function _getChilds($list,$id)
     {
-        $nodeArray = array();
-        foreach ($list as $item) {
-            if ($item['pid'] == $id) {
-                $nodeArray[] = $item['id'];
-                $nodeArray = array_merge($nodeArray, $this->_getChilds($list, $item['id']));
+        $nodeArray=array();
+        foreach ($list as $item)
+        {
+            if ($item['pid']==$id){
+                $nodeArray[]=$item['id'];
+                $nodeArray= array_merge($nodeArray, $this->_getChilds($list,$item['id']));
             }
         }
         return $nodeArray;

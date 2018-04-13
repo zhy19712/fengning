@@ -4,9 +4,9 @@
     #nodeZtree .ztree{
         margin-top: 0px;
     }
-    #tableContent .dataTables_wrapper, .tbcontainer{
-        display: block;
-    }
+    /*#tableContent .dataTables_wrapper, .tbcontainer{*/
+        /*display: block;*/
+    /*}*/
     #tableContent .mybtn{
         float: right;
         background-color: #00c0ef;
@@ -57,8 +57,8 @@
     <div class="tbcontainer">
         <div class="mark"></div>
     </div>
-    <input type="hidden" name="inputId" id="hiddenValId" value="">
-    <input type="hidden" name="inputName" id="hiddenValName" value="">
+    <input type="hidden" name="zTreeValId" id="zTreeValId" value="{$Division}">
+    <input type="hidden" name="unitValId" id="unitValId" value="{$TrackingDivision}">
 </div>
 
 {include file="../app/public/common_footer.html"}
@@ -76,15 +76,16 @@
         dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
         columns: [
             {
+                name: "id"
+            },
+            {
                 name: "code",
                 width:"15%"
             },
             {
                 name: "name"
-            },
-            {
-                name: "id"
             }
+
         ],
         columnDefs: [
             {
@@ -128,7 +129,7 @@
     $(".mybtn").html("<div id='test3'>保存</div>");
 
     //初始化树节点
-    var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes, procedureId;
+    var selfidAdd, nodeNameAdd, nodePidAdd, zTreeObjAdd, groupidAdd, sNodesAdd, procedureIdAdd;
 
     var setting = {
         view: {
@@ -154,22 +155,22 @@
             onClick: this.nodeClick
         }
     };
-    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
+    zTreeObjAdd = $.fn.zTree.init($("#ztree"), setting, null);
 
     //点击获取路径
     function nodeClick(e, treeId, node) {
         // console.log(node);
         selectData = "";
-        sNodes = zTreeObj.getSelectedNodes()[0];//选中节点
-        console.log(sNodes);
-        selfid = zTreeObj.getSelectedNodes()[0].id;//当前id
-        nodeName = zTreeObj.getSelectedNodes()[0].name;//当前name
-        nodePid = zTreeObj.getSelectedNodes()[0].pid;//当前pid
-        console.log(selfid + '---id');
-        console.log(nodeName + '---name');
-        console.log(nodePid + '---pid');
-        var path = sNodes.name; //选中节点的名字
-        node = sNodes.getParentNode();//获取父节点
+        sNodesAdd = zTreeObjAdd.getSelectedNodes()[0];//选中节点
+        console.log(sNodesAdd);
+        selfidAdd = zTreeObjAdd.getSelectedNodes()[0].id;//当前id
+        nodeNameAdd = zTreeObjAdd.getSelectedNodes()[0].name;//当前name
+        nodePidAdd = zTreeObjAdd.getSelectedNodes()[0].pid;//当前pid
+        console.log(selfidAdd + '---id');
+        console.log(nodeNameAdd + '---name');
+        console.log(nodePidAdd + '---pid');
+        var path = sNodesAdd.name; //选中节点的名字
+        node = sNodesAdd.getParentNode();//获取父节点
         if (node) {
             //判断是否还有父节点
             while (node) {
@@ -177,17 +178,16 @@
                 node = node.getParentNode();
             }
         } else {
-            $(".layout-panel-center .panel-title").text(sNodes.name);
+            $(".layout-panel-center .panel-title").text(sNodesAdd.name);
         }
-        groupid = sNodes.pId ;//父节点的id
-        clickTreeId = selfid;
-        procedureId = selfid;
-        if(sNodes.level == 3){
-            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
+        groupidAdd = sNodesAdd.pId ;//父节点的id
+        procedureIdAdd = selfidAdd;
+        if(sNodesAdd.level == 3){
+            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfidAdd).load();
             $("#tableContent .dataTables_wrapper").css('display','block');
             $("#tableContent .tbcontainer").css('display','block');
             $(".layout-panel-center .panel-title").text("当前路径:" + path);
-        }else if(sNodes.level != 3){
+        }else if(sNodesAdd.level != 3){
             $("#tableContent .dataTables_wrapper").css('display','none');
             $("#tableContent .tbcontainer").css('display','none');
             $(".layout-panel-center .panel-title").text("当前路径:");
@@ -210,19 +210,22 @@
 
         //点击保存
         $("#test3").click(function () {
-            // console.log($("#tableItemChose tbody td:nth-of-type(1) a"));
-            if(flag){
-                $("#hiddenValId").val(checkId);
-                $("#hiddenValName").val(checkName);
-                $(window.parent.document).find("#getValId").val(checkId);
-                $(window.parent.document).find("#getValName").val(checkName);
-
-                $(window.parent.document).find("#selectTem").val(checkName);
-
-                setTimeout(function () {
-                    closWin();
-                },800)
-            }
+            $.ajax({
+                type: "post",
+                url: "{:url('quality/element/addplan')}",
+                data: {
+                    division_id: $("#zTreeValId").val(),
+                    control_id:idArr,
+                    ma_division_id:$("#unitValId").val(),
+                },
+                success: function (res) {
+                    console.log(res);
+                    if(res.code ==1){
+                        parent.layer.msg("保存成功！")
+                        closWin();
+                    }
+                }
+            })
         });
     });
 

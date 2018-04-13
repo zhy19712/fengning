@@ -1,0 +1,415 @@
+<!--{include file="../app/public/common_header.html"}-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>丰宁BIM协同管理平台</title>
+    <link rel="stylesheet" href="__COMMONCSS__/app.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/ztree/css/metroStyle/metroStyle.css" />
+    <link rel="stylesheet" href="__PUBLIC__/easyui/easyui.css">
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__COMMONCSS__/admin.css" />
+    <link rel="stylesheet" href="__COMMONCSS__/themes/blue.css" media="all" id="skin" kit-skin />
+    <link rel="stylesheet" href="__PUBLIC__/datatables/css/jquery.dataTables.min.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/datatables/css/buttons.dataTables.min.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/webupload/webuploader.css" media="all" />
+    <link rel="stylesheet" href="__COMMONCSS__/common.css" />
+    <link rel="stylesheet" href="__COMMONJS__/datatable/datatable.css" />
+
+    <script src="__PUBLIC__/jquery/jquery.min.js"></script>
+    <script src="__PUBLIC__/layui/layui.js"></script>
+    <script src="__PUBLIC__/ztree/js/jquery.ztree.all.min.js"></script>
+    <script src="__PUBLIC__/easyui/jquery.easyui.min.js"></script>
+    <script src="__PUBLIC__/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="__PUBLIC__/datatables/js/dataTables.buttons.min.js"></script>
+    <script src="__PUBLIC__/datatables/js/dataTables.bootstrap.js"></script>
+    <script src="__PUBLIC__/webupload/webuploader.min.js"></script>
+    <script src="__COMMONJS__/array.js"></script>
+    <script src="__COMMONJS__/ztree.js"></script>
+    <script src="__COMMONJS__/datatable/datatables.js"></script>
+    <script src="__COMMONJS__/nodes.js"></script>
+    <script src="__COMMONJS__/upload.js"></script>
+    <script src="__COMMONJS__/formlayer.js"></script>
+    <script src="__COMMONJS__/download.js"></script>
+
+</head>
+<style>
+    #division .ztree,#unitWork .ztree{
+        height: 100%;
+        padding-bottom: 5px;
+    }
+    #division #ztree,#unitWork #ztreeUnit{
+        margin-top: 0px;
+    }
+    .dataTables_wrapper, .tbcontainer,#tableContent .imgList {
+        display: none;
+    }
+    #tableContent .mybtn i.fa:before{
+        background: #00c0ef;
+        color: #ffffff;
+    }
+    #tableContent .mybtn{
+        float: right;
+        background-color: #00c0ef;
+    }
+    #tableContent .mybtn{
+        margin-right: 0.5%;
+        margin-bottom: 5px;
+    }
+    #tableContent table.dataTable.no-footer {
+        border-top: 1px dotted;
+    }
+    #tableContent #tableItem_filter {
+        float: left;
+        margin-left: 1%;
+    }
+    #tableContent .select-color {
+        background-color: #FDD5B5 !important;
+    }
+    #tableContent .dataTables_wrapper .dataTables_scroll {
+        position: relative;
+        top: 15px;
+        border-top: 1px dotted #cecece;
+    }
+    #tableContent .even {
+        background-color: #ffffff;
+    }
+    #tableContent .odd {
+        background-color: #f9f9f9;
+    }
+    #tableContent .imgList {
+        border-top: 1px dotted;
+        border-bottom: 1px dotted;
+        padding: 5px 3px;
+
+    }
+    #tableContent .imgList img {
+        border-radius: 50%;
+    }
+    #tableContent .imgList span a {
+        color: #2213e9;
+    }
+    #tableContent .listName{
+        padding: .5% 0;
+        border-bottom: 1px dotted;
+        margin-bottom: 5px;
+    }
+    #tableContent .listName h3{
+        font-weight: 800;
+    }
+    .layui-layer-content {
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-bottom:15px;
+        padding-top: 0px;
+    }
+    .tabs-header, .tabs-tool {
+        background-color: white;
+        border-color:white;
+    }
+    .tabs li a.tabs-inner{
+        background:white;
+        border-color:#cecece;
+    }
+    .tabs-header, .tabs-scroller-left, .tabs-scroller-right, .tabs-tool, .tabs, .tabs-panels, .tabs li a.tabs-inner, .tabs li.tabs-selected a.tabs-inner, .tabs-header-bottom .tabs li.tabs-selected a.tabs-inner, .tabs-header-left .tabs li.tabs-selected a.tabs-inner, .tabs-header-right .tabs li.tabs-selected a.tabs-inner{
+        border-color:#cecece;
+    }
+</style>
+<body  class="easyui-layout">
+    <!--右边的工程划分-->
+    <div id="division" data-options="region:'west',title:'工程划分',split:true" style="width:240px;">
+        <div id="openNode"><button>+</button></div>
+        <ul class="ztree" id="ztree"></ul>
+    </div>
+    <!--左边的单元工-->
+    <div id="unitWork" data-options="region:'center'" style="background:#fff;">
+        <div class="easyui-layout" data-options="fit:true">
+            <div id="unitWorkOut" data-options="region:'west',title:'单元工',split:true" style="width:240px;">
+                <ul class="ztree" id="ztreeUnit"></ul>
+            </div>
+            <div id="unitWorkRight" data-options="region:'center'" style="background:#fff;">
+                <div class="easyui-layout" data-options="fit:true">
+                    <div id="tableContent" data-options="region:'north',title:'控制点',split:true" style="width:100%;height: 70%; position: relative;padding-top: 5px;">
+                        <div class="imgList">
+                            <img src="__WEBSITE__/elementimg/work.png" alt="工作">
+                            <span><a href="javascript:;">作业</a></span>
+                            <img src="__WEBSITE__/elementimg/right.png" alt="箭头">
+                            <img src="__WEBSITE__/elementimg/work.png" alt="工作">
+                            <span><a href="javascript:;">单元工程质量验评</a></span>
+                            <img src="__WEBSITE__/elementimg/right.png" alt="箭头">
+
+                        </div>
+                        <div class="listName" style="padding-left: 1.5%"><h3>已选择控制标准列表</h3></div>
+                        <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
+                            <thead>
+                            <tr>
+                                <th>控制点编号</th>
+                                <th>控制点名称</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <div class="tbcontainer">
+                            <div class="mark"></div>
+                        </div>
+                    </div>
+                    <div id="unitWorkRightBottom" data-options="region:'center',split:true">
+                        <div id="tt" class="easyui-tabs" style="width:100%;height: 100%;">
+                            <div title="控制点执行情况" style="padding:20px;">
+                                控制点执行情况
+                            </div>
+                            <div title="附件资料" style="padding:20px;">
+                                附件资料
+                            </div>
+                            <div title="在线填报" style="padding:20px;">
+                                在线填报
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<!--{include file="../app/public/common_footer.html"}-->
+<script type="text/javascript">
+
+    //组织结构表格
+    var tableItem = $('#tableItem').DataTable({
+        pagingType: "full_numbers",
+        processing: true,
+        serverSide: true,
+        ajax: {
+            "url": "{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="
+        },
+        dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
+        columns: [
+            {
+                name: "code"
+            },
+            {
+                name: "name"
+            },
+            {
+                name: "id"
+            }
+        ],
+        columnDefs: [
+            {
+                "targets":[0]
+            },
+            {
+                "targets": [1]
+            },
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [2],
+                "render": function (data, type, row) {
+                    var a = data;
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='编辑' class='fa fa-pencil'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    return html;
+                }
+            }
+        ],
+        language: {
+            "lengthMenu": "_MENU_",
+            "zeroRecords": "没有找到记录",
+            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+            "infoEmpty": "无记录",
+            "search": "搜索：",
+            "infoFiltered": "(从 _MAX_ 条记录过滤)",
+            "paginate": {
+                "sFirst": "<<",
+                "sPrevious": "<",
+                "sNext": ">",
+                "sLast": ">>"
+            }
+        },
+        "fnInitComplete": function (oSettings, json) {
+            $('#tableItem_length').insertBefore(".mark");
+            $('#tableItem_info').insertBefore(".mark");
+            $('#tableItem_paginate').insertBefore(".mark");
+        }
+    });
+
+    //点击上传文件
+    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
+
+    var layer = layui.layer;
+    //查询提交
+    layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer;
+    });
+
+    /*==========开始初始化工程划分树节点=============*/
+
+    var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
+
+    var setting = {
+        view: {
+            showLine: true, //设置 zTree 是否显示节点之间的连线。
+            selectedMulti: false //设置是否允许同时选中多个节点。
+        },
+        async: {
+            enable: true,
+            autoParam: ["pId"],
+            type: "post",
+            url: "{:url('quality/division/index')}",
+            dataType: "json"
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idkey: "id",
+                pIdKey: "pId",
+                rootPId: null
+            }
+        },
+        callback: {
+            onClick: this.nodeClick
+        }
+    };
+    zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
+
+    //点击获取路径
+    function nodeClick(e, treeId, node) {
+        // console.log(node);
+        selectData = "";
+        sNodes = zTreeObj.getSelectedNodes()[0];//选中节点
+        console.log(sNodes);
+        selfid = zTreeObj.getSelectedNodes()[0].id;//当前id
+        nodeName = zTreeObj.getSelectedNodes()[0].name;//当前name
+        nodePid = zTreeObj.getSelectedNodes()[0].pId;//当前pid
+        console.log(selfid + '---id');
+        console.log(nodeName + '---name');
+        console.log(nodePid + '---pid');
+        var path = sNodes.name; //选中节点的名字
+        node = sNodes.getParentNode();//获取父节点
+        if (node) {
+            //判断是否还有父节点
+            while (node) {
+                path = node.name + "-" + path;
+                node = node.getParentNode();
+            }
+        } else {
+            $(".layout-panel-center .panel-title").text(sNodes.name);
+        }
+        groupid = sNodes.pId ;//父节点的id
+        initData(selfid);
+    }
+
+    //全部展开
+    $('#openNode').click(function () {
+        zTreeObj.expandAll(true);
+    });
+
+    /*==========结束初始化 工程划分树节点 =============*/
+
+
+
+    /**==========开始初始化 单元工树 =================*/
+
+        //声明单元树的变量
+    var selfidUnit, nodeNameUnit, nodePidUnit, zTreeObjUnit, groupidUnit, sNodesUnit;
+
+    //名字拼接过滤方法
+    function ajaxDataFilter(treeId, parentNode, responseData) {
+        if (responseData) {
+            for(var i =0; i < responseData.length; i++) {
+                console.log(responseData[i]);
+                responseData[i].name = responseData[i].el_start + responseData[i].el_cease + responseData[i].pile_number + responseData[i].site;
+            }
+        }
+        return responseData;
+    };
+
+    //初始化数据的方法
+    function initData(selfid){
+        // console.log(selfid + '555');
+        var settingUnit = {
+            view: {
+                showLine: true, //设置 zTree 是否显示节点之间的连线。
+                selectedMulti: false //设置是否允许同时选中多个节点。
+            },
+            async: {
+                enable: true,
+                autoParam: ["pid"],
+                type: "post",
+                url: "{:url('quality/element/getDivisionUnitTree')}?id="+selfid,
+                dataType: "json",
+                dataFilter: ajaxDataFilter
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idkey: "id",
+                    pIdKey: "pid",
+                    rootPId: null
+                }
+            },
+            callback: {
+                onClick: this.nodeClickUnit
+            }
+        };
+        zTreeObjUnit = $.fn.zTree.init($("#ztreeUnit"), settingUnit, null);
+    }
+
+    //点击获取路径
+    function nodeClickUnit(e, treeId, node) {
+        // console.log(node);
+        selectData = "";
+        sNodesUnit = zTreeObjUnit.getSelectedNodes()[0];//选中节点
+        console.log(sNodesUnit);
+        selfidUnit = zTreeObjUnit.getSelectedNodes()[0].id;//当前id
+        nodeNameUnit = zTreeObjUnit.getSelectedNodes()[0].name;//当前name
+        nodePidUnit = zTreeObjUnit.getSelectedNodes()[0].pid;//当前pid
+        console.log(selfidUnit + '---id');
+        console.log(nodeNameUnit + '---name');
+        console.log(nodePidUnit + '---pid');
+        var path = sNodesUnit.name; //选中节点的名字
+        node = sNodesUnit.getParentNode();//获取父节点
+        if (node) {
+            //判断是否还有父节点
+            while (node) {
+                path = node.name + "-" + path;
+                node = node.getParentNode();
+            }
+        } else {
+            // $(".layout-panel-center .panel-title").text(sNodesUnit.name);
+        }
+        groupidUnit = sNodesUnit.pId ;//父节点的id
+        tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfidUnit).load();
+        $("#tableContent .dataTables_wrapper").css('display','block');
+        $("#tableContent .tbcontainer").css('display','block');
+        $("#tableContent .imgList").css('display','block');
+    }
+
+    /**==========结束初始化 单元工树 =============*/
+
+
+    //点击新增控制节点
+    $(".mybtn #test3").click(function () {
+        layer.open({
+            type: 2,
+            title: '控制点选择',
+            shadeClose: true,
+            area: ['980px', '673px'],
+            content: '{:url("addplan")}',
+            // success: function(layero, index){
+            //     var body = layer.getChildFrame('body', index);
+            //     body.find("#denId").val(procedureId);
+            // },
+            // end:function () {
+            //     tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
+            // }
+        });
+    });
+
+</script>
+</html>
