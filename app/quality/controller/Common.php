@@ -893,12 +893,9 @@ class Common extends Controller
         $recordsFilteredResult = array();
         $par = array();
         $par['type'] = 1;
-        $par['division_id'] = $this->request->param('division');
+        $par['division_id'] = $this->request->param('division_id');
         if ($this->request->has('ma_division_id')) {
             $par['ma_division_id'] = $this->request->param('ma_division_id');
-        }
-        if (!empty($TrackingDivision)) {
-            $par['ma_division_id'] = $TrackingDivision;
         }
         //表的总记录数 必要
         $recordsTotal = Db::name($table)->where($par)->count();
