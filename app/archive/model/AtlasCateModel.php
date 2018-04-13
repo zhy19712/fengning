@@ -154,9 +154,9 @@ class AtlasCateModel extends Model
     /*
      * 查询该图册下的所有的文件路径
      */
-    public function  getallpath($id)
+    public function  getallattachmentId($id)
     {
-        $data = $this->field("path")->where("pid",$id)->select();
+        $data = $this->field("attachmentId")->where("pid",$id)->select();
 
         return $data;
     }

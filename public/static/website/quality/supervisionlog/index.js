@@ -105,7 +105,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
         done:function (res) {
             $.ajax({
                 type:"post",
-                data:{path:res.src},
+                data:{attachment_id:res.id},
                 url:"./add",
                 dataType:"json",
                 success:function (res) {
@@ -216,7 +216,7 @@ function download(id,url) {
         url: url,
         type:"post",
         dataType: "json",
-        data:{id:id},
+        data:{id:id,type_model : type_model},
         success: function (res) {
             if(res.code != 1){
                 layer.msg(res.msg);
@@ -228,6 +228,7 @@ function download(id,url) {
                     + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
                     + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                     + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                    + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                     + "<button type='submit' class=btn" + id +"></button>"
                     + "</form>"
                 $("#form_container").append(str);
@@ -239,14 +240,14 @@ function download(id,url) {
 }
 function conDown(id) {
 
-    download(id,"./download")
+    download(id,"../Common/download")
 }
 //预览
 function showPdf(id,url) {
     $.ajax({
         url: url,
         type: "post",
-        data: {id:id},
+        data: {id:id,type_model : type_model},
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
@@ -281,7 +282,7 @@ function showPdf(id,url) {
 }
 //预览
 function conPicshow(id){
-    showPdf(id,'./preview')
+    showPdf(id,'../Common/preview')
 
 }
 //设置位置

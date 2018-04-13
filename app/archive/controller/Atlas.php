@@ -244,53 +244,44 @@ class Atlas extends Permissions
      */
     public function delCateone()
     {
-
-            if(request()->isAjax()) {
+            if(request()->isAjax()){
                 $param = input('post.');
-
                 //实例化model类型
                 $model = new AtlasCateModel();
 
                 //首先判断一下删除的该图册是否存在下级
-
                 $info = $model ->judge($param['id']);
-
                 if(empty($info))//没有下级直接删除
                 {
                     $data = $model->getOne($param['id']);
-
-                    //先删除图片
-                    $path = "." .$data['path'];
-                    $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-
-                    if(file_exists($path)){
-                        unlink($path); //删除文件图片
-                    }
-
-                    if(file_exists($pdf_path)){
-                        unlink($pdf_path); //删除生成的预览pdf
-                    }
-
-                    $flag = $model->delCate($param['id']);
-                    //清除下载记录
-                    $down = new AtlasDownloadModel();
-                    $flag1 = $down->deldownloadall($param['id']);
-
-                    if($flag1 || $flag)
+                    if($data["attachmentId"])
                     {
-                        return $flag;
-                    }
+                        //先删除图片
+                        //查询attachment表中的文件上传路径
+                        $attachment = Db::name("attachment")->where("id",$data["attachmentId"])->find();
+                        $path = "." .$attachment['filepath'];
+                        $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
 
+                        if(file_exists($path)){
+                            unlink($path); //删除文件图片
+                        }
+
+                        if(file_exists($pdf_path)){
+                            unlink($pdf_path); //删除生成的预览pdf
+                        }
+
+                        //清除下载记录
+                        $down = new AtlasDownloadModel();
+                        $down->deldownloadall($param['id']);
+                    }
+                    $flag = $model->delCate($param['id']);
+                    return $flag;
                 }else
                 {
                     return ['code' => -1, 'msg' => '当前图册下已有图纸，请先删除图纸！'];
                 }
 
-            }else
-            {
-                return $this->fetch();
             }
-
     }
 
     /**
@@ -316,7 +307,6 @@ class Atlas extends Permissions
                     'completion_date' => date("Y-m"),//完成日期
                     'paper_category' => $info['paper_category'],//图纸类别
                     'owner' => Session::get('current_nickname'),//上传人
-                    'path' => $param['path'],//图片路径
                     'filename' => $param['filename'],
                     'date' => date("Y-m-d")//上传日期
                 ];
@@ -356,7 +346,9 @@ class Atlas extends Permissions
             $msg = '预览成功';
             $data = $model->getOne($param['id']);
 
-            $path = $data['path'];
+            //查询attachment表中的文件上传路径
+            $attachment = Db::name("attachment")->where("id",$data["attachmentId"])->find();
+            $path = "." .$attachment['filepath'];
 
             $extension = strtolower(get_extension(substr($path,1)));
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
@@ -393,7 +385,11 @@ class Atlas extends Permissions
             $model = new AtlasCateModel();
             //查看文件路径是否存在
             $param = $model->getOne($id);
-            if(!$param['path'] || !file_exists("." .$param['path'])){
+            //查询attachment文件上传表中的文件上传路径
+            $attachment = Db::name("attachment")->where("id", $param["attachmentId"])->find();
+            //上传文件路径
+            $path = $attachment["filepath"];
+            if(!$path || !file_exists("." .$path)){
                 return json(['code' => '-1','msg' => '文件不存在']);
             }
             //查询当前用户是否被禁用下载图册
@@ -427,8 +423,12 @@ class Atlas extends Permissions
 
         $download->insertDownload($data);
 
-        // 前台需要 传递 文件编号 id
-            $filePath = '.' . $param['path'];
+            // 前台需要 传递 文件编号 id
+            //查询attachment文件上传表中的文件上传路径
+            $attachment = Db::name("attachment")->where("id", $param["attachmentId"])->find();
+            //上传文件路径
+            $path = $attachment["filepath"];
+            $filePath = '.' . $path;
             $fileName = $param['filename'];
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
@@ -503,20 +503,33 @@ class Atlas extends Permissions
         ];
 
         $download->insertDownload($data);
+        //实例化模型类
         $model = new AtlasCateModel();
-        $datalist = $model->getallpath($id);
+        $allattachmentId = $model->getallattachmentId($id);
+        //定义一个空数组
+        $datalist = array();
+        foreach($allattachmentId as $k=>$v)
+        {
+            //查询attachment文件上传表中的文件上传路径
+            $attachment = Db::name("attachment")->where("id", $v["attachmentId"])->find();
+            //上传文件路径
+            $datalist[] = $attachment;
+
+        }
+
         $zip = new \ZipArchive;
         //压缩文件名
         $zipName = './uploads/atlas/atlas_thumb/download.zip';
 
         //新建zip压缩包
         if ($zip->open($zipName, \ZIPARCHIVE::CREATE)==TRUE) {
+
             foreach($datalist as $key=>$val){
                 //$attachfile = $attachmentDir . $val['filepath']; //获取原始文件路径
-                if(file_exists('.'.$val['path'])){
+                if(file_exists('.'.$val['filepath'])){
                     //addFile函数首个参数如果带有路径，则压缩的文件里包含的是带有路径的文件压缩
                     //若不希望带有路径，则需要该函数的第二个参数
-                    $zip->addFile('.'.$val['path'], basename('.'.$val['path']));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                    $zip->addFile('.'.$val['filepath'], basename('.'.$val['filepath']));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
                 }
             }
         }

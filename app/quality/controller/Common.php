@@ -198,7 +198,10 @@ class Common extends Controller
         if (request()->isAjax()) {
             $id = input('param.id');//id
             $type_model = input('param.type_model');//model类名
-            $model = new $type_model();
+            //拼接model类的地址
+            $type_model = "app\\quality\\model\\".$type_model;
+            //实例化model类
+            $model = new $type_model;
             $param = $model->getOne($id);
             //查询attachment文件上传表中的文件上传路径
             $attachment = Db::name("attachment")->where("id", $param["attachment_id"])->find();
@@ -210,7 +213,11 @@ class Common extends Controller
             return json(['code' => 1]);
         }
         $id = input('param.id');
+
         $type_model = input('param.type_model');//model类名
+        //拼接model类的地址
+        $type_model = "app\\quality\\model\\".$type_model;
+        //实例化model类
         $model = new $type_model();
         $param = $model->getOne($id);
         //查询attachment文件上传表中的文件上传路径
@@ -243,6 +250,9 @@ class Common extends Controller
         if (request()->isAjax()) {
             $param = input('post.');
             $type_model = input('param.type_model');//model类名
+            //拼接model类的地址
+            $type_model = "app\\quality\\model\\".$type_model;
+            //实例化model类
             $model = new $type_model();
             $code = 1;
             $msg = '预览成功';
