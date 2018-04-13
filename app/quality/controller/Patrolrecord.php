@@ -16,6 +16,7 @@ use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
 use app\quality\model\PatrolRecordModel;//巡视记录模型
 use \think\Session;
+use think\Db;
 
 class Patrolrecord extends Permissions
 {
@@ -278,7 +279,9 @@ class Patrolrecord extends Permissions
             }
 
             //最后删除这条巡视记录信息
-            $path = "." .$data_info['path'];
+            //查询attachment表中的文件上传路径
+            $attachment = Db::name("attachment")->where("id",$data_info["attachment_id"])->find();
+            $path = "." .$attachment['filepath'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(file_exists($path)){
                 unlink($path); //删除上传的图片或文件
