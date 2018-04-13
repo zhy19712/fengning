@@ -105,7 +105,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
         done:function (res) {
           $.ajax({
               type:"post",
-              data:{path:res.src},
+              data:{attachment_id:res.id},
               url:"./addPicture",
               dataType:"json",
               success:function (res) {
@@ -216,7 +216,7 @@ function download(id,url) {
         url: url,
         type:"post",
         dataType: "json",
-        data:{id:id},
+        data:{id:id,type_model:"ScenePictureModel"},
         success: function (res) {
             if(res.code != 1){
                 layer.msg(res.msg);
@@ -239,7 +239,7 @@ function download(id,url) {
 }
 function conDown(id) {
 
-    download(id,"./downloadPicture")
+    download(id,"../Common/download")
 }
 //预览
 function showPdf(id,url) {

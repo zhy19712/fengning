@@ -98,7 +98,7 @@ class Element extends Permissions
     }
 
     /**
-     * 获取检验批列表
+     * 获取工序列表
      * @param $id
      * @return \think\response\Json
      * @throws \think\exception\DbException
