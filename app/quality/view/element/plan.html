@@ -46,8 +46,11 @@
     #division #ztree,#unitWork #ztreeUnit{
         margin-top: 0px;
     }
-    .dataTables_wrapper, .tbcontainer,#tableContent .imgList,#tableContent #tableItem {
-        display: none;
+    /*.dataTables_wrapper, .tbcontainer,#tableContent .imgList,#tableContent #tableItem {*/
+        /*display: none;*/
+    /*}*/
+    .dataTables_wrapper, .tbcontainer {
+        display: block;
     }
     #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before,#tableContent .alldel i.fa:before{
         background: #00c0ef;
@@ -164,6 +167,7 @@
 <!--{include file="../app/public/common_footer.html"}-->
 <script type="text/javascript">
 
+    tableFun();
     var layer = layui.layer;
     //查询提交
     layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
