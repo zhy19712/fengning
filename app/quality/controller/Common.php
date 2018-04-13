@@ -40,9 +40,9 @@ class Common extends Controller
         $order_dir = $this->request->param('order/a')['0']['dir'];
 
         $order = "";
-        if(isset($order_column)){
+        if (isset($order_column)) {
             $i = intval($order_column);
-            $order = $columns[$i]['name'].' '.$order_dir;
+            $order = $columns[$i]['name'] . ' ' . $order_dir;
         }
         //搜索
         //获取前台传过来的过滤条件
@@ -50,12 +50,12 @@ class Common extends Controller
         //分页
         $start = $this->request->has('start') ? $this->request->param('start', 0, 'intval') : 0;
         $length = $this->request->has('length') ? $this->request->param('length', 0, 'intval') : 0;
-        $limitFlag = isset($start) && $length != -1 ;
+        $limitFlag = isset($start) && $length != -1;
         //新建的方法名与数据库表名保持一致
-        return $this->$table($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString);
+        return $this->$table($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString);
     }
 
-    public function archive_atlas_cate($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function archive_atlas_cate($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
@@ -63,23 +63,23 @@ class Common extends Controller
         $recordsFilteredResult = array();
         //表的总记录数 必要
         $recordsTotal = Db::name($table)->count();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('picture_number,picture_name,picture_papaer_num,a1_picture,design_name,check_name,examination_name,completion_date,section,paper_category,id')
                     ->where($columnString, 'like', '%' . $search . '%')
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('picture_number,picture_name,picture_papaer_num,a1_picture,design_name,check_name,examination_name,completion_date,section,paper_category,id')
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -96,33 +96,33 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
-    public function quality_unit($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function quality_unit($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->where('division_id',$id)->count();
-        if(strlen($search)>0){
+        $recordsTotal = Db::name($table)->where('division_id', $id)->count();
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('serial_number,site,coding,hinge,pile_number,start_date,completion_date,id')
-                    ->where('division_id',$id)
+                    ->where('division_id', $id)
                     ->where($columnString, 'like', '%' . $search . '%')
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('serial_number,site,coding,hinge,pile_number,start_date,completion_date,id')
-                    ->where('division_id',$id)
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->where('division_id', $id)
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -196,7 +196,7 @@ class Common extends Controller
      */
     public function download()
     {
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $id = input('param.id');//id
             $type_model = input('param.type_model');//model类名
             //拼接model类的地址
@@ -204,11 +204,11 @@ class Common extends Controller
             $model = new $type_model;
             $param = $model->getOne($id);
             //查询attachment文件上传表中的文件上传路径
-            $attachment = Db::name("attachment")->where("id",$param["attachment_id"])->find();
+            $attachment = Db::name("attachment")->where("id", $param["attachment_id"])->find();
             //上传文件路径
             $path = $attachment["filepath"];
-            if(!$path || !file_exists("." .$path)){
-                return json(['code' => '-1','msg' => '文件不存在']);
+            if (!$path || !file_exists("." . $path)) {
+                return json(['code' => '-1', 'msg' => '文件不存在']);
             }
             return json(['code' => 1]);
         }
@@ -219,7 +219,7 @@ class Common extends Controller
         $model = new $type_model();
         $param = $model->getOne($id);
         //查询attachment文件上传表中的文件上传路径
-        $attachment = Db::name("attachment")->where("id",$param["attachment_id"])->find();
+        $attachment = Db::name("attachment")->where("id", $param["attachment_id"])->find();
         //上传文件路径
         $path = $attachment["filepath"];
 
@@ -227,7 +227,7 @@ class Common extends Controller
         $fileName = $param['filename'];
         $file = fopen($filePath, "r"); //   打开文件
         //输入文件标签
-        $fileName = iconv("utf-8","gb2312",$fileName);
+        $fileName = iconv("utf-8", "gb2312", $fileName);
         Header("Content-type:application/octet-stream ");
         Header("Accept-Ranges:bytes ");
         Header("Accept-Length:   " . filesize($filePath));
@@ -245,7 +245,7 @@ class Common extends Controller
      */
     public function preview()
     {
-        if(request()->isAjax()) {
+        if (request()->isAjax()) {
             $param = input('post.');
             $type_model = input('param.type_model');//model类名
             $model = new $type_model();
@@ -253,32 +253,32 @@ class Common extends Controller
             $msg = '预览成功';
             $data = $model->getOne($param['id']);
             //查询attachment文件上传表中的文件上传路径
-            $attachment = Db::name("attachment")->where("id",$data["attachment_id"])->find();
+            $attachment = Db::name("attachment")->where("id", $data["attachment_id"])->find();
             //上传文件路径
             $path = $attachment["filepath"];
-            if(!$path || !file_exists("." .$path)){
-                return json(['code' => '-1','msg' => '文件不存在']);
+            if (!$path || !file_exists("." . $path)) {
+                return json(['code' => '-1', 'msg' => '文件不存在']);
             }
-            $extension = strtolower(get_extension(substr($path,1)));
+            $extension = strtolower(get_extension(substr($path, 1)));
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-            if(!file_exists($pdf_path)){
-                if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
+            if (!file_exists($pdf_path)) {
+                if ($extension === 'doc' || $extension === 'docx' || $extension === 'txt') {
                     doc_to_pdf($path);
-                }else if($extension === 'xls' || $extension === 'xlsx'){
+                } else if ($extension === 'xls' || $extension === 'xlsx') {
                     excel_to_pdf($path);
-                }else if($extension === 'ppt' || $extension === 'pptx'){
+                } else if ($extension === 'ppt' || $extension === 'pptx') {
                     ppt_to_pdf($path);
-                }else if($extension === 'pdf'){
+                } else if ($extension === 'pdf') {
                     $pdf_path = $path;
-                }else if($extension === "jpg" || $extension === "png" || $extension === "jpeg"){
+                } else if ($extension === "jpg" || $extension === "png" || $extension === "jpeg") {
                     $pdf_path = $path;
-                }else {
+                } else {
                     $code = 0;
                     $msg = '不支持的文件格式';
                 }
-                return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }else{
-                return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
+                return json(['code' => $code, 'path' => substr($pdf_path, 1), 'msg' => $msg]);
+            } else {
+                return json(['code' => $code, 'path' => substr($pdf_path, 1), 'msg' => $msg]);
             }
         }
     }
@@ -300,45 +300,44 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function quality_scene_picture($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function quality_scene_picture($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
-        $year = input('year')?input('year'):"";//年
-        $month = input('month')?input('month'):"";//月
-        $day = input('day')?input('day'):"";//日
+        $year = input('year') ? input('year') : "";//年
+        $month = input('month') ? input('month') : "";//月
+        $day = input('day') ? input('day') : "";//日
 
-        $admin_group_id = input('admin_group_id')?input('admin_group_id'):"";
-        if($admin_group_id)
-        {
+        $admin_group_id = input('admin_group_id') ? input('admin_group_id') : "";
+        if ($admin_group_id) {
             $group_data = [
                 "admin_group_id" => $admin_group_id
             ];
-        }else{
+        } else {
             $group_data = [
             ];
         }
 
 
-        if(!$year && !$month && !$day)//如果年月日都不存在
+        if (!$year && !$month && !$day)//如果年月日都不存在
         {
             $search_data = [
             ];
-        }else if($year && $month && $day)//如果年月日都存在
+        } else if ($year && $month && $day)//如果年月日都存在
         {
             $search_data = [
                 "year" => $year,
                 "month" => $month,
                 "day" => $day
             ];
-        }else if($year && !$month && !$day)//如果年都存在
+        } else if ($year && !$month && !$day)//如果年都存在
         {
             $search_data = [
                 "year" => $year
             ];
-        }else if($year && $month && !$day)//如果年月都存在
+        } else if ($year && $month && !$day)//如果年月都存在
         {
             $search_data = [
                 "year" => $year,
@@ -351,17 +350,17 @@ class Common extends Controller
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->where($search_data)->where($group_data)->where("admin_group_id > 0")->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($group_data)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($group_data)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($group_data)->order($order)->limit(intval($start),intval($length))->select();
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($group_data)->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -400,33 +399,33 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function quality_supervision_log($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function quality_supervision_log($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
-        $year = input('year')?input('year'):"";//年
-        $month = input('month')?input('month'):"";//月
-        $day = input('day')?input('day'):"";//日
+        $year = input('year') ? input('year') : "";//年
+        $month = input('month') ? input('month') : "";//月
+        $day = input('day') ? input('day') : "";//日
 
-        if(!$year && !$month && !$day)//如果年月日都不存在
+        if (!$year && !$month && !$day)//如果年月日都不存在
         {
             $search_data = [
             ];
-        }else if($year && $month && $day)//如果年月日都存在
+        } else if ($year && $month && $day)//如果年月日都存在
         {
             $search_data = [
                 "year" => $year,
                 "month" => $month,
                 "day" => $day
             ];
-        }else if($year && !$month && !$day)//如果年都存在
+        } else if ($year && !$month && !$day)//如果年都存在
         {
             $search_data = [
                 "year" => $year
             ];
-        }else if($year && $month && !$day)//如果年月都存在
+        } else if ($year && $month && !$day)//如果年月都存在
         {
             $search_data = [
                 "year" => $year,
@@ -439,17 +438,17 @@ class Common extends Controller
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id > 0")->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start),intval($length))->select();
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -488,33 +487,33 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function quality_patrol_record($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function quality_patrol_record($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
-        $year = input('year')?input('year'):"";//年
-        $month = input('month')?input('month'):"";//月
-        $day = input('day')?input('day'):"";//日
+        $year = input('year') ? input('year') : "";//年
+        $month = input('month') ? input('month') : "";//月
+        $day = input('day') ? input('day') : "";//日
 
-        if(!$year && !$month && !$day)//如果年月日都不存在
+        if (!$year && !$month && !$day)//如果年月日都不存在
         {
             $search_data = [
             ];
-        }else if($year && $month && $day)//如果年月日都存在
+        } else if ($year && $month && $day)//如果年月日都存在
         {
             $search_data = [
                 "year" => $year,
                 "month" => $month,
                 "day" => $day
             ];
-        }else if($year && !$month && !$day)//如果年都存在
+        } else if ($year && !$month && !$day)//如果年都存在
         {
             $search_data = [
                 "year" => $year
             ];
-        }else if($year && $month && !$day)//如果年月都存在
+        } else if ($year && $month && !$day)//如果年月都存在
         {
             $search_data = [
                 "year" => $year,
@@ -527,17 +526,17 @@ class Common extends Controller
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id > 0")->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start),intval($length))->select();
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -576,33 +575,33 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function quality_side_reporting($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function quality_side_reporting($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
-        $year = input('year')?input('year'):"";//年
-        $month = input('month')?input('month'):"";//月
-        $day = input('day')?input('day'):"";//日
+        $year = input('year') ? input('year') : "";//年
+        $month = input('month') ? input('month') : "";//月
+        $day = input('day') ? input('day') : "";//日
 
-        if(!$year && !$month && !$day)//如果年月日都不存在
+        if (!$year && !$month && !$day)//如果年月日都不存在
         {
             $search_data = [
             ];
-        }else if($year && $month && $day)//如果年月日都存在
+        } else if ($year && $month && $day)//如果年月日都存在
         {
             $search_data = [
                 "year" => $year,
                 "month" => $month,
                 "day" => $day
             ];
-        }else if($year && !$month && !$day)//如果年都存在
+        } else if ($year && !$month && !$day)//如果年都存在
         {
             $search_data = [
                 "year" => $year
             ];
-        }else if($year && $month && !$day)//如果年月都存在
+        } else if ($year && $month && !$day)//如果年月都存在
         {
             $search_data = [
                 "year" => $year,
@@ -615,17 +614,17 @@ class Common extends Controller
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id > 0")->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start),intval($length))->select();
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -664,33 +663,33 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function quality_sampling($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function quality_sampling($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
-        $year = input('year')?input('year'):"";//年
-        $month = input('month')?input('month'):"";//月
-        $day = input('day')?input('day'):"";//日
+        $year = input('year') ? input('year') : "";//年
+        $month = input('month') ? input('month') : "";//月
+        $day = input('day') ? input('day') : "";//日
 
-        if(!$year && !$month && !$day)//如果年月日都不存在
+        if (!$year && !$month && !$day)//如果年月日都不存在
         {
             $search_data = [
             ];
-        }else if($year && $month && $day)//如果年月日都存在
+        } else if ($year && $month && $day)//如果年月日都存在
         {
             $search_data = [
                 "year" => $year,
                 "month" => $month,
                 "day" => $day
             ];
-        }else if($year && !$month && !$day)//如果年都存在
+        } else if ($year && !$month && !$day)//如果年都存在
         {
             $search_data = [
                 "year" => $year
             ];
-        }else if($year && $month && !$day)//如果年月都存在
+        } else if ($year && $month && !$day)//如果年月都存在
         {
             $search_data = [
                 "year" => $year,
@@ -703,17 +702,17 @@ class Common extends Controller
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id > 0")->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start),intval($length))->select();
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -752,33 +751,33 @@ class Common extends Controller
      * @throws \think\exception\DbException
      */
 
-    public function quality_supervision_instruction($id,$draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function quality_supervision_instruction($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
-        $year = input('year')?input('year'):"";//年
-        $month = input('month')?input('month'):"";//月
-        $day = input('day')?input('day'):"";//日
+        $year = input('year') ? input('year') : "";//年
+        $month = input('month') ? input('month') : "";//月
+        $day = input('day') ? input('day') : "";//日
 
-        if(!$year && !$month && !$day)//如果年月日都不存在
+        if (!$year && !$month && !$day)//如果年月日都不存在
         {
             $search_data = [
             ];
-        }else if($year && $month && $day)//如果年月日都存在
+        } else if ($year && $month && $day)//如果年月日都存在
         {
             $search_data = [
                 "year" => $year,
                 "month" => $month,
                 "day" => $day
             ];
-        }else if($year && !$month && !$day)//如果年都存在
+        } else if ($year && !$month && !$day)//如果年都存在
         {
             $search_data = [
                 "year" => $year
             ];
-        }else if($year && $month && !$day)//如果年月都存在
+        } else if ($year && $month && !$day)//如果年月都存在
         {
             $search_data = [
                 "year" => $year,
@@ -791,17 +790,17 @@ class Common extends Controller
         $recordsTotal = 0;
         $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id > 0")->count(0);
         $recordsFilteredResult = array();
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start),intval($length))->select();
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -825,13 +824,13 @@ class Common extends Controller
 
 
     // ht 单位质量管理 单位策划，单位管控 控制点列表
-    public function unit_quality_control($id,$draw,$table,$search,$start,$length,$limitFlag,$order,$columns,$columnString)
+    public function unit_quality_control($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
-        if(!stristr($id,'-')){
+        if (!stristr($id, '-')) {
             return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
         }
         // 前台 传递 id 的 时候 注意一下  把 左侧的 节点 add_id 和 当前 点击的 工序 编号 以 - 组合到一起
-        $idArr = explode('-',$id);
+        $idArr = explode('-', $id);
         $division_id = $idArr[0]; // 这里存放 工程划分 单位工程编号
         $id = $idArr[1]; // 工序编号
         $table = 'controlpoint';
@@ -840,41 +839,41 @@ class Common extends Controller
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        if($id==0){ // 等于0 说明是 作业 那就获取全部的 控制点 注意 这里不包含 单位策划里 追加的 关系数据
-            $id = Db::name('materialtrackingdivision')->where(['type'=>3,'cat'=>2])->column('id'); // 标准库单元工程下 所有的工序编号
-            $recordsTotal = Db::name($table)->whereIn('procedureid',$id)->count();
+        if ($id == 0) { // 等于0 说明是 作业 那就获取全部的 控制点 注意 这里不包含 单位策划里 追加的 关系数据
+            $id = Db::name('materialtrackingdivision')->where(['type' => 3, 'cat' => 2])->column('id'); // 标准库单元工程下 所有的工序编号
+            $recordsTotal = Db::name($table)->whereIn('procedureid', $id)->count();
             $new_control = '';
             $where_val = 'whereIn';
-        }else{
-            $recordsTotal = Db::name($table)->where('procedureid',$id)->count();
+        } else {
+            $recordsTotal = Db::name($table)->where('procedureid', $id)->count();
             // 合并 单位策划里 后来 添加的控制点
             // 注意 ：这里的控制点是
             // 存在于 quality_division_controlpoint_relation 单位质量管理 对应关系表里的 所以即使和 其他 工序下 的控制点重复也是正常的
-            $new_control = Db::name('quality_division_controlpoint_relation')->where(['division_id'=>$division_id,'type'=>0,'ma_division_id'=>$id])->column('control_id');
+            $new_control = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->column('control_id');
             $recordsTotal = $recordsTotal + sizeof($new_control);
             $where_val = 'where';
         }
-        if(strlen($search)>0){
+        if (strlen($search) > 0) {
             //有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('code,name,id')
-                    ->$where_val('procedureid',$id)
+                    ->$where_val('procedureid', $id)
                     ->where($columnString, 'like', '%' . $search . '%')
-                    ->whereOr('id','IN',$new_control)
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->whereOr('id', 'IN', $new_control)
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
-        }else{
+        } else {
             //没有搜索条件的情况
-            if($limitFlag){
+            if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
                     ->field('code,name,id')
-                    ->$where_val('procedureid',$id)
-                    ->whereOr('id','IN',$new_control)
-                    ->order($order)->limit(intval($start),intval($length))->select();
+                    ->$where_val('procedureid', $id)
+                    ->whereOr('id', 'IN', $new_control)
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -899,10 +898,9 @@ class Common extends Controller
         $recordsFilteredResult = array();
         $par = array();
         $par['type'] = 1;
-        $par['division_id'] = $this->request->has('division') ? $this->request->param('division') : "";
-        $par['ma_division_id'] = $this->request->has('ma_division_id') ? $this->request->param('ma_division_id') : "";
-        if (!empty($TrackingDivision)) {
-            $par['ma_division_id'] = $TrackingDivision;
+        $par['division_id'] = $this->request->param('division_id');
+        if ($this->request->has('ma_division_id')) {
+            $par['ma_division_id'] = $this->request->param('ma_division_id');
         }
         //表的总记录数 必要
         $recordsTotal = Db::name($table)->where($par)->count();
@@ -911,7 +909,7 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->join('controlpoint b','a.control_id=b.id','left')
+                    ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -921,7 +919,7 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->join('controlpoint b','a.control_id=b.id','left')
+                    ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
