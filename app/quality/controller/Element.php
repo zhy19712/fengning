@@ -109,20 +109,20 @@ class Element extends Permissions
     }
 
     /**
-     * 获取控制点
-     * @param $Division 检验批
-     * @param null $TrackingDivision 工序
+     * 删除控制点
+     * @param $id
      * @return \think\response\Json
-     * @throws \think\exception\DbException
      */
-    public
-    function getControl($Division, $TrackingDivision = null)
+    public function delControlPointRelation($id)
     {
-        $par['type'] = 1;
-        $par['division_id'] = $Division;
-        if (!empty($TrackingDivision)) {
-            $par['ma_division_id'] = $TrackingDivision;
+        $mod = DivisionControlPointModel::get($id);
+        if ($mod['status'] == 1) {
+            return json(['code' => -1, 'msg' => '控制点已执行']);
         }
-        return json($this->divisionControlPointService->with('ControlPoint')->where($par));
+        if ($mod->delete()) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
     }
 }
