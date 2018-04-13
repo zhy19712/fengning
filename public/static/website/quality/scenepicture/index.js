@@ -212,11 +212,12 @@ function conDel(id){
 //下载
 function download(id,url) {
     var url1 = url;
+    var type_model = "ScenePictureModel";
     $.ajax({
         url: url,
         type:"post",
         dataType: "json",
-        data:{id:id,type_model:"ScenePictureModel"},
+        data:{id:id,type_model:type_model},
         success: function (res) {
             if(res.code != 1){
                 layer.msg(res.msg);
@@ -228,6 +229,7 @@ function download(id,url) {
                     + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
                     + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                     + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                    + "<input class='file_url' style='display: none;' name='type_model' value="+ type_model +">"
                     + "<button type='submit' class=btn" + id +"></button>"
                     + "</form>"
                 $("#form_container").append(str);
