@@ -797,6 +797,54 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
+    public function quality_division_controlpoint_relation($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        $par = array();
+        $par['type'] = 1;
+        $par['division_id'] = $this->request->has('division') ? $this->request->param('division') : "";
+        $par['ma_division_id'] = $this->request->has('ma_division_id') ? $this->request->param('ma_division_id') : "";
+        if (!empty($TrackingDivision)) {
+            $par['ma_division_id'] = $TrackingDivision;
+        }
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->where($par)->count();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('controlpoint b','a.control_id=b.id','left')
+                    ->where($par)
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('controlpoint b','a.control_id=b.id','left')
+                    ->where($par)
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
 
 
 }
