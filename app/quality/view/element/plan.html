@@ -11,17 +11,16 @@
     .dataTables_wrapper, .tbcontainer,#tableContent .imgList,#tableContent #tableItem {
         display: none;
     }
-    #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before{
+    #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before,#tableContent .alldel i.fa:before{
         background: #00c0ef;
         color: #ffffff;
     }
-    #tableContent .mybtn,#tableContent .bitCodes{
+    #tableContent .mybtn,#tableContent .bitCodes,#tableContent .alldel{
         float: right;
         background-color: #00c0ef;
     }
-    #tableContent .mybtn,#tableContent .bitCodes{
+    #tableContent .mybtn,#tableContent .bitCodes,#tableContent .alldel{
         margin-right: 0.5%;
-        margin-bottom: 5px;
     }
     #tableContent table.dataTable.no-footer {
         border-top: 1px dotted;
@@ -35,7 +34,7 @@
     }
     #tableContent .dataTables_wrapper .dataTables_scroll {
         position: relative;
-        top: 15px;
+        top: 6px;
         border-top: 1px dotted #cecece;
     }
     #tableContent .even {
@@ -48,6 +47,9 @@
         border-top: 1px dotted;
         border-bottom: 1px dotted;
         padding: 5px 3px;
+    }
+    #tableContent .imgList #homeWork {
+        margin-right:3px;
     }
     #tableContent .imgList img {
         border-radius: 50%;
@@ -95,9 +97,8 @@
 
 <div id="tableContent" data-options="region:'east',title:'控制点',split:true" style="width:1255px; position: relative;padding-top: 5px;">
     <div class="imgList">
-        <span class="imgListStyle" id="imgListLeft">
-            <img src="__WEBSITE__/elementimg/work.png" alt="工作">
-            <a id="homeWork" href="javascript:;">作业</a>
+        <span id="imgListLeft">
+            <a id="homeWork" class="imgListStyle" href="javascript:;"><img src="__WEBSITE__/elementimg/work.png" alt="工作">&nbsp;作业</a>
         </span>
         <span class="imgListStyle" id="imgListRight">
             
@@ -274,8 +275,8 @@
             selfidName(eTypeId);
         }
         tableFun(selfidUnit);
-        // tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
-        $(".mybtn").css("display","none");
+        $(".mybtn").css("display","none");//新增
+        $(".alldel").css("display","none");//全部删除
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
         $("#tableContent #tableItem").css('display','block');
@@ -298,9 +299,10 @@
                         controlPointId = res[i].id;
                         controlPointName = res[i].name;
                         optionStrAfter +=
-                            "<img class='imgNone' id='img"+i+"' src=\"__WEBSITE__/elementimg/right.png\" alt=\"箭头\">"+
-                            "<img src=\"__WEBSITE__/elementimg/work.png\" alt=\"工作\">\n" +
-                            "<a href=\"javascript:;\" onclick=\"clickConName("+ res[i].id +")\">"+res[i].name+"<span style='display: none;'>"+res[i].id+"</span></a>\n";
+                            "<a href=\"javascript:;\"  class=\"imgListStyle\" onclick=\"clickConName("+ res[i].id +")\">" +
+                                "<img class='imgNone' id='img"+i+"' src=\"__WEBSITE__/elementimg/right.png\" alt=\"箭头\">" +
+                                "<img src=\"__WEBSITE__/elementimg/work.png\" alt=\"工作\">&nbsp;"+res[i].name+"<span style='display: none;'>"+res[i].id+"</span>" +
+                            "</a>\n";
                     };
                     $("#imgListRight").append(optionStrAfter);
                     if($(".imgNone").attr("id") == 'img0'){
@@ -322,10 +324,12 @@
     })
 
     //点击作业
-    $("#homeWork").click(function () {
+    $(".imgList").on("click","#homeWork",function () {
         $(".bitCodes").css("display","block");
         $(".mybtn").css("display","none");
-
+        $(".alldel").css("display","none");
+        $(this).css("color","#2213e9").parent("span").next("span").children("a").css("color","#CDCDCD");
+        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
     });
 
     //点击工序控制点名字
@@ -334,25 +338,17 @@
         tableFun(selfidUnit,conThisId);
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
+        $(".alldel").css("display","block");
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#tableContent #tableItem").css('display','block');
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         console.log(id);
-        // $.ajax({
-        //     type: "post",
-        //     url: "{:url('quality/element/getProcedures')}",
-        //     data: {id: id},
-        //     success: function (res) {
-        //         console.log(res);
-        //     }
-        // })
     }
 
     //组织结构表格
     function tableFun(selfidUnit,conThisId) {
-        // $('#tableItem').dataTable({"destroy": true});
         var url;
         if(conThisId == undefined || conThisId == null){
             url = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit;
@@ -364,10 +360,11 @@
             retrieve: true,
             processing: true,
             serverSide: true,
+            "scrollY": "450px",
             ajax: {
                 "url": url
             },
-            dom: 'lf<"mybtn layui-btn layui-btn-sm"><"bitCodes layui-btn layui-btn-sm">rtip',
+            dom: 'lf<"mybtn layui-btn layui-btn-sm"><"bitCodes layui-btn layui-btn-sm"><"alldel layui-btn layui-btn-sm">rtip',
             columns: [
                 {
                     name: "code"
@@ -376,8 +373,7 @@
                     name: "name"
                 },
                 {
-                    name: "id",
-                    width:"10%"
+                    name: "id"
                 }
             ],
             columnDefs: [
@@ -394,6 +390,7 @@
                     "render": function (data, type, row) {
                         var a = data;
                         var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[2]+")'><i title='下载' class='fa fa-download'></i></a>";
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[2]+")'><i title='打印' class='fa fa-print'></i></a>";
                         html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[2]+")'><i title='删除' class='fa fa-trash'></i></a>";
                         return html;
                     }
@@ -422,7 +419,24 @@
         //点击上传文件
         $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二维码</div>");
         $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
+        $(".alldel").html("<div id='delAll'><i class='fa fa-close'></i>全部删除</div>");
     }
+
+    //点击导出二维码
+    $("#tableContent").on("click",".bitCodes #bitCodes",function () {
+        console.log(conThisId);
+        layer.msg("还未开发！")
+        // layer.open({
+        //     type: 2,
+        //     title: '控制点选择',
+        //     shadeClose: true,
+        //     area: ['980px', '673px'],
+        //     content: '{:url("addplan")}?Division='+ selfidUnit + '&TrackingDivision='+ conThisId,
+        //     end:function () {
+        //         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+        //     }
+        // });
+    });
 
     //点击新增控制节点
     $("#tableContent").on("click",".mybtn #test3",function () {
@@ -438,5 +452,6 @@
             }
         });
     });
+
 </script>
 </html>
