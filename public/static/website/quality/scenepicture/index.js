@@ -1,6 +1,7 @@
 var selfid,zTreeObj,groupid,sNodes,selectData="";//选中的节点id，ztree对象，父节点id，选中的节点，选中的表格的信息
 var uploadpath;
 var admin_group_id="",year="",month="",day="";
+var type_model = "ScenePictureModel";
 //编辑dom
 var sceneDom =[
     '<form  id="sceneform" action="#" onsubmit="return false" class="layui-form" style="padding-top: 20px;">',
@@ -216,7 +217,7 @@ function download(id,url) {
         url: url,
         type:"post",
         dataType: "json",
-        data:{id:id,type_model:"ScenePictureModel"},
+        data:{id:id,type_model:type_model},
         success: function (res) {
             if(res.code != 1){
                 layer.msg(res.msg);
@@ -228,6 +229,7 @@ function download(id,url) {
                     + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
                     + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                     + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                    + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                     + "<button type='submit' class=btn" + id +"></button>"
                     + "</form>"
                 $("#form_container").append(str);
@@ -246,7 +248,7 @@ function showPdf(id,url) {
     $.ajax({
         url: url,
         type: "post",
-        data: {id:id},
+        data: {id:id,type_model:type_model},
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
@@ -290,7 +292,7 @@ function showPdf(id,url) {
 }
 //预览
 function conPicshow(id){
-    showPdf(id,'./previewPicture')
+    showPdf(id,'../Common/preview')
 
 }
 //设置位置
