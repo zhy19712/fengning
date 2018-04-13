@@ -26,16 +26,15 @@ class Element extends Permissions
         $this->divisionControlPointService = new DivisionControlPointModel();
         parent::__construct($request);
     }
-
+##单元策划
     /**
-     * 单位策划
+     * 单元策划
      * @return mixed
      */
     public function plan()
     {
         return $this->fetch();
     }
-
     /**
      * 新增控制点
      * @param $Division 划分树
@@ -65,15 +64,6 @@ class Element extends Permissions
         }
         $this->assign('Division', $Division);
         $this->assign('TrackingDivision', $TrackingDivision);
-        return $this->fetch();
-    }
-
-    /**
-     * 单位管控
-     * @return mixed
-     */
-    public function controll()
-    {
         return $this->fetch();
     }
 
@@ -124,5 +114,16 @@ class Element extends Permissions
         } else {
             return json(['code' => -1]);
         }
+    }
+
+
+##单元管控
+    /**
+     * 单位管控
+     * @return mixed
+     */
+    public function controll()
+    {
+        return $this->fetch();
     }
 }
