@@ -199,7 +199,7 @@ class Common extends Controller
             $id = input('param.id');//id
             $type_model = input('param.type_model');//model类名
             //拼接model类的地址
-            $type_model = "app\\quality\\model\\".$type_model;
+            $type_model = "app\\quality\\model\\" . $type_model;
             //实例化model类
             $model = new $type_model;
             $param = $model->getOne($id);
@@ -216,7 +216,7 @@ class Common extends Controller
 
         $type_model = input('param.type_model');//model类名
         //拼接model类的地址
-        $type_model = "app\\quality\\model\\".$type_model;
+        $type_model = "app\\quality\\model\\" . $type_model;
         //实例化model类
         $model = new $type_model();
         $param = $model->getOne($id);
@@ -251,7 +251,7 @@ class Common extends Controller
             $param = input('post.');
             $type_model = input('param.type_model');//model类名
             //拼接model类的地址
-            $type_model = "app\\quality\\model\\".$type_model;
+            $type_model = "app\\quality\\model\\" . $type_model;
             //实例化model类
             $model = new $type_model();
             $code = 1;
@@ -916,6 +916,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
+                    ->field('a.id,b.code,b.name')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -926,6 +927,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
+                    ->field('a.id,b.code,b.name')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
