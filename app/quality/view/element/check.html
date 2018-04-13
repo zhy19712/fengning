@@ -42,18 +42,18 @@
     #division #ztree,#unitWork #ztreeUnit{
         margin-top: 0px;
     }
-    .dataTables_wrapper, .tbcontainer,#tableContent .imgList {
+    .dataTables_wrapper, .tbcontainer,#tableContent .imgList,#tableContent #tableItem {
         display: none;
     }
-    #tableContent .mybtn i.fa:before{
+    #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before,#tableContent .alldel i.fa:before{
         background: #00c0ef;
         color: #ffffff;
     }
-    #tableContent .mybtn{
+    #tableContent .mybtn,#tableContent .bitCodes,#tableContent .alldel{
         float: right;
         background-color: #00c0ef;
     }
-    #tableContent .mybtn{
+    #tableContent .mybtn,#tableContent .bitCodes,#tableContent .alldel{
         margin-right: 0.5%;
         margin-bottom: 5px;
     }
@@ -83,16 +83,25 @@
         border-bottom: 1px dotted;
         padding: 5px 3px;
     }
-    #tableContent .imgList #imgListLeft, #tableContent .imgList #imgListRight {
-        display: inline-block;
+    #tableContent .imgList #homeWork {
+        margin-right:3px;
     }
     #tableContent .imgList img {
         border-radius: 50%;
+        margin-top: 3px;
     }
     #tableContent .imgListStyle {
-        margin-left: 8px
+        margin:5px 0px 3px 8px;
     }
-    #tableContent .imgList span a {
+    #tableContent .imgList a{
+        cursor: pointer;
+        font-style: inherit;
+        /*color: #2213e9;*/
+        color: gray;
+        font-size: 13px;
+        font-weight: 600;
+    }
+    #tableContent .imgList a:hover{
         color: #2213e9;
     }
     #tableContent .listName{
@@ -120,6 +129,9 @@
     .tabs-header, .tabs-scroller-left, .tabs-scroller-right, .tabs-tool, .tabs, .tabs-panels, .tabs li a.tabs-inner, .tabs li.tabs-selected a.tabs-inner, .tabs-header-bottom .tabs li.tabs-selected a.tabs-inner, .tabs-header-left .tabs li.tabs-selected a.tabs-inner, .tabs-header-right .tabs li.tabs-selected a.tabs-inner{
         border-color:#cecece;
     }
+    #tableItem th{
+        width: 0px;
+    }
 </style>
 <body  class="easyui-layout">
 <!--右边的工程划分-->
@@ -130,20 +142,19 @@
 <!--左边的单元工-->
 <div id="unitWork" data-options="region:'center'" style="background:#fff;">
     <div class="easyui-layout" data-options="fit:true">
-        <div id="unitWorkOut" data-options="region:'west',title:'单元工',split:true" style="width:240px;">
+        <div id="unitWorkOut" data-options="region:'west',title:'单元工',split:true" style="width:210px;">
             <ul class="ztree" id="ztreeUnit"></ul>
         </div>
         <div id="unitWorkRight" data-options="region:'center'" style="background:#fff;">
             <div class="easyui-layout" data-options="fit:true">
                 <div id="tableContent" data-options="region:'north',title:'控制点',split:true" style="width:100%;height: 70%; position: relative;padding-top: 5px;">
                     <div class="imgList">
-                        <div class="imgListStyle" id="imgListLeft">
-                            <img src="__WEBSITE__/elementimg/work.png" alt="工作">
-                            <span><a href="javascript:;">作业</a></span>
-                        </div>
-                        <div class="imgListStyle" id="imgListRight">
+                        <span id="imgListLeft">
+                            <a id="homeWork" class="imgListStyle" href="javascript:;"><img src="__WEBSITE__/elementimg/work.png" alt="工作">&nbsp;作业</a>
+                        </span>
+                        <span id="imgListRight">
 
-                        </div>
+                        </span>
                     </div>
                     <div class="listName" style="padding-left: 1.5%"><h3>已选择控制标准列表</h3></div>
                     <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
@@ -176,69 +187,6 @@
 
 </body>
 <script type="text/javascript">
-
-    //组织结构表格
-    var tableItem = $('#tableItem').DataTable({
-        pagingType: "full_numbers",
-        processing: true,
-        serverSide: true,
-        ajax: {
-            "url": "{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="
-        },
-        dom: 'lf<"mybtn layui-btn layui-btn-sm">rtip',
-        columns: [
-            {
-                name: "code"
-            },
-            {
-                name: "name"
-            },
-            {
-                name: "id"
-            }
-        ],
-        columnDefs: [
-            {
-                "targets":[0]
-            },
-            {
-                "targets": [1]
-            },
-            {
-                "searchable": false,
-                "orderable": false,
-                "targets": [2],
-                "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='编辑' class='fa fa-pencil'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    return html;
-                }
-            }
-        ],
-        language: {
-            "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            "infoEmpty": "无记录",
-            "search": "搜索：",
-            "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            "paginate": {
-                "sFirst": "<<",
-                "sPrevious": "<",
-                "sNext": ">",
-                "sLast": ">>"
-            }
-        },
-        "fnInitComplete": function (oSettings, json) {
-            $('#tableItem_length').insertBefore(".mark");
-            $('#tableItem_info').insertBefore(".mark");
-            $('#tableItem_paginate').insertBefore(".mark");
-        }
-    });
-
-    //点击上传文件
-    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
 
     var layer = layui.layer;
     //查询提交
@@ -301,7 +249,8 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
-        initData(selfid);
+
+        initData(selfid);//调用单元工
     }
 
     //全部展开
@@ -316,15 +265,16 @@
     /**==========开始初始化 单元工树 =================*/
 
         //声明单元树的变量
-    var selfidUnit, nodeNameUnit, nodePidUnit,
-        zTreeObjUnit, groupidUnit, sNodesUnit,
-        eTypeId ,controlPointId ,controlPointName;
+    var selfidUnit ,nodeNameUnit ,nodePidUnit ,
+        zTreeObjUnit ,groupidUnit ,sNodesUnit ,
+        eTypeId ,controlPointId ,controlPointName ,
+        conThisId ,tableItem;
 
     //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
         if (responseData) {
             for(var i =0; i < responseData.length; i++) {
-                console.log(responseData[i]);
+                // console.log(responseData[i]);
                 responseData[i].name = responseData[i].el_start + responseData[i].el_cease + responseData[i].pile_number + responseData[i].site;
                 eTypeId = responseData[i].en_type;
             }
@@ -390,10 +340,14 @@
         if(eTypeId){
             selfidName(eTypeId);
         }
-        // tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfidUnit).load();
+        tableFun(selfidUnit);
+        $(".mybtn").css("display","none");//新增
+        $(".alldel").css("display","none");//全部删除
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
+        $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
+        $("#homeWork").css("color","#2213e9");
     }
 
     //获取控制点name
@@ -405,26 +359,21 @@
             success: function (res) {
                 // if(res.code == 1){
                 console.log(res);
-                var optionStr = '';
                 var optionStrAfter = '';
-                // $.each(res,function(index,value){
                 for(var i = 0;i<res.length;i++) {
                     $("#imgListRight").html('');
                     controlPointId = res[i].id;
                     controlPointName = res[i].name;
-                    if(i==0){
-                        optionStr +=
-                            "<img src=\"__WEBSITE__/elementimg/work.png\" alt=\"工作\">\n" +
-                            "<span id='spanAfter'><a href=\"javascript:;\">"+res[i].name+"</a><i style='display: none;'>"+res[i].id+"</i></span>\n";
-                    }else if(i>0){
-                        optionStrAfter +=
-                            "<img class='imgNone' id='"+i+"' src=\"__WEBSITE__/elementimg/right.png\" alt=\"箭头\">"+
-                            "<img src=\"__WEBSITE__/elementimg/work.png\" alt=\"工作\">\n" +
-                            "<span><a href=\"javascript:;\">"+res[i].name+"</a><i style='display: none;'>"+res[i].id+"</i></span>\n";
-                    }
+                    optionStrAfter +=
+                        "<a href=\"javascript:;\"  class=\"imgListStyle\" onclick=\"clickConName("+ res[i].id +")\">" +
+                            "<img class='imgNone' id='img"+i+"' src=\"__WEBSITE__/elementimg/right.png\" alt=\"箭头\">" +
+                            "<img src=\"__WEBSITE__/elementimg/work.png\" alt=\"工作\">&nbsp;"+res[i].name+"<span style='display: none;'>"+res[i].id+"</span>" +
+                        "</a>\n";
                 };
-                $("#imgListRight").append(optionStr);
-                $("#spanAfter").after(optionStrAfter);
+                $("#imgListRight").append(optionStrAfter);
+                if($(".imgNone").attr("id") == 'img0'){
+                    $("#img0").css("display","none");
+                }
                 // }else if(res.code==0){
                 //     layer.msg(res.msg);
                 // }
@@ -434,24 +383,160 @@
 
     /**==========结束初始化 单元工树 =============*/
 
+    //点击置灰
+    $(".imgList").on("click","a",function () {
+        $(this).css("color","#2213e9").siblings("a").css("color","#CDCDCD");
+        $("#homeWork").css("color","#CDCDCD");
+    })
+
+    //点击作业
+    $(".imgList").on("click","#homeWork",function () {
+        $(".bitCodes").css("display","block");
+        $(".mybtn").css("display","none");
+        $(".alldel").css("display","none");
+        $(this).css("color","#2213e9").parent("span").next("span").children("a").css("color","#CDCDCD");
+        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
+    });
+
+    //点击工序控制点名字
+    function clickConName(id) {
+        conThisId = id;
+        tableFun(selfidUnit,conThisId);
+        $(".bitCodes").css("display","none");
+        $(".mybtn").css("display","block");
+        $(".alldel").css("display","block");
+        $("#tableContent .dataTables_wrapper").css('display','block');
+        $("#tableContent .tbcontainer").css('display','block');
+        $("#tableContent .imgList").css('display','block');
+        $("#tableContent #tableItem").css('display','block');
+        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+        console.log(id);
+    }
+
+    //组织结构表格
+    function tableFun(selfidUnit,conThisId) {
+        var url;
+        if(conThisId == undefined || conThisId == null){
+            url = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit;
+        }else{
+            url = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId;
+        }
+        tableItem = $('#tableItem').DataTable({
+            pagingType: "full_numbers",
+            retrieve: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                "url": url
+            },
+            dom: '<"mybtn layui-btn layui-btn-sm">' +
+            '<"bitCodes layui-btn layui-btn-sm">' +
+            // '<"alldel layui-btn layui-btn-sm">' +
+            'rt',
+            columns: [
+                {
+                    name: "code"
+                },
+                {
+                    name: "name"
+                },
+                {
+                    name: "id"
+                }
+            ],
+            columnDefs: [
+                {
+                    "targets":[0]
+                },
+                {
+                    "targets": [1]
+                },
+                {
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": [2],
+                    "render": function (data, type, row) {
+                        var a = data;
+                        var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[2]+")'><i title='下载' class='fa fa-download'></i></a>";
+                        // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[2]+")'><i title='打印' class='fa fa-print'></i></a>";
+                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[2]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                        return html;
+                    }
+                }
+            ],
+            language: {
+                // "lengthMenu": "_MENU_",
+                "zeroRecords": "没有找到记录",
+                // "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+                // "infoEmpty": "无记录",
+                // "search": "搜索：",
+                // "infoFiltered": "(从 _MAX_ 条记录过滤)",
+                // "paginate": {
+                //     "sFirst": "<<",
+                //     "sPrevious": "<",
+                //     "sNext": ">",
+                //     "sLast": ">>"
+                // }
+            },
+            // "fnInitComplete": function (oSettings, json) {
+            //     $('#tableItem_length').insertBefore(".mark");
+            //     $('#tableItem_info').insertBefore(".mark");
+            //     $('#tableItem_paginate').insertBefore(".mark");
+            // }
+        });
+        //点击上传文件
+        $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二维码</div>");
+        $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
+        // $(".alldel").html("<div id='delAll'><i class='fa fa-close'></i>全部删除</div>");
+    }
+
+    //点击导出二维码
+    $("#tableContent").on("click",".bitCodes #bitCodes",function () {
+        console.log(conThisId);
+        layer.msg("还未开发！")
+        // layer.open({
+        //     type: 2,
+        //     title: '控制点选择',
+        //     shadeClose: true,
+        //     area: ['980px', '673px'],
+        //     content: '{:url("addplan")}?Division='+ selfidUnit + '&TrackingDivision='+ conThisId,
+        //     end:function () {
+        //         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+        //     }
+        // });
+    });
 
     //点击新增控制节点
-    $(".mybtn #test3").click(function () {
+    $("#tableContent").on("click",".mybtn #test3",function () {
+        console.log(conThisId);
         layer.open({
             type: 2,
             title: '控制点选择',
             shadeClose: true,
             area: ['980px', '673px'],
-            content: '{:url("addplan")}',
-            // success: function(layero, index){
-            //     var body = layer.getChildFrame('body', index);
-            //     body.find("#denId").val(procedureId);
-            // },
-            // end:function () {
-            //     tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=controlpoint&id="+selfid).load();
-            // }
+            content: '{:url("addplan")}?Division='+ selfidUnit + '&TrackingDivision='+ conThisId,
+            end:function () {
+                tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+            }
         });
     });
+
+    //删除控制点
+    function delFile(id) {
+        console.log(id);
+        $.ajax({
+            type: "post",
+            url: "{:url('quality/element/delControlPointRelation')}",
+            data: {id:id},
+            success: function (res) {
+                console.log(res);
+                if(res.code ==1){
+                    layer.msg("删除成功！")
+                    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                }
+            }
+        })
+    }
 
 </script>
 </html>
