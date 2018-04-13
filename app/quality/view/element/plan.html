@@ -62,7 +62,7 @@
         cursor: pointer;
         font-style: inherit;
         /*color: #2213e9;*/
-        color: gray;
+        color: #CDCDCD;
         font-size: 13px;
         font-weight: 600;
     }
@@ -214,7 +214,7 @@
             }
         }
         return responseData;
-    };
+    }
 
     //初始化数据的方法
     function initData(selfid){
@@ -321,7 +321,7 @@
     $(".imgList").on("click","a",function () {
         $(this).css("color","#2213e9").siblings("a").css("color","#CDCDCD");
         $("#homeWork").css("color","#CDCDCD");
-    })
+    });
 
     //点击作业
     $(".imgList").on("click","#homeWork",function () {
@@ -364,7 +364,10 @@
             ajax: {
                 "url": url
             },
-            dom: 'lf<"mybtn layui-btn layui-btn-sm"><"bitCodes layui-btn layui-btn-sm"><"alldel layui-btn layui-btn-sm">rtip',
+            dom: 'lf<"mybtn layui-btn layui-btn-sm">' +
+            '<"bitCodes layui-btn layui-btn-sm">' +
+            // '<"alldel layui-btn layui-btn-sm">' +
+            'rtip',
             columns: [
                 {
                     name: "code"
@@ -389,8 +392,11 @@
                     "targets": [2],
                     "render": function (data, type, row) {
                         var a = data;
+                        console.log(data)
+                        console.log(type)
+                        console.log(row)
                         var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[2]+")'><i title='下载' class='fa fa-download'></i></a>";
-                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[2]+")'><i title='打印' class='fa fa-print'></i></a>";
+                        // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[2]+")'><i title='打印' class='fa fa-print'></i></a>";
                         html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[2]+")'><i title='删除' class='fa fa-trash'></i></a>";
                         return html;
                     }
@@ -419,7 +425,7 @@
         //点击上传文件
         $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二维码</div>");
         $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
-        $(".alldel").html("<div id='delAll'><i class='fa fa-close'></i>全部删除</div>");
+        // $(".alldel").html("<div id='delAll'><i class='fa fa-close'></i>全部删除</div>");
     }
 
     //点击导出二维码
@@ -452,6 +458,23 @@
             }
         });
     });
+
+    //删除控制点
+    function delFile(id) {
+        console.log(id);
+        $.ajax({
+            type: "post",
+            url: "{:url('quality/element/delControlPointRelation')}",
+            data: {id:id},
+            success: function (res) {
+                console.log(res);
+                if(res.code ==1){
+                    layer.msg("删除成功！")
+                    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                }
+            }
+        })
+    }
 
 </script>
 </html>
