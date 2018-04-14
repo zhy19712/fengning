@@ -282,7 +282,6 @@ class Atlas extends Permissions
                 {
                     return ['code' => -1, 'msg' => '当前图册下已有图纸，请先删除图纸！'];
                 }
-
             }
     }
 

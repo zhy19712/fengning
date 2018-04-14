@@ -945,5 +945,14 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
+    // ht 分部质量管理 分部策划，分部管控 控制点列表
+    public function quality_subdivision_planning_list($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
 
+    }
+    // ht 分部质量管理 控制点执行情况，图像资料
+    public function quality_subdivision_planning_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+
+    }
 }
