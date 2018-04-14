@@ -269,6 +269,9 @@ class Atlas extends Permissions
                             unlink($pdf_path); //删除生成的预览pdf
                         }
 
+                        //删除attachment表中对应的记录
+                        Db::name('attachment')->where("id",$data["attachmentId"])->delete();
+
                         //清除下载记录
                         $down = new AtlasDownloadModel();
                         $down->deldownloadall($param['id']);
