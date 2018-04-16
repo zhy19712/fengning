@@ -63,3 +63,37 @@
 #tableContent .listName h3{
     font-weight: 800;
 }
+.tabs-header, .tabs-tool {
+    background-color: white;
+    border-color:white;
+}
+.tabs li a.tabs-inner{
+    background:white;
+    border-color:#cecece;
+}
+.tabs-header, .tabs-scroller-left, .tabs-scroller-right, .tabs-tool, .tabs, .tabs-panels, .tabs li a.tabs-inner, .tabs li.tabs-selected a.tabs-inner, .tabs-header-bottom .tabs li.tabs-selected a.tabs-inner, .tabs-header-left .tabs li.tabs-selected a.tabs-inner, .tabs-header-right .tabs li.tabs-selected a.tabs-inner{
+    border-color:#cecece;
+}
+.select-color{
+    background-color: #FDD5B5!important;
+}
+#tableItem tbody tr:hover{
+    background-color: #FDD5B5;
+}
+.uploadBox{
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #1ab394;
+    border-color: #1ab394;
+    color: #FFFFFF;
+    width: 50px;
+    text-align: center;
+    border-radius: 50px;
+    height: 27px;
+    line-height: 26px;
+    margin-top: 2px;
+}
+.uploadBox:hover{
+   background-color: #009dc3;
+}
