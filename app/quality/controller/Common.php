@@ -844,27 +844,34 @@ class Common extends Controller
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-
-        /**
-         * 注意 ：这里的控制点是 ，存在于 quality_division_controlpoint_relation 单位质量管理 对应关系表里的 关联对应数据
-         * 所以即使和 其他 工序下 的控制点重复也是正常的
-         * type 类型:1 检验批 0 工程划分
-         */
-        if ($id == 0) { // 等于0 说明是 作业 那就获取全部的 控制点
-            $control_id = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0 ])->column('control_id');
-            $recordsTotal = sizeof($control_id);
-        } else { // 获取 指定的工序下的所有的 控制点
-            $control_id = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->column('control_id');
-            $recordsTotal = sizeof($control_id);
+        if ($id == 0) {
+            /**
+             * 等于0 说明是 作业 那就获取全部的 控制点 注意 这里不包含 单位策划里 新增控制点 追加的 关系数据
+             * 作业下的控制点 是 materialtrackingdivision 工序表 关联 controlpoint 控制点表 的全部数据
+             */
+            $id = Db::name('materialtrackingdivision')->where(['type' => 3, 'cat' => 2])->column('id'); // 标准库单位工程下 所有的工序编号
+            $recordsTotal = Db::name($table)->whereIn('procedureid', $id)->count();
+            $new_control = '';
+            $where_val = 'whereIn';
+        } else {
+            /**
+             * 注意 ：这里的控制点是 ，存在于 quality_division_controlpoint_relation 单位质量管理 对应关系表里的 关联对应数据
+             * 所以即使和 其他 工序下 的控制点重复也是正常的
+             * type 类型:1 检验批 0 工程划分
+             */
+            $new_control = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->column('control_id');
+            $recordsTotal = sizeof($new_control);
+            $where_val = 'where';
         }
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('code,name,id,ma_division_id')
-                    ->where('id', 'IN', $control_id)
+                    ->field('code,name,id')
+                    ->$where_val('procedureid', $id)
                     ->where($columnString, 'like', '%' . $search . '%')
+                    ->whereOr('id', 'IN', $new_control)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -873,8 +880,9 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('code,name,id,ma_division_id')
-                    ->where('id', 'IN', $control_id)
+                    ->field('code,name,id')
+                    ->$where_val('procedureid', $id)
+                    ->whereOr('id', 'IN', $new_control)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
@@ -891,7 +899,7 @@ class Common extends Controller
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
-
+    //单元管控：控制点列表
     public function quality_division_controlpoint_relation($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
@@ -925,6 +933,57 @@ class Common extends Controller
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
                     ->field('a.id,b.code,b.name,a.status')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+    //单元管控：控制点执行情况、附件资料
+    public function quality_upload($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        $par = array();
+        $par['a.type'] = $this->request->has('type')?$this->request->param('type'):1;
+        $par['a.contr_relation_id'] = $this->request->param('cpr_id');
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->where(['type'=>$par['a.type'],'contr_relation_id'=>$par['a.contr_relation_id']])->count();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('attachment b', 'a.attachment_id=b.id', 'left')
+                    ->join('admin c','b.user_id=c.id','left')
+                    ->join('admin_group d','c.admin_group_id=d.id')
+                    ->where($par)
+                    ->field('a.id,c.nickname,d.name,b.create_time')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('attachment b', 'a.attachment_id=b.id', 'left')
+                    ->join('admin c','b.user_id=c.id','left')
+                    ->join('admin_group d','c.admin_group_id=d.id')
+                    ->where($par)
+                    ->field('a.id,c.nickname,d.name,b.create_time')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
@@ -975,19 +1034,19 @@ class Common extends Controller
 
         //表的总记录数 必要
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->where($search_data)->count(0);
+        $recordsTotal = Db::name($table)->where()->count(0);
         $recordsFilteredResult = array();
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->where($search_data)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where()->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
             //没有搜索条件的情况
             if ($limitFlag) {
-                $recordsFilteredResult = Db::name($table)->where($search_data)->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where()->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
