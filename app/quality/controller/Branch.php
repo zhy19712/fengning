@@ -34,6 +34,16 @@ class Branch extends Permissions
     }
 
     /**
+     * 分部策划添加控制点
+     * @return mixed
+     */
+    public function addPlan()
+    {
+        return $this->fetch();
+
+    }
+
+    /**
      * 获取分部质量管理-控制点
      * @return \think\response\Json
      */
@@ -414,6 +424,16 @@ class Branch extends Permissions
      * @return mixed
      */
     public function control()
+    {
+        return $this->fetch();
+
+    }
+
+    /**
+     * 分部管控添加控制点
+     * @return mixed
+     */
+    public function addControl()
     {
         return $this->fetch();
 
