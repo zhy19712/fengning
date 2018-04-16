@@ -52,7 +52,7 @@
          display: block;
     }
 
-    #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before,#tableContent .alldel i.fa:before{
+    #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before,#tableContent .alldel i.fa:before,#tableContent .saveCheck i.fa:before{
         background: #00c0ef;
         color: #ffffff;
     }
@@ -193,7 +193,7 @@
                 <div id="tableContent" data-options="region:'north',split:true" style="width:100%;height: 70%; position: relative;padding-top: 5px;">
                     <div class="listName" style="padding-left: 1.5%">
                         <span>验评结果</span>
-                        <button class="saveCheck">保存</button>
+                        <button class="saveCheck"><i class="fa fa-check"></i>&nbsp;保存</button>
                     </div>
                     <div class="result">
                         <form class="layui-form" action="">
@@ -226,12 +226,12 @@
                     </div>
                     <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
                         <thead>
-                        <tr>
-                            <th>控制点编号</th>
-                            <th>控制点名称</th>
-                            <th>状态</th>
-                            <th>操作</th>
-                        </tr>
+                            <tr>
+                                <th>控制点编号</th>
+                                <th>控制点名称</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
                         </thead>
                     </table>
                     <div class="tbcontainer">
@@ -240,11 +240,31 @@
                 </div>
                 <div id="unitWorkRightBottom" data-options="region:'center',split:true">
                     <div id="tt" class="easyui-tabs" style="width:100%;height: 100%;">
-                        <div title="控制点执行情况" style="padding:20px;">
-                            控制点执行情况
+                        <div title="控制点执行情况" style="padding:3px 0 0 3px;">
+                            <table id="implementation" class="table table-striped table-bordered" cellspacing="0"  width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>文件名称</th>
+                                        <th>负责人</th>
+                                        <th>单位</th>
+                                        <th>拍摄时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
-                        <div title="图像资料" style="padding:20px;">
-                            附件资料
+                        <div title="图像资料" style="padding:3px 3px 0 3px;">
+                            <table id="imageData" class="table table-striped table-bordered" cellspacing="0"  width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>图像名称</th>
+                                        <th>上传人</th>
+                                        <th>单位</th>
+                                        <th>上传时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -256,13 +276,11 @@
 </body>
 <script type="text/javascript">
 
-    // tableFun();
     //组织结构表格
-    // function tableFun(selfidUnit,conThisId) {
-    // console.log(selfidUnit)
-    var urlUnit;
-    // if(conThisId == undefined || conThisId == null){
+    var  tableItem, implementation, imageData, urlUnit;
+
     urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
+
     tableItem = $('#tableItem').DataTable({
         pagingType: "full_numbers",
         retrieve: true,
@@ -272,10 +290,7 @@
         ajax: {
             "url": urlUnit
         },
-        dom: '<"mybtn layui-btn layui-btn-sm">' +
-        '<"bitCodes layui-btn layui-btn-sm">' +
-        // '<"alldel layui-btn layui-btn-sm">' +
-        'rt',
+        dom: 'rt',
         columns: [
             {
                 name: "code"
@@ -341,11 +356,7 @@
         //     $('#tableItem_paginate').insertBefore(".mark");
         // }
     });
-    //点击上传文件
-    $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二维码</div>");
-    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
-    // $(".alldel").html("<div id='delAll'><i class='fa fa-close'></i>全部删除</div>");
-    // }
+
     var layer = layui.layer;
     //查询提交
     layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
@@ -450,7 +461,7 @@
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
         eTypeId ,controlPointId ,controlPointName ,
-        conThisId ,tableItem;
+        conThisId ,selectData ,clickId;
 
     //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
@@ -525,7 +536,6 @@
         if(selfidUnit != undefined || selfidUnit != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
         }
-        // tableFun(selfidUnit);
         $(".mybtn").css("display","none");//新增
         $(".alldel").css("display","none");//全部删除
         $(".bitCodes").css("display","block");
@@ -588,21 +598,14 @@
     function clickConName(id) {
         conThisId = id;
         if(selfidUnit != undefined || selfidUnit != null && conThisId != undefined || conThisId != null){
-            urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId;
+            tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         }
-        // tableFun(selfidUnit,conThisId);
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
         $(".alldel").css("display","block");
-        // $("#tableContent .dataTables_wrapper").css('display','block');
-        // $("#tableContent .tbcontainer").css('display','block');
         $("#tableContent .imgList").css('display','block');
-        // $("#tableContent #tableItem").css('display','block');
-        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         console.log(id);
     }
-
-
 
     //点击导出二维码
     $("#tableContent").on("click",".bitCodes #bitCodes",function () {
@@ -635,7 +638,7 @@
         });
     });
 
-    //删除控制点
+    //控制点里面的删除
     function delFile(id) {
         console.log(id);
         $.ajax({
@@ -651,6 +654,182 @@
             }
         })
     }
+
+    //点击行获取Id
+    $("#tableItem").delegate("tbody tr","click",function (e) {
+        if($(e.target).hasClass("dataTables_empty")){
+            return;
+        }
+        $(this).addClass("select-color").siblings().removeClass("select-color");
+        selectData = tableItem.row(".select-color").data();//获取选中行数据
+        console.log(selectData);
+        clickId = selectData[3];
+        if(clickId != undefined && clickId != null){
+            implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
+        }
+    });
+
+    /*============控制点情况开始==============*/
+    //控制点情况结构表格
+    implementation = $('#implementation').DataTable({
+        pagingType: "full_numbers",
+        retrieve: true,
+        processing: true,
+        serverSide: true,
+        "autoWidth": true,//自动宽度
+        ajax: {
+            "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="
+        },
+        dom: 'tr',
+        columns: [
+            {
+                name: "data_name"
+            },
+            {
+                name: "nickname"
+            },
+            {
+                name: "name"
+            },
+            {
+                name: "create_time"
+            },
+            {
+                name: "id"
+            }
+        ],
+        columnDefs: [
+            {
+                "targets":[0]
+            },
+            {
+                "targets": [1]
+            },
+            {
+                "targets": [2]
+            },
+            {
+                "targets": [3]
+            },
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [4],
+                "render": function (data, type, row) {
+                    var a = data;
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    return html;
+                }
+            }
+        ],
+        language: {
+            // "lengthMenu": "_MENU_",
+            "zeroRecords": "没有找到记录",
+            // "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+            // "infoEmpty": "无记录",
+            // "search": "搜索：",
+            // "infoFiltered": "(从 _MAX_ 条记录过滤)",
+            // "paginate": {
+            //     "sFirst": "<<",
+            //     "sPrevious": "<",
+            //     "sNext": ">",
+            //     "sLast": ">>"
+            // }
+        },
+        // "fnInitComplete": function (oSettings, json) {
+        //     $('#tableItem_length').insertBefore(".mark");
+        //     $('#tableItem_info').insertBefore(".mark");
+        //     $('#tableItem_paginate').insertBefore(".mark");
+        // }
+    });
+
+    /*============控制点情况结束==============*/
+
+
+    /*============图像资料开始==============*/
+    //图像资料结构表格
+   /* imageData = $('#imageData').DataTable({
+        pagingType: "full_numbers",
+        retrieve: true,
+        processing: true,
+        serverSide: true,
+        "autoWidth": true,//自动宽度
+        ajax: {
+            "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="
+        },
+        dom: 'tr',
+        columns: [
+            {
+                name: "code"
+            },
+            {
+                name: "name"
+            },
+            {
+                name: "status"
+            },
+            {
+                name: "datatime"
+            },
+            {
+                name: "id"
+            }
+        ],
+        columnDefs: [
+            {
+                "targets":[0]
+            },
+            {
+                "targets": [1]
+            },
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [2],
+                "render": function (data, type, row) {
+                    if(data == 0){
+                        return '未执行'
+                    }
+                    return '已执行'
+                }
+            },
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [3],
+                "render": function (data, type, row) {
+                    var a = data;
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    return html;
+                }
+            }
+        ],
+        language: {
+            // "lengthMenu": "_MENU_",
+            "zeroRecords": "没有找到记录",
+            // "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+            // "infoEmpty": "无记录",
+            // "search": "搜索：",
+            // "infoFiltered": "(从 _MAX_ 条记录过滤)",
+            // "paginate": {
+            //     "sFirst": "<<",
+            //     "sPrevious": "<",
+            //     "sNext": ">",
+            //     "sLast": ">>"
+            // }
+        },
+        // "fnInitComplete": function (oSettings, json) {
+        //     $('#tableItem_length').insertBefore(".mark");
+        //     $('#tableItem_info').insertBefore(".mark");
+        //     $('#tableItem_paginate').insertBefore(".mark");
+        // }
+    });*/
+
+    /*============图像资料结束==============*/
 
 </script>
 </html>

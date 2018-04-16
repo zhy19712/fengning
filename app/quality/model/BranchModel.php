@@ -31,9 +31,9 @@ class BranchModel extends Model
     /**
      * 根据所属工序号查询所有的分部策划列表中的id
      */
-    public function getAllid($procedureid)
+    public function getAllid($selfid,$procedureid)
     {
-        $data = $this->field("id")->where('procedureid', $procedureid)->select();
+        $data = $this->field("id")->where(['selfid'=>$selfid,'procedureid'=>$procedureid])->select();
         return $data;
     }
 
@@ -56,7 +56,7 @@ class BranchModel extends Model
     }
 
     /**
-     * 编辑一条现场图片信息
+     * 编辑一条信息
      */
     public function editSu($param)
     {
@@ -92,7 +92,7 @@ class BranchModel extends Model
              * type 类型:1 检验批 0 工程划分
              */
                 $data = Db::name('quality_subdivision_planning_file')->where('list_id',$id)->column('id,attachment_id');
-                if(is_array($data)){
+                if(!empty($data)){
                     $attachment_id_arr = array_values($data);
                     $att = Db::name('attachment')->whereIn('id',$attachment_id_arr)->column('filepath');
                     foreach ($att as $v){
@@ -104,14 +104,16 @@ class BranchModel extends Model
                             unlink($pdf_path); //删除生成的预览pdf
                         }
                     }
-                    Db::name('attachment')->delete('attachment_id_arr');
-                    $this->delete($id);
+                    Db::name('attachment')->whereIn('id',$attachment_id_arr)->delete();
+                    $this->where("id",$id)->delete();
+                }else
+                {
+                    $this->where("id",$id)->delete();
+                    Db::name('controlpoint')->where("id",$controller_point_id)->delete();
                 }
-            Db::name('controlpoint')->delete($controller_point_id);
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
-
 }
