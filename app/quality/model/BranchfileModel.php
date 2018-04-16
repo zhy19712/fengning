@@ -62,7 +62,7 @@ class BranchfileModel extends Model
     public function delFile($id)
     {
         try{
-            $this->where("selfid",$id)->delete();
+            $this->where("id",$id)->delete();
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];

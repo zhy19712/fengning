@@ -32,7 +32,6 @@ class Branch extends Permissions
     public function plan()
     {
         return $this->fetch();
-
     }
 
     /**
@@ -42,7 +41,7 @@ class Branch extends Permissions
     public function addPlan()
     {
         $param = input('param.');
-        $selfid = $param["selfid"];
+        $selfid = $param["selfid"];//左侧节点树id
         $procedureid = $param["procedureid"];//工序号
         $this->assign('selfid', $selfid);
         $this->assign('procedureid', $procedureid);
@@ -53,11 +52,11 @@ class Branch extends Permissions
      * 分部策划 或者 分部管控 初始化左侧树节点
      * @param int $type
      * @return mixed|\think\response\Json
-     * @author hutao
      */
     public function index($type = 1)
     {
         if($this->request->isAjax()){
+            //实例化模型类
             $node = new DivisionModel();
             $nodeStr = $node->getNodeInfo(4);
             return json($nodeStr);
@@ -138,6 +137,7 @@ class Branch extends Permissions
 
     /**
      * 删除控制点
+     * 删除控制点 注意: 已经执行 的控制点 不能删除
      *
      * 控制点 存在于 controlpoint 表 和 fengning_quality_subdivision_planning_list 中
      * controlpoint 表里的数据 是原始的，fengning_quality_subdivision_planning_list 是 在 分部策划里 后来 新增的关系记录
@@ -161,27 +161,17 @@ class Branch extends Permissions
             $id = input('param.id');
             //查询一条分部策划列表中的信息
             $info = $model->getOne($id);
-            if($info)
+            if($info["status"] > 0)
             {
-                $controller_point_id = $info["controller_point_id"];//控制点id
-                $flag = $model->associationDeletion($id,$controller_point_id);
-                return json($flag);
+                return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
             }
+            $flag = $model->associationDeletion($id);
+            return json($flag);
         }
     }
 
     /**
      * 全部删除控制点
-     *
-     * 控制点 存在于 controlpoint 表 和 fengning_quality_subdivision_planning_list 中
-     * controlpoint 表里的数据 是原始的，fengning_quality_subdivision_planning_list 是 在 分部策划里 后来 新增的关系记录
-     *
-     * 如果关系记录存在 该控制点 那么就应该先
-     * 要关联 删除 记录里的控制点执行情况 和 图像资料  以及它们所包含的文件 以及 预览的pdf文件
-     * 然后 删除 这条关系记录
-     *
-     * 最后 删除 原始数据
-     *
      * type 类型:1 检验批 0 工程划分
      * @return \think\response\Json
      * @throws \think\Exception
@@ -193,21 +183,22 @@ class Branch extends Permissions
                 //实例化模型类
                 $model = new BranchModel();
                 //分部策划列表id
-                $selfid = input('param.selfid');//所属工序号
+                $selfid = input('param.selfid');//左侧树节点的id
                 $procedureid = input('param.procedureid');//所属工序号
+
+                // 已经执行 的控制点 不能删除
+                $count = $model->getAllcount($selfid,$procedureid);
+                if($count > 0)
+                {
+                    return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
+                }
                 //根据所属工序号查询所有的分部策划列表中的数据
                 $data = $model->getAllid($selfid,$procedureid);
                 if(!empty($data))
                 {
                     foreach ($data as $k=>$v)
                     {
-                        //查询一条分部策划列表中的信息
-                        $info = $model->getOne($v["id"]);
-                        if($info)
-                        {
-                            $controller_point_id = $info["controller_point_id"];//控制点id
-                            $model->associationDeletion($v['id'],$controller_point_id);
-                        }
+                        $model->associationDeletion($v['id']);
                     }
                     return ['code' => 1, 'msg' => '删除成功'];
                 }
@@ -290,8 +281,9 @@ class Branch extends Permissions
             $group = $group->getOne($admininfo["admin_group_id"]);
 
             $data = [
+
                 "list_id" => $param["list_id"],//分部策划列表id
-                "file_image_name" => $param["file_image_name"],//上传的源文件名
+                "filename" => $param["filename"],//上传的源文件名
                 "attachment_id" => $param["attachment_id"],//对应的是attachment文件上传表中的id
                 "owner" => Session::get('current_nickname'),//上传人
                 "company" => $group["name"],//单位
@@ -336,16 +328,24 @@ class Branch extends Permissions
                     //先删除图片
                     //查询attachment表中的文件上传路径
                     $attachment = Db::name("attachment")->where("id",$data["attachment_id"])->find();
-                    $path = "." .$attachment['filepath'];
-                    $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+                    if($attachment["filepath"])
+                    {
+                        $path = "." .$attachment['filepath'];
+                        $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
 
-                    if(file_exists($path)){
-                        unlink($path); //删除文件图片
+                        if(file_exists($path)){
+                            unlink($path); //删除文件图片
+                        }
+
+                        if(file_exists($pdf_path)){
+                            unlink($pdf_path); //删除生成的预览pdf
+                        }
+                    }
+                    else
+                    {
+                        return ['code' => -1,'msg' => '文件不存在!'];
                     }
 
-                    if(file_exists($pdf_path)){
-                        unlink($pdf_path); //删除生成的预览pdf
-                    }
 
                     //删除attachment表中对应的记录
                     Db::name('attachment')->where("id",$data["attachment_id"])->delete();
@@ -374,81 +374,6 @@ class Branch extends Permissions
         }
     }
 
-    /**
-     * 控制点执行情况文件 或者 图像资料文件 预览
-     * @return \think\response\Json
-     */
-    public function preview()
-    {
-        if(request()->isAjax()) {
-            $param = input('post.');
-            $code = 1;
-            $msg = '预览成功';
-            $data = Db::name('attachment')->where('id',$param['attachment_id'])->find();
-            if(!$data['path'] || !file_exists("." .$data['path'])){
-                return json(['code' => '-1','msg' => '文件不存在']);
-            }
-            $path = $data['path'];
-            $extension = strtolower(get_extension(substr($path,1)));
-            $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-            if(!file_exists($pdf_path)){
-                if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
-                    doc_to_pdf($path);
-                }else if($extension === 'xls' || $extension === 'xlsx'){
-                    excel_to_pdf($path);
-                }else if($extension === 'ppt' || $extension === 'pptx'){
-                    ppt_to_pdf($path);
-                }else if($extension === 'pdf'){
-                    $pdf_path = $path;
-                }else if($extension === "jpg" || $extension === "png" || $extension === "jpeg"){
-                    $pdf_path = $path;
-                }else {
-                    $code = 0;
-                    $msg = '不支持的文件格式';
-                }
-                return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }else{
-                return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }
-        }
-    }
-
-    /**
-     * 控制点执行情况文件 或者 图像资料文件 下载
-     * @return \think\response\Json
-     */
-    public function download()
-    {
-        // 前台需要 传递 文件编号 id
-        $param = input('param.');
-        $file_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0;
-        if($file_id){
-            return json(['code' => '-1','msg' => '编号有误']);
-        }
-        $file_obj = Db::name('attachment')->where('id',$file_id)->field('filename,filepath')->find();
-        $filePath = '.' . $file_obj['filepath'];
-        if(!file_exists($filePath)){
-            return json(['code' => '-1','msg' => '文件不存在']);
-        }else if(request()->isAjax()){
-            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
-        }else{
-            $fileName = $file_obj['filename'];
-            $file = fopen($filePath, "r"); //   打开文件
-            //输入文件标签
-            $fileName = iconv("utf-8","gb2312",$fileName);
-            Header("Content-type:application/octet-stream ");
-            Header("Accept-Ranges:bytes ");
-            Header("Accept-Length:   " . filesize($filePath));
-            Header("Content-Disposition:   attachment;   filename= " . $fileName);
-            //   输出文件内容
-            echo fread($file, filesize($filePath));
-            fclose($file);
-            exit;
-        }
-    }
-
-
-
     /****************************分部管控************************/
     /**
      * 分部管控模板首页
@@ -457,7 +382,6 @@ class Branch extends Permissions
     public function control()
     {
         return $this->fetch();
-
     }
 
     /**
@@ -466,7 +390,11 @@ class Branch extends Permissions
      */
     public function addControl()
     {
+        $param = input('param.');
+        $selfid = $param["selfid"];//左侧节点树id
+        $procedureid = $param["procedureid"];//工序号
+        $this->assign('selfid', $selfid);
+        $this->assign('procedureid', $procedureid);
         return $this->fetch();
-
     }
 }

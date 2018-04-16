@@ -522,7 +522,11 @@
                 console.log(res);
                 if(res.code ==1){
                     layer.msg("删除成功！")
-                    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                    if(conThisId == undefined){
+                        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
+                    }else{
+                        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                    }
                 }
             }
         })

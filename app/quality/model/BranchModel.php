@@ -38,6 +38,15 @@ class BranchModel extends Model
     }
 
     /**
+     * 根据节点id和工序id查询已执行的数量
+     */
+    public function getAllcount($selfid,$procedureid)
+    {
+        $data = $this->where(['selfid'=>$selfid,'procedureid'=>$procedureid])->where("status > 0")->count();
+        return $data;
+    }
+
+    /**
      * 添加分部策划列表
      * @throws \think\Exception
      */
@@ -56,7 +65,7 @@ class BranchModel extends Model
     }
 
     /**
-     * 编辑一条现场图片信息
+     * 编辑一条信息
      */
     public function editSu($param)
     {
@@ -76,17 +85,19 @@ class BranchModel extends Model
      * 删除分部策划列表
      * @throws \think\Exception
      */
-    public function associationDeletion($id,$controller_point_id)
+    public function associationDeletion($id)
     {
         try{
             /**
+             * 删除控制点 注意: 已经执行 的控制点 不能删除
              * 控制点 存在于 controlpoint 表 和 fengning_quality_subdivision_planning_list 中
              * controlpoint 表里的数据 是原始的，fengning_quality_subdivision_planning_list 是 在 分部策划里 后来 新增的关系记录
              *
              * 如果关系记录存在 该控制点 那么就应该先
              * 要关联 删除 记录里的控制点执行情况 和 图像资料  以及它们所包含的文件 以及 预览的pdf文件
              * 然后 删除 这条关系记录
-             *
+             * 其他工序下的控制点 是 根据 quality_division_controlpoint_relation 对应关系表 关联 controlpoint 的数据
+             * 可以新增，删除，全部删除，删除的是 对应关系表里的对应信息，不是真正的删除controlpoint里的数据
              * 最后 删除 原始数据
              *
              * type 类型:1 检验批 0 工程划分
@@ -109,12 +120,10 @@ class BranchModel extends Model
                 }else
                 {
                     $this->where("id",$id)->delete();
-                    Db::name('controlpoint')->where("id",$controller_point_id)->delete();
                 }
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
-
 }
