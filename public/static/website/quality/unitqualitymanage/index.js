@@ -2,6 +2,8 @@
 var initUi = layui.use('form','laydate');
 var form = layui.form;
 
+
+//单位策划列表
 $.datatable({
     tableId:'tableItem',
     ajax:{
@@ -10,12 +12,12 @@ $.datatable({
     dom: 'ltpr',
     columns:[
         {
+            name: "id"
+        },
+        {
             name: "code"
         },{
             name: "name"
-        },
-        {
-            name: "id"
         }
     ],
     columnDefs:[
@@ -33,6 +35,7 @@ $.datatable({
     ],
 });
 
+//控制点标准
 $.datatable({
     tableId:'controlItem',
     ajax:{
@@ -54,7 +57,7 @@ $.datatable({
         }
     ],
 });
-//取消全选的事件绑定~
+//取消全选的事件绑定
 $("thead tr th:first-child").unbind();
 
 //删除自构建分页位置
@@ -127,6 +130,7 @@ function addControl() {
     });
 }
 
+//控制点标准
 $.ztree({
     treeId:'controlZtree',
     ajaxUrl:'./unitTree',
@@ -202,21 +206,25 @@ function del(that) {
     var add_id = window.treeNode.add_id;
     var ma_division_id = $('#workId').val();
     var id = $(that).attr('uid');
-    layer.confirm('确定要删除当前控制点吗?', {icon: 3, title:'提示'}, function(index){
-        $.ajax({
-            url: "./controlDel",
-            type: "post",
-            data: {
-                add_id:add_id,
-                ma_division_id:ma_division_id,
-                id:id
-            },
-            dataType: "json",
-            success: function (res) {
-                layer.msg(res.msg);
-            }
-        });
-        layer.close(index);
+    $.deleteData({
+        ajaxUrl:'./controlDel',
+        data: {
+            add_id:add_id,
+            ma_division_id:ma_division_id,
+            id:id
+        },
+        tablePath:'/quality/common/datatablesPre?tableName=unit_quality_control'
     });
+}
 
+//下载
+function download(that) {
+    var id = $(that).attr('uid');
+    $.download({
+        that:that,
+        url:'./fileDownload',
+        data:{
+            id:id
+        }
+    });
 }
