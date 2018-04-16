@@ -11,6 +11,7 @@ namespace app\quality\controller;
 use app\admin\controller\Permissions;
 use app\quality\model\DivisionControlPointModel;
 use app\quality\model\DivisionUnitModel;
+use app\quality\model\UploadModel;
 use app\standard\model\ControlPoint;
 use app\standard\model\MaterialTrackingDivision;
 use think\Db;
@@ -20,13 +21,16 @@ use think\Request;
 class Element extends Permissions
 {
     protected $divisionControlPointService;
+    protected $uploadService;
 
     public function __construct(Request $request = null)
     {
         $this->divisionControlPointService = new DivisionControlPointModel();
+        $this->uploadService = new UploadModel();
         parent::__construct($request);
     }
 ##单元策划
+
     /**
      * 单元策划
      * @return mixed
@@ -35,6 +39,7 @@ class Element extends Permissions
     {
         return $this->fetch();
     }
+
     /**
      * 新增控制点
      * @param $Division 划分树
@@ -118,6 +123,7 @@ class Element extends Permissions
 
 
 ##单元管控
+
     /**
      * 单位管控
      * @return mixed
@@ -125,5 +131,39 @@ class Element extends Permissions
     public function controll()
     {
         return $this->fetch();
+    }
+
+    /**
+     * 新增控制点执行情况
+     * @param $cpr_id
+     * @param $att_id
+     * @return \think\response\Json
+     */
+    public function addExecution($cpr_id, $att_id)
+    {
+        $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id, 'type' => 1]);
+        if ($res) {
+            //更新控制点执行情况
+            $this->divisionControlPointService->save(['status' => 1], ['id' => $cpr_id]);
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
+    }
+
+    /**
+     * 新增图像资料
+     * @param $cpr_id
+     * @param $att_id
+     * @return \think\response\Json
+     */
+    public function addAttData($cpr_id, $att_id)
+    {
+        $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id, 'type' => 2]);
+        if ($res) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
     }
 }
