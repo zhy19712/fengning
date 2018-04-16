@@ -42,7 +42,7 @@ $.datatable({
     ajax:{
         'url':'/quality/common/datatablesPre?tableName=unit_quality_add_control'
     },
-    dom: 'ltpr',
+    dom: 'lftipr',
     columns:[
         {
             name: "id",
