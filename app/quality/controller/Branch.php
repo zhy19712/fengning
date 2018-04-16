@@ -40,8 +40,12 @@ class Branch extends Permissions
      */
     public function addPlan()
     {
+        $param = input('param.');
+        $selfid = $param["selfid"];
+        $procedureid = $param["procedureid"];//工序号
+        $this->assign('selfid', $selfid);
+        $this->assign('procedureid', $procedureid);
         return $this->fetch();
-
     }
 
     /**
@@ -54,7 +58,7 @@ class Branch extends Permissions
     {
         if($this->request->isAjax()){
             $node = new DivisionModel();
-            $nodeStr = $node->getNodeInfo(4); // 2 只取到子单位工程
+            $nodeStr = $node->getNodeInfo(4);
             return json($nodeStr);
         }
         if($type==1){
