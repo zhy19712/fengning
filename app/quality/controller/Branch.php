@@ -380,11 +380,6 @@ class Branch extends Permissions
      */
     public function control()
     {
-        $param = input('param.');
-        $selfid = $param["selfid"];//左侧节点树id
-        $procedureid = $param["procedureid"];//工序号
-        $this->assign('selfid', $selfid);
-        $this->assign('procedureid', $procedureid);
         return $this->fetch();
     }
 
@@ -394,6 +389,11 @@ class Branch extends Permissions
      */
     public function addControl()
     {
+        $param = input('param.');
+        $selfid = $param["selfid"];//左侧节点树id
+        $procedureid = $param["procedureid"];//工序号
+        $this->assign('selfid', $selfid);
+        $this->assign('procedureid', $procedureid);
         return $this->fetch();
     }
 }
