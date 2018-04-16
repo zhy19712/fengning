@@ -132,9 +132,9 @@ class Element extends Permissions
      * @param $att_id
      * @return \think\response\Json
      */
-    public function addExecution($cpr_id, $att_id)
+    public function addExecution($cpr_id, $att_id,$filename)
     {
-        $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id, 'type' => 1]);
+        $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id,'data_name'=>$filename, 'type' => 1]);
         if ($res) {
             //更新控制点执行情况
             $this->divisionControlPointService->save(['status' => 1], ['id' => $cpr_id]);
@@ -150,9 +150,9 @@ class Element extends Permissions
      * @param $att_id
      * @return \think\response\Json
      */
-    public function addAttData($cpr_id, $att_id)
+    public function addAttData($cpr_id, $att_id,$filename)
     {
-        $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id, 'type' => 2]);
+        $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id,'data_name'=>$filename,  'type' => 2]);
         if ($res) {
             return json(['code' => 1]);
         } else {
@@ -162,7 +162,7 @@ class Element extends Permissions
 
     public function download($cpr_id)
     {
-        
+
     }
 
     ##单元验评

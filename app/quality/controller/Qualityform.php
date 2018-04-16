@@ -19,8 +19,9 @@ class Qualityform extends Permissions
 {
     /**
      * 编辑质量表单
+     * @param $cpr_id 控制点
      */
-    public function edit()
+    public function edit($cpr_id)
     {
         //获取模板路径
 
