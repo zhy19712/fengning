@@ -72,14 +72,6 @@ class Element extends Permissions
         return $this->fetch();
     }
 
-    /**
-     * 单位验评
-     * @return mixed
-     */
-    public function check()
-    {
-        return $this->fetch();
-    }
 
     /**
      * 获取检验批列表
@@ -160,6 +152,37 @@ class Element extends Permissions
     public function addAttData($cpr_id, $att_id)
     {
         $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id, 'type' => 2]);
+        if ($res) {
+            return json(['code' => 1]);
+        } else {
+            return json(['code' => -1]);
+        }
+    }
+
+
+    ##单元验评
+
+    /**
+     * 单位验评
+     * @return mixed
+     */
+    public function check()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 验评
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function Evaluate()
+    {
+        $mod = input('post.');
+        $_mod = DivisionUnitModel::get($mod['Unit_id']);
+        $_mod['EvaluateResult'] = $mod['EvaluateResult'];
+        $_mod['EvaluateDate'] = $mod['EvaluateDate'];
+        $res = $_mod->save();
         if ($res) {
             return json(['code' => 1]);
         } else {
