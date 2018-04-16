@@ -93,13 +93,57 @@ class UnitqualitymanageModel extends Model
     public function insertTb($param)
     {
         try{
-            $result = Db::name('')->insertAll($param);
+            $result = Db::name('quality_division_controlpoint_relation')->insertAll($param);
             if($result > 0){
                 return ['code' => 1,'msg' => '添加成功'];
             }else{
                 return ['code' => -1,'msg' => $this->getError()];
             }
         }catch (PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
+    public function saveTb($param)
+    {
+        try{
+            $result = Db::name('quality_upload')->insert($param);
+            if($result > 0){
+                return ['code' => 1,'msg' => '添加成功'];
+            }else{
+                return ['code' => -1,'msg' => $this->getError()];
+            }
+        }catch (PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * 先删除 控制点执行情况文件 或者 图像资料文件
+     * 最后 删除 文件记录信息
+     * @param $id
+     * @return array
+     * @throws \think\Exception
+     * @author hutao
+     */
+    public function deleteTb($id)
+    {
+        try{
+            $attachment_id = Db::name('quality_upload')->where('contr_relation_id',$id)->value('attachment_id');
+            $filePath = Db::name('attachment')->where('id',$attachment_id)->column('filepath');
+            if(sizeof($filePath) > 0){
+                if(file_exists($filePath[0])){
+                    unlink($filePath[0]); //删除文件
+                }
+                $pdf_path = './uploads/temp/' . basename($filePath[0]) . '.pdf';
+                if(file_exists($pdf_path)){
+                    unlink($pdf_path); //删除生成的预览pdf
+                }
+            }
+            Db::name('attachment')->where('id',$attachment_id)->delete();
+            Db::name('quality_upload')->where('id',$id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
