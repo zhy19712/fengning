@@ -900,6 +900,7 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
+    //单元管控 控制点列表
     public function quality_division_controlpoint_relation($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
@@ -949,6 +950,57 @@ class Common extends Controller
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+    //单元管控：控制点执行情况、附件资料
+    public function quality_upload($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        $par = array();
+        $par['a.type'] = $this->request->has('type')?$this->request->param('type'):1;
+        $par['a.contr_relation_id'] = $this->request->param('cpr_id');
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->where(['type'=>$par['a.type'],'contr_relation_id'=>$par['a.contr_relation_id']])->count();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('attachment b', 'a.attachment_id=b.id', 'left')
+                    ->join('admin c','b.user_id=c.id','left')
+                    ->join('admin_group d','c.admin_group_id=d.id')
+                    ->where($par)
+                    ->field('a.id,c.nickname,d.name,b.create_time')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('attachment b', 'a.attachment_id=b.id', 'left')
+                    ->join('admin c','b.user_id=c.id','left')
+                    ->join('admin_group d','c.admin_group_id=d.id')
+                    ->where($par)
+                    ->field('a.id,c.nickname,d.name,b.create_time')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
 
     // ht 分部质量管理 分部策划，分部管控 控制点列表
     public function quality_subdivision_planning_list($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
@@ -959,8 +1011,7 @@ class Common extends Controller
         //获取筛选条件
         $selfid = input('selfid') ? input('selfid') : "";//左边的树节点的id
         //表的总记录数 必要
-        if($selfid  )
-        {
+        if ($selfid) {
 
         }
 
@@ -999,6 +1050,7 @@ class Common extends Controller
 
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+
     // ht 分部质量管理 控制点执行情况，图像资料
     public function quality_subdivision_planning_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
@@ -1006,8 +1058,6 @@ class Common extends Controller
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
-
-
 
 
         //表的总记录数 必要

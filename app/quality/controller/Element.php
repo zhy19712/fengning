@@ -16,6 +16,7 @@ use app\standard\model\ControlPoint;
 use app\standard\model\MaterialTrackingDivision;
 use think\Db;
 use think\Exception;
+use think\File;
 use think\Request;
 
 class Element extends Permissions
@@ -159,6 +160,10 @@ class Element extends Permissions
         }
     }
 
+    public function download($cpr_id)
+    {
+        
+    }
 
     ##单元验评
 
