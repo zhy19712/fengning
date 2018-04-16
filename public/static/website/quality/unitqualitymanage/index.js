@@ -54,11 +54,12 @@ $.datatable({
         }
     ],
 });
-//取消全选的事件绑定
+//取消全选的事件绑定~
 $("thead tr th:first-child").unbind();
 
 //删除自构建分页位置
 $('#easyuiLayout').find('.tbcontainer').remove();
+$('#tableItem_wrapper').find('.tbcontainer').remove();
 /**
  * 导出二维码
  */
@@ -98,8 +99,26 @@ function addControl() {
         type:'1',
         area:['1024px','500px'],
         content:$('#pointLayer'),
+        btn:['保存'],
         success:function () {
             $('#pointLayer').css('visibility','initial');
+        },
+        yes:function () {
+            var add_id = $('#enginId').val();
+            var ma_division_id = $('#workId').val();
+            $.ajax({
+                url: "./addControl",
+                type: "post",
+                data: {
+                    add_id:add_id,
+                    ma_division_id:ma_division_id,
+                    idArr:idArr
+                },
+                dataType: "json",
+                success: function (res) {
+
+                }
+            })
         },
         cancel: function(index, layero){
             $('#pointLayer').css('visibility','hidden');
@@ -122,4 +141,58 @@ $.ztree({
             tablePath:'/quality/common/datatablesPre?tableName=unit_quality_add_control'
         });
     }
+});
+
+//获取选中行ID
+var idArr = [];
+function getId(that) {
+    var isChecked = $(that).prop('checked');
+    var id = $(that).attr('idv');
+    var checkedLen = $('input[type="checkbox"][name="checkList"]:checked').length;
+    var checkboxLen = $('input[type="checkbox"][name="checkList"]').length;
+    if(checkedLen===checkboxLen){
+        $('#all_checked').prop('checked',true);
+    }else{
+        $('#all_checked').prop('checked',false);
+    }
+    if(isChecked){
+        idArr.push(id);
+        idArr.removalArray();
+    }else{
+        idArr.remove(id);
+        idArr.removalArray();
+        $('#all_checked').prop('checked',false);
+    }
+}
+
+//单选
+function getSelectId(that) {
+    getId(that);
+    console.log(idArr);
+}
+
+//checkbox全选
+$("#all_checked").on("click", function () {
+    var that = $(this);
+    if (that.prop("checked") === true) {
+        $("input[name='checkList']").prop("checked", that.prop("checked"));
+        $('#tableItem tbody tr').addClass('selected');
+        $('input[name="checkList"]').each(function(){
+            getId(this);
+        });
+    } else {
+        $("input[name='checkList']").prop("checked", false);
+        $('#tableItem tbody tr').removeClass('selected');
+        $('input[name="checkList"]').each(function(){
+            getId(this);
+        });
+    }
+    console.log(idArr);
+});
+
+//翻页事件
+tableItem.on('draw',function () {
+    $('input[type="checkbox"][name="checkList"]').prop("checked",false);
+    $('#all_checked').prop('checked',false);
+    idArr.length=0;
 });

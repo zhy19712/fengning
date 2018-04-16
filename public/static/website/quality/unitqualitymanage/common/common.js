@@ -6,6 +6,7 @@ var form = layui.form;
 $.ztree({
     //点击节点
     zTreeOnClick:function (event, treeId, treeNode){
+        $('#enginId').val(treeNode.add_id);
         $.clicknode({
             tableItem:tableItem,
             treeNode:treeNode,
@@ -46,6 +47,7 @@ $.ztree({
 function loadTableData(that) {
     var nodeId = window.treeNode.add_id;
     var workId = $(that).attr('uid');
+    $('#workId').val(workId);
     window.tableItem.ajax.url('/quality/common/datatablesPre?tableName=unit_quality_control&id='+ nodeId +'&workId = '+ workId +'').load();
     $('#tableItem_wrapper,.tbcontainer,#subList').show();
     $(that).addClass('active').siblings('a').removeClass();

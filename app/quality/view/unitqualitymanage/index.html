@@ -29,23 +29,9 @@
         </thead>
     </table>
 </div>
-<!-- 控制点选择弹层 -->
-<!--<div class="easyui-layout" id="easyuiLayout" style="width:100%;height:400px;display: none">
-    &lt;!&ndash;<div data-options="region:'west',title:'标准分类',split:true,minWidth:260">
-        <ul id="controlZtree" class="ztree"></ul>
-    </div>
-    <div data-options="region:'center',title:'控制点标准'">
-        <table id="controlItem" class="table table-striped table-bordered" cellspacing="0" style="width: 100%">
-            <thead>
-            <tr>
-                <th>编号</th>
-                <th>名称</th>
-            </tr>
-            </thead>
-        </table>
-    </div>&ndash;&gt;
-</div>-->
 <div class="point-layer" id="pointLayer">
+    <input type="hidden" name="enginId" id="enginId">
+    <input type="hidden" name="workId" id="workId">
     <div id="easyuiLayout" class="easyui-layout" style="width:100%;height:400px;">
         <div data-options="region:'west',title:'标准分类',split:true" style="width:180px;">
             <ul id="controlZtree" class="ztree"></ul>
