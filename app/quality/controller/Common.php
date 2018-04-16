@@ -829,14 +829,15 @@ class Common extends Controller
 
 
     // ht 单位质量管理 单位策划，单位管控 控制点列表
-    public function unit_quality_control($idArr, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function unit_quality_control($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
-        if (!is_array($idArr)) {
-            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
+        // 前台 传递 左侧的 节点 add_id 和 当前 点击的 工序 编号 workId
+        $param = input('param.');
+        $division_id = isset($param['add_id']) ? $param['add_id'] : -1; // 这里存放 工程划分 单位工程编号
+        $id = isset($param['workId']) ? $param['workId'] : -1; // 工序编号
+        if (($division_id == -1) || ($id == -1)) {
+            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '缺少参数']);
         }
-        // 前台 传递 id 的 时候 注意一下  把 左侧的 节点 add_id 和 当前 点击的 工序 编号 组合到一起 放到数组$idArr里
-        $division_id = $idArr[0]; // 这里存放 工程划分 单位工程编号
-        $id = $idArr[1]; // 工序编号
         $table = 'controlpoint'; // 控制点表
         //查询
         //条件过滤后记录数 必要
@@ -1176,11 +1177,12 @@ class Common extends Controller
     // ht 单位质量管理 单位管控 获取 控制点执行情况，图像资料 列表
     public function unit_quality_manage_file($idArr, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
-        if (!is_array($idArr)) {
-            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
+        $param = input('param.');
+        $id = isset($param['controlId']) ? $param['controlId'] : -1; // 控制点编号
+        $type = isset($param['typeId']) ? $param['typeId'] : -1; // 1执行情况 2图像资料
+        if (($id == -1) || ($type == -1)) {
+            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '参数有误']);
         }
-        $id = $idArr[0]; // 控制点编号
-        $type = $idArr[1]; // 1执行情况 2图像资料
         $table = 'quality_upload'; // 文件表
         //查询
         //条件过滤后记录数 必要

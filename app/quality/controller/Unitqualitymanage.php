@@ -180,39 +180,52 @@ class Unitqualitymanage extends Permissions
     }
 
 
-    // 单位管控 控制点执行情况文件 或者 图像资料文件 上传保存
+    /**
+     * 单位管控 控制点执行情况文件 或者 图像资料文件 上传保存
+     * @return \think\response\Json
+     * @author hutao
+     */
     public function editRelation()
     {
-        // 前台需要 传递 节点编号 add_id 工序编号 ma_division_id 控制点编号 id
+        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 文件编号  attachment_id
         $param = input('param.');
-        $add_id = isset($param['add_id']) ? $param['add_id'] : 0;
-        $ma_division_id = isset($param['ma_division_id']) ? $param['ma_division_id'] : 0; // 工序-作业编号是0,注意:工序-作业不允许上传
         $id = isset($param['id']) ? $param['id'] : 0;
-        if(($add_id == 0) || ($ma_division_id == 0) || ($id == 0)){
-            return json(['code' => '-1','msg' => '编号有误']);
+        $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
+        $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
+        if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
+            return json(['code' => '-1','msg' => '参数有误']);
         }
         if($this->request->isAjax()){
-            $data = [];
-            foreach ($idArr as $k=>$v){
-                $data[$k]['division_id'] = $add_id;
-                $data[$k]['ma_division_id'] = $ma_division_id;
-                $data[$k]['type'] = 0;
-                $data[$k]['control_id'] = $v;
-            }
+            $data['contr_relation_id'] = $id;
+            $data['attachment_id'] = $attachment_id;
+            $data['type'] = $type;
             $unit = new UnitqualitymanageModel();
-            $nodeStr = $unit->insertTb($data);
+            $nodeStr = $unit->saveTb($data);
             return json($nodeStr);
         }
     }
 
-    // 控制点执行情况文件 或者 图像资料文件 预览
+    /**
+     * 控制点执行情况文件 或者 图像资料文件 预览
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @author hutao
+     */
     public function relationPreview()
     {
+        // 前台 传递 id 编号
+        $param = input('post.');
+        $id = isset($param['id']) ? $param['id'] : 0;
+        if($id  == 0){
+            return json(['code' => 1,  'path' => '', 'msg' => '编号有误']);
+        }
         if(request()->isAjax()) {
-            $param = input('post.');
             $code = 1;
             $msg = '预览成功';
-            $data = Db::name('attachment')->where('id',$param['attachment_id'])->find();
+            $attachment_id = Db::name('quality_upload')->where('contr_relation_id',$id)->value('attachment_id');
+            $data = Db::name('attachment')->where('id',$attachment_id)->find();
             if(!$data['path'] || !file_exists("." .$data['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
             }
@@ -241,16 +254,24 @@ class Unitqualitymanage extends Permissions
         }
     }
 
-    // 控制点执行情况文件 或者 图像资料文件 下载
+    /**
+     * 控制点执行情况文件 或者 图像资料文件 下载
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @author hutao
+     */
     public function relationDownload()
     {
-        // 前台需要 传递 文件编号 id
+        // 前台需要 传递 id 编号
         $param = input('param.');
-        $file_id = isset($param['id']) ? $param['id'] : 0;
-        if($file_id){
+        $id = isset($param['id']) ? $param['id'] : 0;
+        if($id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
-        $file_obj = Db::name('attachment')->where('id',$file_id)->field('filename,filepath')->find();
+        $attachment_id = Db::name('quality_upload')->where('contr_relation_id',$id)->value('attachment_id');
+        $file_obj = Db::name('attachment')->where('id',$attachment_id)->field('filename,filepath')->find();
         $filePath = '.' . $file_obj['filepath'];
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
@@ -272,18 +293,25 @@ class Unitqualitymanage extends Permissions
         }
     }
 
-    // 控制点执行情况文件 或者 图像资料文件 删除
+    /**
+     * 控制点执行情况文件 或者 图像资料文件 删除
+     * 首先 删除 上传的文件 和 预览 的pdf 文件
+     * 然后 删除 上传记录
+     * 最后 删除 对应关系表记录
+     * @return \think\response\Json
+     * @throws \think\Exception
+     * @author hutao
+     */
     public function relationDel()
     {
-        // 前台需要 传递 文件编号 id
+        // 前台需要 传递 id 编号
         $param = input('param.');
         $id = isset($param['id']) ? $param['id'] : 0;
-        if($id){
+        if($id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
         if(request()->isAjax()) {
-            $sd = new ControlPoint();
-            //TODO 关联删除 控制点执行情况文件 和 图像资料文件
+            $sd = new UnitqualitymanageModel();
             $flag = $sd->deleteTb($id);
             return json($flag);
         }
