@@ -289,6 +289,7 @@ class Branch extends Permissions
             $group = $group->getOne($admininfo["admin_group_id"]);
 
             $data = [
+
                 "list_id" => $param["list_id"],//分部策划列表id
                 "file_image_name" => $param["file_image_name"],//上传的源文件名
                 "attachment_id" => $param["attachment_id"],//对应的是attachment文件上传表中的id
