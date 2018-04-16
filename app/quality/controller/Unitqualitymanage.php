@@ -183,7 +183,26 @@ class Unitqualitymanage extends Permissions
     // 单位管控 控制点执行情况文件 或者 图像资料文件 上传保存
     public function editRelation()
     {
-
+        // 前台需要 传递 节点编号 add_id 工序编号 ma_division_id 控制点编号 id
+        $param = input('param.');
+        $add_id = isset($param['add_id']) ? $param['add_id'] : 0;
+        $ma_division_id = isset($param['ma_division_id']) ? $param['ma_division_id'] : 0; // 工序-作业编号是0,注意:工序-作业不允许上传
+        $id = isset($param['id']) ? $param['id'] : 0;
+        if(($add_id == 0) || ($ma_division_id == 0) || ($id == 0)){
+            return json(['code' => '-1','msg' => '编号有误']);
+        }
+        if($this->request->isAjax()){
+            $data = [];
+            foreach ($idArr as $k=>$v){
+                $data[$k]['division_id'] = $add_id;
+                $data[$k]['ma_division_id'] = $ma_division_id;
+                $data[$k]['type'] = 0;
+                $data[$k]['control_id'] = $v;
+            }
+            $unit = new UnitqualitymanageModel();
+            $nodeStr = $unit->insertTb($data);
+            return json($nodeStr);
+        }
     }
 
     // 控制点执行情况文件 或者 图像资料文件 预览
