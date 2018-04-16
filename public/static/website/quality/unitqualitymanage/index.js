@@ -12,12 +12,12 @@ $.datatable({
     dom: 'ltpr',
     columns:[
         {
-            name: "id"
-        },
-        {
             name: "code"
         },{
             name: "name"
+        },
+        {
+            name: "id"
         }
     ],
     columnDefs:[
@@ -26,6 +26,7 @@ $.datatable({
             "orderable": false,
             "targets": [2],
             "render" :  function(data,type,row) {
+                console.log(data);
                 var html = "<i class='fa fa-download' uid="+ data +" title='下载' onclick='download(this)'></i>" ;
                 html += "<i class='fa fa-print' uid="+ data +" title='打印' onclick='print(this)'></i>" ;
                 html += "<i class='fa fa-times' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
@@ -203,9 +204,14 @@ tableItem.on('draw',function () {
 
 //删除
 function del(that) {
+    var id = $(that).attr('uid');
+    delMethod(id);
+}
+
+//删除方法
+function delMethod(id) {
     var add_id = window.treeNode.add_id;
     var ma_division_id = $('#workId').val();
-    var id = $(that).attr('uid');
     $.deleteData({
         ajaxUrl:'./controlDel',
         data: {
@@ -216,6 +222,11 @@ function del(that) {
         tablePath:'/quality/common/datatablesPre?tableName=unit_quality_control'
     });
 }
+
+$('#delBtn').click(function () {
+    delMethod(0);
+});
+
 
 //下载
 function download(that) {
