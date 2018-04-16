@@ -328,16 +328,24 @@ class Branch extends Permissions
                     //先删除图片
                     //查询attachment表中的文件上传路径
                     $attachment = Db::name("attachment")->where("id",$data["attachment_id"])->find();
-                    $path = "." .$attachment['filepath'];
-                    $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+                    if($attachment["filepath"])
+                    {
+                        $path = "." .$attachment['filepath'];
+                        $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
 
-                    if(file_exists($path)){
-                        unlink($path); //删除文件图片
+                        if(file_exists($path)){
+                            unlink($path); //删除文件图片
+                        }
+
+                        if(file_exists($pdf_path)){
+                            unlink($pdf_path); //删除生成的预览pdf
+                        }
+                    }
+                    else
+                    {
+                        return ['code' => -1,'msg' => '文件不存在!'];
                     }
 
-                    if(file_exists($pdf_path)){
-                        unlink($pdf_path); //删除生成的预览pdf
-                    }
 
                     //删除attachment表中对应的记录
                     Db::name('attachment')->where("id",$data["attachment_id"])->delete();
