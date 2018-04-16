@@ -104,12 +104,12 @@ class BranchModel extends Model
                             unlink($pdf_path); //删除生成的预览pdf
                         }
                     }
-                    Db::name('attachment')->delete('attachment_id_arr');
-                    $this->delete($id);
+                    Db::name('attachment')->whereIn('id',$attachment_id_arr)->delete();
+                    $this->where("id",$id)->delete();
                 }else
                 {
-                    $this->delete($id);
-                    Db::name('controlpoint')->delete($controller_point_id);
+                    $this->where("id",$id)->delete();
+                    Db::name('controlpoint')->where("id",$controller_point_id)->delete();
                 }
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
