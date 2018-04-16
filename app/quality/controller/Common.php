@@ -970,7 +970,7 @@ class Common extends Controller
                     ->join('admin c','b.user_id=c.id','left')
                     ->join('admin_group d','c.admin_group_id=d.id')
                     ->where($par)
-                    ->field('a.id,c.nickname,d.name,b.create_time')
+                    ->field('a.id,a.data_name,c.nickname,d.name,b.create_time')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -983,7 +983,7 @@ class Common extends Controller
                     ->join('admin c','b.user_id=c.id','left')
                     ->join('admin_group d','c.admin_group_id=d.id')
                     ->where($par)
-                    ->field('a.id,c.nickname,d.name,b.create_time')
+                    ->field('a.id,a.data_name,c.nickname,d.name,b.create_time')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
