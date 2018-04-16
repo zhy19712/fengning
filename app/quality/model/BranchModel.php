@@ -116,5 +116,4 @@ class BranchModel extends Model
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
-
 }
