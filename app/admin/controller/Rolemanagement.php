@@ -61,12 +61,12 @@ class Rolemanagement extends Permissions
     public function editCatetype()
     {
         if(request()->isAjax()){
+            //实例化模型类
             $model = new AdminCateType();
             $param = input('post.');
             /**
              * 前台需要传递的是 pid 父级节点编号,id自增id,name节点名称
              */
-
             if(empty($param['id']))//id为空时表示新增角色类型节点
             {
                 $data = [
@@ -94,9 +94,9 @@ class Rolemanagement extends Permissions
     public function delCatetype()
     {
         $param = input('post.');
+        //实例化模型类
         $model = new AdminCateType();
         // 先删除节点下的用户
-
         $user = new AdminModel();
         $cate = new AdminCate();
         $data = $cate->findcateid($param['id']);
@@ -110,7 +110,6 @@ class Rolemanagement extends Permissions
         }
 
         // 最后删除此节点
-//        $flag2 = $user->deladmincate($param);//请依次删除
         $admin_cate_id = $cate->getadmincateid($param);
         if($admin_cate_id)
         {
@@ -126,7 +125,6 @@ class Rolemanagement extends Permissions
         {
             return json($flag);
         }
-
     }
 
     /*
@@ -144,7 +142,6 @@ class Rolemanagement extends Permissions
         {
             return $this->fetch();
         }
-
     }
 
     /**
@@ -191,9 +188,11 @@ class Rolemanagement extends Permissions
      */
     public function delCate()
     {
-        if(request()->isAjax()) {
-            $param = input('post.');
+        if(request()->isAjax()){
+            //实例化模型类
             $model = new AdminCate();
+            $param = input('post.');
+
             // 先删除节点下的用户
             $user = new AdminModel();
             $res = $user->delUserByCateId($param['id']);
@@ -206,7 +205,6 @@ class Rolemanagement extends Permissions
                 return json($flag);
             }
         }
-
     }
 
     /**
@@ -216,13 +214,12 @@ class Rolemanagement extends Permissions
     public function getAdminname()
     {
 
-        if(request()->isAjax()) {
-
+        if(request()->isAjax()){
+            //实例化模型类
+            $user = new AdminModel();
             $param = input('post.');
             //定义一个空数组
             $res = array();
-            //实例化模型类
-            $user = new AdminModel();
             //先查询admin表中的所有的admin_cate_id
             $datainfo = $user->getAdmincateid();
             if($datainfo)
@@ -242,13 +239,11 @@ class Rolemanagement extends Permissions
 
                     }
                 }
-
                 return $res;//返回json数据
             }else
             {
                 return $this->fetch();
             }
-
         }
     }
 
@@ -258,15 +253,13 @@ class Rolemanagement extends Permissions
      */
     public function delAdminname()
     {
-        if(request()->isAjax()) {
-            $param = input('post.');
+        if(request()->isAjax()){
             //实例化model类型
             $model = new AdminModel();
+            $param = input('post.');
 
             $flag = $model->deladmincateid($param);
-
             return $flag;
-
         }else
         {
             return $this->fetch();
@@ -287,8 +280,8 @@ class Rolemanagement extends Permissions
      */
     public function addAdminname()
     {
-
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
+            //实例化模型类
             $model = new AdminModel();
             $param = input('post.');//需要前台传过来用户数组admin_id,cate表中的id
             $data = $model->insertAdminid($param);
@@ -302,8 +295,7 @@ class Rolemanagement extends Permissions
      */
     public function getindex()
     {
-
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
             // 获取左侧的树结构
             $model = new AdminGroup();
             //定义一个空的字符串
@@ -336,10 +328,8 @@ class Rolemanagement extends Permissions
                 {
                     $merge = array_merge($res,$str);
                 }
-
                 return json($merge);
             }
-
         }
     }
 
@@ -436,6 +426,5 @@ class Rolemanagement extends Permissions
         }
         return $menus;
     }
-
 }
 

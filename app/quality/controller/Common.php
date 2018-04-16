@@ -248,7 +248,7 @@ class Common extends Controller
     public function preview()
     {
         if (request()->isAjax()) {
-            $param = input('post.');
+            $id = input('post.id');
             $type_model = input('param.type_model');//model类名
             //拼接model类的地址
             $type_model = "app\\quality\\model\\" . $type_model;
@@ -256,7 +256,7 @@ class Common extends Controller
             $model = new $type_model();
             $code = 1;
             $msg = '预览成功';
-            $data = $model->getOne($param['id']);
+            $data = $model->getOne($id);
             //查询attachment文件上传表中的文件上传路径
             $attachment = Db::name("attachment")->where("id", $data["attachment_id"])->find();
             //上传文件路径
