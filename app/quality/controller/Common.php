@@ -900,7 +900,6 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
-    //单元管控 控制点列表
     public function quality_division_controlpoint_relation($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
@@ -1010,9 +1009,27 @@ class Common extends Controller
         $recordsFiltered = 0;
         //获取筛选条件
         $selfid = input('selfid') ? input('selfid') : "";//左边的树节点的id
+        $procedureid = input('procedureid') ? input('procedureid') : "";//工序号
         //表的总记录数 必要
-        if ($selfid) {
-
+        if($selfid  && $procedureid)
+        {
+            $search_data = [
+                "selfid" => $selfid,
+                "procedureid" => $procedureid
+            ];
+        }
+        else if($selfid  && !$procedureid)
+        {
+            $search_data = [
+                "selfid" => $selfid
+            ];
+        }
+        else if(!$selfid  && !$procedureid)
+        {
+            $search_data = [
+                "selfid" => $selfid,
+                "procedureid" => $procedureid
+            ];
         }
 
         //表的总记录数 必要
@@ -1050,7 +1067,6 @@ class Common extends Controller
 
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
-
     // ht 分部质量管理 控制点执行情况，图像资料
     public function quality_subdivision_planning_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
@@ -1058,6 +1074,8 @@ class Common extends Controller
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         //表的总记录数 必要
+
+
 
 
         //表的总记录数 必要
