@@ -31,9 +31,9 @@ class BranchModel extends Model
     /**
      * 根据所属工序号查询所有的分部策划列表中的id
      */
-    public function getAllid($procedureid)
+    public function getAllid($selfid,$procedureid)
     {
-        $data = $this->field("id")->where('procedureid', $procedureid)->select();
+        $data = $this->field("id")->where(['selfid'=>$selfid,'procedureid'=>$procedureid])->select();
         return $data;
     }
 

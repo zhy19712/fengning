@@ -193,9 +193,10 @@ class Branch extends Permissions
                 //实例化模型类
                 $model = new BranchModel();
                 //分部策划列表id
+                $selfid = input('param.selfid');//所属工序号
                 $procedureid = input('param.procedureid');//所属工序号
                 //根据所属工序号查询所有的分部策划列表中的数据
-                $data = $model->getAllid($procedureid);
+                $data = $model->getAllid($selfid,$procedureid);
                 if(!empty($data))
                 {
                     foreach ($data as $k=>$v)
