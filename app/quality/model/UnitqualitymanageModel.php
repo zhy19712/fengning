@@ -46,6 +46,11 @@ class UnitqualitymanageModel extends Model
             }else{
                 $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=>$id,'type'=>0])->value('id');
             }
+            // 已经执行 的控制点 不能删除
+            $status = Db::name('quality_upload')->where(['contr_relation_id'=> ['in',$relation_id],'status'=>1 ])->count();
+            if($status > 0){
+                return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
+            }
             if(is_array($relation_id) && sizeof($relation_id)){
                 $data = Db::name('quality_upload')->whereIn('contr_relation_id',$relation_id)->column('id,attachment_id');
             }else{
@@ -69,6 +74,32 @@ class UnitqualitymanageModel extends Model
             }
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
+    public function getNodeInfo()
+    {
+        // cat = 2 只取单位工程工序树
+        $result = Db::name('materialtrackingdivision')->where('cat',2)->column('id,pid,name');
+        $str = "";
+        foreach($result as $key=>$vo){
+            $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"' . ',"add_id":"'.$vo['id'].'"';
+            $str .= '},';
+        }
+        return "[" . substr($str, 0, -1) . "]";
+    }
+
+    public function insertTb($param)
+    {
+        try{
+            $result = Db::name('')->insertAll($param);
+            if($result > 0){
+                return ['code' => 1,'msg' => '添加成功'];
+            }else{
+                return ['code' => -1,'msg' => $this->getError()];
+            }
+        }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
