@@ -78,7 +78,7 @@ function exportQcode(addId) {
         },
         dataType: "json",
         success: function (res) {
-
+            layer.msg(res.msg);
         }
     })
 }
@@ -97,7 +97,7 @@ function addControl() {
         title:'控制点选择',
         id:'1',
         type:'1',
-        area:['1024px','500px'],
+        area:['1024px','600px'],
         content:$('#pointLayer'),
         btn:['保存'],
         success:function () {
@@ -116,7 +116,7 @@ function addControl() {
                 },
                 dataType: "json",
                 success: function (res) {
-
+                    layer.msg(res.msg);
                 }
             })
         },
@@ -196,3 +196,27 @@ tableItem.on('draw',function () {
     $('#all_checked').prop('checked',false);
     idArr.length=0;
 });
+
+//删除
+function del(that) {
+    var add_id = window.treeNode.add_id;
+    var ma_division_id = $('#workId').val();
+    var id = $(that).attr('uid');
+    layer.confirm('确定要删除当前控制点吗?', {icon: 3, title:'提示'}, function(index){
+        $.ajax({
+            url: "./controlDel",
+            type: "post",
+            data: {
+                add_id:add_id,
+                ma_division_id:ma_division_id,
+                id:id
+            },
+            dataType: "json",
+            success: function (res) {
+                layer.msg(res.msg);
+            }
+        });
+        layer.close(index);
+    });
+
+}
