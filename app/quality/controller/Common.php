@@ -829,13 +829,12 @@ class Common extends Controller
 
 
     // ht 单位质量管理 单位策划，单位管控 控制点列表
-    public function unit_quality_control($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function unit_quality_control($idArr, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
-        if (!stristr($id, '-')) {
+        if (!is_array($idArr)) {
             return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
         }
-        // 前台 传递 id 的 时候 注意一下  把 左侧的 节点 add_id 和 当前 点击的 工序 编号 以 - 组合到一起
-        $idArr = explode('-', $id);
+        // 前台 传递 id 的 时候 注意一下  把 左侧的 节点 add_id 和 当前 点击的 工序 编号 组合到一起 放到数组$idArr里
         $division_id = $idArr[0]; // 这里存放 工程划分 单位工程编号
         $id = $idArr[1]; // 工序编号
         $table = 'controlpoint'; // 控制点表
@@ -1173,5 +1172,60 @@ class Common extends Controller
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+
+    // ht 单位质量管理 单位管控 获取 控制点执行情况，图像资料 列表
+    public function unit_quality_manage_file($idArr, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        if (!is_array($idArr)) {
+            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
+        }
+        $id = $idArr[0]; // 控制点编号
+        $type = $idArr[1]; // 1执行情况 2图像资料
+        $table = 'quality_upload'; // 文件表
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        //表的总记录数 必要
+        $recordsTotal = Db::name('quality_upload')->where(['contr_relation_id'=>$id,'type'=>$type])->count();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('u')
+                    ->field('t.filename,a.nickname,t.create_time,u.id')
+                    ->join('attachment as t','u.attachment_id = t.id','left')
+                    ->join('admin as a','t.user_id = a.id','left')
+                    ->where(['u.contr_relation_id'=> $id,'type'=>$type])
+                    ->where($columnString, 'like', '%' . $search . '%')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('u')
+                    ->field('t.filename,a.nickname,t.create_time,u.id')
+                    ->join('attachment as t','u.attachment_id = t.id','left')
+                    ->join('admin as a','t.user_id = a.id','left')
+                    ->where(['u.contr_relation_id'=> $id,'type'=>$type])
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
 
 }
