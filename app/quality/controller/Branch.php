@@ -283,7 +283,7 @@ class Branch extends Permissions
             $data = [
 
                 "list_id" => $param["list_id"],//分部策划列表id
-                "file_image_name" => $param["file_image_name"],//上传的源文件名
+                "filename" => $param["filename"],//上传的源文件名
                 "attachment_id" => $param["attachment_id"],//对应的是attachment文件上传表中的id
                 "owner" => Session::get('current_nickname'),//上传人
                 "company" => $group["name"],//单位
