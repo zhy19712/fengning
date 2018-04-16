@@ -92,7 +92,7 @@ class BranchModel extends Model
              * type 类型:1 检验批 0 工程划分
              */
                 $data = Db::name('quality_subdivision_planning_file')->where('list_id',$id)->column('id,attachment_id');
-                if(is_array($data)){
+                if(!empty($data)){
                     $attachment_id_arr = array_values($data);
                     $att = Db::name('attachment')->whereIn('id',$attachment_id_arr)->column('filepath');
                     foreach ($att as $v){
@@ -106,8 +106,11 @@ class BranchModel extends Model
                     }
                     Db::name('attachment')->delete('attachment_id_arr');
                     $this->delete($id);
+                }else
+                {
+                    $this->delete($id);
+                    Db::name('controlpoint')->delete($controller_point_id);
                 }
-            Db::name('controlpoint')->delete($controller_point_id);
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
