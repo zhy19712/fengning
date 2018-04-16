@@ -104,16 +104,15 @@ class Unitqualitymanage extends Permissions
     }
 
     /**
-     * 删除控制点
+     * 删除控制点 注意: 已经执行 的控制点 不能删除
      *
-     * 控制点 存在于 controlpoint 表 和 quality_division_controlpoint_relation 中
-     * controlpoint 表里的数据 是原始的，quality_division_controlpoint_relation 是 在 单位策划里 后来 新增的关系记录
+     * 控制点 存在于 quality_division_controlpoint_relation 中
+     * quality_division_controlpoint_relation 里包含 新增控制点时 关联添加的对应关系
+     * 和 在 单位策划里 后来 新增控制点 时 追加的 对应关系
      *
      * 如果关系记录存在 该控制点 那么就应该先
      * 要关联 删除 记录里的控制点执行情况 和 图像资料  以及它们所包含的文件 以及 预览的pdf文件
-     * 然后 删除 这条关系记录
-     *
-     * 最后 删除 原始数据
+     * 最后 删除 这条关系记录
      *
      * type 类型:1 检验批 0 工程划分
      * @return \think\response\Json
@@ -127,9 +126,12 @@ class Unitqualitymanage extends Permissions
         $add_id = isset($param['add_id']) ? $param['add_id'] : 0;
         $ma_division_id = isset($param['ma_division_id']) ? $param['ma_division_id'] : -1; // 工序作业编号是0
         $id = isset($param['id']) ? $param['id'] : -1; // id 等于0 表示 全部删除
-        if($add_id || ($ma_division_id == -1) || ($id == -1)){
+        if(($add_id == 0) || ($ma_division_id == -1) || ($id == -1)){
             return json(['code' => '-1','msg' => '编号有误']);
         }
+
+        //TODO 已经执行 的控制点 不能删除
+
         if(request()->isAjax()) {
             $unit = new UnitqualitymanageModel();
             $flag = $unit->associationDeletion($add_id,$ma_division_id,$id);
