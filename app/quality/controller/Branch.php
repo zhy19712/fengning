@@ -17,6 +17,7 @@ use app\quality\model\BranchfileModel;//分部质量管理文件上传
 use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
 use app\quality\model\DivisionModel;//工程划分
+use app\standard\model\ControlPoint;//控制点
 use \think\Session;
 use think\exception\PDOException;
 use think\Db;
@@ -40,8 +41,12 @@ class Branch extends Permissions
      */
     public function addPlan()
     {
+        $param = input('param.');
+        $selfid = $param["selfid"];
+        $procedureid = $param["procedureid"];//工序号
+        $this->assign('selfid', $selfid);
+        $this->assign('procedureid', $procedureid);
         return $this->fetch();
-
     }
 
     /**
@@ -54,7 +59,7 @@ class Branch extends Permissions
     {
         if($this->request->isAjax()){
             $node = new DivisionModel();
-            $nodeStr = $node->getNodeInfo(4); // 2 只取到子单位工程
+            $nodeStr = $node->getNodeInfo(4);
             return json($nodeStr);
         }
         if($type==1){
@@ -226,26 +231,32 @@ class Branch extends Permissions
             if(request()->isAjax()){
                 //实例化模型类
                 $model = new BranchModel();
+                $point = new ControlPoint();
                 $param = input('post.');
-                //前台传过来要添加的控制点数组，包含工程划分树的节点id，所属工序号procedureid，控制点id，控制点编号，控制点名称
+                //前台传过来要添加的控制点数组，包含工程划分树的节点id，所属工序号procedureid，控制点id
                 $selfid = $param["selfid"];//工程划分树的节点id
                 $procedureid = $param["procedureid"];//所属工序号，对应的是materialtrackingdivision表中的id
 
                 //需要的是一个二维数组
-                $control_data = $param["control_data"];
+                $control_data = $param["control_id"];
 
                 if(!empty($control_data))
                 {
                     foreach ($control_data as $k=>$v)
                     {
-                        $data = [
-                            "selfid" => $selfid,
-                            "procedureid" => $procedureid,
-                            "controller_point_id" => $v["controller_point_id"],
-                            "controller_point_number" => $v["controller_point_number"],
-                            "controller_point_name" => $v["controller_point_name"]
-                        ];
-                        $model->insertSu($data);
+                        //根据控制点id查询fengning_controlpoint表中的信息
+                        $controlpoint_info = $point->getOne($v);
+                        if(!empty($controlpoint_info))
+                        {
+                            $data = [
+                                "selfid" => $selfid,
+                                "procedureid" => $procedureid,//工序号
+                                "controller_point_id" => $v,//控制点id
+                                "controller_point_number" => $controlpoint_info["code"],//控制点编号
+                                "controller_point_name" => $controlpoint_info["name"]//控制点名称
+                            ];
+                            $model->insertSu($data);
+                        }
                     }
                     return ['code' => 1,'msg' => '添加成功'];
                 }
@@ -253,7 +264,6 @@ class Branch extends Permissions
                 {
                     return ['code' => -1,'msg' => ''];
                 }
-
             }
         }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
