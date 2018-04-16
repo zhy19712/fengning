@@ -838,24 +838,29 @@ class Common extends Controller
         $idArr = explode('-', $id);
         $division_id = $idArr[0]; // 这里存放 工程划分 单位工程编号
         $id = $idArr[1]; // 工序编号
-        $table = 'controlpoint';
+        $table = 'controlpoint'; // 控制点表
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        if ($id == 0) { // 等于0 说明是 作业 那就获取全部的 控制点 注意 这里不包含 单位策划里 追加的 关系数据
-            $id = Db::name('materialtrackingdivision')->where(['type' => 3, 'cat' => 2])->column('id'); // 标准库单元工程下 所有的工序编号
+        if ($id == 0) {
+            /**
+             * 等于0 说明是 作业 那就获取全部的 控制点 注意 这里不包含 单位策划里 新增控制点 追加的 关系数据
+             * 作业下的控制点 是 materialtrackingdivision 工序表 关联 controlpoint 控制点表 的全部数据
+             */
+            $id = Db::name('materialtrackingdivision')->where(['type' => 3, 'cat' => 2])->column('id'); // 标准库单位工程下 所有的工序编号
             $recordsTotal = Db::name($table)->whereIn('procedureid', $id)->count();
             $new_control = '';
             $where_val = 'whereIn';
         } else {
-            $recordsTotal = Db::name($table)->where('procedureid', $id)->count();
-            // 合并 单位策划里 后来 添加的控制点
-            // 注意 ：这里的控制点是
-            // 存在于 quality_division_controlpoint_relation 单位质量管理 对应关系表里的 所以即使和 其他 工序下 的控制点重复也是正常的
+            /**
+             * 注意 ：这里的控制点是 ，存在于 quality_division_controlpoint_relation 单位质量管理 对应关系表里的 关联对应数据
+             * 所以即使和 其他 工序下 的控制点重复也是正常的
+             * type 类型:1 检验批 0 工程划分
+             */
             $new_control = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->column('control_id');
-            $recordsTotal = $recordsTotal + sizeof($new_control);
+            $recordsTotal = sizeof($new_control);
             $where_val = 'where';
         }
         if (strlen($search) > 0) {

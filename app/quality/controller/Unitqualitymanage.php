@@ -21,6 +21,15 @@ class Unitqualitymanage extends Permissions
 {
     /**
      * 单位策划 或者 单位管控 初始化左侧树节点
+     * 这里的 树节点 是从工程划分 树节点里取来的(而且只取到 子单位工程)
+     *
+     * 工序是从materialtrackingdivision表里取出来的 取的是 单位工程下的三级节点
+     *
+     * 注意:作业下的控制点 是 materialtrackingdivision 工序表 关联 controlpoint 控制点表 的全部数据
+     *
+     * 其他工序下的控制点 是 根据 quality_division_controlpoint_relation 对应关系表 关联 controlpoint 的数据
+     * 可以新增，删除，全部删除，删除的是 对应关系表里的对应信息，不是真正的删除controlpoint里的数据
+     *
      * @param int $type
      * @return mixed|\think\response\Json
      * @author hutao
