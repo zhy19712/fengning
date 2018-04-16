@@ -46,6 +46,11 @@ class UnitqualitymanageModel extends Model
             }else{
                 $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=>$id,'type'=>0])->value('id');
             }
+            // 已经执行 的控制点 不能删除
+            $status = Db::name('quality_upload')->where(['contr_relation_id'=> ['in',$relation_id],'status'=>1 ])->count();
+            if($status > 0){
+                return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
+            }
             if(is_array($relation_id) && sizeof($relation_id)){
                 $data = Db::name('quality_upload')->whereIn('contr_relation_id',$relation_id)->column('id,attachment_id');
             }else{

@@ -129,9 +129,6 @@ class Unitqualitymanage extends Permissions
         if(($add_id == 0) || ($ma_division_id == -1) || ($id == -1)){
             return json(['code' => '-1','msg' => '编号有误']);
         }
-
-        //TODO 已经执行 的控制点 不能删除
-
         if(request()->isAjax()) {
             $unit = new UnitqualitymanageModel();
             $flag = $unit->associationDeletion($add_id,$ma_division_id,$id);
@@ -183,7 +180,7 @@ class Unitqualitymanage extends Permissions
     }
 
 
-    // 控制点执行情况文件 或者 图像资料文件 上传保存
+    // 单位管控 控制点执行情况文件 或者 图像资料文件 上传保存
     public function editRelation()
     {
 
