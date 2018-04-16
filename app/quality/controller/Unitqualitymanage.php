@@ -139,10 +139,47 @@ class Unitqualitymanage extends Permissions
         }
     }
 
-    // 添加控制点
+    /**
+     * 获取单位工程工序树
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function unitTree()
+    {
+        if($this->request->isAjax()){
+            $node = new UnitqualitymanageModel();
+            $nodeStr = $node->getNodeInfo();
+            return json($nodeStr);
+        }
+    }
+
+    /**
+     * 添加控制点
+     * @return \think\response\Json
+     * @author hutao
+     */
     public function addControl()
     {
-
+        // 前台需要 传递 节点编号 add_id 工序编号 ma_division_id
+        $param = input('param.');
+        $add_id = isset($param['add_id']) ? $param['add_id'] : 0;
+        $ma_division_id = isset($param['ma_division_id']) ? $param['ma_division_id'] : 0; // 工序作业编号是0,但是作业没有添加方法
+        $idArr = isset($param['idArr/a']) ? $param['idArr/a'] : 0;
+        if(($add_id == 0) || ($ma_division_id == 0) || ($idArr == 0)){
+            return json(['code' => -1 ,'msg' => '请选择需要新增的控制点']);
+        }
+        if($this->request->isAjax()){
+            $data = [];
+            foreach ($idArr as $k=>$v){
+                $data[$k]['division_id'] = $add_id;
+                $data[$k]['ma_division_id'] = $ma_division_id;
+                $data[$k]['type'] = 0;
+                $data[$k]['control_id'] = $v;
+            }
+            $unit = new UnitqualitymanageModel();
+            $nodeStr = $unit->insertTb($data);
+            return json($nodeStr);
+        }
     }
 
 

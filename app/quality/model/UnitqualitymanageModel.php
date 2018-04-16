@@ -73,4 +73,30 @@ class UnitqualitymanageModel extends Model
         }
     }
 
+    public function getNodeInfo()
+    {
+        // cat = 2 只取单位工程工序树
+        $result = Db::name('materialtrackingdivision')->where('cat',2)->column('id,pid,name');
+        $str = "";
+        foreach($result as $key=>$vo){
+            $str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"' . ',"add_id":"'.$vo['id'].'"';
+            $str .= '},';
+        }
+        return "[" . substr($str, 0, -1) . "]";
+    }
+
+    public function insertTb($param)
+    {
+        try{
+            $result = Db::name('')->insertAll($param);
+            if($result > 0){
+                return ['code' => 1,'msg' => '添加成功'];
+            }else{
+                return ['code' => -1,'msg' => $this->getError()];
+            }
+        }catch (PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
 }
