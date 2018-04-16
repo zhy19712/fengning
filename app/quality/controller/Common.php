@@ -1073,10 +1073,24 @@ class Common extends Controller
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
+        //获取筛选条件
+        $list_id = input('list_id') ? input('list_id') : "";//分部策划列表id
+        $type = input('type') ? input('type') : "";//1表示执行点执行情况，2表示图像资料
         //表的总记录数 必要
-
-
-
+        if($list_id  && $type)
+        {
+            $search_data = [
+                "list_id" => $list_id,
+                "type" => $type
+            ];
+        }
+        else if(!$list_id  && !$type)
+        {
+            $search_data = [
+                "list_id" => $list_id,
+                "type" => $type
+            ];
+        }
 
         //表的总记录数 必要
         $recordsTotal = 0;
@@ -1086,13 +1100,13 @@ class Common extends Controller
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
             //没有搜索条件的情况
             if ($limitFlag) {
-                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
