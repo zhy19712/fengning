@@ -291,6 +291,9 @@ class Sampling extends Permissions
                 unlink($pdf_path); //删除生成的预览pdf
             }
 
+            //删除attachment表中对应的记录
+            Db::name('attachment')->where("id",$data_info["attachment_id"])->delete();
+
             //最后删除这一条记录信息
             $flag = $model->delSampling($id);
             return $flag;
