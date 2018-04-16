@@ -16,6 +16,7 @@ use app\quality\model\BranchModel;//分部质量管理
 use app\quality\model\BranchfileModel;//分部质量管理文件上传
 use app\admin\model\AdminGroup;//组织机构
 use app\admin\model\Admin;//用户表
+use app\quality\model\DivisionModel;//工程划分
 use \think\Session;
 use think\exception\PDOException;
 use think\Db;
@@ -31,6 +32,35 @@ class Branch extends Permissions
     {
         return $this->fetch();
 
+    }
+
+    /**
+     * 分部策划添加控制点
+     * @return mixed
+     */
+    public function addPlan()
+    {
+        return $this->fetch();
+
+    }
+
+    /**
+     * 分部策划 或者 分部管控 初始化左侧树节点
+     * @param int $type
+     * @return mixed|\think\response\Json
+     * @author hutao
+     */
+    public function index($type = 1)
+    {
+        if($this->request->isAjax()){
+            $node = new DivisionModel();
+            $nodeStr = $node->getNodeInfo(4); // 2 只取到子单位工程
+            return json($nodeStr);
+        }
+        if($type==1){
+            return $this->fetch();
+        }
+        return $this->fetch('control');
     }
 
     /**
@@ -414,6 +444,16 @@ class Branch extends Permissions
      * @return mixed
      */
     public function control()
+    {
+        return $this->fetch();
+
+    }
+
+    /**
+     * 分部管控添加控制点
+     * @return mixed
+     */
+    public function addControl()
     {
         return $this->fetch();
 

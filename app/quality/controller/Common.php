@@ -953,11 +953,91 @@ class Common extends Controller
     // ht 分部质量管理 分部策划，分部管控 控制点列表
     public function quality_subdivision_planning_list($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //表的总记录数 必要
 
+
+        //表的总记录数 必要
+        $recordsTotal = 0;
+        $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id > 0")->count(0);
+        $recordsFilteredResult = array();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            //计算列长度
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+
+        }
+
+
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
     // ht 分部质量管理 控制点执行情况，图像资料
     public function quality_subdivision_planning_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //表的总记录数 必要
 
+
+
+
+        //表的总记录数 必要
+        $recordsTotal = 0;
+        $recordsTotal = Db::name($table)->where($search_data)->where("admin_group_id > 0")->count(0);
+        $recordsFilteredResult = array();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->field("filename,date,owner,company,position,id")->where($search_data)->where("admin_group_id > 0")->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            //计算列长度
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+
+        }
+
+
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 }
