@@ -32,7 +32,6 @@ class Branch extends Permissions
     public function plan()
     {
         return $this->fetch();
-
     }
 
     /**
@@ -42,7 +41,7 @@ class Branch extends Permissions
     public function addPlan()
     {
         $param = input('param.');
-        $selfid = $param["selfid"];
+        $selfid = $param["selfid"];//左侧节点树id
         $procedureid = $param["procedureid"];//工序号
         $this->assign('selfid', $selfid);
         $this->assign('procedureid', $procedureid);
@@ -53,11 +52,11 @@ class Branch extends Permissions
      * 分部策划 或者 分部管控 初始化左侧树节点
      * @param int $type
      * @return mixed|\think\response\Json
-     * @author hutao
      */
     public function index($type = 1)
     {
         if($this->request->isAjax()){
+            //实例化模型类
             $node = new DivisionModel();
             $nodeStr = $node->getNodeInfo(4);
             return json($nodeStr);
@@ -193,7 +192,7 @@ class Branch extends Permissions
                 //实例化模型类
                 $model = new BranchModel();
                 //分部策划列表id
-                $selfid = input('param.selfid');//所属工序号
+                $selfid = input('param.selfid');//左侧树节点的id
                 $procedureid = input('param.procedureid');//所属工序号
                 //根据所属工序号查询所有的分部策划列表中的数据
                 $data = $model->getAllid($selfid,$procedureid);
@@ -374,81 +373,6 @@ class Branch extends Permissions
         }
     }
 
-    /**
-     * 控制点执行情况文件 或者 图像资料文件 预览
-     * @return \think\response\Json
-     */
-    public function preview()
-    {
-        if(request()->isAjax()) {
-            $param = input('post.');
-            $code = 1;
-            $msg = '预览成功';
-            $data = Db::name('attachment')->where('id',$param['attachment_id'])->find();
-            if(!$data['path'] || !file_exists("." .$data['path'])){
-                return json(['code' => '-1','msg' => '文件不存在']);
-            }
-            $path = $data['path'];
-            $extension = strtolower(get_extension(substr($path,1)));
-            $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-            if(!file_exists($pdf_path)){
-                if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
-                    doc_to_pdf($path);
-                }else if($extension === 'xls' || $extension === 'xlsx'){
-                    excel_to_pdf($path);
-                }else if($extension === 'ppt' || $extension === 'pptx'){
-                    ppt_to_pdf($path);
-                }else if($extension === 'pdf'){
-                    $pdf_path = $path;
-                }else if($extension === "jpg" || $extension === "png" || $extension === "jpeg"){
-                    $pdf_path = $path;
-                }else {
-                    $code = 0;
-                    $msg = '不支持的文件格式';
-                }
-                return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }else{
-                return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
-            }
-        }
-    }
-
-    /**
-     * 控制点执行情况文件 或者 图像资料文件 下载
-     * @return \think\response\Json
-     */
-    public function download()
-    {
-        // 前台需要 传递 文件编号 id
-        $param = input('param.');
-        $file_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0;
-        if($file_id){
-            return json(['code' => '-1','msg' => '编号有误']);
-        }
-        $file_obj = Db::name('attachment')->where('id',$file_id)->field('filename,filepath')->find();
-        $filePath = '.' . $file_obj['filepath'];
-        if(!file_exists($filePath)){
-            return json(['code' => '-1','msg' => '文件不存在']);
-        }else if(request()->isAjax()){
-            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
-        }else{
-            $fileName = $file_obj['filename'];
-            $file = fopen($filePath, "r"); //   打开文件
-            //输入文件标签
-            $fileName = iconv("utf-8","gb2312",$fileName);
-            Header("Content-type:application/octet-stream ");
-            Header("Accept-Ranges:bytes ");
-            Header("Accept-Length:   " . filesize($filePath));
-            Header("Content-Disposition:   attachment;   filename= " . $fileName);
-            //   输出文件内容
-            echo fread($file, filesize($filePath));
-            fclose($file);
-            exit;
-        }
-    }
-
-
-
     /****************************分部管控************************/
     /**
      * 分部管控模板首页
@@ -457,7 +381,6 @@ class Branch extends Permissions
     public function control()
     {
         return $this->fetch();
-
     }
 
     /**
@@ -466,7 +389,11 @@ class Branch extends Permissions
      */
     public function addControl()
     {
+        $param = input('param.');
+        $selfid = $param["selfid"];//左侧节点树id
+        $procedureid = $param["procedureid"];//工序号
+        $this->assign('selfid', $selfid);
+        $this->assign('procedureid', $procedureid);
         return $this->fetch();
-
     }
 }

@@ -56,7 +56,7 @@ class BranchModel extends Model
     }
 
     /**
-     * 编辑一条现场图片信息
+     * 编辑一条信息
      */
     public function editSu($param)
     {
@@ -116,5 +116,4 @@ class BranchModel extends Model
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
-
 }
