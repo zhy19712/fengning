@@ -48,6 +48,30 @@ class Branch extends Permissions
         return $this->fetch();
     }
 
+    /****************************分部管控************************/
+    /**
+     * 分部管控模板首页
+     * @return mixed
+     */
+    public function control()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 分部管控添加控制点
+     * @return mixed
+     */
+    public function addControl()
+    {
+        $param = input('param.');
+        $selfid = $param["selfid"];//左侧节点树id
+        $procedureid = $param["procedureid"];//工序号
+        $this->assign('selfid', $selfid);
+        $this->assign('procedureid', $procedureid);
+        return $this->fetch();
+    }
+
     /**
      * 分部策划 或者 分部管控 初始化左侧树节点
      * @param int $type
@@ -372,29 +396,5 @@ class Branch extends Permissions
                 }
                 return $flag;
         }
-    }
-
-    /****************************分部管控************************/
-    /**
-     * 分部管控模板首页
-     * @return mixed
-     */
-    public function control()
-    {
-        return $this->fetch();
-    }
-
-    /**
-     * 分部管控添加控制点
-     * @return mixed
-     */
-    public function addControl()
-    {
-        $param = input('param.');
-        $selfid = $param["selfid"];//左侧节点树id
-        $procedureid = $param["procedureid"];//工序号
-        $this->assign('selfid', $selfid);
-        $this->assign('procedureid', $procedureid);
-        return $this->fetch();
     }
 }
