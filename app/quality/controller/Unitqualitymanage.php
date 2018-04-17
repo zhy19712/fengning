@@ -161,7 +161,7 @@ class Unitqualitymanage extends Permissions
         // 前台需要 传递 文件编号 id
         $param = input('param.');
         $file_id = isset($param['id']) ? $param['id'] : 0;
-        if($file_id){
+        if($file_id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
         $file_obj = Db::name('attachment')->where('id',$file_id)->field('filename,filepath')->find();
@@ -186,10 +186,10 @@ class Unitqualitymanage extends Permissions
         }
     }
 
-    // TODO 打印文件 预留接口
-    public function  printDocument()
+    // TODO 打印文件 预留接口 printDocument
+    public function printDocument()
     {
-
+        echo '<script>window.print()</script>';
     }
 
     /**
