@@ -829,48 +829,45 @@ class Common extends Controller
 
 
     // ht 单位质量管理 单位策划，单位管控 控制点列表
-    public function unit_quality_control($idArr, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function unit_quality_control($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
-//        if (!is_array($idArr)) {
-//            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
-//        }
-        // 前台 传递 id 的 时候 注意一下  把 左侧的 节点 add_id 和 当前 点击的 工序 编号 组合到一起 放到数组$idArr里
-        $division_id = input('id'); // 这里存放 工程划分 单位工程编号
-        $id = input('workId'); // 工序编号
+        // 前台 传递 左侧的 节点 add_id 和 当前 点击的 工序 编号 workId
+        $param = input('param.');
+        $division_id = isset($param['add_id']) ? $param['add_id'] : -1; // 这里存放 工程划分 单位工程编号
+        $id = isset($param['workId']) ? $param['workId'] : -1; // 工序编号
+        $type = isset($param['type']) ? $param['type'] : 0; // 不传递 说明 是 单位策划 传递 说明是 单位管控
+        if ($division_id == -1 || $id == -1) {
+            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
+        }
         $table = 'controlpoint'; // 控制点表
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
-        //表的总记录数 必要
-        if ($id == 0) {
-            /**
-             * 等于0 说明是 作业 那就获取全部的 控制点 注意 这里不包含 单位策划里 新增控制点 追加的 关系数据
-             * 作业下的控制点 是 materialtrackingdivision 工序表 关联 controlpoint 控制点表 的全部数据
-             */
-            $id = Db::name('materialtrackingdivision')->where(['type' => 3, 'cat' => 2])->column('id'); // 标准库单位工程下 所有的工序编号
-            $recordsTotal = Db::name($table)->whereIn('procedureid', $id)->count();
-            $new_control = '';
-            $where_val = 'whereIn';
+        /**
+         * 注意 ：这里的控制点是 ，存在于 quality_division_controlpoint_relation 单位质量管理 对应关系表里的 关联对应数据
+         * 所以即使和 其他 工序下 的控制点重复也是正常的
+         * type 类型:1 检验批 0 工程划分
+         */
+        if ($id == 0) { // 等于0 说明工序 是 作业 那就获取全部的 控制点
+            $control_id = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0,])->column('control_id');
         } else {
-            /**
-             * 注意 ：这里的控制点是 ，存在于 quality_division_controlpoint_relation 单位质量管理 对应关系表里的 关联对应数据
-             * 所以即使和 其他 工序下 的控制点重复也是正常的
-             * type 类型:1 检验批 0 工程划分
-             */
-            $new_control = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->column('control_id');
-            $recordsTotal = sizeof($new_control);
-            $where_val = 'where';
+            $control_id = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->column('control_id');
         }
+        $field_val = 'code,name,status,id';
+        if($type == 0){
+            $field_val = 'code,name,id';
+        }
+        //表的总记录数 必要
+        $recordsTotal = sizeof($control_id);
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('code,name,id')
-                    ->$where_val('procedureid', $id)
+                    ->field($field_val)
+                    ->where('id', 'IN', $control_id)
                     ->where($columnString, 'like', '%' . $search . '%')
-                    ->whereOr('id', 'IN', $new_control)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -879,9 +876,8 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)
-                    ->field('code,name,id')
-                    ->$where_val('procedureid', $id)
-                    ->whereOr('id', 'IN', $new_control)
+                    ->field($field_val)
+                    ->where('id', 'IN', $control_id)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
@@ -1000,7 +996,7 @@ class Common extends Controller
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
-    // ht 分部质量管理 分部策划，分部管控 控制点列表
+    // 分部质量管理 分部策划，分部管控 控制点列表
     public function quality_subdivision_planning_list($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
@@ -1066,7 +1062,7 @@ class Common extends Controller
 
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
-    // ht 分部质量管理 控制点执行情况，图像资料
+    // 分部质量管理 控制点执行情况，图像资料
     public function quality_subdivision_planning_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
@@ -1174,13 +1170,14 @@ class Common extends Controller
     }
 
     // ht 单位质量管理 单位管控 获取 控制点执行情况，图像资料 列表
-    public function unit_quality_manage_file($idArr, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function unit_quality_manage_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
-        if (!is_array($idArr)) {
+        $param = input('param.');
+        $id = isset($param['controlId']) ? $param['controlId'] : -1; // 控制点编号
+        $type = isset($param['type']) ? $param['type'] : 1; // 1执行情况 2图像资料 (不传递是执行情况 传递 是 图像资料)
+        if ($id == -1) {
             return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
         }
-        $id = $idArr[0]; // 控制点编号
-        $type = $idArr[1]; // 1执行情况 2图像资料
         $table = 'quality_upload'; // 文件表
         //查询
         //条件过滤后记录数 必要
