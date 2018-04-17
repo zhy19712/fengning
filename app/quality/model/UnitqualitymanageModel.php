@@ -109,6 +109,10 @@ class UnitqualitymanageModel extends Model
         try{
             $result = Db::name('quality_upload')->insert($param);
             if($result > 0){
+                $status = $this->where('id',$param['contr_relation_id'])->value('status');
+                if($status == 0){
+                    $this->where('id',$param['contr_relation_id'])->update(['status'=>1]);
+                }
                 return ['code' => 1,'msg' => '添加成功'];
             }else{
                 return ['code' => -1,'msg' => $this->getError()];
@@ -142,6 +146,11 @@ class UnitqualitymanageModel extends Model
             }
             Db::name('attachment')->where('id',$attachment_id)->delete();
             Db::name('quality_upload')->where('id',$id)->delete();
+            // 如果文件都被删除了，就修改状态为 未执行
+            $num = Db::name('quality_upload')->where('contr_relation_id',$id)->count();
+            if($num == 0){
+                $this->where('id',$id)->update(['status'=>0]);
+            }
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
