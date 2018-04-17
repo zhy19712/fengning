@@ -475,11 +475,6 @@ class Branch extends Permissions
                             unlink($pdf_path); //删除生成的预览pdf
                         }
                     }
-                    else
-                    {
-                        return ['code' => -1,'msg' => '文件不存在!'];
-                    }
-
 
                     //删除attachment表中对应的记录
                     Db::name('attachment')->where("id",$data["attachment_id"])->delete();
