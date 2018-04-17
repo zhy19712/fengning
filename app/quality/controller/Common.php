@@ -170,7 +170,7 @@ class Common extends Controller
             $data['create_time'] = time();//时间
             $data['uploadip'] = $this->request->ip();//IP
             $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
-            if ($data['module'] = 'atlas') {
+            if ($data['module'] == 'admin') {
                 //通过后台上传的文件直接审核通过
                 $data['status'] = 1;
                 $data['admin_id'] = $data['user_id'];
