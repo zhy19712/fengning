@@ -61,6 +61,13 @@ function controlPointStandard() {
             }
         ],
     });
+
+    //翻页事件
+    tableItem.on('draw',function () {
+        $('input[type="checkbox"][name="checkList"]').prop("checked",false);
+        $('#all_checked').prop('checked',false);
+        idArr.length=0;
+    });
 }
 
 /**
@@ -182,6 +189,7 @@ function getSelectId(that) {
 
 //checkbox全选
 $("#all_checked").on("click", function () {
+    idArr.length=0;
     var that = $(this);
     if (that.prop("checked") === true) {
         $("input[name='checkList']").prop("checked", that.prop("checked"));
@@ -197,13 +205,6 @@ $("#all_checked").on("click", function () {
         });
     }
     console.log(idArr);
-});
-
-//翻页事件
-tableItem.on('draw',function () {
-    $('input[type="checkbox"][name="checkList"]').prop("checked",false);
-    $('#all_checked').prop('checked',false);
-    idArr.length=0;
 });
 
 //删除
@@ -228,6 +229,7 @@ function delMethod(id) {
 }
 
 $('#delBtn').click(function () {
+    alert(1);
     delMethod(0);
 });
 
