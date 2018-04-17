@@ -97,3 +97,6 @@
 .uploadBox:hover{
    background-color: #009dc3;
 }
+.dataTables_wrapper, .tbcontainer {
+    display: block;
+}
