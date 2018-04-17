@@ -115,7 +115,7 @@ class Branch extends Permissions
     public function exportCode()
     {
         // 前台 传递 要下载 哪个节点 下的所有 二维码 add_id
-        $id = $this->request->has('selfid') ? $this->request->param('selfid', 0, 'intval') : 1;
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 1;
         if($id == 0){
             return json(['code' => '-1','msg' => '请选择工程划分节点']);
         }
