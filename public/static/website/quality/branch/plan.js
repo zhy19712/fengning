@@ -202,7 +202,6 @@ function download(id,url,type_model) {
             if(res.code != 1){
                 layer.msg(res.msg);
             }else {
-                alert(123);
                 $("#form_container").empty();
                 var str = "";
                 str += ""
