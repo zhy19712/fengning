@@ -317,14 +317,9 @@
                 "render": function (data, type, row) {
                     colorRed = data;
                     if(data == 0){
-                        // // $("#tableItem tr td:nth-of-type(3)").text().css("color","red");
-                        // if($("#tableItem tr td:nth-of-type(3)").text() == "未执行"){
-                        //     $("#tableItem tr td:nth-of-type(3)").css("color","red");
-                        // }
-                        return '未执行'
+                        return '<span style="color:red">未执行</span>'
                     }
                     return '已执行'
-
                 }
             },
             {
@@ -540,12 +535,12 @@
         if(selfidUnit != undefined || selfidUnit != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
         }
-        $(".mybtn").css("display","none");//新增
-        $(".alldel").css("display","none");//全部删除
-        $(".bitCodes").css("display","block");
-        $("#tableContent .dataTables_wrapper").css('display','block');
-        $("#tableContent .tbcontainer").css('display','block');
-        $("#tableContent #tableItem").css('display','block');
+        // $(".mybtn").css("display","none");//新增
+        // $(".alldel").css("display","none");//全部删除
+        // $(".bitCodes").css("display","block");
+        // $("#tableContent .dataTables_wrapper").css('display','block');
+        // $("#tableContent .tbcontainer").css('display','block');
+        // $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -591,9 +586,9 @@
 
     //点击作业
     $(".imgList").on("click","#homeWork",function () {
-        $(".bitCodes").css("display","block");
-        $(".mybtn").css("display","none");
-        $(".alldel").css("display","none");
+        // $(".bitCodes").css("display","block");
+        // $(".mybtn").css("display","none");
+        // $(".alldel").css("display","none");
         $(this).css("color","#2213e9").parent("span").next("span").children("a").css("color","#CDCDCD");
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
     });
@@ -604,9 +599,9 @@
         if(selfidUnit != undefined || selfidUnit != null && conThisId != undefined || conThisId != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         }
-        $(".bitCodes").css("display","none");
-        $(".mybtn").css("display","block");
-        $(".alldel").css("display","block");
+        // $(".bitCodes").css("display","none");
+        // $(".mybtn").css("display","block");
+        // $(".alldel").css("display","block");
         $("#tableContent .imgList").css('display','block');
         console.log(id);
     }

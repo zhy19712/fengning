@@ -45,10 +45,10 @@
     /*.dataTables_wrapper, .tbcontainer,#tableContent .imgList,#tableContent #tableItem {*/
     /*display: none;*/
     /*}*/
-    #tableContent #tableItem{
-        display: none;
-    }
-    .dataTables_wrapper, .tbcontainer {
+    /*#tableContent #tableItem{*/
+        /*display: none;*/
+    /*}*/
+    .dataTables_wrapper{
         display: block;
     }
     #unitWorkRightBottom .mybtn i.fa:before,#unitWorkRightBottom .bitCodes i.fa:before,#unitWorkRightBottom .mybtn1 i.fa:before,#unitWorkRightBottom .saveCheck i.fa:before{
@@ -280,30 +280,30 @@
     //组织结构表格
     var  tableItem, implementation, imageData, onlineFill, urlUnit;
 
-    urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
-
     tableItem = $('#tableItem').DataTable({
-        pagingType: "full_numbers",
         retrieve: true,
         processing: true,
         serverSide: true,
-        bAutoWidth:true,
         ajax: {
-            "url": urlUnit
+            "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="
         },
         dom: 'rt',
         columns: [
             {
-                name: "code"
+                name: "code",
+                bAutoWidth:true,
             },
             {
-                name: "name"
+                name: "name",
+                bAutoWidth:true,
             },
             {
-                name: "status"
+                name: "status",
+                bAutoWidth:true,
             },
             {
-                name: "id"
+                name: "id",
+                bAutoWidth:true,
             }
         ],
         columnDefs: [
@@ -319,7 +319,7 @@
                 "targets": [2],
                 "render": function (data, type, row) {
                     if(data == 0){
-                        return '未执行'
+                        return '<span style="color:red">未执行</span>'
                     }
                     return '已执行'
                 }
@@ -350,12 +350,7 @@
             //     "sNext": ">",
             //     "sLast": ">>"
             // }
-        },
-        // "fnInitComplete": function (oSettings, json) {
-        //     $('#tableItem_length').insertBefore(".mark");
-        //     $('#tableItem_info').insertBefore(".mark");
-        //     $('#tableItem_paginate').insertBefore(".mark");
-        // }
+        }
     });
 
     var layer = layui.layer;
@@ -537,12 +532,12 @@
         if(selfidUnit != undefined || selfidUnit != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
         }
-        $(".mybtn").css("display","none");//新增
-        $(".alldel").css("display","none");//全部删除
-        $(".bitCodes").css("display","block");
-        $("#tableContent .dataTables_wrapper").css('display','block');
-        $("#tableContent .tbcontainer").css('display','block');
-        $("#tableContent #tableItem").css('display','block');
+        // $(".mybtn").css("display","none");//新增
+        // $(".alldel").css("display","none");//全部删除
+        // $(".bitCodes").css("display","block");
+        // $("#tableContent .dataTables_wrapper").css('display','block');
+        // $("#tableContent .tbcontainer").css('display','block');
+        // $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -588,9 +583,9 @@
 
     //点击作业
     $(".imgList").on("click","#homeWork",function () {
-        $(".bitCodes").css("display","block");
-        $(".mybtn").css("display","none");
-        $(".alldel").css("display","none");
+        // $(".bitCodes").css("display","block");
+        // $(".mybtn").css("display","none");
+        // $(".alldel").css("display","none");
         $(this).css("color","#2213e9").parent("span").next("span").children("a").css("color","#CDCDCD");
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
     });
