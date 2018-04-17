@@ -479,7 +479,6 @@ class Atlas extends Permissions
                 }
             }else
             {
-
                 $res = $model->getpic($id);
 
                if(!$res['pid'])
@@ -550,7 +549,7 @@ class Atlas extends Permissions
         header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
         header('Content-Length: '. filesize($zipName)); //告诉浏览器，文件大小
         @readfile($zipName);
-        //最后删除指定改的下载包，防止文件重复
+        //最后删除指定位置的下载压缩包，防止文件重复
         unlink($zipName);
     }
 
