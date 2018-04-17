@@ -8,7 +8,7 @@ $.ztree({
     zTreeOnClick:function (event, treeId, treeNode){
         $('#enginId').val(treeNode.add_id);
         $.clicknode({
-            tableItem:tableItem,
+            tableItem:window.tableItem,
             treeNode:treeNode,
             isLoadPath:false,
             isLoadTable:false,

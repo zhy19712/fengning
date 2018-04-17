@@ -51,6 +51,5 @@
                 $('#tableItem_paginate').insertBefore(".mark");
             }
         });
-
     }
 })(jQuery);
