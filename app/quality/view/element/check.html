@@ -51,7 +51,9 @@
     .dataTables_wrapper{
          display: block;
     }
-
+    .imgList,.mybtn,.bitCodes{
+        display: none;
+    }
     #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before,#tableContent .alldel i.fa:before,#tableContent .saveCheck i.fa:before{
         background: #00c0ef;
         color: #ffffff;
@@ -171,9 +173,7 @@
     .layui-input[disabled], .layui-textarea[disabled], .layui-disabled, .layui-input[readonly], .layui-textarea[readonly], .layui-readonly {
         background: #FFFFFF !important;
     }
-    .imgList,.mybtn,.bitCodes{
-        display: none;
-    }
+
 
 </style>
 <body  class="easyui-layout">
@@ -285,6 +285,10 @@
         retrieve: true,
         processing: true,
         serverSide: true,
+        iDisplayLength:1000,
+        "scrollY": "200px",
+        "scrollCollapse": "true",
+        "paging": "false",
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="
         },
@@ -606,6 +610,7 @@
         console.log(id);
     }
 
+
     //点击导出二维码
     $("#tableContent").on("click",".bitCodes #bitCodes",function () {
         console.log(conThisId);
@@ -654,8 +659,6 @@
         })
     }
 
-    //
-
 
     //点击行获取Id
     $("#tableItem").delegate("tbody tr","click",function (e) {
@@ -678,7 +681,10 @@
         retrieve: true,
         processing: true,
         serverSide: true,
-        "scrollCollapse" : true,
+        "scrollY": "200px",
+        iDisplayLength:1000,
+        "scrollCollapse": "true",
+        "paging": "false",
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="
         },

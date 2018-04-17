@@ -42,9 +42,6 @@
     #division #ztree,#unitWork #ztreeUnit{
         margin-top: 0px;
     }
-    /*.dataTables_wrapper, .tbcontainer,#tableContent .imgList,#tableContent #tableItem {*/
-    /*display: none;*/
-    /*}*/
     /*#tableContent #tableItem{*/
         /*display: none;*/
     /*}*/
@@ -187,6 +184,8 @@
         line-height: 26px;
         margin-top: 2px;
     }
+
+
 </style>
 <body  class="easyui-layout">
 <!--右边的工程划分-->
@@ -284,26 +283,24 @@
         retrieve: true,
         processing: true,
         serverSide: true,
+        info:false,
+        iDisplayLength:1000,
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="
         },
         dom: 'rt',
         columns: [
             {
-                name: "code",
-                bAutoWidth:true,
+                name: "code"
             },
             {
-                name: "name",
-                bAutoWidth:true,
+                name: "name"
             },
             {
-                name: "status",
-                bAutoWidth:true,
+                name: "status"
             },
             {
-                name: "id",
-                bAutoWidth:true,
+                name: "id"
             }
         ],
         columnDefs: [
@@ -535,9 +532,6 @@
         // $(".mybtn").css("display","none");//新增
         // $(".alldel").css("display","none");//全部删除
         // $(".bitCodes").css("display","block");
-        // $("#tableContent .dataTables_wrapper").css('display','block');
-        // $("#tableContent .tbcontainer").css('display','block');
-        // $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -644,12 +638,17 @@
         selectData = tableItem.row(".select-color").data();//获取选中行数据
         console.log(selectData[3]);
         clickId = selectData[3];
-        if(clickId != undefined && clickId != null){
-            implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
-            imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
+        if(conThisId != undefined || conThisId != null){
+            if(clickId != undefined && clickId != null){
+                implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
+                imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
+            }
+            $(".mybtn").css("display","block");
+            $(".mybtn1").css("display","block");
+        }else {
+            layer.msg("请选择控制点!")
         }
-        $(".mybtn").css("display","block");
-        $(".mybtn1").css("display","block");
+
     });
 
     /*============控制点情况开始==============*/
