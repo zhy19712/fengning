@@ -114,7 +114,7 @@ class Branch extends Permissions
      */
     public function exportCode()
     {
-        // 前台 传递 要下载 哪个节点 下的所有 二维码 add_id
+        // 前台 传递 要下载 哪个节点 下的所有 二维码
         if(request()->isAjax()){
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 1;
             if($id == 0){
