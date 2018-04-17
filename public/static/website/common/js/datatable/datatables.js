@@ -51,5 +51,7 @@
                 $('#tableItem_paginate').insertBefore(".mark");
             }
         });
+
+       console.log(window.tableItem );
     }
 })(jQuery);
