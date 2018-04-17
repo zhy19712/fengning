@@ -2,36 +2,44 @@
 var initUi = layui.use('form','laydate');
 var form = layui.form;
 
+$.ztree({
+    //点击节点
+    zTreeOnClick:function (event, treeId, treeNode){
+        $('#enginId').val(treeNode.add_id);
+        $.clicknode({
+            tableItem:window.tableItem,
+            treeNode:treeNode,
+            isLoadPath:false,
+            isLoadTable:false,
+            parentShow:false
+        });
+        var iShow = treeNode.edit_id;
+        var url = "../../productionProcesses";
+        if(iShow){
+            getControlPoint(url);
+        }
+    }
+});
+
+
 $.datatable({
     tableId:'tableItem',
     ajax:{
-        'url':'/quality/common/datatablesPre?tableName=quality_division_controlpoint_relation'
+        'url':'/quality/common/datatablesPre?tableName=unit_quality_control'
     },
-    dom: 'lftipr',
+    dom: 'ltipr',
     columns:[
         {
-            name: "serial_number"
-        },
-        {
-            name: "site"
-        },
-        {
-            name: "coding"
-        },
-        {
-            name: "hinge"
-        },
-        {
-            name: "pile_number"
-        },
-        {
-            name: "start_date"
-        },
-        {
-            name: "completion_date"
-        },
-        {
             name: "id"
+        },
+        {
+            name: "code"
+        },
+        {
+            name: "name"
+        },
+        {
+            name: "status"
         }
     ],
     columnDefs:[

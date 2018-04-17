@@ -120,8 +120,8 @@ function addControl() {
                 },
                 dataType: "json",
                 success: function (res) {
-                    layer.close(layer.index);
                     layer.msg(res.msg);
+                    layer.close(layer.index);
                 }
             })
         },
