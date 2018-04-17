@@ -520,7 +520,8 @@ class Atlas extends Permissions
 
         $zip = new \ZipArchive;
         //压缩文件名
-        $zipName = './uploads/atlas/atlas_thumb/download.zip';
+        $newname = iconv("utf-8", "GB2312//IGNORE", $param["picture_name"]);
+        $zipName =  ROOT_PATH . 'public' .DS .'uploads/atlas/atlas_thumb/'.$newname.'.zip';
 
         //新建zip压缩包
         if ($zip->open($zipName, \ZIPARCHIVE::CREATE)==TRUE) {

@@ -108,8 +108,8 @@ class BranchModel extends Model
                     $att = Db::name('attachment')->whereIn('id',$attachment_id_arr)->column('filepath');
                     foreach ($att as $v){
                         $pdf_path = './uploads/temp/' . basename($v) . '.pdf';
-                        if(file_exists($v)){
-                            unlink($v); //删除文件
+                        if(file_exists('.' .$v)){
+                            unlink('.' .$v); //删除文件
                         }
                         if(file_exists($pdf_path)){
                             unlink($pdf_path); //删除生成的预览pdf
@@ -125,5 +125,17 @@ class BranchModel extends Model
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
+    }
+
+    /**
+     * 判断是否有当前添加的节点
+     * @param $selfid
+     * @param $procedureid
+     * @param $procedureid
+     */
+    public function getid($selfid,$procedureid,$id)
+    {
+        $data = $this->where(["selfid"=>$selfid,"procedureid"=>$procedureid,"controller_point_id"=>$id])->find();
+        return $data;
     }
 }

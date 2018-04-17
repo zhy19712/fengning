@@ -231,3 +231,45 @@ function conDown(id) {
 function conPrint() {
     layer.msg('打印');
 }
+//预览
+function showPdf(id,url,type_model) {
+    $.ajax({
+        url: url,
+        type: "post",
+        data: {id:id,type_model : type_model},
+        success: function (res) {
+            if(res.code === 1){
+                var path = res.path;
+                if(res.path.split(".")[1]==="pdf"){
+                    window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
+                }else if(res.path.split(".")[1]==="png"||res.path.split(".")[1]==="jpg"||res.path.split(".")[1]==="jpeg"){
+                    layer.photos({
+                        photos: {
+                            "title": "", //相册标题
+                            "id": id, //相册id
+                            "start": 0, //初始显示的图片序号，默认0
+                            "data": [   //相册包含的图片，数组格式
+                                {
+                                    "alt": "图片名",
+                                    "pid": id, //图片id
+                                    "src": "../../../"+res.path, //原图地址
+                                    "thumb": "" //缩略图地址
+                                }
+                            ]
+                        }
+                        ,anim: Math.floor(Math.random()*7) //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                    });
+                }else{
+                    layer.msg("不支持的文件格式");
+                }
+
+            }else {
+                layer.msg(res.msg);
+            }
+        }
+    })
+}
+//预览
+function conPrint(id){
+    showPdf(id,'../Common/preview',"BranchfileModel");
+}

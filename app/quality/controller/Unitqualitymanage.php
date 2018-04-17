@@ -65,14 +65,14 @@ class Unitqualitymanage extends Permissions
      * @return \think\response\Json
      * @author hutao
      */
-    public function index22()
+    public function exportCode()
     {
         // 前台 传递 要下载 哪个节点 下的所有 二维码 add_id
         $id = $this->request->has('add_id') ? $this->request->param('add_id', 0, 'intval') : 1;
         if($id == 0){
             return json(['code' => '-1','msg' => '请选择工程划分节点']);
         }
-//        if($this->request->isAjax()){
+        if($this->request->isAjax()){
             $attachment_id = [];
             // 获取 工程划分 下 所有的 控制点
             $control = Db::name('quality_division_controlpoint_relation')->alias('d')
@@ -113,7 +113,7 @@ class Unitqualitymanage extends Permissions
                 $data['use'] = 'exportCode';//用处
                 // 首先判断是否已经 生成过 二维码图片
                 $insert_id = Db::name('attachment')->where(['module'=>$data['module'],'filename'=>$data['filename']])->value('id');
-                if(empty($insert_id)){
+                if(empty($insert_id) && file_exists($png_path)){
                     $insert_id = Db::name('attachment')->insertGetId($data);
                 }
                 $attachment_id[] = $insert_id;
@@ -122,26 +122,23 @@ class Unitqualitymanage extends Permissions
             $zip = new \ZipArchive;
             // 压缩文件名
             $d_name = Db::name('quality_division')->where('id',$id)->value('d_name');
-//            $new_png_name = iconv("utf-8","gb2312",$d_name);
-            $zipName = ROOT_PATH . 'public' .DS .'uploads/quality/export-code/test.zip';
+            $new_png_name = iconv("utf-8", "GB2312//IGNORE", $d_name);
+            $zipName = ROOT_PATH . 'public' .DS .'uploads/quality/export-code/'.$new_png_name.'.zip';
             //新建zip压缩包
             if ($zip->open($zipName, \ZIPARCHIVE::CREATE) === TRUE) {
-                foreach($datalist as $key=>$val){
-                    $new_val = ROOT_PATH . 'public' . $val;
-                    dump($new_val);
+                foreach($datalist as $val){
+                    $new_val = '.' . iconv("utf-8", "GB2312//IGNORE", $val);
                     if(file_exists($new_val)){
-                        halt($new_val);
                         //addFile函数首个参数如果带有路径，则压缩的文件里包含的是带有路径的文件压缩
                         //若不希望带有路径，则需要该函数的第二个参数
-                        //$zip->addFile($new_val, basename($new_val));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
-                        $zip->addFromString($new_val,file_get_contents(iconv('utf-8', 'gbk//ignore',  basename($new_val))));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                        $zip->addFile($new_val, basename($new_val));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
                     }
                 }
             }
 
-        //打包zip
-        $zip->close();
-        if(!file_exists($zipName)){
+            //打包zip
+            $zip->close();
+            if(!file_exists($zipName)){
                 exit("无法找到文件"); //即使创建，仍有可能失败
             }
             //如果不要下载，下面这段删掉即可，如需返回压缩包下载链接，只需 return $zipName;
@@ -154,27 +151,38 @@ class Unitqualitymanage extends Permissions
             @readfile($zipName);
             //最后删除指定改的下载包，防止文件重复
             unlink($zipName);
-//        }
+        }
     }
 
 
-    //TODO 此处下载的是 控制点里 的模板文件 预留接口
+    /**
+     * 下载 控制点里 的模板文件
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @author hutao
+     */
     public function fileDownload()
     {
         // 前台需要 传递 文件编号 id
         $param = input('param.');
         $file_id = isset($param['id']) ? $param['id'] : 0;
-        if($file_id){
+        if($file_id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
-        $file_obj = Db::name('attachment')->where('id',$file_id)->field('filename,filepath')->find();
-        $filePath = '.' . $file_obj['filepath'];
+        $file_obj = Db::name('controlpoint')->where('id',$file_id)->field('code,name')->find();
+        if(empty($file_obj)){
+            return json(['code' => '-1','msg' => '编号无效']);
+        }
+        $new_name = iconv("utf-8","gb2312",$file_obj['code'].$file_obj['name']);
+        $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){
             return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
         }else{
-            $fileName = $file_obj['filename'];
+            $fileName = $file_obj['name'];
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
             $fileName = iconv("utf-8","gb2312",$fileName);
@@ -189,10 +197,10 @@ class Unitqualitymanage extends Permissions
         }
     }
 
-    // TODO 打印文件 预留接口
-    public function  printDocument()
+    // TODO 打印文件 预留接口 printDocument
+    public function printDocument()
     {
-
+        echo '<script>window.print()</script>';
     }
 
     /**
@@ -254,13 +262,9 @@ class Unitqualitymanage extends Permissions
         $add_id = isset($param['add_id']) ? $param['add_id'] : 0;
         $ma_division_id = isset($param['ma_division_id']) ? $param['ma_division_id'] : 0; // 工序作业编号是0,但是作业没有添加方法
         $idArr = isset($param['idArr/a']) ? $param['idArr/a'] : 0;
-        dump($add_id);
-        dump($ma_division_id);
-        halt($idArr);
         if(($add_id == 0) || ($ma_division_id == 0) || ($idArr == 0)){
             return json(['code' => -1 ,'msg' => '请选择需要新增的控制点']);
         }
-
         if($this->request->isAjax()){
             $data = [];
             foreach ($idArr as $k=>$v){
