@@ -2,6 +2,26 @@
 var initUi = layui.use('form','laydate');
 var form = layui.form;
 
+//ztree
+$.ztree({
+    treeId:'ztree',
+    //点击节点
+    zTreeOnClick:function (event, treeId, treeNode){
+        $('#enginId').val(treeNode.add_id);
+        $.clicknode({
+            tableItem:tableItem,
+            treeNode:treeNode,
+            isLoadPath:false,
+            isLoadTable:false,
+            parentShow:false
+        });
+        var iShow = treeNode.edit_id;
+        var url = "./productionProcesses";
+        if(iShow){
+            getControlPoint(url);
+        }
+    }
+});
 
 //单位策划列表
 function unitPlanList() {
