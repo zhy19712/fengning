@@ -163,7 +163,7 @@ class Branch extends Permissions
             $info = $model->getOne($id);
             if($info["status"] > 0)
             {
-                return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
+                return ['code' => -1,'msg' => '已执行控制点,不能删除!'];
             }
             $flag = $model->associationDeletion($id);
             return json($flag);
@@ -190,7 +190,7 @@ class Branch extends Permissions
                 $count = $model->getAllcount($selfid,$procedureid);
                 if($count > 0)
                 {
-                    return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
+                    return ['code' => -1,'msg' => '已执行控制点,不能删除!'];
                 }
                 //根据所属工序号查询所有的分部策划列表中的数据
                 $data = $model->getAllid($selfid,$procedureid);
