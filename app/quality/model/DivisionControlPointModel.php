@@ -22,7 +22,7 @@ class  DivisionControlPointModel extends Model
      */
     public function ControlPoint()
     {
-        $this->hasOne('app\standard\model\ControlPoint','id','control_id');
+       return $this->hasOne('app\standard\model\ControlPoint','id','control_id');
     }
 
     /**
@@ -30,7 +30,7 @@ class  DivisionControlPointModel extends Model
      */
     public function Division()
     {
-        $this->hasOne('DivisionModel','id','division_id');
+      return  $this->hasOne('DivisionModel','id','division_id');
     }
 
     /**
@@ -38,6 +38,6 @@ class  DivisionControlPointModel extends Model
      */
     public function Procedure()
     {
-        $this->hasOne('app\standard\model\MaterialTrackingDivision','id','ma_division_id');
+       return $this->hasOne('app\standard\model\MaterialTrackingDivision','id','ma_division_id');
     }
 }

@@ -252,9 +252,13 @@ class Unitqualitymanage extends Permissions
         $add_id = isset($param['add_id']) ? $param['add_id'] : 0;
         $ma_division_id = isset($param['ma_division_id']) ? $param['ma_division_id'] : 0; // 工序作业编号是0,但是作业没有添加方法
         $idArr = isset($param['idArr/a']) ? $param['idArr/a'] : 0;
+        dump($add_id);
+        dump($ma_division_id);
+        halt($idArr);
         if(($add_id == 0) || ($ma_division_id == 0) || ($idArr == 0)){
             return json(['code' => -1 ,'msg' => '请选择需要新增的控制点']);
         }
+
         if($this->request->isAjax()){
             $data = [];
             foreach ($idArr as $k=>$v){

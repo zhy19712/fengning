@@ -1,3 +1,8 @@
+layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
+    var form = layui.form
+        ,layer = layui.layer;
+});
+var selfid = "",conThisId = "" ;//树节点id, 工序id
 //组织结构树
 var setting = {
     view: {
@@ -7,9 +12,9 @@ var setting = {
     },
     async: {
         enable : true,
-        autoParam: ["pid","id"],
+        // autoParam: ["pid","id"],
         type : "post",
-        url : "../division/index",
+        url : "./index",
         dataType :"json"
     },
     data:{
@@ -40,8 +45,8 @@ function onClick(e, treeId, node) {
         $("#tableContent .imgList").css('display','block');
     }
     groupid = sNodes[0].pId //父节点的id
-    // var url = "/archive/common/datatablespre/tableName/archive_atlas_cate/selfid/"+selfid+".shtml";
-    // tableItem.ajax.url(url).load();
+    var url = "/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+".shtml";
+    tableItem.ajax.url(url).load();
     $(".mybtn").css("display","none");//新增
     $(".alldel").css("display","none");//全部删除
 
@@ -59,7 +64,7 @@ $(".imgList").on("click","#homeWork",function () {
     $(".mybtn").css("display","none");
     $(".alldel").css("display","none");
     $(this).css("color","#2213e9").parent("span").next("span").children("a").css("color","#CDCDCD");
-    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
+    tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
 });
 //点击工序控制点名字
 function clickConName(id) {
@@ -68,7 +73,7 @@ function clickConName(id) {
     $(".mybtn").css("display","block");
     $(".alldel").css("display","block");
     $("#tableContent .imgList").css('display','block');
-    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+    tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
 }
 //初始化表格
 var tableItem = $('#tableItem').DataTable( {
@@ -77,24 +82,15 @@ var tableItem = $('#tableItem').DataTable( {
     serverSide: true,
     // scrollY: 600,
     ajax: {
-        "url":"../common/datatablesPre?tableName=quality_scene_picture"
+        "url":"/quality/common/datatablesPre/tableName/quality_subdivision_planning_list.shtml"
     },
     dom: 'f<"alldel layui-btn layui-btn-sm"><"mybtn layui-btn layui-btn-sm"><"bitCodes layui-btn layui-btn-sm">rtlip',
     columns:[
         {
-            name: "filename"
+            name: "controller_point_number"
         },
         {
-            name: "date"
-        },
-        {
-            name: "owner"
-        },
-        {
-            name: "company"
-        },
-        {
-            name: "position"
+            name: "controller_point_name"
         },
         {
             name: "id"
@@ -104,24 +100,13 @@ var tableItem = $('#tableItem').DataTable( {
         {
             "searchable": false,
             "orderable": false,
-            "targets": [5],
+            "targets": [2],
             "render" :  function(data,type,row) {
                 var a = data;
                 var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
                 html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-print'></i></a>" ;
                 html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
                 return html;
-            }
-        },
-        {
-            "orderable": false,
-            "targets": [4],
-            "render":function (data) {
-                if(data==1){
-                    return "<img src='__WEBSITE__/quality/scenepicture/setValid.png'>" ;
-                }else{
-                    return "";
-                }
             }
         }
     ],
@@ -159,27 +144,45 @@ $("#tableContent").on("click",".mybtn #test3",function () {
         title: '控制点选择',
         shadeClose: true,
         area: ['980px', '673px'],
-        content: '{:url("addplan")}?Division='+ selfidUnit + '&TrackingDivision='+ conThisId,
+        content: './addplan?selfid='+ selfid + '&procedureid='+ conThisId,
         end:function () {
-            tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+            tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
         }
     });
 });
+//点击s删除全部节点
+$("#tableContent").on("click","#delAll",function () {
+    conDelAll();
+});
 
 //删除控制点
-function delFile(id) {
+function conDel(id) {
     console.log(id);
     $.ajax({
         type: "post",
-        url: "{:url('quality/element/delControlPointRelation')}",
+        url: "./controlDel",
         data: {id:id},
         success: function (res) {
             console.log(res);
             if(res.code ==1){
                 layer.msg("删除成功！")
-                tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
             }
         }
     })
 }
-
+//删除全部
+function  conDelAll() {
+    $.ajax({
+        type: "post",
+        url: "./controlAllDel",
+        data: {selfid:selfid,procedureid:conThisId},
+        success: function (res) {
+            console.log(res);
+            if(res.code ==1){
+                layer.msg("删除成功！")
+                tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
+            }
+        }
+    })
+}

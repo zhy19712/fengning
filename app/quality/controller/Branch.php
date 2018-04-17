@@ -137,6 +137,7 @@ class Branch extends Permissions
 
     /**
      * 删除控制点
+     * 删除控制点 注意: 已经执行 的控制点 不能删除
      *
      * 控制点 存在于 controlpoint 表 和 fengning_quality_subdivision_planning_list 中
      * controlpoint 表里的数据 是原始的，fengning_quality_subdivision_planning_list 是 在 分部策划里 后来 新增的关系记录
@@ -160,27 +161,17 @@ class Branch extends Permissions
             $id = input('param.id');
             //查询一条分部策划列表中的信息
             $info = $model->getOne($id);
-            if($info)
+            if($info["status"] > 0)
             {
-                $controller_point_id = $info["controller_point_id"];//控制点id
-                $flag = $model->associationDeletion($id,$controller_point_id);
-                return json($flag);
+                return ['code' => -1,'msg' => '已执行控制点,不能删除!'];
             }
+            $flag = $model->associationDeletion($id);
+            return json($flag);
         }
     }
 
     /**
      * 全部删除控制点
-     *
-     * 控制点 存在于 controlpoint 表 和 fengning_quality_subdivision_planning_list 中
-     * controlpoint 表里的数据 是原始的，fengning_quality_subdivision_planning_list 是 在 分部策划里 后来 新增的关系记录
-     *
-     * 如果关系记录存在 该控制点 那么就应该先
-     * 要关联 删除 记录里的控制点执行情况 和 图像资料  以及它们所包含的文件 以及 预览的pdf文件
-     * 然后 删除 这条关系记录
-     *
-     * 最后 删除 原始数据
-     *
      * type 类型:1 检验批 0 工程划分
      * @return \think\response\Json
      * @throws \think\Exception
@@ -194,19 +185,20 @@ class Branch extends Permissions
                 //分部策划列表id
                 $selfid = input('param.selfid');//左侧树节点的id
                 $procedureid = input('param.procedureid');//所属工序号
+
+                // 已经执行 的控制点 不能删除
+                $count = $model->getAllcount($selfid,$procedureid);
+                if($count > 0)
+                {
+                    return ['code' => -1,'msg' => '已执行控制点,不能删除!'];
+                }
                 //根据所属工序号查询所有的分部策划列表中的数据
                 $data = $model->getAllid($selfid,$procedureid);
                 if(!empty($data))
                 {
                     foreach ($data as $k=>$v)
                     {
-                        //查询一条分部策划列表中的信息
-                        $info = $model->getOne($v["id"]);
-                        if($info)
-                        {
-                            $controller_point_id = $info["controller_point_id"];//控制点id
-                            $model->associationDeletion($v['id'],$controller_point_id);
-                        }
+                        $model->associationDeletion($v['id']);
                     }
                     return ['code' => 1, 'msg' => '删除成功'];
                 }
@@ -289,8 +281,9 @@ class Branch extends Permissions
             $group = $group->getOne($admininfo["admin_group_id"]);
 
             $data = [
+
                 "list_id" => $param["list_id"],//分部策划列表id
-                "file_image_name" => $param["file_image_name"],//上传的源文件名
+                "filename" => $param["filename"],//上传的源文件名
                 "attachment_id" => $param["attachment_id"],//对应的是attachment文件上传表中的id
                 "owner" => Session::get('current_nickname'),//上传人
                 "company" => $group["name"],//单位
@@ -335,16 +328,24 @@ class Branch extends Permissions
                     //先删除图片
                     //查询attachment表中的文件上传路径
                     $attachment = Db::name("attachment")->where("id",$data["attachment_id"])->find();
-                    $path = "." .$attachment['filepath'];
-                    $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+                    if($attachment["filepath"])
+                    {
+                        $path = "." .$attachment['filepath'];
+                        $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
 
-                    if(file_exists($path)){
-                        unlink($path); //删除文件图片
+                        if(file_exists($path)){
+                            unlink($path); //删除文件图片
+                        }
+
+                        if(file_exists($pdf_path)){
+                            unlink($pdf_path); //删除生成的预览pdf
+                        }
+                    }
+                    else
+                    {
+                        return ['code' => -1,'msg' => '文件不存在!'];
                     }
 
-                    if(file_exists($pdf_path)){
-                        unlink($pdf_path); //删除生成的预览pdf
-                    }
 
                     //删除attachment表中对应的记录
                     Db::name('attachment')->where("id",$data["attachment_id"])->delete();

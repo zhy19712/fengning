@@ -45,10 +45,10 @@
     /*.dataTables_wrapper, .tbcontainer,#tableContent .imgList,#tableContent #tableItem {*/
         /*display: none;*/
     /*}*/
-    #tableContent #tableItem{
-        display: none;
-    }
-    .dataTables_wrapper, .tbcontainer {
+    /*#tableContent #tableItem{*/
+        /*display: none;*/
+    /*}*/
+    .dataTables_wrapper{
          display: block;
     }
 
@@ -174,7 +174,7 @@
     .imgList,.mybtn,.bitCodes{
         display: none;
     }
-    
+
 </style>
 <body  class="easyui-layout">
 <!--右边的工程划分-->
@@ -277,18 +277,16 @@
 <script type="text/javascript">
 
     //组织结构表格
-    var  tableItem, implementation, imageData, urlUnit;
+    var  tableItem, implementation, imageData, urlUnit, colorRed;
 
-    urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
+    // urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
 
     tableItem = $('#tableItem').DataTable({
-        pagingType: "full_numbers",
         retrieve: true,
         processing: true,
         serverSide: true,
-        "autoWidth": true,//自动宽度
         ajax: {
-            "url": urlUnit
+            "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="
         },
         dom: 'rt',
         columns: [
@@ -317,10 +315,16 @@
                 "orderable": false,
                 "targets": [2],
                 "render": function (data, type, row) {
+                    colorRed = data;
                     if(data == 0){
+                        // // $("#tableItem tr td:nth-of-type(3)").text().css("color","red");
+                        // if($("#tableItem tr td:nth-of-type(3)").text() == "未执行"){
+                        //     $("#tableItem tr td:nth-of-type(3)").css("color","red");
+                        // }
                         return '未执行'
                     }
                     return '已执行'
+
                 }
             },
             {
@@ -655,6 +659,9 @@
         })
     }
 
+    //
+
+
     //点击行获取Id
     $("#tableItem").delegate("tbody tr","click",function (e) {
         if($(e.target).hasClass("dataTables_empty")){
@@ -662,21 +669,21 @@
         }
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItem.row(".select-color").data();//获取选中行数据
-        console.log(selectData);
+        console.log(selectData[3]);
         clickId = selectData[3];
         if(clickId != undefined && clickId != null){
             implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
+            imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
         }
     });
 
     /*============控制点情况开始==============*/
     //控制点情况结构表格
     implementation = $('#implementation').DataTable({
-        pagingType: "full_numbers",
         retrieve: true,
         processing: true,
         serverSide: true,
-        "autoWidth": true,//自动宽度
+        "scrollCollapse" : true,
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="
         },
@@ -709,40 +716,33 @@
                 "targets": [2]
             },
             {
-                "targets": [3]
+                "targets": [3],
+                "render": function (data, type, row) {
+                    if (data == null || data == undefined || data == '') return '';
+                    var time = new Date(data*1000);
+                    var y = time.getFullYear();
+                    var m = time.getMonth() + 1;
+                    m = m < 10 ? '0' + m : m;
+                    var d = time.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    return y + '-' + m + '-' + d;
+                }
             },
             {
                 "searchable": false,
                 "orderable": false,
                 "targets": [4],
                 "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
             }
         ],
         language: {
-            // "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            // "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            // "infoEmpty": "无记录",
-            // "search": "搜索：",
-            // "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            // "paginate": {
-            //     "sFirst": "<<",
-            //     "sPrevious": "<",
-            //     "sNext": ">",
-            //     "sLast": ">>"
-            // }
-        },
-        // "fnInitComplete": function (oSettings, json) {
-        //     $('#tableItem_length').insertBefore(".mark");
-        //     $('#tableItem_info').insertBefore(".mark");
-        //     $('#tableItem_paginate').insertBefore(".mark");
-        // }
+            "zeroRecords": "没有找到记录"
+        }
     });
 
     /*============控制点情况结束==============*/
@@ -750,8 +750,7 @@
 
     /*============图像资料开始==============*/
     //图像资料结构表格
-   /* imageData = $('#imageData').DataTable({
-        pagingType: "full_numbers",
+    imageData = $('#imageData').DataTable({
         retrieve: true,
         processing: true,
         serverSide: true,
@@ -761,17 +760,17 @@
         },
         dom: 'tr',
         columns: [
+             {
+                name: "data_name"
+            },
             {
-                name: "code"
+                name: "nickname"
             },
             {
                 name: "name"
             },
             {
-                name: "status"
-            },
-            {
-                name: "datatime"
+                name: "create_time"
             },
             {
                 name: "id"
@@ -785,49 +784,37 @@
                 "targets": [1]
             },
             {
-                "searchable": false,
-                "orderable": false,
-                "targets": [2],
+                "targets": [2]
+            },
+            {
+                "targets": [3],
                 "render": function (data, type, row) {
-                    if(data == 0){
-                        return '未执行'
-                    }
-                    return '已执行'
+                    if (data == null || data == undefined || data == '') return '';
+                    var time = new Date(data*1000);
+                    var y = time.getFullYear();
+                    var m = time.getMonth() + 1;
+                    m = m < 10 ? '0' + m : m;
+                    var d = time.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    return y + '-' + m + '-' + d;
                 }
             },
             {
                 "searchable": false,
                 "orderable": false,
-                "targets": [3],
+                "targets": [4],
                 "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    return html;
-                }
+                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                     return html;
+                 }
             }
         ],
         language: {
-            // "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            // "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            // "infoEmpty": "无记录",
-            // "search": "搜索：",
-            // "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            // "paginate": {
-            //     "sFirst": "<<",
-            //     "sPrevious": "<",
-            //     "sNext": ">",
-            //     "sLast": ">>"
-            // }
-        },
-        // "fnInitComplete": function (oSettings, json) {
-        //     $('#tableItem_length').insertBefore(".mark");
-        //     $('#tableItem_info').insertBefore(".mark");
-        //     $('#tableItem_paginate').insertBefore(".mark");
-        // }
-    });*/
+            "zeroRecords": "没有找到记录"
+        }
+    });
 
     /*============图像资料结束==============*/
 
