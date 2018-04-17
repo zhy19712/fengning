@@ -104,7 +104,7 @@ var tableItem = $('#tableItem').DataTable( {
             "render" :  function(data,type,row) {
                 var a = data;
                 var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
-                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-print'></i></a>" ;
+                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPrint("+data+")'><i class='fa fa-print'></i></a>" ;
                 html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
                 return html;
             }
@@ -128,7 +128,7 @@ var tableItem = $('#tableItem').DataTable( {
         $('#tableItem_length').insertBefore(".mark");
         $('#tableItem_info').insertBefore(".mark");
         $('#tableItem_paginate').insertBefore(".mark");
-        $('.dataTables_wrapper,.tbcontainer').css("display","block");
+        // $('.dataTables_wrapper,.tbcontainer').css("display","block");
     }
 });
 //
@@ -150,7 +150,7 @@ $("#tableContent").on("click",".mybtn #test3",function () {
         }
     });
 });
-//点击s删除全部节点
+//点删除全部节点
 $("#tableContent").on("click","#delAll",function () {
     conDelAll();
 });
@@ -167,6 +167,8 @@ function conDel(id) {
             if(res.code ==1){
                 layer.msg("删除成功！")
                 tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
+            }else{
+                layer.msg(res.msg);
             }
         }
     })
@@ -182,7 +184,50 @@ function  conDelAll() {
             if(res.code ==1){
                 layer.msg("删除成功！")
                 tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
+            }else{
+                layer.msg(res.msg);
             }
         }
+    });
+};
+//下载
+function download(id,url,type_model) {
+    var url1 = url;
+    $.ajax({
+        url: url,
+        type:"post",
+        dataType: "json",
+        data:{id:id,type_model : type_model},
+        success: function (res) {
+            if(res.code != 1){
+                layer.msg(res.msg);
+            }else {
+                $("#form_container").empty();
+                var str = "";
+                str += ""
+                    + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
+                    + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
+                    + "<span class='file_name' style='color: #000;'>"+str+"</span>"
+                    + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                    + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
+                    + "<button type='submit' class=btn" + id +"></button>"
+                    + "</form>"
+                $("#form_container").append(str);
+                $("#form_container").find(".btn" + id).click();
+            }
+
+        }
     })
+}
+//点击导出二维码
+$("#tableContent").on("click",".bitCodes",function () {
+    download(selfid,"./exportCode");
+});
+//下载模板
+function conDown(id) {
+    download(id,"./fileDownload");
+};
+//打印
+function conPrint() {
+    layer.msg('打印');
 }

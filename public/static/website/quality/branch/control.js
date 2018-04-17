@@ -32,6 +32,7 @@ layui.use(['form', 'layedit', 'laydate', 'element', 'layer','upload'], function(
                dataType:"JSON",
                success :function (res) {
                    if(res.code===1){
+                       tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
                        tableSituation.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/1/list_id/"+list_id+".shtml").load();
                        tableImage.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/2/list_id/"+list_id+".shtml").load();
                    }
@@ -154,7 +155,7 @@ var tableItem = $('#tableItem').DataTable( {
             "render" :  function(data,type,row) {
                 var a = data;
                 var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
-                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-print'></i></a>" ;
+                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPrint("+data+")'><i class='fa fa-print'></i></a>" ;
                 return html;
             }
         }
@@ -316,7 +317,8 @@ function conDel(id) {
         success: function (res) {
             console.log(res);
             if(res.code ==1){
-                layer.msg("删除成功！")
+                layer.msg("删除成功！");
+                tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
                 tableSituation.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/1/list_id/"+list_id+".shtml").load();
                 tableImage.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/2/list_id/"+list_id+".shtml").load();
             }else{
@@ -417,6 +419,9 @@ function showPdf(id,url,type_model) {
 }
 //预览
 function conPicshow(id){
-    showPdf(id,'../Common/preview',"BranchfileModel")
-
+    showPdf(id,'../Common/preview',"BranchfileModel");
+}
+//打印
+function conPrint(id) {
+    layer.msg('打印');
 }
