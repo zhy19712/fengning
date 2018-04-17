@@ -185,7 +185,9 @@
         height: calc(100% - 39px)!important;
         border-bottom: none!important;
     }
-
+    .dataTables_scrollHeadInner,#tableItem_wrapper table,#imageData_wrapper table, #implementation_wrapper table, #onlineFill_wrapper table{
+        width: 100% !important;
+    }
 
 </style>
 <body  class="easyui-layout">
@@ -567,7 +569,7 @@
                     $("#img0").css("display","none");
                 }
 
-                $("#tableItem_wrapper").css("height","calc(100% - "+$(".imgList").outerHeight()+"px - 28px)");
+                $("#tableItem_wrapper").css("height","calc(100% - "+$(".imgList").outerHeight()+"px - 35px)");
 
                 // }else if(res.code==0){
                 //     layer.msg(res.msg);
@@ -647,17 +649,15 @@
         selectData = tableItem.row(".select-color").data();//获取选中行数据
         console.log(selectData[3]);
         clickId = selectData[3];
-        if(conThisId != undefined || conThisId != null){
-            if(clickId != undefined && clickId != null){
-                implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
-                imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
-            }
-            $(".mybtn").css("display","block");
-            $(".mybtn1").css("display","block");
-        }else {
-            layer.msg("请选择控制点!")
-        }
 
+        if(clickId != undefined && clickId != null){
+            implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
+            imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
+        }
+        if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+            $(".mybtn").css("display","block");
+            // $(".mybtn1").css("display","block");
+        }
     });
 
     /*============控制点情况开始==============*/
@@ -673,7 +673,9 @@
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="
         },
-        dom: '<"mybtn layui-btn layui-btn-sm">rt',
+        dom:
+        // '<"mybtn layui-btn layui-btn-sm">' +
+        'rt',
         columns: [
             {
                 name: "data_name"
@@ -732,9 +734,6 @@
         }
     });
 
-    //上传按钮
-    // $(".mybtn").html("<div id='test3'><i class='fa fa-upload'></i>上传</div>");
-
     //上传点击
     layui.use(['element', "layer", 'form', 'upload'], function () {
         var $ = layui.jquery
@@ -746,47 +745,50 @@
             , layedit = layui.layedit
             , laydate = layui.laydate;
             upload.render({
-            elem: '#test3',
-            url: "{:url('admin/common/upload?module=quality&use=element')}",
-            exts: 'doc|docx|pdf|png|jpg|xls',
-            before: function(obj){
-                obj.preview(function(index, file, result){
-                    uploadName = file.name;
-                    console.log(file.name);//获取文件名，result就是base64
-                })
-            },
-            done: function(res){
-                console.log(res)
-                if(res.code == 2){
-                    uploadId = res.id;
-                    if($(".tabs-selected a span:first-child").html()==="图像资料"){
+                elem: '#test3',
+                url: "{:url('admin/common/upload?module=quality&use=element')}",
+                exts: 'doc|docx|pdf|png|jpg|xls',
+                size:8192,
+                before: function(obj){
+                    obj.preview(function(index, file, result){
+                        uploadName = file.name;
+                        console.log(file.name);//获取文件名，result就是base64
+                    })
+                },
+                done: function(res){
+                    if($(".tabs-selected a span:first-child").html() === "附件资料"){
                         type=2;
                     }
-                    $.ajax({
-                        url:"{:url('element/addExecution')}",
-                        data:{
-                            att_id:uploadId,
-                            filename: uploadName, //名称
-                            cpr_id:clickId,
-                            type:type
-                        },
-                        type:'post',
-                        success:function(res) {
-                            console.log(res)
-                            if(res.code == 1) {
-                                implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
-                                tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
-                            } else {
-                                layer.msg('获取数据失败！');
+                    console.log(res)
+                    if(res.code == 2){
+                        uploadId = res.id;
+
+                        $.ajax({
+                            url:"{:url('element/addExecution')}",
+                            data:{
+                                att_id:uploadId,
+                                filename: uploadName, //名称
+                                cpr_id:clickId,
+                                type:type
+                            },
+                            type:'post',
+                            success:function(res) {
+                                console.log(res)
+                                if(res.code == 1) {
+                                    implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
+                                    imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
+                                    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                                } else {
+                                    layer.msg('获取数据失败！');
+                                }
                             }
-                        }
-                    })
-                    layer.msg("上传成功！",{time:1500})
-                }else{
-                    layer.msg("上传失败！",{time:1500})
-                }
-            },
-        });
+                        })
+                        layer.msg("上传成功！",{time:1500})
+                    }else{
+                        layer.msg("上传失败！",{time:1500})
+                    }
+                },
+            });
     });
 
     /*============控制点情况结束==============*/
@@ -806,7 +808,7 @@
              "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="
          },
         dom:
-        '<"bitCodes layui-btn layui-btn-sm">' +
+        // '<"bitCodes layui-btn layui-btn-sm">' +
         'rt',
          columns: [
              {
@@ -981,6 +983,8 @@
          }
      });
 
+     //
+    $("#unitTab").on("click",".tabs-wrap")
     /*============在线填报结束==============*/
 
 </script>
