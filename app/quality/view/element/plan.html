@@ -52,7 +52,7 @@
     /*.dataTables_wrapper, .tbcontainer,#tableContent #tableItem {*/
         /*display: block;*/
     /*}*/
-    #tableContent #tableItem,.imgList,.listName{
+    #tableContent .imgList,.listName{
         display: none;
     }
     .dataTables_wrapper, .tbcontainer {
@@ -411,9 +411,9 @@
         $(".alldel").css("display","none");//全部删除
         $(".bitCodes").css("display","block");
         $(".listName").css("display","block");
-        $("#tableContent .dataTables_wrapper").css('display','block');
-        $("#tableContent .tbcontainer").css('display','block');
-        $("#tableContent #tableItem").css('display','block');
+        // $("#tableContent .dataTables_wrapper").css('display','block');
+        // $("#tableContent .tbcontainer").css('display','block');
+        // $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -472,10 +472,10 @@
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
         $(".alldel").css("display","block");
-        $("#tableContent .dataTables_wrapper").css('display','block');
-        $("#tableContent .tbcontainer").css('display','block');
+        // $("#tableContent .dataTables_wrapper").css('display','block');
+        // $("#tableContent .tbcontainer").css('display','block');
+        // $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
-        $("#tableContent #tableItem").css('display','block');
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         console.log(id);
     }
@@ -522,7 +522,11 @@
                 console.log(res);
                 if(res.code ==1){
                     layer.msg("删除成功！")
-                    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                    if(conThisId == undefined){
+                        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
+                    }else{
+                        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                    }
                 }
             }
         })

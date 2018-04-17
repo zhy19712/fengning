@@ -45,13 +45,15 @@
     /*.dataTables_wrapper, .tbcontainer,#tableContent .imgList,#tableContent #tableItem {*/
         /*display: none;*/
     /*}*/
-    #tableContent #tableItem{
-        display: none;
-    }
-    .dataTables_wrapper, .tbcontainer {
+    /*#tableContent #tableItem{*/
+        /*display: none;*/
+    /*}*/
+    .dataTables_wrapper, .tbcontainer{
          display: block;
     }
-
+    .imgList,.mybtn,.bitCodes{
+        display: none;
+    }
     #tableContent .mybtn i.fa:before,#tableContent .bitCodes i.fa:before,#tableContent .alldel i.fa:before,#tableContent .saveCheck i.fa:before{
         background: #00c0ef;
         color: #ffffff;
@@ -171,10 +173,8 @@
     .layui-input[disabled], .layui-textarea[disabled], .layui-disabled, .layui-input[readonly], .layui-textarea[readonly], .layui-readonly {
         background: #FFFFFF !important;
     }
-    .imgList,.mybtn,.bitCodes{
-        display: none;
-    }
-    
+
+
 </style>
 <body  class="easyui-layout">
 <!--右边的工程划分-->
@@ -201,9 +201,10 @@
                                 <label class="layui-form-label">验评结果</label>
                                 <div class="layui-input-inline">
                                     <select name="type" lay-filter="type">
-                                        <option value="">未验评</option>
-                                        <option value="1">合格</option>
-                                        <option value="2">优良</option>
+                                        <option value="">-请选择-</option>
+                                        <option value="0">未验评</option>
+                                        <option value="1">优良</option>
+                                        <option value="2">合格</option>
                                     </select>
                                 </div>
                             </div>
@@ -277,18 +278,20 @@
 <script type="text/javascript">
 
     //组织结构表格
-    var  tableItem, implementation, imageData, urlUnit;
+    var  tableItem, implementation, imageData, urlUnit, resultId;
 
-    urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
+    // urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
 
     tableItem = $('#tableItem').DataTable({
-        pagingType: "full_numbers",
         retrieve: true,
         processing: true,
         serverSide: true,
-        "autoWidth": true,//自动宽度
+        iDisplayLength:1000,
+        "scrollY": "200px",
+        "scrollCollapse": "true",
+        "paging": "false",
         ajax: {
-            "url": urlUnit
+            "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="
         },
         dom: 'rt',
         columns: [
@@ -317,8 +320,9 @@
                 "orderable": false,
                 "targets": [2],
                 "render": function (data, type, row) {
+                    colorRed = data;
                     if(data == 0){
-                        return '未执行'
+                        return '<span style="color:red">未执行</span>'
                     }
                     return '已执行'
                 }
@@ -371,20 +375,7 @@
 
         //搜索
         form.on('select(type)', function(data){
-            typeId = data.value;
-            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
-        });
-
-        form.on('select(purpose)', function(data){
-            purposeId = data.value;
-            console.log(typeId);
-            console.log(purposeId);
-
-            if(purposeId == ""){
-                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
-            }else{
-                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId+"&use="+purposeId).load();
-            }
+            resultId = data.value;
         });
     });
 
@@ -536,12 +527,9 @@
         if(selfidUnit != undefined || selfidUnit != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
         }
-        $(".mybtn").css("display","none");//新增
-        $(".alldel").css("display","none");//全部删除
-        $(".bitCodes").css("display","block");
-        $("#tableContent .dataTables_wrapper").css('display','block');
-        $("#tableContent .tbcontainer").css('display','block');
-        $("#tableContent #tableItem").css('display','block');
+        // $(".mybtn").css("display","none");//新增
+        // $(".alldel").css("display","none");//全部删除
+        // $(".bitCodes").css("display","block");
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -587,9 +575,9 @@
 
     //点击作业
     $(".imgList").on("click","#homeWork",function () {
-        $(".bitCodes").css("display","block");
-        $(".mybtn").css("display","none");
-        $(".alldel").css("display","none");
+        // $(".bitCodes").css("display","block");
+        // $(".mybtn").css("display","none");
+        // $(".alldel").css("display","none");
         $(this).css("color","#2213e9").parent("span").next("span").children("a").css("color","#CDCDCD");
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
     });
@@ -600,12 +588,13 @@
         if(selfidUnit != undefined || selfidUnit != null && conThisId != undefined || conThisId != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         }
-        $(".bitCodes").css("display","none");
-        $(".mybtn").css("display","block");
-        $(".alldel").css("display","block");
+        // $(".bitCodes").css("display","none");
+        // $(".mybtn").css("display","block");
+        // $(".alldel").css("display","block");
         $("#tableContent .imgList").css('display','block');
         console.log(id);
     }
+
 
     //点击导出二维码
     $("#tableContent").on("click",".bitCodes #bitCodes",function () {
@@ -655,6 +644,7 @@
         })
     }
 
+
     //点击行获取Id
     $("#tableItem").delegate("tbody tr","click",function (e) {
         if($(e.target).hasClass("dataTables_empty")){
@@ -662,21 +652,24 @@
         }
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItem.row(".select-color").data();//获取选中行数据
-        console.log(selectData);
+        console.log(selectData[3]);
         clickId = selectData[3];
         if(clickId != undefined && clickId != null){
             implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
+            imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
         }
     });
 
     /*============控制点情况开始==============*/
     //控制点情况结构表格
     implementation = $('#implementation').DataTable({
-        pagingType: "full_numbers",
         retrieve: true,
         processing: true,
         serverSide: true,
-        "autoWidth": true,//自动宽度
+        iDisplayLength:1000,
+        "scrollY": "200px",
+        "scrollCollapse": "true",
+        "paging": "false",
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="
         },
@@ -709,40 +702,33 @@
                 "targets": [2]
             },
             {
-                "targets": [3]
+                "targets": [3],
+                "render": function (data, type, row) {
+                    if (data == null || data == undefined || data == '') return '';
+                    var time = new Date(data*1000);
+                    var y = time.getFullYear();
+                    var m = time.getMonth() + 1;
+                    m = m < 10 ? '0' + m : m;
+                    var d = time.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    return y + '-' + m + '-' + d;
+                }
             },
             {
                 "searchable": false,
                 "orderable": false,
                 "targets": [4],
                 "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
             }
         ],
         language: {
-            // "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            // "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            // "infoEmpty": "无记录",
-            // "search": "搜索：",
-            // "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            // "paginate": {
-            //     "sFirst": "<<",
-            //     "sPrevious": "<",
-            //     "sNext": ">",
-            //     "sLast": ">>"
-            // }
-        },
-        // "fnInitComplete": function (oSettings, json) {
-        //     $('#tableItem_length').insertBefore(".mark");
-        //     $('#tableItem_info').insertBefore(".mark");
-        //     $('#tableItem_paginate').insertBefore(".mark");
-        // }
+            "zeroRecords": "没有找到记录"
+        }
     });
 
     /*============控制点情况结束==============*/
@@ -750,28 +736,30 @@
 
     /*============图像资料开始==============*/
     //图像资料结构表格
-   /* imageData = $('#imageData').DataTable({
-        pagingType: "full_numbers",
+    imageData = $('#imageData').DataTable({
         retrieve: true,
         processing: true,
         serverSide: true,
-        "autoWidth": true,//自动宽度
+        iDisplayLength:1000,
+        "scrollY": "200px",
+        "scrollCollapse": "true",
+        "paging": "false",
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="
         },
         dom: 'tr',
         columns: [
+             {
+                name: "data_name"
+            },
             {
-                name: "code"
+                name: "nickname"
             },
             {
                 name: "name"
             },
             {
-                name: "status"
-            },
-            {
-                name: "datatime"
+                name: "create_time"
             },
             {
                 name: "id"
@@ -785,51 +773,82 @@
                 "targets": [1]
             },
             {
-                "searchable": false,
-                "orderable": false,
-                "targets": [2],
+                "targets": [2]
+            },
+            {
+                "targets": [3],
                 "render": function (data, type, row) {
-                    if(data == 0){
-                        return '未执行'
-                    }
-                    return '已执行'
+                    if (data == null || data == undefined || data == '') return '';
+                    var time = new Date(data*1000);
+                    var y = time.getFullYear();
+                    var m = time.getMonth() + 1;
+                    m = m < 10 ? '0' + m : m;
+                    var d = time.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    return y + '-' + m + '-' + d;
                 }
             },
             {
                 "searchable": false,
                 "orderable": false,
-                "targets": [3],
+                "targets": [4],
                 "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    return html;
-                }
+                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                     return html;
+                 }
             }
         ],
         language: {
-            // "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            // "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            // "infoEmpty": "无记录",
-            // "search": "搜索：",
-            // "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            // "paginate": {
-            //     "sFirst": "<<",
-            //     "sPrevious": "<",
-            //     "sNext": ">",
-            //     "sLast": ">>"
-            // }
-        },
-        // "fnInitComplete": function (oSettings, json) {
-        //     $('#tableItem_length').insertBefore(".mark");
-        //     $('#tableItem_info').insertBefore(".mark");
-        //     $('#tableItem_paginate').insertBefore(".mark");
-        // }
-    });*/
+            "zeroRecords": "没有找到记录"
+        }
+    });
 
     /*============图像资料结束==============*/
 
+    //点击保存
+    $("#tableContent").on("click",".saveCheck",function () {
+        if($("#date").val() != '' && resultId != undefined){
+            var data = tableItem.data();
+            // console.log(data)
+            for(var i=0;i<data.length;i++){
+                // console.log(data[i][2])
+                if(data[i][2] == 0 || data[i][2] == 1){
+                    layer.confirm("有未执行的控制点，要继续验评吗？", function (index) {
+                        saveInspectionLotEvaluate();
+                        layer.close(index);
+                    });
+                }else if(data[i][2] == 1){
+                    layer.confirm("点击确定保存验评！", function (index) {
+                        saveInspectionLotEvaluate();
+                        layer.close(index);
+                    });
+                }
+            }
+        }else{
+            layer.alert("请选择验评条件")
+        }
+    });
+    
+    //保存验评掉的接口
+    function saveInspectionLotEvaluate() {
+        $.ajax({
+            type: "Post",
+            url: "/quality/element/Evaluate",
+            data: {
+                Unit_id:selfidUnit,
+                EvaluateResult:resultId,
+                EvaluateDate:$("#date").val()
+            },
+            success: function (res) {
+                if (res.code == 1) {
+                    layer.alert("保存成功！");
+                } else {
+                    layer.alert("保存失败");
+                }
+            }
+        });
+    }
 </script>
 </html>

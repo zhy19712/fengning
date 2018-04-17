@@ -34,18 +34,11 @@
             parentShow:true,
             tableItem:tableItem,
             isLoadPath:true,
+            isLoadTable:true,
             others:function () {}
         }
 
         $.extend(option,options);
-
-        //加载表格数据
-        function loadData() {
-            $('#tableItem_wrapper').show();
-            $('.tbcontainer').show();
-            option.tableItem.ajax.url(option.tablePath+"&id="+ options.treeNode.id).load();
-            getPath();
-        }
 
         //获取路径
         function getPath() {
@@ -64,6 +57,19 @@
             }
         }
 
+        if(option.isLoadTable){
+            loadData();
+            return false;
+        }
+
+        //加载表格数据
+        function loadData() {
+            $('#tableItem_wrapper').show();
+            $('.tbcontainer').show();
+            option.tableItem.ajax.url(option.tablePath+"&id="+ options.treeNode.id).load();
+            getPath();
+        }
+
         //是否允许父节点加载表格数据
         if(options.treeNode.isParent){
             if(option.parentShow){
@@ -75,7 +81,7 @@
                 return false;
             }
         }
-        loadData();
+
         option.others();
     };
     /**

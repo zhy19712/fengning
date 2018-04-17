@@ -20,6 +20,7 @@ use app\quality\model\DivisionModel;//工程划分
 use app\standard\model\ControlPoint;//控制点
 use \think\Session;
 use think\exception\PDOException;
+use think\Loader;
 use think\Db;
 
 class Branch extends Permissions
@@ -39,6 +40,30 @@ class Branch extends Permissions
      * @return mixed
      */
     public function addPlan()
+    {
+        $param = input('param.');
+        $selfid = $param["selfid"];//左侧节点树id
+        $procedureid = $param["procedureid"];//工序号
+        $this->assign('selfid', $selfid);
+        $this->assign('procedureid', $procedureid);
+        return $this->fetch();
+    }
+
+    /****************************分部管控************************/
+    /**
+     * 分部管控模板首页
+     * @return mixed
+     */
+    public function control()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 分部管控添加控制点
+     * @return mixed
+     */
+    public function addControl()
     {
         $param = input('param.');
         $selfid = $param["selfid"];//左侧节点树id
@@ -89,6 +114,101 @@ class Branch extends Permissions
      */
     public function exportCode()
     {
+        // 前台 传递 要下载 哪个节点 下的所有 二维码 add_id
+        if(request()->isAjax()){
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 1;
+            if($id == 0){
+                return json(['code' => '-1','msg' => '请选择工程划分节点']);
+            }else
+            {
+                // 获取 工程划分 下 所有的 控制点
+                $control = Db::name('quality_subdivision_planning_list')->alias('s')
+                    ->join('materialtrackingdivision m','s.procedureid = m.id','left')
+                    ->join('controlpoint c','s.controller_point_id = c.id','left')
+                    ->where(['s.selfid'=>$id,'s.type'=>0])->column('s.controller_point_id,m.name as m_name,c.name as c_name');
+                if(empty($control)){
+                    return json(['code' => '-1','msg' => '没有数据']);
+                }
+
+                return json(['code' => 1]);
+            }
+        }
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 1;
+            $attachment_id = [];
+            // 获取 工程划分 下 所有的 控制点
+            $control = Db::name('quality_subdivision_planning_list')->alias('s')
+                ->join('materialtrackingdivision m','s.procedureid = m.id','left')
+                ->join('controlpoint c','s.controller_point_id = c.id','left')
+                ->where(['s.selfid'=>$id,'s.type'=>0])->column('s.controller_point_id,m.name as m_name,c.name as c_name');
+            $qrcode_bas_path = ROOT_PATH . 'public' .DS . 'uploads' . DS . 'quality' . DS . 'export-code';//文件路径
+            if(!is_dir($qrcode_bas_path)){
+                mkdir($qrcode_bas_path, 0777, true);
+            }
+            foreach ($control as $k=>$v){
+                $data['module'] = 'quality';
+                // 图片名称 是 工序名称-控制点编号-控制点名称.png
+                $data['filename'] = $v['m_name'] . '-' . $v['controller_point_id'] . '-' . $v['c_name'] . '.png';//文件名
+                $data['filepath'] = DS . 'uploads' . DS . 'quality' . DS . 'export-code' . DS . $data['filename'];//文件路径
+                // 生成二维码图片
+                $png_name = iconv("utf-8","gb2312",$data['filename']); // 图片名称
+                $png_path = $qrcode_bas_path . DS . $png_name;
+                Loader::import('phpqrcode\phpqrcode', EXTEND_PATH);
+                $text = url('quality/Unitqualitymanage/fileDownload/'.$v['controller_point_id']);
+                if(!file_exists($png_path)) {
+                    \QRcode::png($text,$png_path,'L',5,2);
+                }
+                $data['fileext'] = 'png';//文件后缀
+                $data['filesize'] = '';//无法获取文件大小
+                $data['create_time'] = time();//时间
+                $data['uploadip'] = $this->request->ip();//IP
+                $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
+                if($data['module'] == 'admin') {
+                    //通过后台上传的文件直接审核通过
+                    $data['status'] = 1;
+                    $data['admin_id'] = $data['user_id'];
+                    $data['audit_time'] = time();
+                }
+                $data['use'] = 'exportCode';//用处
+                // 首先判断是否已经 生成过 二维码图片
+                $insert_id = Db::name('attachment')->where(['module'=>$data['module'],'filename'=>$data['filename']])->value('id');
+                if(empty($insert_id) && file_exists($png_path)){
+                    $insert_id = Db::name('attachment')->insertGetId($data);
+                }
+                $attachment_id[] = $insert_id;
+            }
+            $datalist = Db::name("attachment")->whereIn("id", $attachment_id)->column('filepath');
+            $zip = new \ZipArchive;
+            // 压缩文件名
+            $d_name = Db::name('quality_division')->where('id',$id)->value('d_name');
+            $new_png_name = iconv("utf-8", "GB2312//IGNORE", $d_name);
+            $zipName = ROOT_PATH . 'public' .DS .'uploads/quality/export-code/'.$new_png_name.'.zip';
+            //新建zip压缩包
+            if ($zip->open($zipName, \ZIPARCHIVE::CREATE) === TRUE) {
+                foreach($datalist as $val){
+                    $new_val = '.' . iconv("utf-8", "GB2312//IGNORE", $val);
+                    if(file_exists($new_val)){
+                        //addFile函数首个参数如果带有路径，则压缩的文件里包含的是带有路径的文件压缩
+                        //若不希望带有路径，则需要该函数的第二个参数
+                        $zip->addFile($new_val, basename($new_val));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                    }
+                }
+            }
+
+            //打包zip
+            $zip->close();
+            if(!file_exists($zipName)){
+                exit("无法找到文件"); //即使创建，仍有可能失败
+            }
+            //如果不要下载，下面这段删掉即可，如需返回压缩包下载链接，只需 return $zipName;
+            header("Cache-Control: public");
+            header("Content-Description: File Transfer");
+            header('Content-disposition: attachment; filename='.basename($zipName)); //文件名
+            header("Content-Type: application/zip"); //zip格式的
+            header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
+            header('Content-Length: '. filesize($zipName)); //告诉浏览器，文件大小
+            @readfile($zipName);
+            //最后删除指定改的下载包，防止文件重复
+            unlink($zipName);
 
     }
 
@@ -163,7 +283,7 @@ class Branch extends Permissions
             $info = $model->getOne($id);
             if($info["status"] > 0)
             {
-                return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
+                return ['code' => -1,'msg' => '已执行控制点,不能删除!'];
             }
             $flag = $model->associationDeletion($id);
             return json($flag);
@@ -190,7 +310,7 @@ class Branch extends Permissions
                 $count = $model->getAllcount($selfid,$procedureid);
                 if($count > 0)
                 {
-                    return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
+                    return ['code' => -1,'msg' => '已执行控制点,不能删除!'];
                 }
                 //根据所属工序号查询所有的分部策划列表中的数据
                 $data = $model->getAllid($selfid,$procedureid);
@@ -283,7 +403,7 @@ class Branch extends Permissions
             $data = [
 
                 "list_id" => $param["list_id"],//分部策划列表id
-                "file_image_name" => $param["file_image_name"],//上传的源文件名
+                "filename" => $param["filename"],//上传的源文件名
                 "attachment_id" => $param["attachment_id"],//对应的是attachment文件上传表中的id
                 "owner" => Session::get('current_nickname'),//上传人
                 "company" => $group["name"],//单位
@@ -372,29 +492,5 @@ class Branch extends Permissions
                 }
                 return $flag;
         }
-    }
-
-    /****************************分部管控************************/
-    /**
-     * 分部管控模板首页
-     * @return mixed
-     */
-    public function control()
-    {
-        return $this->fetch();
-    }
-
-    /**
-     * 分部管控添加控制点
-     * @return mixed
-     */
-    public function addControl()
-    {
-        $param = input('param.');
-        $selfid = $param["selfid"];//左侧节点树id
-        $procedureid = $param["procedureid"];//工序号
-        $this->assign('selfid', $selfid);
-        $this->assign('procedureid', $procedureid);
-        return $this->fetch();
     }
 }

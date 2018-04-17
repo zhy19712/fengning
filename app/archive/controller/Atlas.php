@@ -479,7 +479,6 @@ class Atlas extends Permissions
                 }
             }else
             {
-
                 $res = $model->getpic($id);
 
                if(!$res['pid'])
@@ -521,7 +520,8 @@ class Atlas extends Permissions
 
         $zip = new \ZipArchive;
         //压缩文件名
-        $zipName = './uploads/atlas/atlas_thumb/download.zip';
+        $newname = iconv("utf-8", "GB2312//IGNORE", $param["picture_name"]);
+        $zipName =  ROOT_PATH . 'public' .DS .'uploads/atlas/atlas_thumb/'.$newname.'.zip';
 
         //新建zip压缩包
         if ($zip->open($zipName, \ZIPARCHIVE::CREATE)==TRUE) {
@@ -550,7 +550,7 @@ class Atlas extends Permissions
         header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
         header('Content-Length: '. filesize($zipName)); //告诉浏览器，文件大小
         @readfile($zipName);
-        //最后删除指定改的下载包，防止文件重复
+        //最后删除指定位置的下载压缩包，防止文件重复
         unlink($zipName);
     }
 

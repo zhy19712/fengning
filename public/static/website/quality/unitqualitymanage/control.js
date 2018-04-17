@@ -1,49 +1,57 @@
-function tableInfo() {
-    $.datatable({
-        tableId:'tableItem',
-        ajax:{
-            'url':'/quality/common/datatablesPre?tableName=quality_unit'
+//初始化layui组件
+var initUi = layui.use('form','laydate');
+var form = layui.form;
+
+$.ztree({
+    //点击节点
+    zTreeOnClick:function (event, treeId, treeNode){
+        $('#enginId').val(treeNode.add_id);
+        $.clicknode({
+            tableItem:window.tableItem,
+            treeNode:treeNode,
+            isLoadPath:false,
+            isLoadTable:false,
+            parentShow:false
+        });
+        var iShow = treeNode.edit_id;
+        var url = "../../productionProcesses";
+        if(iShow){
+            getControlPoint(url);
+        }
+    }
+});
+
+
+$.datatable({
+    tableId:'tableItem',
+    ajax:{
+        'url':'/quality/common/datatablesPre?tableName=unit_quality_control'
+    },
+    dom: 'ltipr',
+    columns:[
+        {
+            name: "id"
         },
-        dom: 'lf<".current-path"<"#add.add layui-btn layui-btn-normal layui-btn-sm">>tipr',
-        columns:[
-            {
-                name: "serial_number"
-            },
-            {
-                name: "site"
-            },
-            {
-                name: "coding"
-            },
-            {
-                name: "hinge"
-            },
-            {
-                name: "pile_number"
-            },
-            {
-                name: "start_date"
-            },
-            {
-                name: "completion_date"
-            },
-            {
-                name: "id"
+        {
+            name: "code"
+        },
+        {
+            name: "name"
+        },
+        {
+            name: "status"
+        }
+    ],
+    columnDefs:[
+        {
+            "searchable": false,
+            "orderable": false,
+            "targets": [3],
+            "render" :  function(data,type,row) {
+                var html = "<i class='fa fa-download' uid="+ data +" title='下载' onclick='download(this)'></i>" ;
+                html += "<i class='fa fa-print' uid="+ data +" title='打印' onclick='print(this)'></i>" ;
+                return html;
             }
-        ],
-        columnDefs:[
-            {
-                "searchable": false,
-                "orderable": false,
-                "targets": [7],
-                "render" :  function(data,type,row) {
-                    var html = "<i class='fa fa-pencil' uid="+ data +" title='编辑' onclick='edit(this)'></i>" ;
-                    html += "<i class='fa fa-trash' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
-                    html += "<i class='fa fa-qrcode' uid="+ data +" title='二维码' onclick='qrcode(this)'></i>" ;
-                    return html;
-                }
-            }
-        ],
-    });
-}
-tableInfo();
+        }
+    ],
+});
