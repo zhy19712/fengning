@@ -121,6 +121,15 @@ class Branch extends Permissions
                 return json(['code' => '-1','msg' => '请选择工程划分节点']);
             }else
             {
+                // 获取 工程划分 下 所有的 控制点
+                $control = Db::name('quality_subdivision_planning_list')->alias('s')
+                    ->join('materialtrackingdivision m','s.procedureid = m.id','left')
+                    ->join('controlpoint c','s.controller_point_id = c.id','left')
+                    ->where(['s.selfid'=>$id,'s.type'=>0])->column('s.controller_point_id,m.name as m_name,c.name as c_name');
+                if(empty($control)){
+                    return json(['code' => '-1','msg' => '没有数据']);
+                }
+
                 return json(['code' => 1]);
             }
         }
@@ -131,9 +140,6 @@ class Branch extends Permissions
                 ->join('materialtrackingdivision m','s.procedureid = m.id','left')
                 ->join('controlpoint c','s.controller_point_id = c.id','left')
                 ->where(['s.selfid'=>$id,'s.type'=>0])->column('s.controller_point_id,m.name as m_name,c.name as c_name');
-            if(empty($control)){
-                return json(['code' => '-1','msg' => '没有数据']);
-            }
             $qrcode_bas_path = ROOT_PATH . 'public' .DS . 'uploads' . DS . 'quality' . DS . 'export-code';//文件路径
             if(!is_dir($qrcode_bas_path)){
                 mkdir($qrcode_bas_path, 0777, true);
