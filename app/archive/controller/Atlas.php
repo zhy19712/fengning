@@ -479,7 +479,6 @@ class Atlas extends Permissions
                 }
             }else
             {
-
                 $res = $model->getpic($id);
 
                if(!$res['pid'])
