@@ -48,7 +48,7 @@
     /*#tableContent #tableItem{*/
         /*display: none;*/
     /*}*/
-    .dataTables_wrapper{
+    .dataTables_wrapper, .tbcontainer{
          display: block;
     }
     .imgList,.mybtn,.bitCodes{
@@ -201,9 +201,10 @@
                                 <label class="layui-form-label">验评结果</label>
                                 <div class="layui-input-inline">
                                     <select name="type" lay-filter="type">
-                                        <option value="">未验评</option>
-                                        <option value="1">合格</option>
-                                        <option value="2">优良</option>
+                                        <option value="">-请选择-</option>
+                                        <option value="0">未验评</option>
+                                        <option value="1">优良</option>
+                                        <option value="2">合格</option>
                                     </select>
                                 </div>
                             </div>
@@ -277,7 +278,7 @@
 <script type="text/javascript">
 
     //组织结构表格
-    var  tableItem, implementation, imageData, urlUnit, colorRed;
+    var  tableItem, implementation, imageData, urlUnit, resultId;
 
     // urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
 
@@ -374,20 +375,7 @@
 
         //搜索
         form.on('select(type)', function(data){
-            typeId = data.value;
-            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
-        });
-
-        form.on('select(purpose)', function(data){
-            purposeId = data.value;
-            console.log(typeId);
-            console.log(purposeId);
-
-            if(purposeId == ""){
-                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
-            }else{
-                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId+"&use="+purposeId).load();
-            }
+            resultId = data.value;
         });
     });
 
@@ -542,9 +530,6 @@
         // $(".mybtn").css("display","none");//新增
         // $(".alldel").css("display","none");//全部删除
         // $(".bitCodes").css("display","block");
-        // $("#tableContent .dataTables_wrapper").css('display','block');
-        // $("#tableContent .tbcontainer").css('display','block');
-        // $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -681,8 +666,8 @@
         retrieve: true,
         processing: true,
         serverSide: true,
-        "scrollY": "200px",
         iDisplayLength:1000,
+        "scrollY": "200px",
         "scrollCollapse": "true",
         "paging": "false",
         ajax: {
@@ -755,7 +740,10 @@
         retrieve: true,
         processing: true,
         serverSide: true,
-        "autoWidth": true,//自动宽度
+        iDisplayLength:1000,
+        "scrollY": "200px",
+        "scrollCollapse": "true",
+        "paging": "false",
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="
         },
@@ -819,5 +807,48 @@
 
     /*============图像资料结束==============*/
 
+    //点击保存
+    $("#tableContent").on("click",".saveCheck",function () {
+        if($("#date").val() != '' && resultId != undefined){
+            var data = tableItem.data();
+            // console.log(data)
+            for(var i=0;i<data.length;i++){
+                // console.log(data[i][2])
+                if(data[i][2] == 0 || data[i][2] == 1){
+                    layer.confirm("有未执行的控制点，要继续验评吗？", function (index) {
+                        saveInspectionLotEvaluate();
+                        layer.close(index);
+                    });
+                }else if(data[i][2] == 1){
+                    layer.confirm("点击确定保存验评！", function (index) {
+                        saveInspectionLotEvaluate();
+                        layer.close(index);
+                    });
+                }
+            }
+        }else{
+            layer.alert("请选择验评条件")
+        }
+    });
+    
+    //保存验评掉的接口
+    function saveInspectionLotEvaluate() {
+        $.ajax({
+            type: "Post",
+            url: "/quality/element/Evaluate",
+            data: {
+                Unit_id:selfidUnit,
+                EvaluateResult:resultId,
+                EvaluateDate:$("#date").val()
+            },
+            success: function (res) {
+                if (res.code == 1) {
+                    layer.alert("保存成功！");
+                } else {
+                    layer.alert("保存失败");
+                }
+            }
+        });
+    }
 </script>
 </html>
