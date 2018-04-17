@@ -4,66 +4,65 @@ var form = layui.form;
 
 
 //单位策划列表
-$.datatable({
-    tableId:'tableItem',
-    ajax:{
-        'url':'/quality/common/datatablesPre?tableName=unit_quality_control'
-    },
-    dom: 'ltpr',
-    columns:[
-        {
-            name: "code"
-        },{
-            name: "name"
+function unitPlanList() {
+    $.datatable({
+        tableId:'tableItem',
+        ajax:{
+            'url':'/quality/common/datatablesPre?tableName=unit_quality_control'
         },
-        {
-            name: "id"
-        }
-    ],
-    columnDefs:[
-        {
-            "searchable": false,
-            "orderable": false,
-            "targets": [2],
-            "render" :  function(data,type,row) {
-                console.log(data);
-                var html = "<i class='fa fa-download' uid="+ data +" title='下载' onclick='download(this)'></i>" ;
-                html += "<i class='fa fa-print' uid="+ data +" title='打印' onclick='print(this)'></i>" ;
-                html += "<i class='fa fa-times' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
-                return html;
+        dom: 'ltpr',
+        columns:[
+            {
+                name: "code"
+            },{
+                name: "name"
+            },
+            {
+                name: "id"
             }
-        }
-    ],
-});
+        ],
+        columnDefs:[
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [2],
+                "render" :  function(data,type,row) {
+                    console.log(data);
+                    var html = "<i class='fa fa-download' uid="+ data +" title='下载' onclick='download(this)'></i>" ;
+                    html += "<i class='fa fa-print' uid="+ data +" title='打印' onclick='print(this)'></i>" ;
+                    html += "<i class='fa fa-times' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
+                    return html;
+                }
+            }
+        ],
+    });
+}
 
 //控制点标准
-$.datatable({
-    tableId:'controlItem',
-    ajax:{
-        'url':'/quality/common/datatablesPre?tableName=unit_quality_add_control'
-    },
-    dom: 'lftipr',
-    columns:[
-        {
-            name: "id",
-            "render": function(data, type, full, meta) {
-                var ipt = "<input type='checkbox' name='checkList' idv='"+data+"' onclick='getSelectId(this)'>";
-                return ipt;
-            },
+function controlPointStandard() {
+    $.datatable({
+        tableId:'controlItem',
+        ajax:{
+            'url':'/quality/common/datatablesPre?tableName=unit_quality_add_control'
         },
-        {
-            name: "code"
-        },{
-            name: "name"
-        }
-    ],
-});
-//取消全选的事件绑定
-$("thead tr th:first-child").unbind();
+        dom: 'lftipr',
+        columns:[
+            {
+                name: "id",
+                "render": function(data, type, full, meta) {
+                    var ipt = "<input type='checkbox' name='checkList' idv='"+data+"' onclick='getSelectId(this)'>";
+                    return ipt;
+                },
+            },
+            {
+                name: "code"
+            },{
+                name: "name"
+            }
+        ],
+    });
+}
 
-//删除自构建分页位置
-$('#easyuiLayout').find('.tbcontainer').remove();
-$('#tableItem_wrapper').find('.tbcontainer').remove();
 /**
  * 导出二维码
  */
@@ -92,7 +91,11 @@ function exportQcode(addId) {
  */
 //事件
 $('#addBtn').click(function () {
+    controlPointStandard();
     addControl();
+    //取消全选的事件绑定
+    $("thead tr th:first-child").unbind();
+    $('#tableItem_wrapper,#easyuiLayout').find('.tbcontainer').remove();
 })
 
 //方法
