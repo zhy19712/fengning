@@ -65,14 +65,14 @@ class Unitqualitymanage extends Permissions
      * @return \think\response\Json
      * @author hutao
      */
-    public function index22()
+    public function exportCode()
     {
         // 前台 传递 要下载 哪个节点 下的所有 二维码 add_id
         $id = $this->request->has('add_id') ? $this->request->param('add_id', 0, 'intval') : 1;
         if($id == 0){
             return json(['code' => '-1','msg' => '请选择工程划分节点']);
         }
-//        if($this->request->isAjax()){
+        if($this->request->isAjax()){
             $attachment_id = [];
             // 获取 工程划分 下 所有的 控制点
             $control = Db::name('quality_division_controlpoint_relation')->alias('d')
@@ -113,7 +113,7 @@ class Unitqualitymanage extends Permissions
                 $data['use'] = 'exportCode';//用处
                 // 首先判断是否已经 生成过 二维码图片
                 $insert_id = Db::name('attachment')->where(['module'=>$data['module'],'filename'=>$data['filename']])->value('id');
-                if(empty($insert_id)){
+                if(empty($insert_id) && file_exists($png_path)){
                     $insert_id = Db::name('attachment')->insertGetId($data);
                 }
                 $attachment_id[] = $insert_id;
@@ -122,26 +122,23 @@ class Unitqualitymanage extends Permissions
             $zip = new \ZipArchive;
             // 压缩文件名
             $d_name = Db::name('quality_division')->where('id',$id)->value('d_name');
-//            $new_png_name = iconv("utf-8","gb2312",$d_name);
-            $zipName = ROOT_PATH . 'public' .DS .'uploads/quality/export-code/test.zip';
+            $new_png_name = iconv("utf-8", "GB2312//IGNORE", $d_name);
+            $zipName = ROOT_PATH . 'public' .DS .'uploads/quality/export-code/'.$new_png_name.'.zip';
             //新建zip压缩包
             if ($zip->open($zipName, \ZIPARCHIVE::CREATE) === TRUE) {
-                foreach($datalist as $key=>$val){
-                    $new_val = ROOT_PATH . 'public' . $val;
-                    dump($new_val);
+                foreach($datalist as $val){
+                    $new_val = '.' . iconv("utf-8", "GB2312//IGNORE", $val);
                     if(file_exists($new_val)){
-                        halt($new_val);
                         //addFile函数首个参数如果带有路径，则压缩的文件里包含的是带有路径的文件压缩
                         //若不希望带有路径，则需要该函数的第二个参数
-                        //$zip->addFile($new_val, basename($new_val));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
-                        $zip->addFromString($new_val,file_get_contents(iconv('utf-8', 'gbk//ignore',  basename($new_val))));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                        $zip->addFile($new_val, basename($new_val));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
                     }
                 }
             }
 
-        //打包zip
-        $zip->close();
-        if(!file_exists($zipName)){
+            //打包zip
+            $zip->close();
+            if(!file_exists($zipName)){
                 exit("无法找到文件"); //即使创建，仍有可能失败
             }
             //如果不要下载，下面这段删掉即可，如需返回压缩包下载链接，只需 return $zipName;
@@ -154,7 +151,7 @@ class Unitqualitymanage extends Permissions
             @readfile($zipName);
             //最后删除指定改的下载包，防止文件重复
             unlink($zipName);
-//        }
+        }
     }
 
 
