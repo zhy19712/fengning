@@ -155,23 +155,34 @@ class Unitqualitymanage extends Permissions
     }
 
 
-    //TODO 此处下载的是 控制点里 的模板文件 预留接口
+    /**
+     * 下载 控制点里 的模板文件
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @author hutao
+     */
     public function fileDownload()
     {
         // 前台需要 传递 文件编号 id
         $param = input('param.');
         $file_id = isset($param['id']) ? $param['id'] : 0;
-        if($file_id){
+        if($file_id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
-        $file_obj = Db::name('attachment')->where('id',$file_id)->field('filename,filepath')->find();
-        $filePath = '.' . $file_obj['filepath'];
+        $file_obj = Db::name('controlpoint')->where('id',$file_id)->field('code,name')->find();
+        if(empty($file_obj)){
+            return json(['code' => '-1','msg' => '编号无效']);
+        }
+        $new_name = iconv("utf-8","gb2312",$file_obj['code'].$file_obj['name']);
+        $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){
             return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
         }else{
-            $fileName = $file_obj['filename'];
+            $fileName = $file_obj['name'];
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
             $fileName = iconv("utf-8","gb2312",$fileName);
@@ -186,10 +197,10 @@ class Unitqualitymanage extends Permissions
         }
     }
 
-    // TODO 打印文件 预留接口
-    public function  printDocument()
+    // TODO 打印文件 预留接口 printDocument
+    public function printDocument()
     {
-
+        echo '<script>window.print()</script>';
     }
 
     /**

@@ -18,7 +18,7 @@ layui.use(['form', 'layedit', 'laydate', 'element', 'layer','upload'], function(
         done:function (res) {
             attachment_id = res.id;
             if($(".tabs-selected a span:first-child").html()==="图像资料"){
-                type=2;
+                type = 2;
             }
            $.ajax({
                url:"./addFile",
@@ -110,16 +110,16 @@ function clickConName(id) {
 }
 //初始化表格
 var tableItem = $('#tableItem').DataTable( {
-    // paging: false,
     processing: true,
     serverSide: true,
-    info:false,
     iDisplayLength:1000,
-    searching:false, //禁止搜索
+    "scrollY": "200px",
+    "scrollCollapse": "true",
+    "paging": "false",
     ajax: {
-        "url":"/quality/common/datatablesPre/tableName/quality_subdivision_planning_list.shtml"
+        "url":"/quality/common/datatablesPre/tableName/quality_subdivision_planning_list"
     },
-    dom: 'rit',
+    dom: 'rt',
     columns:[
         {
             name: "controller_point_number"
@@ -155,31 +155,14 @@ var tableItem = $('#tableItem').DataTable( {
             "render" :  function(data,type,row) {
                 var a = data;
                 var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
-                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPrint("+data+")'><i class='fa fa-print'></i></a>" ;
+                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-print'></i></a>" ;
                 return html;
             }
         }
     ],
     language: {
-        "lengthMenu": "_MENU_",
-        "zeroRecords": "没有找到记录",
-        "info": "第 _PAGE_ 页 ( 共 _PAGES_ 页, _TOTAL_ 项 )",
-        "infoEmpty": "无记录",
-        "search": "搜索：",
-        "infoFiltered": "(从 _MAX_ 条记录过滤)",
-        "paginate": {
-            "sFirst": "<<",
-            "sPrevious": "<",
-            "sNext": ">",
-            "sLast": ">>"
-        }
-    },
-    // "fnInitComplete": function (oSettings, json) {
-    //     $('#tableItem_length').insertBefore(".mark");
-    //     $('#tableItem_info').insertBefore(".mark");
-    //     $('#tableItem_paginate').insertBefore(".mark");
-    //     $('.dataTables_wrapper,.tbcontainer').css("display","block");
-    // }
+        "zeroRecords": "没有找到记录"
+    }
 });
 //初始化表格
 var tableSituation = $('#tableSituation').DataTable( {

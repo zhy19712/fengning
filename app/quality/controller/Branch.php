@@ -114,7 +114,7 @@ class Branch extends Permissions
      */
     public function exportCode()
     {
-        // 前台 传递 要下载 哪个节点 下的所有 二维码 add_id
+        // 前台 传递 要下载 哪个节点 下的所有 二维码
         if(request()->isAjax()){
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 1;
             if($id == 0){
@@ -354,22 +354,36 @@ class Branch extends Permissions
 
                 if(!empty($control_data))
                 {
-                    foreach ($control_data as $k=>$v)
+                    foreach ($control_data as $key=>$val)
                     {
-                        //根据控制点id查询fengning_controlpoint表中的信息
-                        $controlpoint_info = $point->getOne($v);
-                        if(!empty($controlpoint_info))
+                        //判断当前控制点是否存在数据库中
+                        $result = $model->getid($selfid,$procedureid,$val);
+                        if($result["id"])
                         {
-                            $data = [
-                                "selfid" => $selfid,
-                                "procedureid" => $procedureid,//工序号
-                                "controller_point_id" => $v,//控制点id
-                                "controller_point_number" => $controlpoint_info["code"],//控制点编号
-                                "controller_point_name" => $controlpoint_info["name"]//控制点名称
-                            ];
-                            $model->insertSu($data);
+                            unset($control_data[$key]);
                         }
                     }
+
+                    if(!empty($control_data))
+                    {
+                        foreach ($control_data as $k=>$v)
+                        {
+                            //根据控制点id查询fengning_controlpoint表中的信息
+                            $controlpoint_info = $point->getOne($v);
+                            if(!empty($controlpoint_info))
+                            {
+                                $data = [
+                                    "selfid" => $selfid,
+                                    "procedureid" => $procedureid,//工序号
+                                    "controller_point_id" => $v,//控制点id
+                                    "controller_point_number" => $controlpoint_info["code"],//控制点编号
+                                    "controller_point_name" => $controlpoint_info["name"]//控制点名称
+                                ];
+                                $model->insertSu($data);
+                            }
+                        }
+                    }
+
                     return ['code' => 1,'msg' => '添加成功'];
                 }
                 else
@@ -461,11 +475,6 @@ class Branch extends Permissions
                             unlink($pdf_path); //删除生成的预览pdf
                         }
                     }
-                    else
-                    {
-                        return ['code' => -1,'msg' => '文件不存在!'];
-                    }
-
 
                     //删除attachment表中对应的记录
                     Db::name('attachment')->where("id",$data["attachment_id"])->delete();
