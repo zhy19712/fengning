@@ -1104,36 +1104,36 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     // var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                     // return html;
-                     var dataType = "qualityFormInfo";
-                     var html = "";
-                     html += "<a title='查看' onclick='viewQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")'><i class='bfa fa fa-search'></i></a>";
-                     if (row.approveStatus === 0) {
-                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='bfa fa fa-pencil'></i></a>";
-                         html += "<a title='删除' onclick='deleteQualityFormInfo(\"" + row.id + "\")' <i class='bfa fa fa-remove'></i></a>";
-                         html += "<a title='提交' onclick='submit(\"" + row.id + "\",\"" + dataType + "\",\"" + grid1.getSelectedRow().remark + "\",\"" + row.currentStep + "\")'><i class='bfa fa fa-check-square-o'></i></a>";
-                     }
-                     else if (row.approveStatus === 1 && row.currentApproverId === currentUserId) {
-                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='bfa fa fa-pencil'></i></a>";
-                         html += "<a title='审批' onclick='approve(\"" + row.id + "\",\"" + dataType + "\",\"" + row.currentStep + "\")'><i class='bfa fa fa-pencil-square-o'></i></a>";
-                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='bfa fa fa-file-text'></i></a>";
-                     }
-                     else if (row.approveStatus === 2) {
-                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='bfa fa fa-file-text'></i></a>";
-                         html += "<a title='下载' onclick='download(\"" + row.id + "\")' <i class='bfa fa fa-download'></i></a>";
-                     }
-                     else if (row.approveStatus === -1) {
-                         html += "<a title='提交' onclick='submit(\"" + row.id + "\",\"" + dataType + "\",\"" + grid1.getSelectedRow().remark + "\",\"" + row.currentStep + "\")'><i class='bfa fa fa-check-square-o'></i></a>";
-                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='bfa fa fa-pencil'></i></a>";
-                         html += "<a title='删除' onclick='deleteQualityFormInfo(\"" + row.id + "\")' <i class='bfa fa fa-remove'></i></a>";
-                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='bfa fa fa-file-text'></i></a>";
-                     }
-                     else html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='bfa fa fa-file-text'></i></a>";
-
+                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                      return html;
+                     // var dataType = "qualityFormInfo";
+                     // var html = "";
+                     // html += "<a title='查看' onclick='viewQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")'><i class='bfa fa fa-search'></i></a>";
+                     // if (row.approveStatus === 0) {
+                     //     html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='bfa fa fa-pencil'></i></a>";
+                     //     html += "<a title='删除' onclick='deleteQualityFormInfo(\"" + row.id + "\")' <i class='bfa fa fa-remove'></i></a>";
+                     //     html += "<a title='提交' onclick='submit(\"" + row.id + "\",\"" + dataType + "\",\"" + grid1.getSelectedRow().remark + "\",\"" + row.currentStep + "\")'><i class='bfa fa fa-check-square-o'></i></a>";
+                     // }
+                     // else if (row.approveStatus === 1 && row.currentApproverId === currentUserId) {
+                     //     html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='bfa fa fa-pencil'></i></a>";
+                     //     html += "<a title='审批' onclick='approve(\"" + row.id + "\",\"" + dataType + "\",\"" + row.currentStep + "\")'><i class='bfa fa fa-pencil-square-o'></i></a>";
+                     //     html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='bfa fa fa-file-text'></i></a>";
+                     // }
+                     // else if (row.approveStatus === 2) {
+                     //     html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='bfa fa fa-file-text'></i></a>";
+                     //     html += "<a title='下载' onclick='download(\"" + row.id + "\")' <i class='bfa fa fa-download'></i></a>";
+                     // }
+                     // else if (row.approveStatus === -1) {
+                     //     html += "<a title='提交' onclick='submit(\"" + row.id + "\",\"" + dataType + "\",\"" + grid1.getSelectedRow().remark + "\",\"" + row.currentStep + "\")'><i class='bfa fa fa-check-square-o'></i></a>";
+                     //     html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='bfa fa fa-pencil'></i></a>";
+                     //     html += "<a title='删除' onclick='deleteQualityFormInfo(\"" + row.id + "\")' <i class='bfa fa fa-remove'></i></a>";
+                     //     html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='bfa fa fa-file-text'></i></a>";
+                     // }
+                     // else html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='bfa fa fa-file-text'></i></a>";
+                     //
+                     // return html;
                  }
              }
          ],
