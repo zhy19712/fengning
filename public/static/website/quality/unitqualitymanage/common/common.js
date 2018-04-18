@@ -38,6 +38,7 @@ function loadTableData(that) {
     window.tableItem.ajax.url('/quality/common/datatablesPre?tableName=unit_quality_control&add_id='+ nodeId +'&workId='+ workId +'&type='+ type +'').load();
     $('#tableItem_wrapper,.tbcontainer,#subList').show();
     $(that).addClass('active').siblings('a').removeClass();
+    $('#implement_wrapper,#imageData_wrapper').next('.tbcontainer').remove();
     btnToggle(that);
 }
 

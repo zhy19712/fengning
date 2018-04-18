@@ -199,3 +199,31 @@ function imageDataUpload(){
         server:'./editRelation'
     });
 }
+
+//下载
+function download(that) {
+    var id = $(that).attr('uid');
+    $.download({
+        that:that,
+        url:'../../fileDownload',
+        data:{
+            id:id
+        }
+    });
+}
+
+//打印
+function download(that) {
+    var id = $(that).attr('uid');
+    $.ajax({
+        url: "../../printDocument",
+        type: "post",
+        data: {
+            id:id
+        },
+        dataType: "json",
+        success: function (res) {
+
+        }
+    })
+}
