@@ -20,7 +20,7 @@ class UnitqualitymanageModel extends Model
     /**
      * @param $add_id int 节点编号
      * @param $ma_division_id int 工序编号
-     * @param $id int 控制点编号
+     * @param $id int 关联表记录编号
      * @return array
      * @throws \think\Exception
      * @author hutao
@@ -44,20 +44,14 @@ class UnitqualitymanageModel extends Model
             if($id == 0){ // 全部删除
                 $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'type'=>0])->column('id');
             }else{
-                dump($add_id);
-                dump($ma_division_id);
-                dump($id);
-                $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=>$id,'type'=>0])->column('id');
+                $relation_id = [$id];
             }
             // 已经执行 的控制点 不能删除
             $status = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=> ['in',$relation_id],'type'=>0,'status'=>1 ])->count();
             if($status > 0){
                 return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
             }
-            echo '$relation_id';
-            dump($relation_id);
             if(is_array($relation_id) && sizeof($relation_id)){
-                halt($relation_id);
                 $data = Db::name('quality_upload')->whereIn('contr_relation_id',$relation_id)->column('id,attachment_id');
                 if(is_array($data) && sizeof($data)){
                     $id_arr = array_keys($data);
@@ -72,10 +66,11 @@ class UnitqualitymanageModel extends Model
                             unlink($pdf_path); //删除生成的预览pdf
                         }
                     }
-                    Db::name('attachment')->delete('attachment_id_arr');
-                    $this->delete($id_arr);
+                    Db::name('attachment')->delete($attachment_id_arr);
+                    Db::name('quality_upload')->delete($id_arr);
                 }
             }
+            Db::name('quality_division_controlpoint_relation')->delete($relation_id);
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
