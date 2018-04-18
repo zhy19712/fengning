@@ -10,7 +10,7 @@
  * Class Qualityanalysis
  * @package app\quality\controller
  */
-namespace app\quality\controller;
+namespace app\statistics\controller;
 use app\admin\controller\Permissions;
 use \think\Session;
 use think\exception\PDOException;
