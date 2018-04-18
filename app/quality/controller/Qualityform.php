@@ -16,6 +16,7 @@ use app\contract\model\ContractModel;
 use app\quality\model\DivisionControlPointModel;
 use app\quality\model\DivisionModel;
 use app\quality\model\DivisionUnitModel;
+use app\quality\model\QualityFormInfoModel;
 use think\Request;
 use think\Session;
 
@@ -29,12 +30,14 @@ class Qualityform extends Permissions
     protected $divisionControlPointService;
     protected $atlasCateService;
     protected $divisionUnitService;
+    protected $qualityFormInfoService;
 
     public function __construct(Request $request = null)
     {
         $this->divisionControlPointService = new DivisionControlPointModel();
         $this->atlasCateService = new AtlasCateModel();
         $this->divisionUnitService = new DivisionUnitModel();
+        $this->qualityFormInfoService = new QualityFormInfoModel();
         parent::__construct($request);
     }
 
@@ -54,7 +57,7 @@ class Qualityform extends Permissions
         }
         $htmlContent = file_get_contents($formPath);
         $htmlContent = str_replace("{id}", $id, $htmlContent);
-        //$htmlContent =   str_replace("{{templateId}}");
+        $htmlContent = str_replace("{templateId}", $cp['ControlPoint']['qualitytemplateid'], $htmlContent);
         $htmlContent = str_replace('{divisionId}', $cp['division_id'], $htmlContent);
         $htmlContent = str_replace('{isInspect}', $cp['type'] ? 'true' : 'false', $htmlContent);
         $htmlContent = str_replace('{procedureId}', $cp['ma_division_id'], $htmlContent);
@@ -70,9 +73,10 @@ class Qualityform extends Permissions
         //获取表单基本信息
         $formdata = "";
         if (!is_null($id)) {
-
+            $_formdata = $this->qualityFormInfoService->where(['id' => $id])->find()['form_data'];
+            $formdata = json_encode(unserialize($_formdata));
         }
-        $htmlContent=str_replace('{formData}',$formdata,$htmlContent);
+        $htmlContent = str_replace('{formData}', $formdata, $htmlContent);
         return $htmlContent;
     }
 
@@ -143,7 +147,26 @@ class Qualityform extends Permissions
 
     public function InsertOrUpdate($dto)
     {
-
+        $mod = array();
+        $mod['DivisionId'] = $dto['DivisionId'];
+        $mod['ProcedureId'] = $dto['ProcedureId'];
+        $mod['ControlPointId'] = $dto['ControlPointId'];
+        $mod['IsInspect'] = $dto['IsInspect'];
+        $mod['TemplateId'] = $dto['TemplateId'];
+        $mod['form_name'] = $dto['FormName'];
+        $mod['form_data'] = serialize($dto['QualityFormDatas']);
+        if (empty($dto['Id'])) {
+            $mod['user_id'] = Session::get('current_id');
+            $res = $this->qualityFormInfoService->insertGetId($mod);
+            $dto['Id'] = $res;
+        } else {
+            $res = $this->qualityFormInfoService->allowField(true)->save($mod,['id' => $dto['Id']]);
+        }
+        if ($res) {
+            return json(['result' => $dto['Id']]);
+        } else {
+            return json(['result' => 'Faild']);
+        }
     }
 
     /**
@@ -154,11 +177,9 @@ class Qualityform extends Permissions
      */
     public function GetCurrentUserSignature($id)
     {
-        if (empty($id))
-        {
-            return Admin::get(Session::get('current_id'),'SignImg')['SignImg']['filepath'];
-        }else
-        {
+        if (empty($id)) {
+            return Admin::get(Session::get('current_id'), 'SignImg')['SignImg']['filepath'];
+        } else {
             //获取当前审批人
         }
     }

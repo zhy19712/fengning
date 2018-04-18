@@ -11,4 +11,5 @@ use think\Model;
 class QualityFormInfoModel extends Model
 {
     protected $name='quality_form_info';
+    protected $autoWriteTimestamp=true;
 }
