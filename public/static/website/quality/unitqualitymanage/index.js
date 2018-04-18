@@ -2,6 +2,26 @@
 var initUi = layui.use('form','laydate');
 var form = layui.form;
 
+//ztree
+$.ztree({
+    treeId:'ztree',
+    //点击节点
+    zTreeOnClick:function (event, treeId, treeNode){
+        $('#enginId').val(treeNode.add_id);
+        $.clicknode({
+            tableItem:tableItem,
+            treeNode:treeNode,
+            isLoadPath:false,
+            isLoadTable:false,
+            parentShow:false
+        });
+        var iShow = treeNode.edit_id;
+        var url = "./productionProcesses";
+        if(iShow){
+            getControlPoint(url);
+        }
+    }
+});
 
 //单位策划列表
 function unitPlanList() {
@@ -18,6 +38,9 @@ function unitPlanList() {
                 name: "name"
             },
             {
+                name: "ma_division_id"
+            },
+            {
                 name: "id"
             }
         ],
@@ -27,14 +50,13 @@ function unitPlanList() {
                 "orderable": false,
                 "targets": [2],
                 "render" :  function(data,type,row) {
-                    console.log(data);
                     var html = "<i class='fa fa-download' uid="+ data +" title='下载' onclick='download(this)'></i>" ;
                     html += "<i class='fa fa-print' uid="+ data +" title='打印' onclick='print(this)'></i>" ;
                     html += "<i class='fa fa-times' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
                     return html;
                 }
             }
-        ],
+        ]
     });
 }
 
@@ -184,7 +206,6 @@ function getId(that) {
 //单选
 function getSelectId(that) {
     getId(that);
-    console.log(idArr);
 }
 
 //checkbox全选
@@ -204,7 +225,6 @@ $("#all_checked").on("click", function () {
             getId(this);
         });
     }
-    console.log(idArr);
 });
 
 //删除

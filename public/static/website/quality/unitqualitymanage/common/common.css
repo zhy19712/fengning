@@ -56,3 +56,24 @@
     padding: 10px;
     visibility: hidden;
 }
+.content,.tab-content{
+    border: none;
+}
+.tabs-header{
+    background-color: #FFF;
+}
+.tabs-header,.tabs-panels,.tabs,.tabs li a.tabs-inner{
+    border-color: #cecece;
+}
+.tabs li.tabs-selected a.tabs-inner{
+    color: #333;
+}
+.tabs li a.tabs-inner{
+    color: #333;
+}
+.tabs li.tabs-selected a.tabs-inner{
+    border-color: #999;
+}
+.tabs li.tabs-selected a.tabs-inner{
+    border-bottom: 1px solid #FFF;
+}
