@@ -7,7 +7,7 @@
  */
 /**
  * 质量管理-统计分析
- * Class Statisticalanalysis
+ * Class Qualityanalysis
  * @package app\quality\controller
  */
 namespace app\quality\controller;
@@ -17,7 +17,7 @@ use think\exception\PDOException;
 use think\Loader;
 use think\Db;
 
-class Statisticalanalysis extends Permissions
+class Qualityanalysis extends Permissions
 {
     /**
      * 模板首页
