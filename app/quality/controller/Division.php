@@ -703,7 +703,7 @@ class Division extends Permissions{
             // 获取关联的模型图
             $picture = new PictureModel();
             $picture_id = $picture->getModelPicture($id);
-            return json(['code'=>1,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
+            return json(['code'=>1,'number'=>$picture_id,'msg'=>'模型图编号']);
         }
     }
 

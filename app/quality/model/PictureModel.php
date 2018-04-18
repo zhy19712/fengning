@@ -42,7 +42,7 @@ class PictureModel extends Model
 
     public function getModelPicture($id)
     {
-        $picture_id = $this->where(['division_id'=>['eq',$id]])->column('picture_id');
+        $picture_id = $this->where(['division_id'=>['eq',$id]])->value('picture_id');
         return $picture_id;
     }
 
