@@ -9,6 +9,7 @@
 namespace app\quality\controller;
 
 use app\admin\controller\Permissions;
+use app\admin\model\Admin;
 use app\admin\model\AdminGroup;
 use app\archive\model\AtlasCateModel;
 use app\contract\model\ContractModel;
@@ -16,6 +17,7 @@ use app\quality\model\DivisionControlPointModel;
 use app\quality\model\DivisionModel;
 use app\quality\model\DivisionUnitModel;
 use think\Request;
+use think\Session;
 
 /**
  * 在线填报
@@ -40,7 +42,7 @@ class Qualityform extends Permissions
      * 编辑质量表单
      * @param $cpr_id 控制点
      */
-    public function edit($cpr_id, $currentStep, $isView = false)
+    public function edit($cpr_id, $currentStep, $isView = false, $id = null)
     {
         //获取模板路径
         //获取控制点信息，组合模板路径
@@ -51,7 +53,7 @@ class Qualityform extends Permissions
             return "模板文件不存在";
         }
         $htmlContent = file_get_contents($formPath);
-        //$htmlContent =   str_replace("{{id}}" );
+        $htmlContent = str_replace("{id}", $id, $htmlContent);
         //$htmlContent =   str_replace("{{templateId}}");
         $htmlContent = str_replace('{divisionId}', $cp['division_id'], $htmlContent);
         $htmlContent = str_replace('{isInspect}', $cp['type'] ? 'true' : 'false', $htmlContent);
@@ -63,7 +65,15 @@ class Qualityform extends Permissions
 
         //输出模板内容
         //Todo 暂时使用replace替换，后期修改模板使用fetch自定义模板渲染
-        return $this->setFormInfo($cp['division_id'], $htmlContent);
+        $htmlContent = $this->setFormInfo($cp['division_id'], $htmlContent);
+
+        //获取表单基本信息
+        $formdata = "";
+        if (!is_null($id)) {
+
+        }
+        $htmlContent=str_replace('{formData}',$formdata,$htmlContent);
+        return $htmlContent;
     }
 
     /**
@@ -92,10 +102,10 @@ class Qualityform extends Permissions
             $output['ContractCode'] = $_section['contractId'] ? ContractModel::get($_section['contractId'])['contractName'] : "";
         }
         $Info = $this->getDivsionInfo($mod['division_id']);
-        $output['FBName']=$Info['FB']['d_name'];
-        $output['FBCode']=$Info['FB']['d_code'];
-        $output['DWName']=$Info['DW']['d_name'];
-        $output['DWCode']=$Info['DW']['d_code'];
+        $output['FBName'] = $Info['FB']['d_name'];
+        $output['FBCode'] = $Info['FB']['d_code'];
+        $output['DWName'] = $Info['DW']['d_name'];
+        $output['DWCode'] = $Info['DW']['d_code'];
         foreach ($output as $key => $value) {
             $htmlContent = str_replace("{{$key}}", $value, $htmlContent);
         }
@@ -129,5 +139,27 @@ class Qualityform extends Permissions
         $_mod['FB'] = DivisionModel::get($__mod['pid']);
         $_mod['DW'] = DivisionModel::get($_mod['FB']['pid']);
         return $_mod;
+    }
+
+    public function InsertOrUpdate($dto)
+    {
+
+    }
+
+    /**
+     * 获取当前审批人的点子签名，如果没有则获取当前用户的
+     * @param $id
+     * @return mixed
+     * @throws \think\exception\DbException
+     */
+    public function GetCurrentUserSignature($id)
+    {
+        if (empty($id))
+        {
+            return Admin::get(Session::get('current_id'),'SignImg')['SignImg']['filepath'];
+        }else
+        {
+            //获取当前审批人
+        }
     }
 }

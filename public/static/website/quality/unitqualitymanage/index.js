@@ -38,9 +38,6 @@ function unitPlanList() {
                 name: "name"
             },
             {
-                name: "ma_division_id"
-            },
-            {
                 name: "id"
             }
         ],
@@ -55,10 +52,6 @@ function unitPlanList() {
                     html += "<i class='fa fa-times' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
                     return html;
                 }
-            },
-            {
-                bVisible: false,
-                aTargets: [ 3 ]
             }
         ]
     });
@@ -257,7 +250,6 @@ $('#delBtn').click(function () {
     delMethod(0);
 });
 
-
 //下载
 function download(that) {
     var id = $(that).attr('uid');
@@ -268,4 +260,20 @@ function download(that) {
             id:id
         }
     });
+}
+
+//打印
+function download(that) {
+    var id = $(that).attr('uid');
+    $.ajax({
+        url: "./printDocument",
+        type: "post",
+        data: {
+            id:id
+        },
+        dataType: "json",
+        success: function (res) {
+
+        }
+    })
 }

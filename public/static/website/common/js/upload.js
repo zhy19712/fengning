@@ -9,7 +9,10 @@
             btnText:'上传',
             server: "/standard/common/upload",
             inputName:'file_name',
-            uploadSuccess:function(){}
+            formData:'',
+            accept:'',
+            uploadSuccess:function(){},
+            uploadStart:function(){}
         };
         $.extend(option,options);
         uploader = WebUploader.create({

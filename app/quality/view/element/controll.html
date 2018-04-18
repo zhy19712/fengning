@@ -180,10 +180,10 @@
     .imgList,.mybtn,.mybtn1,.bitCodes{
         display: none;
     }
-    #tableContent .dataTables_scroll{
+    #tableContent .dataTables_scroll,#unitWorkRightBottom .dataTables_scroll{
         height: 100%;
     }
-    #tableContent .dataTables_scrollBody{
+    #tableContent .dataTables_scrollBody,#unitWorkRightBottom .dataTables_scrollBody{
         max-height: none!important;
         width: 100%;
         height: calc(100% - 39px)!important;
@@ -247,7 +247,7 @@
                                 </thead>
                             </table>
                         </div>
-                        <div title="附件资料" style="padding:3px 3px 0 3px;">
+                        <div id="imageDataParent" title="附件资料" style="padding:3px 3px 0 3px;">
                             <table id="imageData" class="table table-striped table-bordered" cellspacing="0"  width="100%">
                                 <thead>
                                 <tr>
@@ -462,7 +462,7 @@
 
     /**==========开始初始化 单元工树 =================*/
 
-        //声明单元树的变量
+    //声明单元树的变量
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
         eTypeId ,controlPointId ,controlPointName ,
@@ -690,12 +690,6 @@
         showPdf(id,"../Common/download","BranchfileModel")
     }
 
-    //点击导出二维码
-    $("#tableContent").on("click",".bitCodes #bitCodes",function () {
-        console.log(conThisId);
-        layer.msg("还未开发！")
-    });
-
     //控制点里面的删除
     function delFile(id) {
         console.log(id);
@@ -732,10 +726,20 @@
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","none");
         $(".mybtnAdd").css("display","none");
-        if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+        // if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+        //     $(".mybtn").css("display","block");
+        // }
+        if($(".tabs-selected a span:first-child").html() === "控制点执行情况"){
             $(".mybtn").css("display","block");
+        }else if($(".tabs-selected a span:first-child").html() === "附件资料"){
+            $(".bitCodes").css("display","block");
+            $(".mybtn").css("display","block");
+        }else if($(".tabs-selected a span:first-child").html() === "在线填报"){
+            $(".mybtnAdd").css("display", "block");
+            $(".mybtn").css("display", "none");
         }
-        $("#implementation_wrapper").css("height","calc(100% - "+$("#tableContent").outerHeight()+"px - 35px)");
+        // $("#implementation_wrapper").css("height","calc(100% - "+$("#tableContent").outerHeight()+"px - 35px)");
+        // console.log($("#implementation_wrapper").attr("height"));
         // $("#imageData_wrapper").css("height","calc(100% - "+$("#tableContent").outerHeight()+"px - 35px)");
     });
 
@@ -752,9 +756,7 @@
         ajax: {
             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="
         },
-        dom:
-        // '<"mybtn layui-btn layui-btn-sm">' +
-        'rt',
+        dom:'rt',
         columns: [
             {
                 name: "data_name"
@@ -810,7 +812,10 @@
         ],
         language: {
             "zeroRecords": "没有找到记录",
-        }
+        },
+        // "fnDrawCallback": function( oSettings ) {
+        //     console.log($("#implementation_wrapper").attr("height"));
+        // }
     });
 
     //easyui点击显示选择
@@ -901,6 +906,10 @@
             });
     });
 
+    //获取高度
+    // if($("#unitWorkRightBottom #implementationParent .dataTables_empty").text() != "没有找到记录"){
+    //     alert(22)
+    // }
     /*============控制点情况结束==============*/
 
 
@@ -917,9 +926,7 @@
          ajax: {
              "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="
          },
-        dom:
-        // '<"bitCodes layui-btn layui-btn-sm">' +
-        'rt',
+         dom:'rt',
          columns: [
              {
                  name: "data_name"

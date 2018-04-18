@@ -13,6 +13,10 @@ class Admin extends Model
         return $this->belongsTo('AdminCate');
     }
 
+    public function SignImg()
+    {
+        return $this->hasOne('Attachment','id','signature');
+    }
 
     public function log()
     {
