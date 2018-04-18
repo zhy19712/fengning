@@ -48,11 +48,11 @@
     .dataTables_wrapper{
         display: block;
     }
-    #unitWorkRightBottom .mybtn i.fa:before,#unitWorkRightBottom .bitCodes i.fa:before,#unitWorkRightBottom .mybtn1 i.fa:before,#unitWorkRightBottom .saveCheck i.fa:before{
+    #unitWorkRightBottom .mybtn i.fa:before,#unitWorkRightBottom .bitCodes i.fa:before,#unitWorkRightBottom .mybtnAdd i.fa:before,#unitWorkRightBottom .saveCheck i.fa:before{
         background: #00c0ef;
         color: #ffffff;
     }
-    #unitWorkRightBottom .mybtn,#unitWorkRightBottom .bitCodes,#unitWorkRightBottom .mybtn1{
+    #unitWorkRightBottom .mybtn,#unitWorkRightBottom .bitCodes,#unitWorkRightBottom .mybtnAdd{
         position: absolute;
         right: 0;
         top: 0;
@@ -64,8 +64,12 @@
         line-height: 26px;
         margin-top: 2px;
         background-color: #00c0ef;
+        cursor: pointer;
     }
-    #unitWorkRightBottom .mybtn,#unitWorkRightBottom .bitCodes,#unitWorkRightBottom .mybtn1{
+    #unitWorkRightBottom .bitCodes{
+        right: 5%;
+    }
+    #unitWorkRightBottom .mybtn,#unitWorkRightBottom .bitCodes,#unitWorkRightBottom .mybtnAdd{
         margin-right: 0.5%;
         margin-bottom: 5px;
         margin-top: .3%;
@@ -74,7 +78,7 @@
         float: left;
         margin-left: 1%;
     }
-    #tableContent .select-color {
+    .select-color {
         background-color: #FDD5B5 !important;
     }
     #tableContent .dataTables_wrapper .dataTables_scroll {
@@ -271,8 +275,8 @@
                         </div>
                     </div>
                     <div class="mybtn"><div id='test3'><i class='fa fa-upload'></i>上传</div></div>
-                    <!--<div class="mybtn1"><div id='test3'><i class='fa fa-upload'></i>上传</div></div>-->
-                    <!--<div class="bitCodes"><i class="fa fa-upload"></i>选择</div>-->
+                    <div class="bitCodes" style="display: none"><div id='bit'><i class='fa fa-check-square-o'></i>选择</div></div>
+                    <div class="mybtnAdd" style="display: none"><div id='addTest'><i class='fa fa-plus'></i>新增</div></div>
                 </div>
             </div>
         </div>
@@ -656,7 +660,6 @@
         }
         if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
             $(".mybtn").css("display","block");
-            // $(".mybtn1").css("display","block");
         }
     });
 
@@ -731,6 +734,25 @@
         ],
         language: {
             "zeroRecords": "没有找到记录",
+        }
+    });
+
+    //easyui点击显示选择
+    $('#unitTab').tabs({
+        border:false,
+        onSelect:function(title,index){
+            if(title === "附件资料"){
+                $(".bitCodes").css("display","block");
+                $(".mybtn").css("display","block");
+            }else if(title != "附件资料"){
+                $(".bitCodes").css("display","none");
+            }
+            if(title === "在线填报"){
+                $(".mybtnAdd").css("display","block");
+                $(".mybtn").css("display","none");
+            }else if(title != "在线填报"){
+                $(".mybtnAdd").css("display","none");
+            }
         }
     });
 
@@ -982,9 +1004,6 @@
              "zeroRecords": "没有找到记录"
          }
      });
-
-     //
-    $("#unitTab").on("click",".tabs-wrap")
     /*============在线填报结束==============*/
 
 </script>
