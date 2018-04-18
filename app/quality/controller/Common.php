@@ -856,9 +856,9 @@ class Common extends Controller
         }
         $control_id_1 = array_unique($control_id);
         $control_id_2 = array_diff_assoc($control_id,$control_id_1);
-        $field_val = 'code,name,status,id';
+        $field_val = 'c.code,c.name,c.status,c.id,r.ma_division_id';
         if($type == 0){
-            $field_val = 'code,name,id';
+            $field_val = 'c.code,c.name,c.id,r.ma_division_id';
         }
         //表的总记录数 必要
         $recordsTotal = sizeof($control_id);
@@ -866,17 +866,19 @@ class Common extends Controller
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)
+                $recordsFilteredResult = Db::name($table)->alias('c')
                     ->field($field_val)
-                    ->where('id', 'IN', $control_id)
+                    ->join('quality_division_controlpoint_relation r','r.control_id = c.id','left')
+                    ->where('c.id', 'IN', $control_id)
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
 
                 if(sizeof($control_id_2)){
                     foreach($control_id_2 as $v){
-                        $recordsFilteredResult_2[] = Db::name($table)
+                        $recordsFilteredResult_2[] = Db::name($table)->alias('c')
                             ->field($field_val)
-                            ->where('id',$v)
+                            ->join('quality_division_controlpoint_relation r','r.control_id = c.id','left')
+                            ->where('c.id',$v)
                             ->where($columnString, 'like', '%' . $search . '%')
                             ->order($order)->limit(intval($start), intval($length))->select();
                     }
@@ -893,16 +895,18 @@ class Common extends Controller
             //没有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)
+                $recordsFilteredResult = Db::name($table)->alias('c')
                     ->field($field_val)
-                    ->where('id', 'IN', $control_id)
+                    ->join('quality_division_controlpoint_relation r','r.control_id = c.id','left')
+                    ->where('c.id', 'IN', $control_id)
                     ->order($order)->limit(intval($start), intval($length))->select();
 
                 if(sizeof($control_id_2)){
                     foreach($control_id_2 as $v){
-                        $recordsFilteredResult_2[] = Db::name($table)
+                        $recordsFilteredResult_2[] = Db::name($table)->alias('c')
                             ->field($field_val)
-                            ->where('id', $v)
+                            ->join('quality_division_controlpoint_relation r','r.control_id = c.id','left')
+                            ->where('c.id', $v)
                             ->order($order)->limit(intval($start), intval($length))->select();
                     }
                     if(sizeof($recordsFilteredResult_2)){
@@ -1208,9 +1212,10 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('u')
-                    ->field('t.filename,a.nickname,t.create_time,u.id')
+                    ->field('t.filename,a.nickname,c.role_name,t.create_time,u.id')
                     ->join('attachment as t','u.attachment_id = t.id','left')
                     ->join('admin as a','t.user_id = a.id','left')
+                    ->join('admin_cate as c','a.admin_cate_id = c.id','left')
                     ->where(['u.contr_relation_id'=> $id,'type'=>$type])
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
@@ -1221,9 +1226,10 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('u')
-                    ->field('t.filename,a.nickname,t.create_time,u.id')
+                    ->field('t.filename,a.nickname,c.role_name,t.create_time,u.id')
                     ->join('attachment as t','u.attachment_id = t.id','left')
                     ->join('admin as a','t.user_id = a.id','left')
+                    ->join('admin_cate as c','a.admin_cate_id = c.id','left')
                     ->where(['u.contr_relation_id'=> $id,'type'=>$type])
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;

@@ -44,33 +44,37 @@ class UnitqualitymanageModel extends Model
             if($id == 0){ // 全部删除
                 $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'type'=>0])->column('id');
             }else{
-                $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=>$id,'type'=>0])->value('id');
+                dump($add_id);
+                dump($ma_division_id);
+                dump($id);
+                $relation_id = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=>$id,'type'=>0])->column('id');
             }
             // 已经执行 的控制点 不能删除
-            $status = Db::name('quality_upload')->where(['contr_relation_id'=> ['in',$relation_id],'status'=>1 ])->count();
+            $status = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=> ['in',$relation_id],'type'=>0,'status'=>1 ])->count();
             if($status > 0){
                 return ['code' => -1,'msg' => '已执行控制点:不能删除!'];
             }
+            echo '$relation_id';
+            dump($relation_id);
             if(is_array($relation_id) && sizeof($relation_id)){
+                halt($relation_id);
                 $data = Db::name('quality_upload')->whereIn('contr_relation_id',$relation_id)->column('id,attachment_id');
-            }else{
-                $data = Db::name('quality_upload')->where('contr_relation_id',$relation_id)->column('id,attachment_id');
-            }
-            if(is_array($data) && sizeof($data)){
-                $id_arr = array_keys($data);
-                $attachment_id_arr = array_values($data);
-                $att = Db::name('attachment')->whereIn('id',$attachment_id_arr)->column('filepath');
-                foreach ($att as $v){
-                    $pdf_path = './uploads/temp/' . basename($v) . '.pdf';
-                    if(file_exists($v)){
-                        unlink($v); //删除文件
+                if(is_array($data) && sizeof($data)){
+                    $id_arr = array_keys($data);
+                    $attachment_id_arr = array_values($data);
+                    $att = Db::name('attachment')->whereIn('id',$attachment_id_arr)->column('filepath');
+                    foreach ($att as $v){
+                        $pdf_path = './uploads/temp/' . basename($v) . '.pdf';
+                        if(file_exists($v)){
+                            unlink($v); //删除文件
+                        }
+                        if(file_exists($pdf_path)){
+                            unlink($pdf_path); //删除生成的预览pdf
+                        }
                     }
-                    if(file_exists($pdf_path)){
-                        unlink($pdf_path); //删除生成的预览pdf
-                    }
+                    Db::name('attachment')->delete('attachment_id_arr');
+                    $this->delete($id_arr);
                 }
-                Db::name('attachment')->delete('attachment_id_arr');
-                $this->delete($id_arr);
             }
             return ['code' => 1, 'msg' => '删除成功'];
         }catch(PDOException $e){
