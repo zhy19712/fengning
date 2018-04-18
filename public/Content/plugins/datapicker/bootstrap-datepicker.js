@@ -1613,7 +1613,7 @@
 							'</tr>'+
 						'</tfoot>'
 	};
-	DPGlobal.template = '<div class="datepicker"><iframe allowTransparency="true" src="/Views/Shared/blank.html" style="background-color:transparent;position:absolute; border:0px; visibility:inherit; top:0; left:0; width:100%; height:100%; z-index:-1;"></iframe>' +
+	DPGlobal.template = '<div class="datepicker"><iframe allowTransparency="true" src="" style="background-color:transparent;position:absolute; border:0px; visibility:inherit; top:0; left:0; width:100%; height:100%; z-index:-1;"></iframe>' +
 							'<div class="datepicker-days">'+
 								'<table class=" table-condensed">'+
 									DPGlobal.headTemplate+
