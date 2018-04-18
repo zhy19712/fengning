@@ -116,14 +116,21 @@ class Common extends Controller
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
+                $wherestr = trim($search);
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('admin_group b', 'a.builderId=b.id', 'left')
                     ->join('admin_group c', 'a.constructorId=c.id', 'left')
                     ->join('admin_group d', 'a.designerId=d.id', 'left')
                     ->join('admin_group e', 'a.supervisorId=e.id', 'left')
-                    ->field('a.code,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
-                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                    ->field('a.id,a.code,a.name,a.money,b.name as builder,c.name as constructor,d.name as designer,e.name as supervisor')
+                    ->whereLike('a.name', '%' . $wherestr . '%', 'or')
+                    ->whereLike('a.code', '%' . $wherestr . '%', 'or')
+                    ->whereLike('b.name', '%' . $wherestr . '%', 'or')
+                    ->whereLike('c.name', '%' . $wherestr . '%', 'or')
+                    ->whereLike('d.name', '%' . $wherestr . '%', 'or')
+                    ->whereLike('e.name', '%' . $wherestr . '%', 'or')
+                    ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {

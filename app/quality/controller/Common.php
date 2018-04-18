@@ -1228,7 +1228,55 @@ class Common extends Controller
             $temp = [];
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }public function quality_form_info($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        $param = input('param.');
+        $whereStr=array();
+        $whereStr['DivisionId'] = $param['DivisionId']; // 控制点编号
+        $whereStr['ProcedureId'] = $param['ProcedureId']; // 控制点编号
+        $whereStr['ControlPointId'] = $param['ControlPointId']; // 控制点编号
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->where($whereStr)->count();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('a')
+                    ->join('admin u','a.user_id = u.id','left')
+                    ->join('admin c','a.CurrentApproverId = c.id','left')
+                    ->field('u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time')
+                    ->where($whereStr)
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->alias('u')
+                    ->join('admin u','a.user_id = u.id','left')
+                    ->join('admin c','a.CurrentApproverId = c.id','left')
+                    ->field('u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time')
+                    ->where($whereStr)
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
-
 
 }
