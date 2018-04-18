@@ -1198,7 +1198,7 @@ class Common extends Controller
                     ->join('attachment t','u.attachment_id = t.id','left')
                     ->join('admin a','t.user_id = a.id','left')
                     ->join('admin_cate c','a.admin_cate_id = c.id','left')
-                    ->where(['u.contr_relation_id'=> $id,'type'=>$type])
+                    ->where(['u.contr_relation_id'=> $id,'u.type'=>$type])
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -1212,7 +1212,7 @@ class Common extends Controller
                     ->join('attachment t','u.attachment_id = t.id','left')
                     ->join('admin a','t.user_id = a.id','left')
                     ->join('admin_cate c','a.admin_cate_id = c.id','left')
-                    ->where(['u.contr_relation_id'=> $id,'type'=>$type])
+                    ->where(['u.contr_relation_id'=> $id,'u.type'=>$type])
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
