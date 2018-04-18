@@ -222,6 +222,26 @@ class Admin extends Permissions
             if($this->request->isPost()) {
                 //是提交操作
                 $post = $this->request->post();
+
+                // 验证规则
+                $rule = [
+                    ['nickname', 'require', '请输入姓名'],
+                    ['gender', 'require|number', '请选择性别'],
+                    ['mail', 'email', '邮箱格式有误'],
+                    ['tele', 'alphaDash', '办公电话格式有误'],
+                    ['name', 'alphaDash', '登录名只能是字母、数字、下划线 _和破折号 - 的组合']
+                ];
+                $validate = new \think\Validate($rule);
+                //验证部分数据合法性
+                if (!$validate->check($post)) {
+                    return $this->error($validate->getError());
+                }
+                $n = preg_match_all("/^(13|14|15|17|18)[0-9]{9}$/",$post['mobile'],$array);
+                if(empty($n)){
+                    return $this->error('手机格式有误');
+                }
+
+
                 //验证昵称是否存在
                 $nickname = $model->where(['nickname'=>$post['nickname'],'id'=>['neq',$post['id']]])->find();
                 if(!empty($nickname)) {
@@ -265,6 +285,27 @@ class Admin extends Permissions
     		if($this->request->isPost()) {
     			//是提交操作
     			$post = $this->request->post();
+
+                // 验证规则
+                $rule = [
+                    ['nickname', 'require', '请输入姓名'],
+                    ['gender', 'require|number', '请选择性别'],
+                    ['mail', 'email', '邮箱格式有误'],
+                    ['tele', 'alphaDash', '办公电话格式有误'],
+                    ['name', 'alphaDash', '登录名只能是字母、数字、下划线 _和破折号 - 的组合']
+                ];
+                $validate = new \think\Validate($rule);
+                //验证部分数据合法性
+                if (!$validate->check($post)) {
+                    return $this->error($validate->getError());
+                }
+                $n = preg_match_all("/^(13|14|15|17|18)[0-9]{9}$/",$post['mobile'],$array);
+                if(empty($n)){
+                    return $this->error('手机格式有误');
+                }
+
+
+
     			//验证  唯一规则： 表名，字段名，排除主键值，主键名
 	            $validate = new \think\Validate([
 	                ['name', 'require|alphaDash', '管理员名称不能为空|用户名格式只能是字母、数字、下划线 _ 和破折号 - 的组合']
