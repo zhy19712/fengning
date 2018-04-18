@@ -155,24 +155,24 @@ class Qualityform extends Permissions
 
     public function InsertOrUpdate($dto)
     {
-        $mod = array();
-        $mod['DivisionId'] = $dto['DivisionId'];
-        $mod['ProcedureId'] = $dto['ProcedureId'];
-        $mod['ControlPointId'] = $dto['ControlPointId'];
-        $mod['IsInspect'] = $dto['IsInspect'];
-        $mod['TemplateId'] = $dto['TemplateId'];
-        $mod['form_name'] = $dto['FormName'];
-        $mod['form_data'] = serialize($dto['QualityFormDatas']);
-        if (empty($dto['Id'])) {
-            $mod['user_id'] = Session::get('current_id');
-            $res = $this->qualityFormInfoService->insertGetId($mod);
-            $dto['Id'] = $res;
-        } else {
-            $res = $this->qualityFormInfoService->allowField(true)->save($mod, ['id' => $dto['Id']]);
-        }
-        if ($res) {
+        try {
+            $mod = array();
+            $mod['DivisionId'] = $dto['DivisionId'];
+            $mod['ProcedureId'] = $dto['ProcedureId'];
+            $mod['ControlPointId'] = $dto['ControlPointId'];
+            $mod['IsInspect'] = $dto['IsInspect'];
+            $mod['TemplateId'] = $dto['TemplateId'];
+            $mod['form_name'] = $dto['FormName'];
+            $mod['form_data'] = serialize($dto['QualityFormDatas']);
+            if (empty($dto['Id'])) {
+                $mod['user_id'] = Session::get('current_id');
+                $res = $this->qualityFormInfoService->insertGetId($mod);
+                $dto['Id'] = $res;
+            } else {
+                $this->qualityFormInfoService->allowField(true)->isUpdate(true)->save($mod, ['id' => $dto['Id']]);
+            }
             return json(['result' => $dto['Id']]);
-        } else {
+        } catch (Exception $exception) {
             return json(['result' => 'Faild']);
         }
     }
