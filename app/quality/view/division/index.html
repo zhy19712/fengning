@@ -30,19 +30,27 @@
             </table>
         </div>
         <div class="" data-options="region:'center',title:'控制点标准'" style="height: 50%;">
-            <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%">
-            </object>
-
             <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
-
-
 
 
 
                 // //设置模型的可见性，0为不可见，1为可见。通过模型id进行关联。
                 // RealBimOcx.SetHugeObjSubValidStateBegin();
-                // RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 0);
+                // RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
                 // RealBimOcx.SetHugeObjSubValidStateEnd();
+                // RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
+
+
+                //点击树的时候加载
+                //RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
+                RealBimOcx.SetHugeObjSubValidStateBegin();
+                   // for(var i = 0;i<arr.length;i++){        //多层关联可见性
+                        RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
+                    //}
+                RealBimOcx.SetHugeObjSubValidStateEnd();
+
+                //点击表格数据的时候 加载
+               // RealBimOcx.FocusCameraToComponent(uObjSubID,3);
 
 
                 //获取一个构件的可见性状态
@@ -63,29 +71,19 @@
                 // RealBimOcx.SetSubObjFlickerEnd();
 
 
-
-
                 // 设置透明度和颜色：0为全透明，1为不透明
-                // RealBimOcx.BatchAddSubClrInfoBegin();
-                // RealBimOcx.AddSubClrPercent(uObjSubID,1,0xff87ceeb);
-                // RealBimOcx.BatchAddSubClrInfoEnd();
+                 RealBimOcx.BatchAddSubClrInfoBegin();
+                 RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x80ff0000);
+                 RealBimOcx.BatchAddSubClrInfoEnd();
 
 
 
                 //设置最佳视角
-                RealBimOcx.SetSuitableCam();
-
-
-
-
-
-
-
-
-
+               // RealBimOcx.SetSuitableCam();
 
 
             </script>
+            <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
 
             <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
                 // RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.58:8008/default.aspx?dir=url_res02&path=","res_fengning_kw_03");
@@ -94,13 +92,10 @@
                 RealBimOcx.SwitchBIMSceneSimple("F:\\","res_fengning_kw_03");
                 RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
 
-
-
                 RealBimOcx.CreateAGolFont("CustomFont01","微软雅黑",true,true,14,14,32,1.0,0*64,"");
                 RealBimOcx.CreateAGolFont("CustomFont02","微软雅黑",true,true,12,12,8,1.0,0*64,"");
-
-
             </script>
+
             <script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
                 if(CompleteEvent == "LoadMainScene" && retError==0 ){
                     RealBimOcx.SetAllHugeObjSubValidState(1);
