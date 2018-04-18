@@ -1248,7 +1248,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('admin u','a.user_id = u.id','left')
                     ->join('admin c','a.CurrentApproverId = c.id','left')
-                    ->field('u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time')
+                    ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time')
                     ->where($whereStr)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -1257,10 +1257,10 @@ class Common extends Controller
             //没有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->alias('u')
+                $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('admin u','a.user_id = u.id','left')
                     ->join('admin c','a.CurrentApproverId = c.id','left')
-                    ->field('u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time')
+                    ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time')
                     ->where($whereStr)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
