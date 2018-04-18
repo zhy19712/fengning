@@ -839,7 +839,7 @@ class Common extends Controller
         if ($division_id == -1 || $id == -1) {
             return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
         }
-        $table = 'controlpoint'; // 控制点表
+        $table = 'quality_division_controlpoint_relation'; // 控制点表
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
@@ -850,72 +850,54 @@ class Common extends Controller
          * type 类型:1 检验批 0 工程划分
          */
         if ($id == 0) { // 等于0 说明工序 是 作业 那就获取全部的 控制点
-            $control_id = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0,])->column('control_id');
+            //表的总记录数 必要
+            $recordsTotal = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0,])->count();
         } else {
-            $control_id = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->column('control_id');
+            //表的总记录数 必要
+            $recordsTotal = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->count();
         }
-        $control_id_1 = array_unique($control_id);
-        $control_id_2 = array_diff_assoc($control_id,$control_id_1);
-        $field_val = 'c.code,c.name,c.status,c.id,r.ma_division_id';
+        $field_val = 'c.code,c.name,r.status,r.id';
         if($type == 0){
-            $field_val = 'c.code,c.name,c.id,r.ma_division_id';
+            $field_val = 'c.code,c.name,r.id';
         }
-        //表的总记录数 必要
-        $recordsTotal = sizeof($control_id);
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->alias('c')
-                    ->field($field_val)
-                    ->join('quality_division_controlpoint_relation r','r.control_id = c.id','left')
-                    ->where('c.id', 'IN', $control_id)
-                    ->where($columnString, 'like', '%' . $search . '%')
-                    ->order($order)->limit(intval($start), intval($length))->select();
-
-                if(sizeof($control_id_2)){
-                    foreach($control_id_2 as $v){
-                        $recordsFilteredResult_2[] = Db::name($table)->alias('c')
-                            ->field($field_val)
-                            ->join('quality_division_controlpoint_relation r','r.control_id = c.id','left')
-                            ->where('c.id',$v)
-                            ->where($columnString, 'like', '%' . $search . '%')
-                            ->order($order)->limit(intval($start), intval($length))->select();
-                    }
-                    if(sizeof($recordsFilteredResult_2)){
-                        foreach ($recordsFilteredResult_2 as $v2){
-                            array_push($recordsFilteredResult,$v2[0]);
-                        }
-                    }
+                if($id == 0){
+                    $recordsFilteredResult = Db::name($table)->alias('r')
+                        ->field($field_val)
+                        ->join('controlpoint c','r.control_id = c.id','left')
+                        ->where(['r.division_id'=>$division_id,'type'=>0])
+                        ->where($columnString, 'like', '%' . $search . '%')
+                        ->order($order)->limit(intval($start), intval($length))->select();
+                }else{
+                    $recordsFilteredResult = Db::name($table)->alias('r')
+                        ->field($field_val)
+                        ->join('controlpoint c','r.control_id = c.id','left')
+                        ->where(['r.division_id'=>$division_id,'type'=>0,'ma_division_id' =>$id])
+                        ->where($columnString, 'like', '%' . $search . '%')
+                        ->order($order)->limit(intval($start), intval($length))->select();
                 }
-
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
             //没有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->alias('c')
-                    ->field($field_val)
-                    ->join('quality_division_controlpoint_relation r','r.control_id = c.id','left')
-                    ->where('c.id', 'IN', $control_id)
-                    ->order($order)->limit(intval($start), intval($length))->select();
-
-                if(sizeof($control_id_2)){
-                    foreach($control_id_2 as $v){
-                        $recordsFilteredResult_2[] = Db::name($table)->alias('c')
-                            ->field($field_val)
-                            ->join('quality_division_controlpoint_relation r','r.control_id = c.id','left')
-                            ->where('c.id', $v)
-                            ->order($order)->limit(intval($start), intval($length))->select();
-                    }
-                    if(sizeof($recordsFilteredResult_2)){
-                        foreach ($recordsFilteredResult_2 as $v2){
-                            array_push($recordsFilteredResult,$v2[0]);
-                        }
-                    }
+                if($id == 0){
+                    $recordsFilteredResult = Db::name($table)->alias('r')
+                        ->field($field_val)
+                        ->join('controlpoint c','r.control_id = c.id','left')
+                        ->where(['r.division_id'=>$division_id,'type'=>0])
+                        ->order($order)->limit(intval($start), intval($length))->select();
+                }else{
+                    $recordsFilteredResult = Db::name($table)->alias('r')
+                        ->field($field_val)
+                        ->join('controlpoint c','r.control_id = c.id','left')
+                        ->where(['r.division_id'=>$division_id,'type'=>0,'ma_division_id' =>$id])
+                        ->order($order)->limit(intval($start), intval($length))->select();
                 }
-
                 $recordsFiltered = $recordsTotal;
             }
         }
