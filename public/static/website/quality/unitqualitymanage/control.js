@@ -41,6 +41,9 @@ function unitPlanList() {
             },
             {
                 name: "status"
+            },
+            {
+                name: "ma_division_id"
             }
         ],
         columnDefs:[
