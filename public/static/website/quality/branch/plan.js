@@ -227,10 +227,6 @@ $("#tableContent").on("click",".bitCodes",function () {
 function conDown(id) {
     download(id,"./fileDownload");
 };
-//打印
-function conPrint() {
-    layer.msg('打印');
-}
 //预览
 function showPdf(id,url,type_model) {
     $.ajax({
@@ -269,7 +265,7 @@ function showPdf(id,url,type_model) {
         }
     })
 }
-//预览
+//预览打印
 function conPrint(id){
     showPdf(id,'../Common/preview',"BranchfileModel");
 }

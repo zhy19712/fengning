@@ -854,6 +854,8 @@ class Common extends Controller
         } else {
             $control_id = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->column('control_id');
         }
+        $control_id_1 = array_unique($control_id);
+        $control_id_2 = array_diff_assoc($control_id,$control_id_1);
         $field_val = 'code,name,status,id';
         if($type == 0){
             $field_val = 'code,name,id';
@@ -869,6 +871,22 @@ class Common extends Controller
                     ->where('id', 'IN', $control_id)
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
+
+                if(sizeof($control_id_2)){
+                    foreach($control_id_2 as $v){
+                        $recordsFilteredResult_2[] = Db::name($table)
+                            ->field($field_val)
+                            ->where('id',$v)
+                            ->where($columnString, 'like', '%' . $search . '%')
+                            ->order($order)->limit(intval($start), intval($length))->select();
+                    }
+                    if(sizeof($recordsFilteredResult_2)){
+                        foreach ($recordsFilteredResult_2 as $v2){
+                            array_push($recordsFilteredResult,$v2[0]);
+                        }
+                    }
+                }
+
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
@@ -879,6 +897,21 @@ class Common extends Controller
                     ->field($field_val)
                     ->where('id', 'IN', $control_id)
                     ->order($order)->limit(intval($start), intval($length))->select();
+
+                if(sizeof($control_id_2)){
+                    foreach($control_id_2 as $v){
+                        $recordsFilteredResult_2[] = Db::name($table)
+                            ->field($field_val)
+                            ->where('id', $v)
+                            ->order($order)->limit(intval($start), intval($length))->select();
+                    }
+                    if(sizeof($recordsFilteredResult_2)){
+                        foreach ($recordsFilteredResult_2 as $v2){
+                            array_push($recordsFilteredResult,$v2[0]);
+                        }
+                    }
+                }
+
                 $recordsFiltered = $recordsTotal;
             }
         }

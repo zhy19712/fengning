@@ -11,7 +11,7 @@ $.ajax({
     success:function (res) {
         if(res.code===1){
             for(var i =0; i<res.data.length;i++){
-                section += `<option value=${res.data[i].name}>${res.data[i].name}</option>`;
+                section += '<option value="'+res.data[i].name+'">'+res.data[i].name+'</option>';
             }
         }
     }
