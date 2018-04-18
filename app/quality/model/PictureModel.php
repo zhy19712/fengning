@@ -9,6 +9,7 @@
 namespace app\quality\model;
 
 
+use think\Db;
 use think\exception\PDOException;
 use think\Model;
 
@@ -32,9 +33,16 @@ class PictureModel extends Model
         }
     }
 
-    public function getModelPicture($division_id)
+    public function getAllNumber($add_id)
     {
-        $picture_id = $this->where(['division_id'=>$division_id])->value('picture_id');
+        $division_id = Db::name('quality_unit')->where('division_id',$add_id)->column('id');
+        $picture_id = $this->where(['division_id'=>['in',$division_id]])->column('picture_id');
+        return $picture_id;
+    }
+
+    public function getModelPicture($id)
+    {
+        $picture_id = $this->where(['division_id'=>['eq',$id]])->column('picture_id');
         return $picture_id;
     }
 

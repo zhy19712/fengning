@@ -666,31 +666,64 @@ class Division extends Permissions{
     }
 
 
-    // 展示模型图
-    public function showModelPicture()
+    /**
+     * 获取 左侧工程划分下 所有的模型图编号
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function modelPictureAllNumber()
     {
+        // 前台 传递 选中的 工程划分 编号add_id
         if($this->request->isAjax()){
             $param = input('param.');
-            $division_id = isset($param['division_id']) ? $param['division_id'] : -1;
-            if($division_id == -1){
+            $add_id = isset($param['add_id']) ? $param['add_id'] : -1;
+            if($add_id == -1){
                 return json(['code' => 0,'msg' => '编号有误']);
             }
             // 获取关联的模型图
             $picture = new PictureModel();
-            $picture_id = $picture->getModelPicture($division_id);
-            $new_name = iconv("utf-8","gb2312",$picture_id);
-            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
-            if(!file_exists($filePath)){
-                return json(['code' => '-1','msg' => '文件不存在']);
-            }
-            return json(['code'=>1,'path'=>$filePath,'msg'=>'模型图编号']);
+            $picture_id = $picture->getAllNumber($add_id);
+            return json(['code'=>1,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
         }
     }
 
-    // 打开关联模型
+    /**
+     * 点击 单元工程段号(单元划分) 展示关联的模型图
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function modelPicturePreview()
+    {
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $id = isset($param['id']) ? $param['id'] : -1;
+            if($id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            // 获取关联的模型图
+            $picture = new PictureModel();
+            $picture_id = $picture->getModelPicture($id);
+            return json(['code'=>1,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
+        }
+    }
+
+    // 打开关联模型 页面
     public function openModelPicture()
     {
-
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $id = isset($param['id']) ? $param['id'] : -1;
+            if($id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            // 获取归属的节点树
+            $division = new DivisionModel();
+            $nodeStr = $division->getModelPictureTree($id);
+            // 获取关联的模型图
+            $picture = new PictureModel();
+            $picture_id = $picture->getModelPicture($id);
+            return json(['code'=>1,'nodeStr'=>$nodeStr,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
+        }
     }
 
     /**
@@ -700,9 +733,10 @@ class Division extends Permissions{
      */
     public function addModelPicture()
     {
+        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图编号 picture_id
         if($this->request->isAjax()){
             $param = input('param.');
-            $division_id = isset($param['division_id']) ? $param['division_id'] : -1;
+            $division_id = isset($param['id']) ? $param['id'] : -1;
             $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
             if($division_id == -1 || $picture_id == -1){
                 return json(['code' => 0,'msg' => '编号有误']);
