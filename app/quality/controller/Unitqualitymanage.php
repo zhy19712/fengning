@@ -318,8 +318,14 @@ class Unitqualitymanage extends Permissions
             return json(['code' => -1 ,'msg' => '请选择需要新增的控制点']);
         }
         if($this->request->isAjax()){
+            // 首先验证 此控制点 是否已经 添加过
+            $old_existed = Db::name('quality_division_controlpoint_relation')->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id])->column('control_id');
+            $new_add= array_diff($idArr,$old_existed);
+            if(empty($new_add)){
+                json(['code'=>1,'msg'=>'已经添加过']);
+            }
             $data = [];
-            foreach ($idArr as $k=>$v){
+            foreach ($new_add as $k=>$v){
                 $data[$k]['division_id'] = $add_id;
                 $data[$k]['ma_division_id'] = $ma_division_id;
                 $data[$k]['type'] = 0;
