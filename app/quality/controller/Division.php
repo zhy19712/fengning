@@ -11,6 +11,7 @@ namespace app\quality\controller;
 use app\admin\controller\Permissions;
 use app\quality\model\DivisionModel;
 use app\quality\model\DivisionUnitModel;
+use app\quality\model\PictureModel;
 use think\Db;
 use think\Loader;
 /**
@@ -663,5 +664,62 @@ class Division extends Permissions{
         $enc = \QRencode::factory('L', 5, 4);
         return $enc->encodePNG($text, false, false);
     }
+
+
+    // 展示模型图
+    public function showModelPicture()
+    {
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $division_id = isset($param['division_id']) ? $param['division_id'] : -1;
+            if($division_id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            // 获取关联的模型图
+            $picture = new PictureModel();
+            $picture_id = $picture->getModelPicture($division_id);
+            $new_name = iconv("utf-8","gb2312",$picture_id);
+            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
+            if(!file_exists($filePath)){
+                return json(['code' => '-1','msg' => '文件不存在']);
+            }
+            return json(['code'=>1,'path'=>$filePath,'msg'=>'模型图编号']);
+        }
+    }
+
+    // 打开关联模型
+    public function openModelPicture()
+    {
+
+    }
+
+    /**
+     * 关联模型图
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function addModelPicture()
+    {
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $division_id = isset($param['division_id']) ? $param['division_id'] : -1;
+            $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
+            if($division_id == -1 || $picture_id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            // 是否已经关联过
+            $is_add = Db::name('quality_model_picture')->where(['division_id'=>$division_id,'picture_id'=>$picture_id])->value('id');
+            if(empty($is_add)){
+                $data['division_id'] = $division_id;
+                $data['picture_id'] = $picture_id;
+                $picture = new PictureModel();
+                $flag = $picture->insertTb($data);
+                return json($flag);
+            }else{
+                return json(['code' => 0,'msg' => '已经关联过']);
+            }
+        }
+    }
+
 
 }
