@@ -171,7 +171,9 @@ class Unitqualitymanage extends Permissions
         if($file_id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
-        $file_obj = Db::name('controlpoint')->where('id',$file_id)->field('code,name')->find();
+        $file_obj = Db::name('quality_division_controlpoint_relation')->alias('r')
+            ->join('controlpoint c','c.id=r.control_id','left')
+            ->where('r.id',$file_id)->field('c.code,c.name')->find();
         if(empty($file_obj)){
             return json(['code' => '-1','msg' => '编号无效']);
         }
@@ -197,10 +199,60 @@ class Unitqualitymanage extends Permissions
         }
     }
 
-    // TODO 打印文件 预留接口 printDocument
+    /**
+     * 打印文件
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @author hutao
+     */
     public function printDocument()
     {
-        echo '<script>window.print()</script>';
+        // 前台需要 传递 文件编号 id
+        $param = input('param.');
+        $file_id = isset($param['id']) ? $param['id'] : 0;
+        if($file_id == 0){
+            return json(['code' => '-1','msg' => '编号有误']);
+        }
+        $file_obj = Db::name('quality_division_controlpoint_relation')->alias('r')
+            ->join('controlpoint c','c.id=r.control_id','left')
+            ->where('r.id',$file_id)->field('c.code,c.name')->find();
+        if(empty($file_obj)){
+            return json(['code' => '-1','msg' => '编号无效']);
+        }
+        $new_name = iconv("utf-8","gb2312",$file_obj['code'].$file_obj['name']);
+        $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }
+        // 预览里有 打印
+        if(request()->isAjax()) {
+            $code = 1;
+            $msg = '预览成功';
+            $path = $filePath;
+            $extension = strtolower(get_extension(substr($path,1)));
+            $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+            if(!file_exists($pdf_path)){
+                if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
+                    doc_to_pdf($path);
+                }else if($extension === 'xls' || $extension === 'xlsx'){
+                    excel_to_pdf($path);
+                }else if($extension === 'ppt' || $extension === 'pptx'){
+                    ppt_to_pdf($path);
+                }else if($extension === 'pdf'){
+                    $pdf_path = $path;
+                }else if($extension === "jpg" || $extension === "png" || $extension === "jpeg"){
+                    $pdf_path = $path;
+                }else {
+                    $code = 0;
+                    $msg = '不支持的文件格式';
+                }
+                return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
+            }else{
+                return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
+            }
+        }
     }
 
     /**
@@ -261,13 +313,19 @@ class Unitqualitymanage extends Permissions
         $param = input('param.');
         $add_id = isset($param['add_id']) ? $param['add_id'] : 0;
         $ma_division_id = isset($param['ma_division_id']) ? $param['ma_division_id'] : 0; // 工序作业编号是0,但是作业没有添加方法
-        $idArr = isset($param['idArr/a']) ? $param['idArr/a'] : 0;
-        if(($add_id == 0) || ($ma_division_id == 0) || ($idArr == 0)){
+        $idArr = input('idArr/a');
+        if(($add_id == 0) || ($ma_division_id == 0) || (empty($idArr))){
             return json(['code' => -1 ,'msg' => '请选择需要新增的控制点']);
         }
         if($this->request->isAjax()){
+            // 首先验证 此控制点 是否已经 添加过
+            $old_existed = Db::name('quality_division_controlpoint_relation')->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id])->column('control_id');
+            $new_add= array_diff($idArr,$old_existed);
+            if(empty($new_add)){
+                json(['code'=>1,'msg'=>'已经添加过']);
+            }
             $data = [];
-            foreach ($idArr as $k=>$v){
+            foreach ($new_add as $k=>$v){
                 $data[$k]['division_id'] = $add_id;
                 $data[$k]['ma_division_id'] = $ma_division_id;
                 $data[$k]['type'] = 0;
@@ -324,8 +382,9 @@ class Unitqualitymanage extends Permissions
         if(request()->isAjax()) {
             $code = 1;
             $msg = '预览成功';
-            $attachment_id = Db::name('quality_upload')->where('contr_relation_id',$id)->value('attachment_id');
-            $data = Db::name('attachment')->where('id',$attachment_id)->find();
+            $data = Db::name('quality_upload')->alias('q')
+                ->join('attachment a','a.id=q.attachment_id','left')
+                ->where('q.id',$id)->field('a.path')->find();
             if(!$data['path'] || !file_exists("." .$data['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
             }
@@ -370,8 +429,9 @@ class Unitqualitymanage extends Permissions
         if($id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
-        $attachment_id = Db::name('quality_upload')->where('contr_relation_id',$id)->value('attachment_id');
-        $file_obj = Db::name('attachment')->where('id',$attachment_id)->field('filename,filepath')->find();
+        $file_obj = Db::name('quality_upload')->alias('q')
+            ->join('attachment a','a.id=q.attachment_id','left')
+            ->where('q.id',$id)->field('a.filename,a.filepath')->find();
         $filePath = '.' . $file_obj['filepath'];
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);

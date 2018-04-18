@@ -69,9 +69,6 @@
     #tableContent .mybtn,#tableContent .bitCodes,#tableContent .alldel{
         margin-right: 0.5%;
     }
-    #tableContent table.dataTable.no-footer {
-        border-top: 1px dotted;
-    }
     #tableContent #tableItem_filter {
         float: left;
         margin-left: 1%;
@@ -143,7 +140,7 @@
 
 <div id="unitWorkParent" data-options="region:'center'" style="background:#fff;">
     <div class="easyui-layout" data-options="fit:true">
-        <div id="unitWork" data-options="region:'west',title:' 单元工'" style="width:210px;background:#fff;">
+        <div id="unitWork" data-options="region:'west',title:' 单元工',split:true" style="width:210px;background:#fff;">
             <ul class="ztree" id="ztreeUnit"></ul>
         </div>
         <div id="tableContent" data-options="region:'center',title:'控制点',split:true" style="width:1255px; position: relative;padding-top: 5px;">
@@ -189,7 +186,7 @@
             ajax: {
                 "url": urlPlan
             },
-            dom: 'lf<"mybtn layui-btn layui-btn-sm">' +
+            dom: 'l<"mybtn layui-btn layui-btn-sm">' +
             '<"bitCodes layui-btn layui-btn-sm">' +
             // '<"alldel layui-btn layui-btn-sm">' +
             'rtip',
@@ -514,22 +511,27 @@
     //删除控制点
     function delFile(id) {
         console.log(id);
-        $.ajax({
-            type: "post",
-            url: "{:url('quality/element/delControlPointRelation')}",
-            data: {id:id},
-            success: function (res) {
-                console.log(res);
-                if(res.code ==1){
-                    layer.msg("删除成功！")
-                    if(conThisId == undefined){
-                        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
-                    }else{
-                        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+        layer.confirm('是否删除该条数据?', function(index){
+            $.ajax({
+                type: "post",
+                url: "{:url('quality/element/delControlPointRelation')}",
+                data: {id:id},
+                success: function (res) {
+                    console.log(res);
+                    if(res.code == 1){
+                        layer.msg("删除成功！")
+                        if(conThisId == undefined){
+                            tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
+                        }else{
+                            tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                        }
+                    }else if(res.code == -1){
+                        layer.msg(res.msg + "不能删除！")
                     }
                 }
-            }
-        })
+            })
+            layer.close(index);
+        });
     }
 
 </script>

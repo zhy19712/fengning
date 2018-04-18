@@ -9,6 +9,7 @@ layui.use(['form', 'layedit', 'laydate', 'element', 'layer','upload'], function(
         elem: '.uploadBox',
         url: "/quality/common/upload?module=quality&use=quality_thumb",
         accept: 'file',//普通文件
+        size:8192,
         before: function(obj){
             obj.preview(function(index, file, result){
                 attachment_id = file.id;

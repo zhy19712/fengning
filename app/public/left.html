@@ -8,7 +8,7 @@
                         {notempty name="$data.list"}{volist name="$data.list" id="vo"}
                             {notempty name="$vo.list"}
                             <li>
-                                <a class="table" href="javascript:;"><i class="fa {$vo.icon}"></i><span> {$vo.name}</span> <span class="angle"><i class="fa fa-angle-down"></i><span></span></a>
+                                <a class="table" href="javascript:;"><i class="fa {$vo.icon}"></i><span> {$vo.name}</span> <span class="angle"><i class="fa fa-angle-down"></i></span></a>
                                 <ul {if condition="$vo.is_open eq 1"}style="display:block;"{/if}>
                                     {volist name="$vo.list" id="co"}
                                     <li><a href="javascript:;" data-url="{$co.url}" data-icon="{$co.icon}" data-title="{$co.name}" kit-target data-id='{$co.id}'><i class="fa {$co.icon}" aria-hidden="true"></i><span> {$co.name}</span></a></li>
