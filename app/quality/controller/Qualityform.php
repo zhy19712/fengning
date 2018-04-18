@@ -17,6 +17,7 @@ use app\quality\model\DivisionControlPointModel;
 use app\quality\model\DivisionModel;
 use app\quality\model\DivisionUnitModel;
 use app\quality\model\QualityFormInfoModel;
+use think\Exception;
 use think\Request;
 use think\Session;
 
@@ -44,6 +45,13 @@ class Qualityform extends Permissions
     /**
      * 编辑质量表单
      * @param $cpr_id 控制点
+     * @param $currentStep 当前审批步骤
+     * @param bool $isView 是否查看
+     * @param null $id 表单id
+     * @return bool|mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function edit($cpr_id, $currentStep, $isView = false, $id = null)
     {
@@ -160,7 +168,7 @@ class Qualityform extends Permissions
             $res = $this->qualityFormInfoService->insertGetId($mod);
             $dto['Id'] = $res;
         } else {
-            $res = $this->qualityFormInfoService->allowField(true)->save($mod,['id' => $dto['Id']]);
+            $res = $this->qualityFormInfoService->allowField(true)->save($mod, ['id' => $dto['Id']]);
         }
         if ($res) {
             return json(['result' => $dto['Id']]);
@@ -177,10 +185,14 @@ class Qualityform extends Permissions
      */
     public function GetCurrentUserSignature($id)
     {
-        if (empty($id)) {
-            return Admin::get(Session::get('current_id'), 'SignImg')['SignImg']['filepath'];
-        } else {
-            //获取当前审批人
+        try {
+            if (empty($id)) {
+                return Admin::get(Session::get('current_id'), 'SignImg')['SignImg']['filepath'];
+            } else {
+                //获取当前审批人
+            }
+        } catch (Exception $e) {
+            return "";
         }
     }
 }
