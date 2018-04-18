@@ -98,9 +98,61 @@
 
             <script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
                 if(CompleteEvent == "LoadMainScene" && retError==0 ){
-                    RealBimOcx.SetAllHugeObjSubValidState(1);
-                    RealBimOcx.SetSceHugeObjVisible(true);
+                    RealBimOcx.SetAllHugeObjSubValidState(0);
+                    //RealBimOcx.SetSceHugeObjVisible(false);
                 }
+
+
+                //加载全部模型
+                window.getModel = function (treeNode) {
+                    var add_id = treeNode.add_id;
+                    $.ajax({
+                        url: "./modelPictureAllNumber",
+                        type: "post",
+                        data: {
+                            add_id:add_id
+                        },
+                        dataType: "json",
+                        success: function (res) {
+                            if(res.numberArr==''){
+                                RealBimOcx.SetAllHugeObjSubValidState(0);
+                            }else{
+                                RealBimOcx.SetAllHugeObjSubValidState(0);
+                                RealBimOcx.SetHugeObjSubValidStateBegin();
+                                for(var i = 0;i<res.numberArr.length;i++){
+                                    RealBimOcx.SetHugeObjSubValidStateInfo(res.numberArr[i], 1);
+                                }
+                                RealBimOcx.SetHugeObjSubValidStateEnd();
+                            }
+                        }
+                    });
+                }
+
+                //加载已关联模型
+                $("#tableItem").on("click","tr",function(){
+                    var data=window.tableItem.row(this).data();
+                    var id = data[7];
+                    $.ajax({
+                        url: "./modelPicturePreview",
+                        type: "post",
+                        data: {
+                            id:id
+                        },
+                        dataType: "json",
+                        success: function (res) {
+                            if(res.numberArr==''){
+                                RealBimOcx.SetAllHugeObjSubValidState(0);
+                            }else{
+                                RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
+                                RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
+                                RealBimOcx.SetHugeObjSubValidStateInfo(res.number, 1); //设置单个模型可见
+                                RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
+                                RealBimOcx.FocusCameraToComponent(res.number,1); //3：视角距离
+
+                            }
+                        }
+                    })
+                });
             </script>
         </div>
     </div>
