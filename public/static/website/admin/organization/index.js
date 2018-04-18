@@ -1,5 +1,6 @@
     //初始化layui组件
     var initUi = layui.use('form');
+    var form = layui.form;
     //当前节点id
     var admin_group_id;
     //当前节点名称
@@ -72,6 +73,10 @@
                     }
                     var newName = $(layero).find('input[name="officeName"]').val();
                     typeCode = $('select[name="officeType"] option:selected').val();
+                    if(newName==''){
+                        layer.msg('机构名称不能为空');
+                        return false;
+                    }
                     $.ajax({
                         url:'./editNode',
                         dataType:'JSON',
@@ -102,6 +107,10 @@
                 content: $('#addNodeForm'),
                 yes: function(index, layero){
                     var newName = $(layero).find('input[name="name"]').val();
+                    if(newName==''){
+                        layer.msg('节点名称不能为空');
+                        return false;
+                    }
                     $.ajax({
                         url:'./editNode',
                         dataType:'JSON',
@@ -180,6 +189,10 @@
             content: $('#'+formName),
             yes: function(index, layero){
                 var newName = $(layero).find('input[name='+ name +']').val();
+                if(newName==''){
+                    layer.msg('节点名称不能为空');
+                    return false;
+                }
                 $.ajax({
                     url:'./editNode',
                     dataType:'JSON',
@@ -533,6 +546,62 @@
         $('input[name="password_confirm"]').val(val);
     });
 
+    //表单验证
+    layui.use('form',function () {
+        var form = layui.form;
+        form.verify({
+            username: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!new RegExp("^[a-zA-Z_\u4e00-\u9fa5\\s·]+$").test(value)){
+                    return '姓名只能为中文或英文字母';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+            }
+            ,pass: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ],
+            loginName:function (value, item) {
+                if(!new RegExp("^[a-zA-Z0-9_\s·]+$").test(value)){
+                    return '登录名英文字母、数字或下划线';
+                }
+            },
+            email:function (value, item) {
+                if($(item).val()==''){
+                    return false;
+                }
+                if(!/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/.test(value)){
+                    return '请输入正确的邮箱';
+                }
+            },
+            phone:function (value, item) {
+                if($(item).val()==''){
+                    return false;
+                }
+                if(!/^1\d{10}$/.test(value)){
+                    return '请输入正确的手机号';
+                }
+            },
+            chineseLen:function (value, item) {
+                if($(item).val()==''){
+                    return false;
+                }
+                if(/^[\u4E00-\u9FA5]{5}$/.test(value)){
+                    return '最多只能输入4个中文字符';
+                }
+            },
+            englishLen:function (value, item) {
+                if($(item).val()==''){
+                    return false;
+                }
+                if(/^[\a-zA-Z]{7}$/.test(value)){
+                    return '最多只能输入6个英文字母';
+                }
+            }
+        });
+    });
+
     /*    //管理员分组弹层
     $('.manageZtreeBtn').click(function () {
         layer.open({
@@ -663,6 +732,10 @@
             type:'POST',
             data:data.field,
             success:function(res){
+                if(res.code!==1){
+                    layer.msg(res.msg);
+                    return false;
+                }
                 var filter = $(data.elem).attr('lay-filter');
                 var groupId = $('#groupId').val();
                 if(filter=='save'){
