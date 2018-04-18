@@ -34,7 +34,7 @@ i.fa:hover:before{
 /* 树 */
 .ztree-title{
     position: absolute;
-    top: 0px;
+    top: -31px;
     top:0\9;
     left: -1px;
     width: 100%;
