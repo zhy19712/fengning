@@ -75,10 +75,13 @@ function implementMethod() {
                 name: "nickname"
             },
             {
-                name: "name"
+                name: "role_name"
             },
             {
-                name: "status"
+                name: "create_time"
+            },
+            {
+                name: "id"
             }
         ],
         columnDefs:[
@@ -106,16 +109,19 @@ function imageDataMethod() {
         dom: 'ltipr',
         columns:[
             {
+                name: "filename"
+            },
+            {
+                name: "nickname"
+            },
+            {
+                name: "role_name"
+            },
+            {
+                name: "create_time"
+            },
+            {
                 name: "id"
-            },
-            {
-                name: "code"
-            },
-            {
-                name: "name"
-            },
-            {
-                name: "status"
             }
         ],
         columnDefs:[
