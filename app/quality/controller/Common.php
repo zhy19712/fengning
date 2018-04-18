@@ -1195,10 +1195,10 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('u')
                     ->field('t.filename,a.nickname,c.role_name,t.create_time,u.id')
-                    ->join('attachment as t','u.attachment_id = t.id','left')
-                    ->join('admin as a','t.user_id = a.id','left')
-                    ->join('admin_cate as c','a.admin_cate_id = c.id','left')
-                    ->where(['u.contr_relation_id'=> $id,'type'=>$type])
+                    ->join('attachment t','u.attachment_id = t.id','left')
+                    ->join('admin a','t.user_id = a.id','left')
+                    ->join('admin_cate c','a.admin_cate_id = c.id','left')
+                    ->where(['u.contr_relation_id'=> $id,'u.type'=>$type])
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -1209,10 +1209,10 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('u')
                     ->field('t.filename,a.nickname,c.role_name,t.create_time,u.id')
-                    ->join('attachment as t','u.attachment_id = t.id','left')
-                    ->join('admin as a','t.user_id = a.id','left')
-                    ->join('admin_cate as c','a.admin_cate_id = c.id','left')
-                    ->where(['u.contr_relation_id'=> $id,'type'=>$type])
+                    ->join('attachment t','u.attachment_id = t.id','left')
+                    ->join('admin a','t.user_id = a.id','left')
+                    ->join('admin_cate c','a.admin_cate_id = c.id','left')
+                    ->where(['u.contr_relation_id'=> $id,'u.type'=>$type])
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
