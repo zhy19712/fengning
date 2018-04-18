@@ -736,8 +736,8 @@
                 "orderable": false,
                 "targets": [4],
                 "render": function (data, type, row) {
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='impDownFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conPicshow("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='impDownFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
@@ -810,8 +810,8 @@
                 "orderable": false,
                 "targets": [4],
                 "render": function (data, type, row) {
-                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conPicshow("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='impDownFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                      // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                      return html;
                  }
