@@ -326,8 +326,9 @@ class Unitqualitymanage extends Permissions
         if(request()->isAjax()) {
             $code = 1;
             $msg = '预览成功';
-            $attachment_id = Db::name('quality_upload')->where('contr_relation_id',$id)->value('attachment_id');
-            $data = Db::name('attachment')->where('id',$attachment_id)->find();
+            $data = Db::name('quality_upload')->alias('q')
+                ->join('attachment a','a.id=q.attachment_id','left')
+                ->where('q.id',$id)->field('a.path')->find();
             if(!$data['path'] || !file_exists("." .$data['path'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
             }
@@ -372,8 +373,9 @@ class Unitqualitymanage extends Permissions
         if($id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
-        $attachment_id = Db::name('quality_upload')->where('contr_relation_id',$id)->value('attachment_id');
-        $file_obj = Db::name('attachment')->where('id',$attachment_id)->field('filename,filepath')->find();
+        $file_obj = Db::name('quality_upload')->alias('q')
+            ->join('attachment a','a.id=q.attachment_id','left')
+            ->where('q.id',$id)->field('a.filename,a.filepath')->find();
         $filePath = '.' . $file_obj['filepath'];
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
