@@ -67,9 +67,9 @@
         margin-bottom: 5px;
         margin-top: .3%;
     }
-    #tableContent table.dataTable.no-footer {
-        border-top: 1px dotted;
-    }
+    /*#tableContent table.dataTable.no-footer {*/
+        /*border-top: 1px dotted;*/
+    /*}*/
     #tableContent #tableItem_filter {
         float: left;
         margin-left: 1%;
@@ -79,8 +79,6 @@
     }
     #tableContent .dataTables_wrapper .dataTables_scroll {
         position: relative;
-        /*top: 15px;*/
-        /*border-top: 1px dotted #cecece;*/
     }
     #tableContent .even {
         background-color: #ffffff;
@@ -89,9 +87,8 @@
         background-color: #f9f9f9;
     }
     #tableContent .imgList {
-        border-top: 1px dotted;
         border-bottom: 1px dotted;
-        padding: 5px 3px;
+        padding: 3px 3px 5px;
     }
     #tableContent .imgList #homeWork {
         margin-right:3px;
@@ -117,7 +114,6 @@
     #tableContent .listName{
         padding: .5% 0;
         border-bottom: 1px dotted;
-        margin-bottom: 5px;
     }
     #tableContent .listName h3{
         font-weight: 800;
@@ -346,11 +342,10 @@
                 "orderable": false,
                 "targets": [3],
                 "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='downConFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    // var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='downConFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    return html;
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    return '';
                 }
             }
         ],
@@ -574,7 +569,7 @@
                 }
                 // alert($(".listName").height());
                 // alert($(".result").height());
-                $("#tableItem_wrapper").css("height","calc(100% - "+$(".imgList").outerHeight()+"px - "+$(".result").outerHeight()+"px - 100px)");
+                $("#tableItem_wrapper").css("height","calc(100% - "+$(".imgList").outerHeight()+"px - "+$(".result").outerHeight()+"px - 85px)");
                 // }else if(res.code==0){
                 //     layer.msg(res.msg);
                 // }

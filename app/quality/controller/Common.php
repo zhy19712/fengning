@@ -837,7 +837,7 @@ class Common extends Controller
         $id = isset($param['workId']) ? $param['workId'] : -1; // 工序编号
         $type = isset($param['type']) ? $param['type'] : 0; // 不传递 说明 是 单位策划 传递 说明是 单位管控
         if ($division_id == -1 || $id == -1) {
-            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
+            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => array()]);
         }
         $table = 'quality_division_controlpoint_relation'; // 控制点表
         //查询
@@ -1180,7 +1180,7 @@ class Common extends Controller
         $id = isset($param['controlId']) ? $param['controlId'] : -1; // 控制点编号
         $type = isset($param['type']) ? $param['type'] : 1; // 1执行情况 2图像资料 (不传递是执行情况 传递 是 图像资料)
         if ($id == -1) {
-            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => '编号有误']);
+            return json(['draw' => intval($draw), 'recordsTotal' => intval(0), 'recordsFiltered' => 0, 'data' => array()]);
         }
         $table = 'quality_upload'; // 文件表
         //查询
