@@ -55,6 +55,10 @@ function unitPlanList() {
                     html += "<i class='fa fa-times' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
                     return html;
                 }
+            },
+            {
+                bVisible: false,
+                aTargets: [ 3 ]
             }
         ]
     });
