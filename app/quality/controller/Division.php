@@ -741,6 +741,22 @@ class Division extends Permissions{
         return $this->fetch('relationview');
     }
 
+    // 关联模型 页面 里 点击 模型图名称 加载模型图
+    public function relevanceModelPicturePreview()
+    {
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $id = isset($param['add_id']) ? $param['add_id'] : -1;
+            if($id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            // 获取关联的模型图
+            $picture = new PictureModel();
+            $picture_id = $picture->getModelPictureNumber($id);
+            return json(['code'=>1,'number'=>$picture_id,'msg'=>'模型图编号']);
+        }
+    }
+
     /**
      * 关联模型图
      * @return \think\response\Json
