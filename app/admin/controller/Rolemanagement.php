@@ -316,11 +316,11 @@ class Rolemanagement extends Permissions
                 foreach((array)$user as $key=>$vo){
                     $id = $vo['id'] + 10000;
                     $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['nickname'].'"';
-                    $str .= '}*';
+                    $str .= '}*☆*';
                 }
                 $str = substr($str, 0, -1);
 
-                $str = explode("*",$str);
+                $str = explode("*☆*",$str);
 
                 //$res,$str这两个数组都存在时，才可以合并
 

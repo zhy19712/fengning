@@ -29,6 +29,10 @@ class Qualityanalysis extends Permissions
         return $this->fetch();
     }
 
+    /**
+     * 统计数据的柱状图、表格、折线图
+     * @return \think\response\Json
+     */
     public function getIndex()
     {
         //折线

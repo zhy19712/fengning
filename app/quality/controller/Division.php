@@ -708,7 +708,7 @@ class Division extends Permissions{
         }
     }
 
-    // 打开关联模型 页面
+    // 打开关联模型 页面 openModelPicture
     public function openModelPicture()
     {
         if($this->request->isAjax()){
@@ -731,7 +731,7 @@ class Division extends Permissions{
             $i = 1;
             foreach($id_arr as $k=>$v){
                 $node_id = $data['pid'] + $i;
-                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k]['picture_name'] . '"' . ',"add_id": "' . $v['id'] . '"';
+                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k] . '"' . ',"add_id": "' . $v . '"';
                 $nodeStrTwo .= '},';$i++;
             }
             $nodeStrOne = "[" . substr($data['str'], 0, -1) . "]";
@@ -771,21 +771,48 @@ class Division extends Permissions{
     }
 
     // 获取txt文件内容并插入到数据库中 insertTxtContent
-    public function indextest()
+    public function indextxt()
     {
+        /**
+         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-Z] [0]
+         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-X] [1]
+         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-S] [2]
+         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅳ-983.00-CZ0+024.000-0+054.000-Z] [3]
+         */
         $filePath = './static/division/GolIdTable.txt';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }
-        $content = file_get_contents($filePath);
-        $content = iconv("gb2312", "utf-8//IGNORE",$content);
-        $contents= explode("[丰宁开挖已编好ID号+外壳+岩锚梁] [",$content);
-        halt($contents);
-        foreach ($contents as $k => $v)//遍历循环
-        {
-            $id = $k;
-            $serial_number = $v;
+        $myfile = fopen($filePath, "r") or die("Unable to open file!");
+        $contents = $new_contents =[];
+        while(!feof($myfile)) {
+            $contents[] = explode(" ",iconv('gb2312','utf-8//IGNORE',fgets($myfile)));
         }
+
+        foreach ($contents as $v){
+            $new_v = $v;
+            $v[0] = str_replace('[','',$new_v[0]);
+            $v[0] = str_replace(']','',$new_v[0]);
+            $v[1] = str_replace('[','',$new_v[1]);
+            $v[1] = str_replace(']','',$new_v[1]);
+            $v[2] = str_replace('[','',$new_v[2]);
+            $v[2] = str_replace(']
+','',$new_v[2]);
+//            halt($v);
+            $new_contents[] = $v;
+        }
+        $data = [];
+        halt($new_contents);
+        foreach ($new_contents as $val){
+            halt($val);
+            $data[]['picture'] = $val[0];
+            $data[]['picture_name'] = $val[1];
+            $data[]['picture_id'] = $val[2];
+        }
+        halt($data);
+        $picture = new PictureModel();
+        $picture->insertTb($data);
+        fclose($myfile);
     }
 
 
