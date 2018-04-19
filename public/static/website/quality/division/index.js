@@ -582,7 +582,8 @@ $('#exceldownloadBtn').click(function () {
     })
 });
 
-//关联试图
 function relation(that) {
-
+    var uid = $(that).attr('uid');
+    document.cookie="unitEnginNoId="+uid;
+    window.open('./openModelPicture');
 }
