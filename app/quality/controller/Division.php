@@ -724,6 +724,7 @@ class Division extends Permissions{
             $picture_id = $picture->getModelPicture($id);
             return json(['code'=>1,'nodeStr'=>$nodeStr,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
         }
+        $this->fetch('relationview');
     }
 
     /**
