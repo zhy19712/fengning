@@ -6,7 +6,7 @@
  * Time: 10:40
  */
 /**
- * 进度管理
+ * 进度模块-进度管理
  * Class Progress
  * @package app\quality\controller
  */
@@ -24,6 +24,15 @@ class Progress extends Permissions
      * @return mixed
      */
     public function index()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 模板首页
+     * @return mixed
+     */
+    public function getindex()
     {
         return $this->fetch();
     }
