@@ -1,4 +1,4 @@
-var unitEnginNoId = document.cookie.split(';')[0].split('=')[1]
+var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];
 
 $.ajax({
     url: "./openModelPicture",
@@ -64,7 +64,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
         },
         callback:{
             onClick: function (event, treeId, treeNode) {
-                console.log(treeNode);
+                zTreeOnClick(event, treeId, treeNode);
             }
         },
         showLine:true,
@@ -76,6 +76,8 @@ function zTreeOnCheck(event, treeId, treeNode) {
 }
 
 function zTreeOnClick(event, treeId, treeNode) {
-    console.log(treeNode);
-    loadModel();
+    var treeObj = $.fn.zTree.getZTreeObj("ztree");
+    var nodes = treeObj.getNodesByParam("id",treeNode.id);
+    treeObj.selectNode(nodes[0],true);
+    //loadModel();
 }
