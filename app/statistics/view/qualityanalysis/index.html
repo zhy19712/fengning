@@ -301,6 +301,7 @@
                 timeline = res.data.timeline; //月
                 excellentMonth = res.data.excellentMonth;//月优良率
                 for(var k = 0; k<res.data.rate.length;k++){
+                    dataMonthNumber[k]=[];
                      dataMonthNumber[k][0]={};
                      dataMonthNumber[k][1]={};
                      dataMonthNumber[k][0].value = res.data.rate[k].excellent_number;

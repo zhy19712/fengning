@@ -156,7 +156,7 @@ var tableItem = $('#tableItem').DataTable( {
             "render" :  function(data,type,row) {
                 var a = data;
                 var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
-                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-print'></i></a>" ;
+                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPrint("+data+")'><i class='fa fa-print'></i></a>" ;
                 return html;
             }
         }
@@ -361,7 +361,7 @@ function conDown2(id) {
 }
 //下载 控制点模板
 function conDown(id) {
-    download(id,"../Common/download","")
+    download(id,"./fileDownload","BranchfileModel")
 }
 //预览
 function showPdf(id,url,type_model) {
@@ -407,5 +407,6 @@ function conPicshow(id){
 }
 //打印
 function conPrint(id) {
-    layer.msg('打印');
+    printDocument
+    showPdf(id,'./printDocument',"BranchfileModel");
 }
