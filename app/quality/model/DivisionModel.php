@@ -172,7 +172,7 @@ class DivisionModel extends Model
                 $str .= '},';
             }
         }
-        return "[" . substr($str, 0, -1) . "]";
+        return ['str'=>$str,'pid'=>$did];
     }
 
     //递归获取当前节点的所有父节点
