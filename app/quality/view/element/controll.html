@@ -362,8 +362,8 @@
         }
     });
 
-    var layer = layui.layer;
     //查询提交
+    var layer = layui.layer;
     layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -743,6 +743,39 @@
         // $("#imageData_wrapper").css("height","calc(100% - "+$("#tableContent").outerHeight()+"px - 35px)");
     });
 
+    //easyui点击显示选择
+    $('#unitTab').tabs({
+        border:false,
+        onSelect:function(title,index){
+            if(title === "控制点执行情况"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                    $(".mybtn").css("display","block");
+                }
+            }else if(title != "附件资料"){
+                $(".mybtn").css("display","none");
+            }
+            if(title === "附件资料"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                    $(".bitCodes").css("display","block");
+                    $(".mybtn").css("display","block");
+                }
+            }else if(title != "附件资料"){
+                $(".bitCodes").css("display","none");
+            }
+            if(title === "在线填报"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
+                    $(".mybtnAdd").css("display", "block");
+                    $(".mybtn").css("display", "none");
+                }else if(clickId == undefined || clickId == null){
+                    layer.msg("请选择控制点!")
+                }
+            }else if(title != "在线填报"){
+                $(".mybtnAdd").css("display","none");
+            }
+        }
+    });
+
+
     /*============控制点情况开始==============*/
     //控制点情况结构表格
     implementation = $('#implementation').DataTable({
@@ -816,38 +849,6 @@
         // "fnDrawCallback": function( oSettings ) {
         //     console.log($("#implementation_wrapper").attr("height"));
         // }
-    });
-
-    //easyui点击显示选择
-    $('#unitTab').tabs({
-        border:false,
-        onSelect:function(title,index){
-            if(title === "控制点执行情况"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
-                    $(".mybtn").css("display","block");
-                }
-            }else if(title != "附件资料"){
-                $(".mybtn").css("display","none");
-            }
-            if(title === "附件资料"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
-                    $(".bitCodes").css("display","block");
-                    $(".mybtn").css("display","block");
-                }
-            }else if(title != "附件资料"){
-                $(".bitCodes").css("display","none");
-            }
-            if(title === "在线填报"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
-                    $(".mybtnAdd").css("display", "block");
-                    $(".mybtn").css("display", "none");
-                }else if(clickId == undefined || clickId == null){
-                    layer.msg("请选择控制点!")
-                }
-            }else if(title != "在线填报"){
-                $(".mybtnAdd").css("display","none");
-            }
-        }
     });
 
     //上传点击
@@ -981,14 +982,14 @@
              "zeroRecords": "没有找到记录"
          }
     });
-
     /*============图像资料结束==============*/
 
 
 
     /*============在线填报开始==============*/
-    var ProcedureOnlineId ;
-    var DivisionOnlineId ;
+    var step = 0;
+    var isView = false;
+    var formId ;
 
     //在线填报结构表格
     function funOnLine(selfidUnit,conThisId,clickId){
@@ -1099,10 +1100,6 @@
          }
     });
     }
-
-    var step = 0;
-    var isView = false;
-    var formId ;
 
     //在线填报-新增
     $("#unitWorkRightBottom").on("click",".mybtnAdd",function () {
