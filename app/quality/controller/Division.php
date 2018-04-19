@@ -682,7 +682,8 @@ class Division extends Permissions{
             }
             // 获取关联的模型图
             $picture = new PictureModel();
-            $picture_id = $picture->getAllNumber($add_id);
+            $data= $picture->getAllNumber($add_id);
+            $picture_id = array_keys($data);
             return json(['code'=>1,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
         }
     }
@@ -712,17 +713,29 @@ class Division extends Permissions{
     {
         if($this->request->isAjax()){
             $param = input('param.');
+            $add_id = isset($param['add_id']) ? $param['add_id'] : -1;
             $id = isset($param['id']) ? $param['id'] : -1;
-            if($id == -1){
+            if($add_id == -1 || $id == -1){
                 return json(['code' => 0,'msg' => '编号有误']);
             }
-            // 获取归属的节点树
+            // 管理视图的节点树
             $division = new DivisionModel();
-            $nodeStr = $division->getModelPictureTree($id);
+            $data = $division->getModelPictureTree($id);
             // 获取关联的模型图
             $picture = new PictureModel();
-            $picture_id = $picture->getModelPicture($id);
-            return json(['code'=>1,'nodeStr'=>$nodeStr,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
+            $numberData = $picture->getAllNumber($add_id);
+            $picture_id = array_keys($numberData);
+            $nodeStrTwo = $data['str'];
+            // 勾件树
+            $i = 1;
+            foreach($numberData as $v){
+                $node_id = $data['pid'] + $i;
+                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $v['picture_name'] . '"';
+                $nodeStrTwo .= '},';$i++;
+            }
+            $nodeStrOne = "[" . substr($data['str'], 0, -1) . "]";
+            $nodeStrTwo = "[" . substr($nodeStrTwo, 0, -1) . "]";
+            return json(['code'=>1,'nodeStrOne'=>$nodeStrOne,'nodeStrTwo'=>$nodeStrTwo,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
         }
         return $this->fetch('relationview');
     }
