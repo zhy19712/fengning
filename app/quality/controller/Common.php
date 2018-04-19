@@ -857,25 +857,25 @@ class Common extends Controller
             $recordsTotal = Db::name('quality_division_controlpoint_relation')->where(['division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])->count();
         }
         $field_val = 'c.code,c.name,r.status,r.id';
-        if($type == 0){
+        if ($type == 0) {
             $field_val = 'c.code,c.name,r.id';
         }
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                if($id == 0){
+                if ($id == 0) {
                     $recordsFilteredResult = Db::name($table)->alias('r')
                         ->field($field_val)
-                        ->join('controlpoint c','r.control_id = c.id','left')
-                        ->where(['r.division_id'=>$division_id,'type'=>0])
+                        ->join('controlpoint c', 'r.control_id = c.id', 'left')
+                        ->where(['r.division_id' => $division_id, 'type' => 0])
                         ->where($columnString, 'like', '%' . $search . '%')
                         ->order($order)->limit(intval($start), intval($length))->select();
-                }else{
+                } else {
                     $recordsFilteredResult = Db::name($table)->alias('r')
                         ->field($field_val)
-                        ->join('controlpoint c','r.control_id = c.id','left')
-                        ->where(['r.division_id'=>$division_id,'type'=>0,'ma_division_id' =>$id])
+                        ->join('controlpoint c', 'r.control_id = c.id', 'left')
+                        ->where(['r.division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])
                         ->where($columnString, 'like', '%' . $search . '%')
                         ->order($order)->limit(intval($start), intval($length))->select();
                 }
@@ -885,17 +885,17 @@ class Common extends Controller
             //没有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                if($id == 0){
+                if ($id == 0) {
                     $recordsFilteredResult = Db::name($table)->alias('r')
                         ->field($field_val)
-                        ->join('controlpoint c','r.control_id = c.id','left')
-                        ->where(['r.division_id'=>$division_id,'type'=>0])
+                        ->join('controlpoint c', 'r.control_id = c.id', 'left')
+                        ->where(['r.division_id' => $division_id, 'type' => 0])
                         ->order($order)->limit(intval($start), intval($length))->select();
-                }else{
+                } else {
                     $recordsFilteredResult = Db::name($table)->alias('r')
                         ->field($field_val)
-                        ->join('controlpoint c','r.control_id = c.id','left')
-                        ->where(['r.division_id'=>$division_id,'type'=>0,'ma_division_id' =>$id])
+                        ->join('controlpoint c', 'r.control_id = c.id', 'left')
+                        ->where(['r.division_id' => $division_id, 'type' => 0, 'ma_division_id' => $id])
                         ->order($order)->limit(intval($start), intval($length))->select();
                 }
                 $recordsFiltered = $recordsTotal;
@@ -913,6 +913,7 @@ class Common extends Controller
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+
     //单元管控：控制点列表
     public function quality_division_controlpoint_relation($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
@@ -935,7 +936,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
-                    ->field('a.id,b.code,b.name,a.status')
+                    ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -946,7 +947,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
-                    ->field('a.id,b.code,b.name,a.status')
+                    ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
@@ -963,6 +964,7 @@ class Common extends Controller
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+
     //单元管控：控制点执行情况、附件资料
     public function quality_upload($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
@@ -971,18 +973,18 @@ class Common extends Controller
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         $par = array();
-        $par['a.type'] = $this->request->has('type')?$this->request->param('type'):1;
+        $par['a.type'] = $this->request->has('type') ? $this->request->param('type') : 1;
         $par['a.contr_relation_id'] = $this->request->param('cpr_id');
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->where(['type'=>$par['a.type'],'contr_relation_id'=>$par['a.contr_relation_id']])->count();
+        $recordsTotal = Db::name($table)->where(['type' => $par['a.type'], 'contr_relation_id' => $par['a.contr_relation_id']])->count();
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('attachment b', 'a.attachment_id=b.id', 'left')
-                    ->join('admin c','b.user_id=c.id','left')
-                    ->join('admin_group d','c.admin_group_id=d.id')
+                    ->join('admin c', 'b.user_id=c.id', 'left')
+                    ->join('admin_group d', 'c.admin_group_id=d.id')
                     ->where($par)
                     ->field('a.id,a.data_name,c.nickname,d.name,b.create_time')
                     ->order($order)->limit(intval($start), intval($length))->select();
@@ -994,8 +996,8 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('attachment b', 'a.attachment_id=b.id', 'left')
-                    ->join('admin c','b.user_id=c.id','left')
-                    ->join('admin_group d','c.admin_group_id=d.id')
+                    ->join('admin c', 'b.user_id=c.id', 'left')
+                    ->join('admin_group d', 'c.admin_group_id=d.id')
                     ->where($par)
                     ->field('a.id,a.data_name,c.nickname,d.name,b.create_time')
                     ->order($order)->limit(intval($start), intval($length))->select();
@@ -1025,21 +1027,16 @@ class Common extends Controller
         $selfid = input('selfid') ? input('selfid') : "";//左边的树节点的id
         $procedureid = input('procedureid') ? input('procedureid') : "";//工序号
         //表的总记录数 必要
-        if($selfid  && $procedureid)
-        {
+        if ($selfid && $procedureid) {
             $search_data = [
                 "selfid" => $selfid,
                 "procedureid" => $procedureid
             ];
-        }
-        else if($selfid  && !$procedureid)
-        {
+        } else if ($selfid && !$procedureid) {
             $search_data = [
                 "selfid" => $selfid
             ];
-        }
-        else if(!$selfid  && !$procedureid)
-        {
+        } else if (!$selfid && !$procedureid) {
             $search_data = [
                 "selfid" => $selfid,
                 "procedureid" => $procedureid
@@ -1081,6 +1078,7 @@ class Common extends Controller
 
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+
     // 分部质量管理 控制点执行情况，图像资料
     public function quality_subdivision_planning_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
@@ -1093,19 +1091,19 @@ class Common extends Controller
 
         //表的总记录数 必要
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->where(["list_id"=>$list_id,"type"=>$type])->where("admin_group_id > 0")->count(0);
+        $recordsTotal = Db::name($table)->where(["list_id" => $list_id, "type" => $type])->where("admin_group_id > 0")->count(0);
         $recordsFilteredResult = array();
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->where(["list_id"=>$list_id,"type"=>$type])->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where(["list_id" => $list_id, "type" => $type])->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
             //没有搜索条件的情况
             if ($limitFlag) {
-                $recordsFilteredResult = Db::name($table)->where(["list_id"=>$list_id,"type"=>$type])->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFilteredResult = Db::name($table)->where(["list_id" => $list_id, "type" => $type])->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
@@ -1137,7 +1135,7 @@ class Common extends Controller
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        $recordsTotal = Db::name($table)->where('procedureid',$id)->count();
+        $recordsTotal = Db::name($table)->where('procedureid', $id)->count();
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
@@ -1188,17 +1186,17 @@ class Common extends Controller
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
         //表的总记录数 必要
-        $recordsTotal = Db::name('quality_upload')->where(['contr_relation_id'=>$id,'type'=>$type])->count();
+        $recordsTotal = Db::name('quality_upload')->where(['contr_relation_id' => $id, 'type' => $type])->count();
         if (strlen($search) > 0) {
             //有搜索条件的情况
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('u')
                     ->field('t.filename,a.nickname,c.role_name,t.create_time,u.id')
-                    ->join('attachment t','u.attachment_id = t.id','left')
-                    ->join('admin a','t.user_id = a.id','left')
-                    ->join('admin_cate c','a.admin_cate_id = c.id','left')
-                    ->where(['u.contr_relation_id'=> $id,'u.type'=>$type])
+                    ->join('attachment t', 'u.attachment_id = t.id', 'left')
+                    ->join('admin a', 't.user_id = a.id', 'left')
+                    ->join('admin_cate c', 'a.admin_cate_id = c.id', 'left')
+                    ->where(['u.contr_relation_id' => $id, 'u.type' => $type])
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -1209,10 +1207,10 @@ class Common extends Controller
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('u')
                     ->field('t.filename,a.nickname,c.role_name,t.create_time,u.id')
-                    ->join('attachment t','u.attachment_id = t.id','left')
-                    ->join('admin a','t.user_id = a.id','left')
-                    ->join('admin_cate c','a.admin_cate_id = c.id','left')
-                    ->where(['u.contr_relation_id'=> $id,'u.type'=>$type])
+                    ->join('attachment t', 'u.attachment_id = t.id', 'left')
+                    ->join('admin a', 't.user_id = a.id', 'left')
+                    ->join('admin_cate c', 'a.admin_cate_id = c.id', 'left')
+                    ->where(['u.contr_relation_id' => $id, 'u.type' => $type])
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
@@ -1228,10 +1226,13 @@ class Common extends Controller
             $temp = [];
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
-    }public function quality_form_info($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    }
+
+    //在线填报表单列表
+    public function quality_form_info($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         $param = input('param.');
-        $whereStr=array();
+        $whereStr = array();
         $whereStr['DivisionId'] = $param['DivisionId']; // 控制点编号
         $whereStr['ProcedureId'] = $param['ProcedureId']; // 控制点编号
         $whereStr['ControlPointId'] = $param['ControlPointId']; // 控制点编号
@@ -1246,8 +1247,8 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->join('admin u','a.user_id = u.id','left')
-                    ->join('admin c','a.CurrentApproverId = c.id','left')
+                    ->join('admin u', 'a.user_id = u.id', 'left')
+                    ->join('admin c', 'a.CurrentApproverId = c.id', 'left')
                     ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time')
                     ->where($whereStr)
                     ->order($order)->limit(intval($start), intval($length))->select();
@@ -1258,8 +1259,8 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('a')
-                    ->join('admin u','a.user_id = u.id','left')
-                    ->join('admin c','a.CurrentApproverId = c.id','left')
+                    ->join('admin u', 'a.user_id = u.id', 'left')
+                    ->join('admin c', 'a.CurrentApproverId = c.id', 'left')
                     ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time')
                     ->where($whereStr)
                     ->order($order)->limit(intval($start), intval($length))->select();
