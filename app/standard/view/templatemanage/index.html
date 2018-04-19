@@ -337,12 +337,7 @@
             title: '新增模板',
             shadeClose: true,
             area: ['780px', '550px'],
-            content: '{:url("add")}',
-            end:function () {
-                $("#typeName").val("");
-                $("#use").val("");
-                form.render('select');
-            }
+            content: '{:url("add")}'
         });
     });
 
@@ -354,11 +349,11 @@
             shadeClose: true,
             area: ['780px', '550px'],
             content: '{:url("add")}?id='+id,
-            end:function () {
-                $("#typeName").val("");
-                $("#use").val("");
-                form.render('select');
-            }
+            // end:function () {
+            //     $("#typeName").val("");
+            //     $("#use").val("");
+            //     form.render('select');
+            // }
         });
     };
 

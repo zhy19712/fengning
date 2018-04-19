@@ -197,6 +197,9 @@
                     success: function (res) {
                         console.log(res)
                         if (res.code == 1) {
+                            $(window.parent.document).find("#typeName").val("");
+                            $(window.parent.document).find("#use").val("");
+                            parent.form.render('select');
                             refreshSub();
                             parent.layer.msg('保存成功！');
                             closWin();
@@ -215,6 +218,9 @@
                     success: function (res) {
                         console.log(res)
                         if (res.code == 1) {
+                            $(window.parent.document).find("#typeName").val("");
+                            $(window.parent.document).find("#use").val("");
+                            parent.form.render('select');
                             refreshSub();
                             parent.layer.msg('编辑成功！');
                             closWin();
