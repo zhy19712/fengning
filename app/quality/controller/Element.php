@@ -51,21 +51,28 @@ class Element extends Permissions
     {
         if ($this->request->isAjax()) {
             $mod = input('post.');
-            {
-                foreach ($mod['control_id'] as $item) {
-                    $_item = array();
-                    $_item['division_id'] = $mod['division_id'];
-                    $_item['ma_division_id'] = $mod['ma_division_id'];
-                    $_item['type'] = 1;
-                    $_item['control_id'] = $item;
-                    $_mod[] = $_item;
+            $list = $this->divisionControlPointService->where(['division_id' => $mod['division_id'], 'ma_division_id' => $mod['ma_division_id']])->column('control_id');
+            $_mod = array();
+            foreach ($mod['control_id'] as $item) {
+                //避免重复添加控制点
+                if (in_array($item, $list)) {
+                    continue;
                 }
-                try {
-                    $this->divisionControlPointService->allowField(true)->saveAll($_mod);
-                } catch (Exception $e) {
-                    return json(['code' => -1, msg => $e->getMessage()]);
-                }
+                $_item = array();
+                $_item['division_id'] = $mod['division_id'];
+                $_item['ma_division_id'] = $mod['ma_division_id'];
+                $_item['type'] = 1;
+                $_item['control_id'] = $item;
+                $_mod[] = $_item;
             }
+            try {
+                if (sizeof($_mod) > 0) {
+                    $this->divisionControlPointService->allowField(true)->saveAll($_mod);
+                }
+            } catch (Exception $e) {
+                return json(['code' => -1, 'msg' => $e->getMessage()]);
+            }
+
             return json(['code' => 1]);
         }
         $this->assign('Division', $Division);
@@ -134,9 +141,9 @@ class Element extends Permissions
      * @param $type 1、执行情况，2、附件资料
      * @return \think\response\Json
      */
-    public function addExecution($cpr_id, $att_id,$filename,$type)
+    public function addExecution($cpr_id, $att_id, $filename, $type)
     {
-        $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id,'data_name'=>$filename, 'type' => $type]);
+        $res = $this->uploadService->save(['contr_relation_id' => $cpr_id, 'attachment_id' => $att_id, 'data_name' => $filename, 'type' => $type]);
         if ($res) {
             //更新控制点执行情况
             $this->divisionControlPointService->save(['status' => 1], ['id' => $cpr_id]);
