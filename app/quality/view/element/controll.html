@@ -393,8 +393,9 @@
         });
     });
 
-    /*==========开始初始化工程划分树节点=============*/
 
+
+    /*==========开始初始化工程划分树节点=============*/
     var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
 
     var setting = {
@@ -455,13 +456,11 @@
     $('#openNode').click(function () {
         zTreeObj.expandAll(true);
     });
-
     /*==========结束初始化 工程划分树节点 =============*/
 
 
 
     /**==========开始初始化 单元工树 =================*/
-
     //声明单元树的变量
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
@@ -582,8 +581,9 @@
         })
     }
 
-    /**==========结束初始化 单元工树 =============*/
 
+
+    /**==========结束初始化 单元工树 =============*/
     //点击置灰
     $(".imgList").on("click","a",function () {
         $(this).css("color","#2213e9").siblings("a").css("color","#CDCDCD");
@@ -910,7 +910,8 @@
 
     /*============控制点情况结束==============*/
 
-
+    console.log($("#tableContent").outerHeight());
+    // debugger;
 
     /*============图像资料开始==============*/
     //图像资料结构表格
@@ -1167,11 +1168,19 @@
             area: ['980px', '90%'],
             content: '{:url("quality/element/subonline")}'
         });
+        console.log(id)
     }
 
     //在线填报-审批
     function approve(id) {
-        layer.msg("审批")
+        layer.open({
+            type: 2,
+            title: '提交审批',
+            shadeClose: true,
+            area: ['980px', '90%'],
+            content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=qualityFormInfo'
+        });
+        console.log(id);
     }
 
     //在线填报-审批历史
