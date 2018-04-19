@@ -3,20 +3,53 @@
     .center{
         border: 0;
     }
+    .ztree{
+        margin: 0;
+    }
+    .south{
+        padding: 10px;
+        height: 38px;
+        line-height: 38px;
+    }
+    .select-count em{
+        font-style: normal;
+        font-weight: bold;
+        color: #F00;
+    }
+    .select-count{
+        float: left;
+    }
+    .btn-wrap{
+        float: right;
+    }
 </style>
-<div data-options="region:'west',title:'已选择构件',split:true" style="width:380px;">
+<div data-options="region:'west',title:'已选择构件',split:true" style="width:260px;">
     <ul id="selectZtree" class="ztree"></ul>
 </div>
 <div data-options="region:'center',title:''" class="center">
-    <div class="easyui-layout" data-options="fit:true">
-        <div data-options="region:'west',title:'构件树',split:true" style="width:180px">
+    <div class="easyui-layout" id="relationview" data-options="fit:true">
+        <div data-options="region:'west',title:'构件树',split:true,collapsed:false" style="width:260px">
             <ul id="ztree" class="ztree"></ul>
         </div>
         <div data-options="region:'center'">
             <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
+                console.log(uObjSubID);
+                var node = [];
+                var treeObj = $.fn.zTree.getZTreeObj("ztree");
+                var nodes = treeObj.transformToArray(treeObj.getNodes());
+                for(var i = 0;i<nodes.length;i++){
+                    if(nodes[i].name == 'Y-Ⅵ-969.30-CZ0+024.000-0+054.000'){
+                        node.push(nodes[i]);
+                        treeObj.checkNode(nodes[i],true);
+                    }
+                }
+                creatSelectedZtree(node,uObjSubID);
 
+                RealBimOcx.ExitSubObjFlicker();
 
-
+                RealBimOcx.BatchAddSubClrInfoBegin();
+                RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ffa500);
+                RealBimOcx.BatchAddSubClrInfoEnd();
                 // //设置模型的可见性，0为不可见，1为可见。通过模型id进行关联。
                 // RealBimOcx.SetHugeObjSubValidStateBegin();
                 // RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
@@ -26,11 +59,11 @@
 
                 //点击树的时候加载
                 //RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
-                RealBimOcx.SetHugeObjSubValidStateBegin();
+                //RealBimOcx.SetHugeObjSubValidStateBegin();
                 // for(var i = 0;i<arr.length;i++){        //多层关联可见性
-                RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
+                //RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
                 //}
-                RealBimOcx.SetHugeObjSubValidStateEnd();
+                //RealBimOcx.SetHugeObjSubValidStateEnd();
 
                 //点击表格数据的时候 加载
                 // RealBimOcx.FocusCameraToComponent(uObjSubID,3);
@@ -55,9 +88,9 @@
 
 
                 // 设置透明度和颜色：0为全透明，1为不透明
-                RealBimOcx.BatchAddSubClrInfoBegin();
-                RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x80ff0000);
-                RealBimOcx.BatchAddSubClrInfoEnd();
+                //RealBimOcx.BatchAddSubClrInfoBegin();
+               //RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x80ff0000);
+                //RealBimOcx.BatchAddSubClrInfoEnd();
 
 
 
@@ -85,10 +118,26 @@
                     //RealBimOcx.SetSceHugeObjVisible(false);
                 }
 
-                //加载已关联模型
-                window.loadModel = function () {
+                var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];
+                //保存关联模型
+                window.saveModel = function (add_id) {
                     $.ajax({
-                        url: "./modelPicturePreview",
+                        url: "./addModelPicture",
+                        type: "post",
+                        data: {
+                            id:unitEnginNoId,
+                            picture_id:add_id
+                        },
+                        dataType: "json",
+                        success: function (res) {
+                            layer.msg(res.msg);
+                        }
+                    })
+                }
+                //加载模型试图
+                window.loadModel = function (add_id) {
+                    $.ajax({
+                        url: "./relevanceModelPicturePreview",
                         type: "post",
                         data: {
                             add_id:add_id
@@ -103,20 +152,36 @@
                                 RealBimOcx.SetHugeObjSubValidStateInfo(res.number, 1); //设置单个模型可见
                                 RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
                                 RealBimOcx.FocusCameraToComponent(res.number,1); //3：视角距离
-
+                                //模型视图闪烁
+                                RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
+                                RealBimOcx.AddFlickerSubObjects(res.number);
+                                RealBimOcx.SetSubObjFlickerEnd();
                             }
                         }
                     })
+                };
+
+                //取消模型闪烁
+                window.cancelTwinkle = function () {
+                    RealBimOcx.ExitSubObjFlicker();
                 }
+                //FlickerSwitchTimes:闪烁次数
+                //FlickerInterval：闪烁时间间隔
+                //Alpha0，AlphaAmp0，RGBBlendInfo0，Alpha1，AlphaAmp1，RGBBlendInfo1：两种闪烁状态的透明度，透明度混合系数，以及颜色和颜色混合系数，与AddSubClrInfo()的后三个参数用法相同
+                // void SetSubObjFlickerBegin(LONG FlickerSwitchTimes,LONG FlickerInterval, BYTE Alpha0, BYTE AlphaAmp0, ULONG RGBBlendInfo0, BYTE Alpha1, BYTE AlphaAmp1, ULONG RGBBlendInfo1);
             </script>
         </div>
     </div>
 </div>
-<!--<div class="">
-    <p>已选择构件数量：<em></em></p>
+<div class="south" data-options="region:'south',title:''">
+    <div class="select-count">
+        <p>已选择构件数量：<em id="selectCount">0</em></p>
+    </div>
+    <div class="btn-wrap">
+        <button class="layui-btn layui-btn-normal" id="save">保存</button>
+        <button class="layui-btn layui-btn-danger" id="close">关闭</button>
+    </div>
 </div>
-<button class="layui-btn layui-btn-normal">保存</button>
-<button class="layui-btn layui-btn-danger">关闭</button>-->
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/quality/division/relationview.js"></script>
 </body>
