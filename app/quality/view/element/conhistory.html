@@ -33,15 +33,31 @@
     #tableContent .odd {
         background-color: #f9f9f9;
     }
+    .img-circle{
+        border-radius: 50%;
+        border: 0;
+    }
+    .addpeople {
+        float: left;
+        width: 70px;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+    }
+    .arrow {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin: 15px 5px 38px 10px;
+    }
+
 </style>
 <div class="easyui-layout" data-options="fit:true">
     <div id="tableContentTop" data-options="region:'north',split:true" style="width:100%;height: 30%; position: relative;">
-        <div class="listName" id="nameCon"><h3>控制点</h3></div>
         <div class="imgList">
-            <span id="imgListLeft">
-                <a id="homeWork" class="imgListStyle" href="javascript:;"><img src="__WEBSITE__/elementimg/work.png" alt="工作">&nbsp;作业</a>
-            </span>
-            <span id="imgListRight"></span>
+            <div style="height: 145px;margin-top: 10px;overflow-y:auto" id="flowDiv">
+
+            </div>
         </div>
     </div>
     <div id="tableContent" data-options="region:'center',title:''" style="padding:5px;background:#ffffff;">
@@ -219,5 +235,77 @@
         checkId = selectData[0];
         checkName = selectData[2];
     });
+
+
+    // 初始化当前流程信息
+    function initFlowInfo() {
+        var currentStep = 2; //流程步数
+        var users = [
+            {
+                UserName: "wangyanyun",
+                Password: "8f395bdbda78d7f7d6a1d4470600b304",
+                Name: "王艳云",
+                Code: null,
+                Post: null,
+                PhotoUrl: "__WEBSITE__/elementimg/1.png",
+                MobileNumber: null,
+                DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
+                DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
+            },
+            {
+                UserName: "wangyanyun",
+                Password: "8f395bdbda78d7f7d6a1d4470600b304",
+                Name: "王艳云",
+                Code: null,
+                Post: null,
+                PhotoUrl: "__WEBSITE__/elementimg/1.png",
+                MobileNumber: null,
+                DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
+                DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
+            },{
+                UserName: "wangyanyun",
+                Password: "8f395bdbda78d7f7d6a1d4470600b304",
+                Name: "王艳云",
+                Code: null,
+                Post: null,
+                PhotoUrl: "__WEBSITE__/elementimg/1.png",
+                MobileNumber: null,
+                DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
+                DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
+            },{
+                UserName: "wangyanyun",
+                Password: "8f395bdbda78d7f7d6a1d4470600b304",
+                Name: "王艳云",
+                Code: null,
+                Post: null,
+                PhotoUrl: "__WEBSITE__/elementimg/1.png",
+                MobileNumber: null,
+                DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
+                DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
+            }
+        ];
+        var html = "";
+        $.each(users, function (i, item) {
+            var title = "姓名：" + item.Name + " \n";
+            title += "所属机构：" + item.DepartmentName + " \n";
+            title += "岗位：" + item.Post + " \n";
+            title += "手机：" + item.MobileNumber + " \n";
+            html += "<div class='addpeople'>";
+            html += " <img alt='image' class='img-circle' src='" + item.PhotoUrl + "' title='"+ title +"' style='width:50px;height:50px;'>";
+            if (i < currentStep)
+                html += "  <p style='color:#008000;'>" + item.Name + "</p>";
+            else
+                html += "  <p style='color:#CDCDCD;'>" + item.Name + "</p>";
+            html += "</div>";
+            if (i < users.length - 1) {
+                if (i < currentStep)
+                    html += "<img alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png' />";
+                else
+                    html += "<img alt='image' class='arrow' src='__WEBSITE__/elementimg/right1.png' />";
+            }
+        });
+        $("#flowDiv").html(html);
+    };
+    initFlowInfo()
 </script>
 </html>
