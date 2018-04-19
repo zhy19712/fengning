@@ -61,12 +61,14 @@ class Qualityanalysis extends Permissions
         {
             $section_rate_number[] = array("excellent_number"=>70,"qualified_number"=>20);//优良单元数量，合格单元数量
 
+            $total_number = 100;//总量
+
             $section_rate[] = array("excellent_number"=>70,"qualified_number"=>20);//优良率，合格率
 
             $total[] = 70+20;//总计 = 优良率+合格率
         }
 
-        $result = ["section"=>$section,"section_rate_number"=>$section_rate_number,"section_rate"=>$section_rate,"total"=>$total];
+        $result = ["section"=>$section,"section_rate_number"=>$section_rate_number,"total_number"=>$total_number,"section_rate"=>$section_rate,"total"=>$total];
         $data = ["timeline"=>$timeline,"excellentMonth"=>$excellentMonth,"rate"=>$rate];
 
         return json(["code"=>1,"data"=>$data,"result"=>$result]);
