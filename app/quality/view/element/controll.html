@@ -722,6 +722,7 @@
         if(clickId != undefined && clickId != null){
             implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
             imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
+            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId=10&ProcedureId=53&ControlPointId=41").load();
         }
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","none");
@@ -907,11 +908,8 @@
             });
     });
 
-    //获取高度
-    // if($("#unitWorkRightBottom #implementationParent .dataTables_empty").text() != "没有找到记录"){
-    //     alert(22)
-    // }
     /*============控制点情况结束==============*/
+
 
 
     /*============图像资料开始==============*/
@@ -985,62 +983,15 @@
          }
     });
 
-    //上传按钮
-    // $(".mybtn1").html("<div id='test4'><i class='fa fa-upload'></i>上传</div>");
-    // $(".bitCodes").html("<div id='bit'><i class='fa fa-check-square-o'></i>选择</div>");
-
-    //上传点击
-    // layui.use(['element', "layer", 'form', 'upload'], function () {
-    //     var $ = layui.jquery
-    //         , element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
-    //         , upload = layui.upload;
-    //
-    //     var form = layui.form
-    //         , layer = layui.layer
-    //         , layedit = layui.layedit
-    //         , laydate = layui.laydate;
-    //     upload.render({
-    //         elem: '#test4',
-    //         url: "{:url('admin/common/upload?module=quality&use=element')}",
-    //         exts: 'doc|docx|pdf|png|jpg|xls',
-    //         before: function(obj){
-    //             obj.preview(function(index, file, result){
-    //                 uploadName = file.name;
-    //                 console.log(file.name);//获取文件名，result就是base64
-    //             })
-    //         },
-    //         done: function(res){
-    //             console.log(res)
-    //             if(res.code == 2){
-    //                 uploadId = res.id;
-    //                 $.ajax({
-    //                     url:"{:url('element/addAttData')}",
-    //                     data:{
-    //                         att_id:uploadId,
-    //                         filename: uploadName, //名称
-    //                         cpr_id:clickId
-    //                     },
-    //                     type:'post',
-    //                     success:function(res) {
-    //                         console.log(res)
-    //                         if(res.code == 1) {
-    //                             imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
-    //                         } else {
-    //                             layer.msg('获取数据失败！');
-    //                         }
-    //                     }
-    //                 })
-    //                 layer.msg("上传成功！",{time:1500})
-    //             }else{
-    //                 layer.msg("上传失败！",{time:1500})
-    //             }
-    //         },
-    //     });
-    // });
-
     /*============图像资料结束==============*/
 
+
+
     /*============在线填报开始==============*/
+    var ProcedureOnlineId ;
+    var DivisionOnlineId ;
+    var ControlPointOnlineId ;
+
     //在线填报结构表格
     onlineFill = $('#onlineFill').DataTable({
          retrieve: true,
@@ -1051,18 +1002,18 @@
          "scrollCollapse": "true",
          "paging": "false",
          ajax: {
-             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="
+             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId=10&ProcedureId=53&ControlPointId=41"
          },
          dom: 'tr',
          columns: [
              {
-                 name: "data_name"
-             },
-             {
                  name: "nickname"
              },
              {
-                 name: "name"
+                 name: "currentname"
+             },
+             {
+                 name: "approvestatus"
              },
              {
                  name: "create_time"
@@ -1076,15 +1027,20 @@
                  "targets":[0]
              },
              {
-                 "targets": [1]
+                 "targets": [1],
+                 "render": function (data, type, row) {
+                     if (data == null || data == undefined || data == '') return '';
+                     var time = new Date(data*1000);
+                     var y = time.getFullYear();
+                     var m = time.getMonth() + 1;
+                     m = m < 10 ? '0' + m : m;
+                     var d = time.getDate();
+                     d = d < 10 ? ('0' + d) : d;
+                     return y + '-' + m + '-' + d;
+                 }
              },
              {
-                 "targets": [2]
-             },
-             {
-                 "targets": [3],
-                 "searchable": false,
-                 "orderable": false,
+                 "targets": [2],
                  "render": function (data, type, row) {
                      if (data === 0) {
                          return "待提交"
@@ -1101,14 +1057,47 @@
                  }
              },
              {
+                 "targets": [3],
+                 "searchable": false,
+                 "orderable": false,
+
+             },
+             {
                  "searchable": false,
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                     console.log(row[2]);
+                     var dataType = "qualityFormInfo";
+                     // var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                     // return html;
+                     var html = "";
+                     html += "<a title='查看' onclick='viewQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")'><i class='fa fa fa-search'></i></a>";
+                     if (row[2] === 0) {
+                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='fa fa-pencil'></i></a>";
+                         html += "<a title='删除' onclick='deleteQualityFormInfo(\"" + row.id + "\")' <i class='fa fa fa-remove'></i></a>";
+                         html += "<a title='提交' onclick='submit(\"" + row.id + "\",\"" + dataType + "\",\"" + row.currentStep + "\")'><i class='fa fa fa-check-square-o'></i></a>";
+                     }
+                     else if (row[2] === 1) {
+                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='fa fa fa-pencil'></i></a>";
+                         html += "<a title='审批' onclick='approve(\"" + row.id + "\",\"" + dataType + "\",\"" + row.currentStep + "\")'><i class='fa fa fa-pencil-square-o'></i></a>";
+                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='fa fa fa-file-text'></i></a>";
+                     }
+                     else if (row[2] === 2) {
+                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='fa fa fa-file-text'></i></a>";
+                         html += "<a title='下载' onclick='download(\"" + row.id + "\")' <i class='fa fa fa-download'></i></a>";
+                     }
+                     else if (row[2] === -1) {
+                         html += "<a title='提交' onclick='submit(\"" + row.id + "\",\"" + dataType + "\",\"" + row.currentStep + "\")'><i class='fa fa fa-check-square-o'></i></a>";
+                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='fa fa fa-pencil'></i></a>";
+                         html += "<a title='删除' onclick='deleteQualityFormInfo(\"" + row.id + "\")' <i class='fa fa fa-remove'></i></a>";
+                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='fa fa fa-file-text'></i></a>";
+                     }
+                     else html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='fa fa fa-file-text'></i></a>";
                      return html;
+
                  }
              }
          ],
@@ -1120,10 +1109,10 @@
     var step = 0;
     var isView = false;
     var formId ;
+
     //新增
     $("#unitWorkRightBottom").on("click",".mybtnAdd",function () {
         console.log(clickId);
-
         layer.open({
             type: 2,
             title: '在线填报',
@@ -1135,6 +1124,42 @@
             // }
         });
     });
+
+    //查看
+    function seeOnLine(id) {
+        layer.msg("编辑")
+    }
+
+    //编辑
+    function editOnLine(id) {
+        layer.msg("编辑")
+    }
+
+    //删除
+    function delOnLine(id) {
+        layer.msg("编辑")
+    }
+
+    //提交
+    function delOnLine(id) {
+        layer.msg("编辑")
+    }
+
+    //审批
+    function approveOnLine(id) {
+        layer.msg("编辑")
+    }
+
+    //审批历史
+    function historyOnLine(id) {
+        layer.msg("编辑")
+    }
+
+    //审批历史
+    function downOnLine(id) {
+        layer.msg("编辑")
+    }
+
     /*============在线填报结束==============*/
 
 </script>
