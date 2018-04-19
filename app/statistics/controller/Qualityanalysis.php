@@ -74,11 +74,6 @@ class Qualityanalysis extends Permissions
 
     }
 
-    public function section()
-    {
-
-    }
-
     public function getForm()
     {
         $data = array();
