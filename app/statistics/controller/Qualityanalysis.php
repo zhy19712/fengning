@@ -31,13 +31,15 @@ class Qualityanalysis extends Permissions
 
     public function getIndex()
     {
+        //折线
         //获取最小的时间
         $date = Db::name("quality_form_info")->where("create_time > 0")->min("create_time");
         //定义一个空的数组
-        $data = array();
         $timeline = array();
         $excellentMonth = array();
         $rate = array();
+        $section_rate = array();
+        $total = array();
         $StartMonth = date("Y-m-d",$date); //开始日期
         $EndMonth = date("Y-m-d"); //结束日期
         $ToStartMonth = strtotime( $StartMonth ); //转换一下
@@ -51,13 +53,23 @@ class Qualityanalysis extends Permissions
 
             $excellentMonth[] = 50;//优良率
 
-            $rate[] = array("excellent_number"=>70,"qualified_number"=>30);//优良单元数量，合格单元数量
+            $rate[] = array("excellent_number"=>70,"qualified_number"=>20);//优良单元数量，合格单元数量
+        }
+        //柱状图
+        $section = Db::name("section")->column("name");//标段名
+        foreach($section as $k=>$v)
+        {
+            $section_rate_number[] = array("excellent_number"=>70,"qualified_number"=>20);//优良单元数量，合格单元数量
+
+            $section_rate[] = array("excellent_number"=>70,"qualified_number"=>20);//优良率，合格率
+
+            $total[] = 70+20;//总计 = 优良率+合格率
         }
 
-
+        $result = ["section"=>$section,"section_rate_number"=>$section_rate_number,"section_rate"=>$section_rate,"total"=>$total];
         $data = ["timeline"=>$timeline,"excellentMonth"=>$excellentMonth,"rate"=>$rate];
 
-        return json(["code"=>1,"data"=>$data]);
+        return json(["code"=>1,"data"=>$data,"result"=>$result]);
 
 
     }
