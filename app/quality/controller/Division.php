@@ -682,7 +682,8 @@ class Division extends Permissions{
             }
             // 获取关联的模型图
             $picture = new PictureModel();
-            $picture_id = $picture->getAllNumber($add_id);
+            $data= $picture->getAllNumber($add_id);
+            $picture_id = $data['picture_id_arr'];
             return json(['code'=>1,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
         }
     }
@@ -716,13 +717,26 @@ class Division extends Permissions{
             if($id == -1){
                 return json(['code' => 0,'msg' => '编号有误']);
             }
-            // 获取归属的节点树
+            // 管理视图的节点树
             $division = new DivisionModel();
-            $nodeStr = $division->getModelPictureTree($id);
+            $data = $division->getModelPictureTree($id);
             // 获取关联的模型图
             $picture = new PictureModel();
-            $picture_id = $picture->getModelPicture($id);
-            return json(['code'=>1,'nodeStr'=>$nodeStr,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
+            $dataTwo = $picture->getAllNumber($data['pid']);
+            $id_arr = $dataTwo['id_arr'];
+            $picture_id_arr = $dataTwo['picture_id_arr'];
+            $picture_name_arr= $dataTwo['picture_name_arr'];
+            $nodeStrTwo = $data['str'];
+            // 勾件树
+            $i = 1;
+            foreach($id_arr as $k=>$v){
+                $node_id = $data['pid'] + $i;
+                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k]['picture_name'] . '"' . ',"add_id": "' . $v['id'] . '"';
+                $nodeStrTwo .= '},';$i++;
+            }
+            $nodeStrOne = "[" . substr($data['str'], 0, -1) . "]";
+            $nodeStrTwo = "[" . substr($nodeStrTwo, 0, -1) . "]";
+            return json(['code'=>1,'nodeStrOne'=>$nodeStrOne,'nodeStrTwo'=>$nodeStrTwo,'numberArr'=>$picture_id_arr,'msg'=>'模型图编号']);
         }
         return $this->fetch('relationview');
     }
@@ -753,6 +767,24 @@ class Division extends Permissions{
             }else{
                 return json(['code' => 0,'msg' => '已经关联过']);
             }
+        }
+    }
+
+    // 获取txt文件内容并插入到数据库中 insertTxtContent
+    public function indextest()
+    {
+        $filePath = './static/division/GolIdTable.txt';
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }
+        $content = file_get_contents($filePath);
+        $content = iconv("gb2312", "utf-8//IGNORE",$content);
+        $contents= explode("[丰宁开挖已编好ID号+外壳+岩锚梁] [",$content);
+        halt($contents);
+        foreach ($contents as $k => $v)//遍历循环
+        {
+            $id = $k;
+            $serial_number = $v;
         }
     }
 
