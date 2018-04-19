@@ -125,6 +125,71 @@ class Qualityform extends Permissions
     }
 
     /**
+     * 新增或编辑表单
+     * @param $dto
+     * @return \think\response\Json
+     */
+    public function InsertOrUpdate($dto)
+    {
+        try {
+            $mod = array();
+            $mod['DivisionId'] = $dto['DivisionId'];
+            $mod['ProcedureId'] = $dto['ProcedureId'];
+            $mod['ControlPointId'] = $dto['ControlPointId'];
+            $mod['IsInspect'] = $dto['IsInspect'];
+            $mod['TemplateId'] = $dto['TemplateId'];
+            $mod['form_name'] = $dto['FormName'];
+            $mod['form_data'] = serialize($dto['QualityFormDatas']);
+            if (empty($dto['Id'])) {
+                $mod['user_id'] = Session::get('current_id');
+                $res = $this->qualityFormInfoService->insertGetId($mod);
+                $dto['Id'] = $res;
+            } else {
+                $this->qualityFormInfoService->allowField(true)->isUpdate(true)->save($mod, ['id' => $dto['Id']]);
+            }
+            return json(['result' => $dto['Id']]);
+        } catch (Exception $exception) {
+            return json(['result' => 'Faild']);
+        }
+    }
+
+    /**
+     * 删除表单信息 TODO 后续审批相关信息也要删除，目前没有明确逻辑需求
+     * @param $id
+     * @return \think\response\Json
+     */
+    public function delForm($id)
+    {
+        try {
+            QualityFormInfoModel::destroy($id);
+            return json(['code' => 1]);
+        } catch (Exception $exception) {
+            return json(['code' => -1]);
+        }
+    }
+
+    /**
+     * 获取当前审批人的点子签名，如果没有则获取当前用户的
+     * @param $id
+     * @return mixed
+     * @throws \think\exception\DbException
+     */
+    public function GetCurrentUserSignature($id)
+    {
+        try {
+            if (empty($id)) {
+                return Admin::get(Session::get('current_id'), 'SignImg')['SignImg']['filepath'];
+            } else {
+                //获取当前审批人
+            }
+        } catch (Exception $e) {
+            return "";
+        }
+    }
+
+    ##私有方法
+
+    /**
      * 获取工程依据信息
      * @param $ids
      * @return string
@@ -151,48 +216,5 @@ class Qualityform extends Permissions
         $_mod['FB'] = DivisionModel::get($__mod['pid']);
         $_mod['DW'] = DivisionModel::get($_mod['FB']['pid']);
         return $_mod;
-    }
-
-    public function InsertOrUpdate($dto)
-    {
-        try {
-            $mod = array();
-            $mod['DivisionId'] = $dto['DivisionId'];
-            $mod['ProcedureId'] = $dto['ProcedureId'];
-            $mod['ControlPointId'] = $dto['ControlPointId'];
-            $mod['IsInspect'] = $dto['IsInspect'];
-            $mod['TemplateId'] = $dto['TemplateId'];
-            $mod['form_name'] = $dto['FormName'];
-            $mod['form_data'] = serialize($dto['QualityFormDatas']);
-            if (empty($dto['Id'])) {
-                $mod['user_id'] = Session::get('current_id');
-                $res = $this->qualityFormInfoService->insertGetId($mod);
-                $dto['Id'] = $res;
-            } else {
-                $this->qualityFormInfoService->allowField(true)->isUpdate(true)->save($mod, ['id' => $dto['Id']]);
-            }
-            return json(['result' => $dto['Id']]);
-        } catch (Exception $exception) {
-            return json(['result' => 'Faild']);
-        }
-    }
-
-    /**
-     * 获取当前审批人的点子签名，如果没有则获取当前用户的
-     * @param $id
-     * @return mixed
-     * @throws \think\exception\DbException
-     */
-    public function GetCurrentUserSignature($id)
-    {
-        try {
-            if (empty($id)) {
-                return Admin::get(Session::get('current_id'), 'SignImg')['SignImg']['filepath'];
-            } else {
-                //获取当前审批人
-            }
-        } catch (Exception $e) {
-            return "";
-        }
     }
 }

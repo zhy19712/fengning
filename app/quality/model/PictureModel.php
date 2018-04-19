@@ -39,9 +39,9 @@ class PictureModel extends Model
         $data = $this->where(['division_id'=>['in',$division_id]])->column('id,picture_id,picture_name');
         $newData = ['id_arr'=>[],'picture_id_arr'=>[],'picture_name_arr'=>[]];
         foreach ($data as $v){
-            $id_arr[] = $v['id'];
-            $picture_id_arr[] = $v['picture_id'];
-            $picture_name_arr[] = $v['picture_name'];
+            $newData['id_arr'][] = $v['id'];
+            $newData['picture_id_arr'][] = $v['picture_id'];
+            $newData['picture_name_arr'][] = $v['picture_name'];
         }
         return $newData;
     }
@@ -49,6 +49,12 @@ class PictureModel extends Model
     public function getModelPicture($id)
     {
         $picture_id = $this->where(['division_id'=>['eq',$id]])->value('picture_id');
+        return $picture_id;
+    }
+
+    public function getModelPictureNumber($id)
+    {
+        $picture_id = $this->where(['id'=>['eq',$id]])->value('picture_id');
         return $picture_id;
     }
 

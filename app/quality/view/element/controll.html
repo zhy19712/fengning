@@ -86,10 +86,10 @@
         /*top: 15px;*/
         /*border-top: 1px dotted #cecece;*/
     }
-    #tableContent #tableItem .even {
+    #tableContent #tableItem .even ,#implementationParent .even ,#imageDataParent .even ,#onlineFillParent .even {
         background-color: #ffffff;
     }
-    #tableContent #tableItem .odd {
+    #tableContent #tableItem .odd ,#implementationParent .odd ,#imageDataParent .odd ,#onlineFillParent .odd  {
         background-color: #f9f9f9;
     }
     #tableContent .imgList {
@@ -260,7 +260,7 @@
                                 </thead>
                             </table>
                         </div>
-                        <div title="在线填报" style="padding:3px 3px 0 3px;">
+                        <div id="onlineFillParent" title="在线填报" style="padding:3px 3px 0 3px;">
                             <table id="onlineFill" class="table table-striped table-bordered" cellspacing="0"  width="100%">
                                 <thead>
                                     <tr>
@@ -275,7 +275,7 @@
                         </div>
                     </div>
                     <div class="mybtn"><div id='test3'><i class='fa fa-upload'></i>&nbsp;上传</div></div>
-                    <div class="bitCodes" style="display: none"><div id='bit'><i class='fa fa-check-square-o'></i>&nbsp;选择</div></div>
+                    <!--<div class="bitCodes" style="display: none"><div id='bit'><i class='fa fa-check-square-o'></i>&nbsp;选择</div></div>-->
                     <div class="mybtnAdd" style="display: none"><div id='addTest'><i class='fa fa-plus'></i>&nbsp;新增</div></div>
                 </div>
             </div>
@@ -466,7 +466,7 @@
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
         eTypeId ,controlPointId ,controlPointName ,
-        conThisId ,selectData ,clickId;
+        conThisId ,selectData ,clickId ,ControlPointOnlineId;//后台返的
 
     //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
@@ -520,7 +520,7 @@
         selfidUnit = zTreeObjUnit.getSelectedNodes()[0].id;//当前id
         nodeNameUnit = zTreeObjUnit.getSelectedNodes()[0].name;//当前name
         nodePidUnit = zTreeObjUnit.getSelectedNodes()[0].pid;//当前pid
-        console.log(selfidUnit + '---id');
+        console.log(selfidUnit + '---selfidUnit===id');
         console.log(nodeNameUnit + '---name');
         console.log(nodePidUnit + '---pid');
         var path = sNodesUnit.name; //选中节点的名字
@@ -588,7 +588,7 @@
     $(".imgList").on("click","a",function () {
         $(this).css("color","#2213e9").siblings("a").css("color","#CDCDCD");
         $("#homeWork").css("color","#CDCDCD");
-    })
+    });
 
     //点击作业
     $(".imgList").on("click","#homeWork",function () {
@@ -605,8 +605,6 @@
         if(selfidUnit != undefined || selfidUnit != null && conThisId != undefined || conThisId != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         }
-        // $(".bitCodes").css("display","none");
-        // $(".alldel").css("display","block");
         $("#tableContent .imgList").css('display','block');
         console.log(id);
     }
@@ -722,7 +720,8 @@
         if(clickId != undefined && clickId != null){
             implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
             imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
-            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId=10&ProcedureId=53&ControlPointId=41").load();
+            funOnLine(selfidUnit,conThisId,clickId)
+            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
         }
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","none");
@@ -990,10 +989,10 @@
     /*============在线填报开始==============*/
     var ProcedureOnlineId ;
     var DivisionOnlineId ;
-    var ControlPointOnlineId ;
 
     //在线填报结构表格
-    onlineFill = $('#onlineFill').DataTable({
+    function funOnLine(selfidUnit,conThisId,clickId){
+        onlineFill = $('#onlineFill').DataTable({
          retrieve: true,
          processing: true,
          serverSide: true,
@@ -1002,7 +1001,7 @@
          "scrollCollapse": "true",
          "paging": "false",
          ajax: {
-             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId=10&ProcedureId=53&ControlPointId=41"
+             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId
          },
          dom: 'tr',
          columns: [
@@ -1066,12 +1065,7 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     console.log(row[3]);
-                     var dataType = "qualityFormInfo";
-                     // var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                     // return html;
+                     // var dataType = "qualityFormInfo";
                      var html = "";
                      html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                      if (row[3] === 0) {
@@ -1103,7 +1097,8 @@
          language: {
              "zeroRecords": "没有找到记录"
          }
-     });
+    });
+    }
 
     var step = 0;
     var isView = false;
@@ -1117,29 +1112,19 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep='+ step + '&isView='+ isView,
-            // end:function () {
-            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
-            // }
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0&isView=false'
         });
     });
 
     //查看
     function seeOnLine(id) {
         console.log(clickId);
-        isView = true;
         layer.open({
             type: 2,
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep='+ step + '&isView='+ isView,
-            //Edit?id=26&templateId=3c&isInspect=1&procedureId=d4&controlPointId=25&currentStep=0&isView=true&_t=1524107701062
-            //编辑
-            // view-source:http://183.196.236.186:1030/Quality/QualityForm/Edit?id=26  &templateId=3c&divisionId=b24&isInspect=1&procedureId=d4&controlPointId=25&currentStep=0&_t=1524107791391
-            // end:function () {
-            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
-            // }
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0&isView=true'
         });
     }
 
@@ -1153,12 +1138,7 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep='+ step,
-            //编辑
-            // Edit?id=26&templateId=3c&divisionId=b24&isInspect=1&procedureId=d4&controlPointId=25&currentStep=0&_t=1524107791391
-            // end:function () {
-            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
-            // }
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0'
         });
     }
 
@@ -1175,10 +1155,7 @@
             title: '提交审批',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/element/subonline")}',
-            // end:function () {
-            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
-            // }
+            content: '{:url("quality/element/subonline")}'
         });
     }
 

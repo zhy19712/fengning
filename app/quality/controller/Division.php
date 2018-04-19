@@ -708,7 +708,7 @@ class Division extends Permissions{
         }
     }
 
-    // 打开关联模型 页面
+    // 打开关联模型 页面 openModelPicture
     public function openModelPicture()
     {
         if($this->request->isAjax()){
@@ -731,7 +731,7 @@ class Division extends Permissions{
             $i = 1;
             foreach($id_arr as $k=>$v){
                 $node_id = $data['pid'] + $i;
-                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k]['picture_name'] . '"' . ',"add_id": "' . $v['id'] . '"';
+                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k] . '"' . ',"add_id": "' . $v . '"';
                 $nodeStrTwo .= '},';$i++;
             }
             $nodeStrOne = "[" . substr($data['str'], 0, -1) . "]";
@@ -741,6 +741,22 @@ class Division extends Permissions{
         return $this->fetch('relationview');
     }
 
+    // 关联模型 页面 里 点击 模型图名称 加载模型图
+    public function relevanceModelPicturePreview()
+    {
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $id = isset($param['add_id']) ? $param['add_id'] : -1;
+            if($id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            // 获取关联的模型图
+            $picture = new PictureModel();
+            $picture_id = $picture->getModelPictureNumber($id);
+            return json(['code'=>1,'number'=>$picture_id,'msg'=>'模型图编号']);
+        }
+    }
+
     /**
      * 关联模型图
      * @return \think\response\Json
@@ -748,19 +764,21 @@ class Division extends Permissions{
      */
     public function addModelPicture()
     {
-        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图编号 picture_id
+        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图编号 picture_id 模型图名称 picture_name
         if($this->request->isAjax()){
             $param = input('param.');
             $division_id = isset($param['id']) ? $param['id'] : -1;
             $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
-            if($division_id == -1 || $picture_id == -1){
-                return json(['code' => 0,'msg' => '编号有误']);
+            $picture_name = isset($param['picture_name']) ? $param['picture_name'] : -1;
+            if($division_id == -1 || $picture_id == -1 || $picture_name == -1){
+                return json(['code' => 0,'msg' => '参数有误']);
             }
             // 是否已经关联过
             $is_add = Db::name('quality_model_picture')->where(['division_id'=>$division_id,'picture_id'=>$picture_id])->value('id');
             if(empty($is_add)){
                 $data['division_id'] = $division_id;
                 $data['picture_id'] = $picture_id;
+                $data['picture_name'] = $picture_name;
                 $picture = new PictureModel();
                 $flag = $picture->insertTb($data);
                 return json($flag);
@@ -771,21 +789,48 @@ class Division extends Permissions{
     }
 
     // 获取txt文件内容并插入到数据库中 insertTxtContent
-    public function indextest()
+    public function indextxt()
     {
+        /**
+         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-Z] [0]
+         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-X] [1]
+         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-S] [2]
+         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅳ-983.00-CZ0+024.000-0+054.000-Z] [3]
+         */
         $filePath = './static/division/GolIdTable.txt';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }
-        $content = file_get_contents($filePath);
-        $content = iconv("gb2312", "utf-8//IGNORE",$content);
-        $contents= explode("[丰宁开挖已编好ID号+外壳+岩锚梁] [",$content);
-        halt($contents);
-        foreach ($contents as $k => $v)//遍历循环
-        {
-            $id = $k;
-            $serial_number = $v;
+        $myfile = fopen($filePath, "r") or die("Unable to open file!");
+        $contents = $new_contents =[];
+        while(!feof($myfile)) {
+            $contents[] = explode(" ",iconv('gb2312','utf-8//IGNORE',fgets($myfile)));
         }
+
+        foreach ($contents as $v){
+            $new_v = $v;
+            $v[0] = str_replace('[','',$new_v[0]);
+            $v[0] = str_replace(']','',$new_v[0]);
+            $v[1] = str_replace('[','',$new_v[1]);
+            $v[1] = str_replace(']','',$new_v[1]);
+            $v[2] = str_replace('[','',$new_v[2]);
+            $v[2] = str_replace(']
+','',$new_v[2]);
+//            halt($v);
+            $new_contents[] = $v;
+        }
+        $data = [];
+        halt($new_contents);
+        foreach ($new_contents as $val){
+            halt($val);
+            $data[]['picture'] = $val[0];
+            $data[]['picture_name'] = $val[1];
+            $data[]['picture_id'] = $val[2];
+        }
+        halt($data);
+        $picture = new PictureModel();
+        $picture->insertTb($data);
+        fclose($myfile);
     }
 
 
