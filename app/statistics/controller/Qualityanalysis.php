@@ -40,6 +40,7 @@ class Qualityanalysis extends Permissions
         $rate = array();
         $section_rate = array();
         $total = array();
+        $total_number = array();
         $StartMonth = date("Y-m-d",$date); //开始日期
         $EndMonth = date("Y-m-d"); //结束日期
         $ToStartMonth = strtotime( $StartMonth ); //转换一下
@@ -61,7 +62,7 @@ class Qualityanalysis extends Permissions
         {
             $section_rate_number[] = array("excellent_number"=>70,"qualified_number"=>20);//优良单元数量，合格单元数量
 
-            $total_number = 100;//总量
+            $total_number[] = 100;//总量
 
             $section_rate[] = array("excellent_number"=>70,"qualified_number"=>20);//优良率，合格率
 
