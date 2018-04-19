@@ -8,7 +8,8 @@ $.ajax({
         id:window.unitEnginNoId
     },
     success: function (res) {
-        var nodeStr = res.nodeStr;
+        var nodeStr = res.nodeStrTwo;
+        console.log(res.nodeStrTwo);
         var nodes =  JSON.parse(nodeStr);
         setZtree(nodes);
     }
