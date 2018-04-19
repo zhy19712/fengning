@@ -218,25 +218,36 @@ class Branch extends Permissions
      */
     public function fileDownload()
     {
-        // 前台需要 传递 文件编号 id
-        $param = input('param.');
-        $file_id = isset($param['id']) ? $param['id'] : 0;
-        if($file_id == 0){
-            return json(['code' => '-1','msg' => '编号有误']);
+        if(request()->isAjax()){
+            // 前台需要 传递 文件编号 id
+            $param = input('param.');
+            $file_id = isset($param['id']) ? $param['id'] : 0;
+            if ($file_id == 0) {
+                return json(['code' => '-1', 'msg' => '编号有误']);
+            }
+            $file_obj = Db::name('quality_subdivision_planning_list')->alias('s')
+                ->join('controlpoint c', 'c.id=s.controller_point_id', 'left')
+                ->where('s.id', $file_id)->field('c.code,c.name')->find();
+            if (empty($file_obj)) {
+                return json(['code' => '-1', 'msg' => '编号无效']);
+            }
+            $new_name = iconv("utf-8", "gb2312", $file_obj['code'] . $file_obj['name']);
+            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
+            if (!file_exists($filePath)) {
+                return json(['code' => '-1', 'msg' => '文件不存在']);
+            } else {
+                return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+            }
         }
-        $file_obj = Db::name('quality_subdivision_planning_list')->alias('s')
-            ->join('controlpoint c','c.id=s.controller_point_id','left')
-            ->where('s.id',$file_id)->field('c.code,c.name')->find();
-        if(empty($file_obj)){
-            return json(['code' => '-1','msg' => '编号无效']);
-        }
-        $new_name = iconv("utf-8","gb2312",$file_obj['code'].$file_obj['name']);
-        $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
-        if(!file_exists($filePath)){
-            return json(['code' => '-1','msg' => '文件不存在']);
-        }else if(request()->isAjax()){
-            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
-        }else{
+            $param = input('param.');
+            $file_id = isset($param['id']) ? $param['id'] : 0;
+
+            $file_obj = Db::name('quality_subdivision_planning_list')->alias('s')
+            ->join('controlpoint c', 'c.id=s.controller_point_id', 'left')
+            ->where('s.id', $file_id)->field('c.code,c.name')->find();
+
+            $new_name = iconv("utf-8", "gb2312", $file_obj['code'] . $file_obj['name']);
+            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
             $fileName = $file_obj['name'];
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
@@ -249,7 +260,6 @@ class Branch extends Permissions
             echo fread($file, filesize($filePath));
             fclose($file);
             exit;
-        }
     }
 
     /**
@@ -258,7 +268,50 @@ class Branch extends Permissions
      */
     public function  printDocument()
     {
-
+        if(request()->isAjax()){
+            // 前台需要 传递 文件编号 id
+            $param = input('param.');
+            $file_id = isset($param['id']) ? $param['id'] : 0;
+            if($file_id == 0){
+                return json(['code' => '-1','msg' => '编号有误']);
+            }
+            $file_obj = Db::name('quality_subdivision_planning_list')->alias('s')
+                ->join('controlpoint c','c.id=s.controller_point_id','left')
+                ->where('s.id',$file_id)->field('c.code,c.name')->find();
+            if(empty($file_obj)){
+                return json(['code' => '-1','msg' => '编号无效']);
+            }
+            $new_name = iconv("utf-8","gb2312",$file_obj['code'].$file_obj['name']);
+            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
+            if(!file_exists($filePath)){
+                return json(['code' => '-1','msg' => '文件不存在']);
+            }
+            // 预览里有 打印
+                $code = 1;
+                $msg = '预览成功';
+                $path = $filePath;
+                $extension = strtolower(get_extension(substr($path,1)));
+                $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+                if(!file_exists($pdf_path)){
+                    if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
+                        doc_to_pdf($path);
+                    }else if($extension === 'xls' || $extension === 'xlsx'){
+                        excel_to_pdf($path);
+                    }else if($extension === 'ppt' || $extension === 'pptx'){
+                        ppt_to_pdf($path);
+                    }else if($extension === 'pdf'){
+                        $pdf_path = $path;
+                    }else if($extension === "jpg" || $extension === "png" || $extension === "jpeg"){
+                        $pdf_path = $path;
+                    }else {
+                        $code = 0;
+                        $msg = '不支持的文件格式';
+                    }
+                    return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
+                }else{
+                    return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
+                }
+        }
     }
 
     /**
