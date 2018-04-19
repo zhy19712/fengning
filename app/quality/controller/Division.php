@@ -26,7 +26,7 @@ class Division extends Permissions{
      * @return mixed|\think\response\Json
      * @author hutao
      */
-    public function indextest()
+    public function index()
     {
         if(request()->isAjax()){
             $node = new DivisionModel();
@@ -772,7 +772,7 @@ class Division extends Permissions{
     }
 
     // 获取txt文件内容并插入到数据库中 insertTxtContent
-    public function index()
+    public function indextest()
     {
         $filePath = './static/division/GolIdTable.txt';
         if(!file_exists($filePath)){
@@ -780,8 +780,8 @@ class Division extends Permissions{
         }
         $content = file_get_contents($filePath);
         $content = iconv("gb2312", "utf-8//IGNORE",$content);
-        halt($content);
-        $contents= explode(",",$content);//explode()函数以","为标识符进行拆分
+        $contents= explode("[丰宁开挖已编好ID号+外壳+岩锚梁] [",$content);
+        halt($contents);
         foreach ($contents as $k => $v)//遍历循环
         {
             $id = $k;
