@@ -36,8 +36,14 @@ class PictureModel extends Model
     public function getAllNumber($add_id)
     {
         $division_id = Db::name('quality_unit')->where('division_id',$add_id)->column('id');
-        $picture_id = $this->where(['division_id'=>['in',$division_id]])->column('picture_id,picture_name');
-        return $picture_id;
+        $data = $this->where(['division_id'=>['in',$division_id]])->column('id,picture_id,picture_name');
+        $newData = ['id_arr'=>[],'picture_id_arr'=>[],'picture_name_arr'=>[]];
+        foreach ($data as $v){
+            $id_arr[] = $v['id'];
+            $picture_id_arr[] = $v['picture_id'];
+            $picture_name_arr[] = $v['picture_name'];
+        }
+        return $newData;
     }
 
     public function getModelPicture($id)

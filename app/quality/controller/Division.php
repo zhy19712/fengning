@@ -26,7 +26,7 @@ class Division extends Permissions{
      * @return mixed|\think\response\Json
      * @author hutao
      */
-    public function index()
+    public function indextest()
     {
         if(request()->isAjax()){
             $node = new DivisionModel();
@@ -683,7 +683,7 @@ class Division extends Permissions{
             // 获取关联的模型图
             $picture = new PictureModel();
             $data= $picture->getAllNumber($add_id);
-            $picture_id = array_keys($data);
+            $picture_id = $data['picture_id_arr'];
             return json(['code'=>1,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
         }
     }
@@ -723,19 +723,21 @@ class Division extends Permissions{
             $data = $division->getModelPictureTree($id);
             // 获取关联的模型图
             $picture = new PictureModel();
-            $numberData = $picture->getAllNumber($add_id);
-            $picture_id = array_keys($numberData);
+            $dataTwo = $picture->getAllNumber($add_id);
+            $id_arr = $dataTwo['id_arr'];
+            $picture_id_arr = $dataTwo['picture_id_arr'];
+            $picture_name_arr= $dataTwo['picture_name_arr'];
             $nodeStrTwo = $data['str'];
             // 勾件树
             $i = 1;
-            foreach($numberData as $v){
+            foreach($id_arr as $k=>$v){
                 $node_id = $data['pid'] + $i;
-                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $v['picture_name'] . '"';
+                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k]['picture_name'] . '"' . ',"add_id": "' . $v['id'] . '"';
                 $nodeStrTwo .= '},';$i++;
             }
             $nodeStrOne = "[" . substr($data['str'], 0, -1) . "]";
             $nodeStrTwo = "[" . substr($nodeStrTwo, 0, -1) . "]";
-            return json(['code'=>1,'nodeStrOne'=>$nodeStrOne,'nodeStrTwo'=>$nodeStrTwo,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
+            return json(['code'=>1,'nodeStrOne'=>$nodeStrOne,'nodeStrTwo'=>$nodeStrTwo,'numberArr'=>$picture_id_arr,'msg'=>'模型图编号']);
         }
         return $this->fetch('relationview');
     }
@@ -766,6 +768,24 @@ class Division extends Permissions{
             }else{
                 return json(['code' => 0,'msg' => '已经关联过']);
             }
+        }
+    }
+
+    // 获取txt文件内容并插入到数据库中 insertTxtContent
+    public function index()
+    {
+        $filePath = './static/division/GolIdTable.txt';
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }
+        $content = file_get_contents($filePath);
+        $content = iconv("gb2312", "utf-8//IGNORE",$content);
+        halt($content);
+        $contents= explode(",",$content);//explode()函数以","为标识符进行拆分
+        foreach ($contents as $k => $v)//遍历循环
+        {
+            $id = $k;
+            $serial_number = $v;
         }
     }
 
