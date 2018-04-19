@@ -52,5 +52,11 @@ class PictureModel extends Model
         return $picture_id;
     }
 
+    public function getModelPictureNumber($id)
+    {
+        $picture_id = $this->where(['id'=>['eq',$id]])->value('picture_id');
+        return $picture_id;
+    }
+
 
 }
