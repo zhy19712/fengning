@@ -713,9 +713,8 @@ class Division extends Permissions{
     {
         if($this->request->isAjax()){
             $param = input('param.');
-            $add_id = isset($param['add_id']) ? $param['add_id'] : -1;
             $id = isset($param['id']) ? $param['id'] : -1;
-            if($add_id == -1 || $id == -1){
+            if($id == -1){
                 return json(['code' => 0,'msg' => '编号有误']);
             }
             // 管理视图的节点树
@@ -723,7 +722,7 @@ class Division extends Permissions{
             $data = $division->getModelPictureTree($id);
             // 获取关联的模型图
             $picture = new PictureModel();
-            $dataTwo = $picture->getAllNumber($add_id);
+            $dataTwo = $picture->getAllNumber($data['pid']);
             $id_arr = $dataTwo['id_arr'];
             $picture_id_arr = $dataTwo['picture_id_arr'];
             $picture_name_arr= $dataTwo['picture_name_arr'];
