@@ -1104,7 +1104,7 @@
     var isView = false;
     var formId ;
 
-    //新增
+    //在线填报-新增
     $("#unitWorkRightBottom").on("click",".mybtnAdd",function () {
         console.log(clickId);
         layer.open({
@@ -1116,7 +1116,7 @@
         });
     });
 
-    //查看
+    //在线填报-查看
     function seeOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1128,7 +1128,7 @@
         });
     }
 
-    //编辑
+    //在线填报-编辑
     function editOnLine(id) {
         console.log(clickId);
         isView = true;
@@ -1142,12 +1142,25 @@
         });
     }
 
-    //删除
+    //在线填报-删除
     function delOnLine(id) {
-        delForm
+        layer.confirm("你将删除该数据，是否确认删除？", function () {
+            $.ajax({
+                url: "{:url('quality/Qualityform/delForm')}",
+                type: "post",
+                data: {id: id},
+                success: function (res) {
+                    if (res.code === 1) {
+                        layer.msg("删除数据成功！", {time: 1500, shade: 0.1});
+                        onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+                    }
+                }
+            });
+        });
+        console.log(id)
     }
 
-    //提交
+    //在线填报-提交
     function submitOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1159,12 +1172,12 @@
         });
     }
 
-    //审批
+    //在线填报-审批
     function approve(id) {
         layer.msg("审批")
     }
 
-    //审批历史
+    //在线填报-审批历史
     function historyOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1179,7 +1192,7 @@
         });
     }
 
-    //下载
+    //在线填报-下载
     function downOnLine(id) {
         layer.msg("下载")
     }
