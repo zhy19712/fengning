@@ -155,7 +155,7 @@
                 <div class="layui-inline" style="margin-left: -3%">
                     <label class="layui-form-label"></label>
                     <div class="layui-input-inline">
-                        <select name="type" lay-filter="type">
+                        <select name="type" id="typeName" lay-filter="type">
                             <option value="">-请选择表格类型-</option>
                             <option value="1">质量</option>
                             <option value="2">其他</option>
@@ -165,7 +165,7 @@
                 <div class="layui-inline" style="margin-left: 5%">
                     <label class="layui-form-label"></label>
                     <div class="layui-input-block">
-                        <select name="use" lay-verify="" lay-filter="purpose">
+                        <select name="use" id="use" lay-verify="" lay-filter="purpose">
                             <option value="">-请选择表格用途-</option>
                             <option value="1">单元工程质量评定表</option>
                             <option value="2">分部工程质量评定表</option>
@@ -299,9 +299,10 @@
     var layer = layui.layer;
     var typeId;
     var purposeId;
+    var form;
     //查询提交
     layui.use(['form', 'layedit', 'laydate','layer'], function(){
-        var form = layui.form
+        form = layui.form
             ,layer = layui.layer;
 
         form.on('select(type)', function(data){
@@ -319,6 +320,7 @@
             }else{
                 tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId+"&use="+purposeId).load();
             }
+            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&use="+purposeId).load();
         });
 
         //监听提交
@@ -346,9 +348,11 @@
             title: '编辑模板',
             shadeClose: true,
             area: ['780px', '550px'],
-            content: '{:url("add")}?id='+id
+            content: '{:url("add")}?id='+id,
             // end:function () {
-            //     tableItem.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
+            //     $("#typeName").val("");
+            //     $("#use").val("");
+            //     form.render('select');
             // }
         });
     };
