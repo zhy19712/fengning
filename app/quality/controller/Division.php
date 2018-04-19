@@ -731,7 +731,7 @@ class Division extends Permissions{
             $i = 1;
             foreach($id_arr as $k=>$v){
                 $node_id = $data['pid'] + $i;
-                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k] . '"' . ',"add_id": "' . $v['id'] . '"';
+                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k] . '"' . ',"add_id": "' . $v . '"';
                 $nodeStrTwo .= '},';$i++;
             }
             $nodeStrOne = "[" . substr($data['str'], 0, -1) . "]";
