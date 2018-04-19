@@ -1234,9 +1234,9 @@ class Common extends Controller
         $param = input('param.');
         $cpr = Db::name('quality_division_controlpoint_relation')->where(['id' => $param['cpr_id']])->field('division_id,ma_division_id,control_id')->select();
         $whereStr = array();
-        $whereStr['DivisionId'] = $cpr['division_id'];
-        $whereStr['ProcedureId'] = $cpr['ma_division_id'];
-        $whereStr['ControlPointId'] = $cpr['control_id'];
+        $whereStr['DivisionId'] = $cpr[0]['division_id'];
+        $whereStr['ProcedureId'] = $cpr[0]['ma_division_id'];
+        $whereStr['ControlPointId'] = $cpr[0]['control_id'];
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
