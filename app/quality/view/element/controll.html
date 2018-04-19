@@ -1010,13 +1010,13 @@
                  name: "nickname"
              },
              {
+                 name: "create_time"
+             },
+             {
                  name: "currentname"
              },
              {
                  name: "approvestatus"
-             },
-             {
-                 name: "create_time"
              },
              {
                  name: "id"
@@ -1040,7 +1040,12 @@
                  }
              },
              {
-                 "targets": [2],
+                 "targets": [2]
+             },
+             {
+                 "targets": [3],
+                 "searchable": false,
+                 "orderable": false,
                  "render": function (data, type, row) {
                      if (data === 0) {
                          return "待提交"
@@ -1057,26 +1062,11 @@
                  }
              },
              {
-                 "targets": [3],
-                 "searchable": false,
-                 "orderable": false,
-                 "render": function (data, type, row) {
-                     if (data == null || data == undefined || data == '') return '';
-                     var time = new Date(data*1000);
-                     var y = time.getFullYear();
-                     var m = time.getMonth() + 1;
-                     m = m < 10 ? '0' + m : m;
-                     var d = time.getDate();
-                     d = d < 10 ? ('0' + d) : d;
-                     return y + '-' + m + '-' + d;
-                 }
-             },
-             {
                  "searchable": false,
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     console.log(row[2]);
+                     console.log(row[3]);
                      var dataType = "qualityFormInfo";
                      // var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
                      // html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
@@ -1084,22 +1074,22 @@
                      // return html;
                      var html = "";
                      html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
-                     if (row[2] === 0) {
+                     if (row[3] === 0) {
                          html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa-pencil'></i></a>";
                          html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
-                         html += "<a title='提交' onclick='submit("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
+                         html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                      }
-                     else if (row[2] === 1) {
+                     else if (row[3] === 1) {
                          html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
                          html += "<a title='审批' onclick='approve("+row[4]+")'><i class='fa fa fa-pencil-square-o'></i></a>";
                          html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
                      }
-                     else if (row[2] === 2) {
+                     else if (row[3] === 2) {
                          html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
                          html += "<a title='下载' onclick='downOnLine("+row[4]+")'><i class='fa fa fa-download'></i></a>";
                      }
-                     else if (row[2] === -1) {
-                         html += "<a title='提交' onclick='submit("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
+                     else if (row[3] === -1) {
+                         html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                          html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
                          html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
                          html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
@@ -1157,6 +1147,7 @@
     function editOnLine(id) {
         console.log(clickId);
         isView = true;
+        step = 1;
         layer.open({
             type: 2,
             title: '在线填报',
@@ -1177,8 +1168,18 @@
     }
 
     //提交
-    function submit(id) {
-        layer.msg("提交")
+    function submitOnLine(id) {
+        console.log(clickId);
+        layer.open({
+            type: 2,
+            title: '提交审批',
+            shadeClose: true,
+            area: ['980px', '90%'],
+            content: '{:url("quality/element/subonline")}',
+            // end:function () {
+            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+            // }
+        });
     }
 
     //审批
