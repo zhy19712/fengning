@@ -105,6 +105,10 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
             })
         },
         done:function (res) {
+          if(res.code!=2){
+            layer.msg("上传失败");
+            return ;
+          }
           $.ajax({
               type:"post",
               data:{attachment_id:res.id},

@@ -275,7 +275,7 @@
                         </div>
                     </div>
                     <div class="mybtn"><div id='test3'><i class='fa fa-upload'></i>&nbsp;上传</div></div>
-                    <div class="bitCodes" style="display: none"><div id='bit'><i class='fa fa-check-square-o'></i>&nbsp;选择</div></div>
+                    <!--<div class="bitCodes" style="display: none"><div id='bit'><i class='fa fa-check-square-o'></i>&nbsp;选择</div></div>-->
                     <div class="mybtnAdd" style="display: none"><div id='addTest'><i class='fa fa-plus'></i>&nbsp;新增</div></div>
                 </div>
             </div>
@@ -362,8 +362,8 @@
         }
     });
 
-    var layer = layui.layer;
     //查询提交
+    var layer = layui.layer;
     layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -714,13 +714,14 @@
         }
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItem.row(".select-color").data();//获取选中行数据
-        console.log(selectData);
+        console.log(selectData[3]);
         clickId = selectData[3];
 
         if(clickId != undefined && clickId != null){
             implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
             imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
-            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId=10&ProcedureId=53&ControlPointId=41").load();
+            funOnLine(selfidUnit,conThisId,clickId)
+            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
         }
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","none");
@@ -741,6 +742,39 @@
         // console.log($("#implementation_wrapper").attr("height"));
         // $("#imageData_wrapper").css("height","calc(100% - "+$("#tableContent").outerHeight()+"px - 35px)");
     });
+
+    //easyui点击显示选择
+    $('#unitTab').tabs({
+        border:false,
+        onSelect:function(title,index){
+            if(title === "控制点执行情况"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                    $(".mybtn").css("display","block");
+                }
+            }else if(title != "附件资料"){
+                $(".mybtn").css("display","none");
+            }
+            if(title === "附件资料"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                    $(".bitCodes").css("display","block");
+                    $(".mybtn").css("display","block");
+                }
+            }else if(title != "附件资料"){
+                $(".bitCodes").css("display","none");
+            }
+            if(title === "在线填报"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
+                    $(".mybtnAdd").css("display", "block");
+                    $(".mybtn").css("display", "none");
+                }else if(clickId == undefined || clickId == null){
+                    layer.msg("请选择控制点!")
+                }
+            }else if(title != "在线填报"){
+                $(".mybtnAdd").css("display","none");
+            }
+        }
+    });
+
 
     /*============控制点情况开始==============*/
     //控制点情况结构表格
@@ -815,38 +849,6 @@
         // "fnDrawCallback": function( oSettings ) {
         //     console.log($("#implementation_wrapper").attr("height"));
         // }
-    });
-
-    //easyui点击显示选择
-    $('#unitTab').tabs({
-        border:false,
-        onSelect:function(title,index){
-            if(title === "控制点执行情况"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
-                    $(".mybtn").css("display","block");
-                }
-            }else if(title != "附件资料"){
-                $(".mybtn").css("display","none");
-            }
-            if(title === "附件资料"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
-                    $(".bitCodes").css("display","block");
-                    $(".mybtn").css("display","block");
-                }
-            }else if(title != "附件资料"){
-                $(".bitCodes").css("display","none");
-            }
-            if(title === "在线填报"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
-                    $(".mybtnAdd").css("display", "block");
-                    $(".mybtn").css("display", "none");
-                }else if(clickId == undefined || clickId == null){
-                    layer.msg("请选择控制点!")
-                }
-            }else if(title != "在线填报"){
-                $(".mybtnAdd").css("display","none");
-            }
-        }
     });
 
     //上传点击
@@ -980,17 +982,18 @@
              "zeroRecords": "没有找到记录"
          }
     });
-
     /*============图像资料结束==============*/
 
 
 
     /*============在线填报开始==============*/
-    var ProcedureOnlineId ;
-    var DivisionOnlineId ;
+    var step = 0;
+    var isView = false;
+    var formId ;
 
     //在线填报结构表格
-    onlineFill = $('#onlineFill').DataTable({
+    function funOnLine(selfidUnit,conThisId,clickId){
+        onlineFill = $('#onlineFill').DataTable({
          retrieve: true,
          processing: true,
          serverSide: true,
@@ -999,7 +1002,7 @@
          "scrollCollapse": "true",
          "paging": "false",
          ajax: {
-             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&ControlPointId="+clickId
+             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId
          },
          dom: 'tr',
          columns: [
@@ -1063,12 +1066,7 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     // console.log(row[3]);
-                     var dataType = "qualityFormInfo";
-                     // var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                     // return html;
+                     // var dataType = "qualityFormInfo";
                      var html = "";
                      html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                      if (row[3] === 0) {
@@ -1100,13 +1098,10 @@
          language: {
              "zeroRecords": "没有找到记录"
          }
-     });
+    });
+    }
 
-    var step = 0;
-    var isView = false;
-    var formId ;
-
-    //新增
+    //在线填报-新增
     $("#unitWorkRightBottom").on("click",".mybtnAdd",function () {
         console.log(clickId);
         layer.open({
@@ -1118,7 +1113,7 @@
         });
     });
 
-    //查看
+    //在线填报-查看
     function seeOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1130,7 +1125,7 @@
         });
     }
 
-    //编辑
+    //在线填报-编辑
     function editOnLine(id) {
         console.log(clickId);
         isView = true;
@@ -1144,12 +1139,25 @@
         });
     }
 
-    //删除
+    //在线填报-删除
     function delOnLine(id) {
-        layer.msg("删除")
+        layer.confirm("你将删除该数据，是否确认删除？", function () {
+            $.ajax({
+                url: "{:url('quality/Qualityform/delForm')}",
+                type: "post",
+                data: {id: id},
+                success: function (res) {
+                    if (res.code === 1) {
+                        layer.msg("删除数据成功！", {time: 1500, shade: 0.1});
+                        onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+                    }
+                }
+            });
+        });
+        console.log(id)
     }
 
-    //提交
+    //在线填报-提交
     function submitOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1161,12 +1169,12 @@
         });
     }
 
-    //审批
+    //在线填报-审批
     function approve(id) {
         layer.msg("审批")
     }
 
-    //审批历史
+    //在线填报-审批历史
     function historyOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1181,7 +1189,7 @@
         });
     }
 
-    //下载
+    //在线填报-下载
     function downOnLine(id) {
         layer.msg("下载")
     }

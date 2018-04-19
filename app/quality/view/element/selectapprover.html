@@ -1,0 +1,47 @@
+{include file="../app/public/common_header.html"}
+<script src="__PUBLIC__/jquery/jquery.min.js"></script>
+<style>
+    /*#tableContent{*/
+        /*overflow: auto;*/
+    /*}*/
+
+    #tableContent .select-color {
+        background-color: #FDD5B5 !important;
+    }
+
+    #tableContent .even {
+        background-color: #ffffff;
+    }
+
+    #tableContent .odd {
+        background-color: #f9f9f9;
+    }
+
+    .sub i.fa:before {
+        color: #ffffff;
+    }
+
+
+</style>
+<div id="bodyCon">
+    <div id="tableContent" data-options="region:'center'" style="padding:5px;background:#ffffff;">
+        <div class="nei">
+            alflkwjflowaf
+        </div>
+        <input type="hidden" name="inputId" id="hiddenValId" value="">
+        <input type="hidden" name="inputName" id="hiddenValName" value="">
+    </div>
+    <div class="sub">
+        <div style="text-align: right;position: absolute;bottom: 20px;right: 5px;">
+            <button id="btnSave" class="layui-btn"><i class="fa fa-save"></i> 保存
+            </button>
+            <button id="btnClose" type="reset" class="layui-btn layui-btn-danger"><i class="fa fa-close"></i> 返回
+            </button>
+        </div>
+    </div>
+</div>
+{include file="../app/public/common_footer.html"}
+<script>
+
+</script>
+</html>

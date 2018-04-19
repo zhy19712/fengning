@@ -764,19 +764,21 @@ class Division extends Permissions{
      */
     public function addModelPicture()
     {
-        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图编号 picture_id
+        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图编号 picture_id 模型图名称 picture_name
         if($this->request->isAjax()){
             $param = input('param.');
             $division_id = isset($param['id']) ? $param['id'] : -1;
             $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
-            if($division_id == -1 || $picture_id == -1){
-                return json(['code' => 0,'msg' => '编号有误']);
+            $picture_name = isset($param['picture_name']) ? $param['picture_name'] : -1;
+            if($division_id == -1 || $picture_id == -1 || $picture_name == -1){
+                return json(['code' => 0,'msg' => '参数有误']);
             }
             // 是否已经关联过
             $is_add = Db::name('quality_model_picture')->where(['division_id'=>$division_id,'picture_id'=>$picture_id])->value('id');
             if(empty($is_add)){
                 $data['division_id'] = $division_id;
                 $data['picture_id'] = $picture_id;
+                $data['picture_name'] = $picture_name;
                 $picture = new PictureModel();
                 $flag = $picture->insertTb($data);
                 return json($flag);
