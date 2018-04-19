@@ -102,18 +102,18 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">模版编号</label>
                         <div class="layui-input-block" class="inpLength">
-                            <input type="text" name="code" id="temCode" lay-verify="title" autocomplete="off" placeholder="请输入模版编号" class="layui-input">
+                            <input type="text" name="code" id="temCode" lay-verify="required" autocomplete="off" placeholder="请输入模版编号" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">标段名称</label>
                         <div class="layui-input-block" class="inpLength">
-                            <input type="text" name="name" id="temName" lay-verify="title" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
+                            <input type="text" name="name" id="temName" lay-verify="required" autocomplete="off" placeholder="请输入标段名称" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">表格类型</label>
-                        <select name="type" id="tableType">
+                        <select name="type" id="tableType" lay-verify="required">
                             <option value="">请选择</option>
                             <option value="1">质量</option>
                             <option value="2">其他</option>
@@ -121,7 +121,7 @@
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">表格用途</label>
-                        <select name="use" id="formUse">
+                        <select name="use" id="formUse" lay-verify="required">
                             <option value="">请选择</option>
                             <option value="1">单元工程质量评定表</option>
                             <option value="2">分部工程质量评定表</option>
@@ -197,6 +197,9 @@
                     success: function (res) {
                         console.log(res)
                         if (res.code == 1) {
+                            $(window.parent.document).find("#typeName").val("");
+                            $(window.parent.document).find("#use").val("");
+                            parent.form.render('select');
                             refreshSub();
                             parent.layer.msg('保存成功！');
                             closWin();
@@ -215,6 +218,9 @@
                     success: function (res) {
                         console.log(res)
                         if (res.code == 1) {
+                            $(window.parent.document).find("#typeName").val("");
+                            $(window.parent.document).find("#use").val("");
+                            parent.form.render('select');
                             refreshSub();
                             parent.layer.msg('编辑成功！');
                             closWin();

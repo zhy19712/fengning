@@ -225,7 +225,7 @@ $("#tableContent").on("click",".bitCodes",function () {
 });
 //下载模板
 function conDown(id) {
-    download(id,"./fileDownload");
+    download(id,"./fileDownload","BranchfileModel");
 };
 //预览
 function showPdf(id,url,type_model) {
@@ -267,5 +267,5 @@ function showPdf(id,url,type_model) {
 }
 //预览打印
 function conPrint(id){
-    showPdf(id,'../Common/preview',"BranchfileModel");
+    showPdf(id,'./printDocument',"BranchfileModel");
 }

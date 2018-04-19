@@ -12,6 +12,7 @@ $.ztree({
             tablePath:'/quality/common/datatablesPre?tableName=quality_unit',
             isLoadPath:false
         });
+        getModel(treeNode);
     }
 });
 
@@ -249,6 +250,7 @@ function tableInfo() {
                     var html = "<i class='fa fa-pencil' uid="+ data +" title='编辑' onclick='edit(this)'></i>" ;
                     html += "<i class='fa fa-trash' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
                     html += "<i class='fa fa-qrcode' uid="+ data +" title='二维码' onclick='qrcode(this)'></i>" ;
+                    html += "<i class='fa fa-chain' uid="+ data +" title='关联试图' onclick='relation(this)'></i>" ;
                     return html;
                 }
             }
@@ -579,3 +581,9 @@ $('#exceldownloadBtn').click(function () {
         url:'./excelDownload'
     })
 });
+
+function relation(that) {
+    var uid = $(that).attr('uid');
+    document.cookie="unitEnginNoId="+uid;
+    window.open('./openModelPicture');
+}
