@@ -1060,7 +1060,16 @@
                  "targets": [3],
                  "searchable": false,
                  "orderable": false,
-
+                 "render": function (data, type, row) {
+                     if (data == null || data == undefined || data == '') return '';
+                     var time = new Date(data*1000);
+                     var y = time.getFullYear();
+                     var m = time.getMonth() + 1;
+                     m = m < 10 ? '0' + m : m;
+                     var d = time.getDate();
+                     d = d < 10 ? ('0' + d) : d;
+                     return y + '-' + m + '-' + d;
+                 }
              },
              {
                  "searchable": false,
@@ -1074,28 +1083,28 @@
                      // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                      // return html;
                      var html = "";
-                     html += "<a title='查看' onclick='viewQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")'><i class='fa fa fa-search'></i></a>";
+                     html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                      if (row[2] === 0) {
-                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='fa fa-pencil'></i></a>";
-                         html += "<a title='删除' onclick='deleteQualityFormInfo(\"" + row.id + "\")' <i class='fa fa fa-remove'></i></a>";
-                         html += "<a title='提交' onclick='submit(\"" + row.id + "\",\"" + dataType + "\",\"" + row.currentStep + "\")'><i class='fa fa fa-check-square-o'></i></a>";
+                         html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa-pencil'></i></a>";
+                         html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
+                         html += "<a title='提交' onclick='submit("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                      }
                      else if (row[2] === 1) {
-                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='fa fa fa-pencil'></i></a>";
-                         html += "<a title='审批' onclick='approve(\"" + row.id + "\",\"" + dataType + "\",\"" + row.currentStep + "\")'><i class='fa fa fa-pencil-square-o'></i></a>";
-                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='fa fa fa-file-text'></i></a>";
+                         html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
+                         html += "<a title='审批' onclick='approve("+row[4]+")'><i class='fa fa fa-pencil-square-o'></i></a>";
+                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
                      }
                      else if (row[2] === 2) {
-                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='fa fa fa-file-text'></i></a>";
-                         html += "<a title='下载' onclick='download(\"" + row.id + "\")' <i class='fa fa fa-download'></i></a>";
+                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
+                         html += "<a title='下载' onclick='downOnLine("+row[4]+")'><i class='fa fa fa-download'></i></a>";
                      }
                      else if (row[2] === -1) {
-                         html += "<a title='提交' onclick='submit(\"" + row.id + "\",\"" + dataType + "\",\"" + row.currentStep + "\")'><i class='fa fa fa-check-square-o'></i></a>";
-                         html += "<a title='编辑' onclick='editQualityFormInfo(\"" + row.id + "\",\"" + row.templateId + "\",\"" + row.divisionId + "\",\"" + row.procedureId + "\",\"" + row.controlPointId + "\",\"" + row.currentStep + "\")' <i class='fa fa fa-pencil'></i></a>";
-                         html += "<a title='删除' onclick='deleteQualityFormInfo(\"" + row.id + "\")' <i class='fa fa fa-remove'></i></a>";
-                         html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='fa fa fa-file-text'></i></a>";
+                         html += "<a title='提交' onclick='submit("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
+                         html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
+                         html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
+                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
                      }
-                     else html += "<a title='审批历史' onclick='history(\"" + row.id + "\",\"" + dataType + "\")'><i class='fa fa fa-file-text'></i></a>";
+                     else html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
                      return html;
 
                  }
@@ -1127,37 +1136,74 @@
 
     //查看
     function seeOnLine(id) {
-        layer.msg("编辑")
+        console.log(clickId);
+        isView = true;
+        layer.open({
+            type: 2,
+            title: '在线填报',
+            shadeClose: true,
+            area: ['980px', '90%'],
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep='+ step + '&isView='+ isView,
+            //Edit?id=26&templateId=3c&isInspect=1&procedureId=d4&controlPointId=25&currentStep=0&isView=true&_t=1524107701062
+            //编辑
+            // view-source:http://183.196.236.186:1030/Quality/QualityForm/Edit?id=26  &templateId=3c&divisionId=b24&isInspect=1&procedureId=d4&controlPointId=25&currentStep=0&_t=1524107791391
+            // end:function () {
+            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+            // }
+        });
     }
 
     //编辑
     function editOnLine(id) {
-        layer.msg("编辑")
+        console.log(clickId);
+        isView = true;
+        layer.open({
+            type: 2,
+            title: '在线填报',
+            shadeClose: true,
+            area: ['980px', '90%'],
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep='+ step,
+            //编辑
+            // Edit?id=26&templateId=3c&divisionId=b24&isInspect=1&procedureId=d4&controlPointId=25&currentStep=0&_t=1524107791391
+            // end:function () {
+            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+            // }
+        });
     }
 
     //删除
     function delOnLine(id) {
-        layer.msg("编辑")
+        layer.msg("删除")
     }
 
     //提交
-    function delOnLine(id) {
-        layer.msg("编辑")
+    function submit(id) {
+        layer.msg("提交")
     }
 
     //审批
-    function approveOnLine(id) {
-        layer.msg("编辑")
+    function approve(id) {
+        layer.msg("审批")
     }
 
     //审批历史
     function historyOnLine(id) {
-        layer.msg("编辑")
+        console.log(clickId);
+        layer.open({
+            type: 2,
+            title: '审批历史',
+            shadeClose: true,
+            area: ['980px', '90%'],
+            content: '{:url("quality/element/conhistory")}',
+            // end:function () {
+            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+            // }
+        });
     }
 
-    //审批历史
+    //下载
     function downOnLine(id) {
-        layer.msg("编辑")
+        layer.msg("下载")
     }
 
     /*============在线填报结束==============*/
