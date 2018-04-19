@@ -714,13 +714,13 @@
         }
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItem.row(".select-color").data();//获取选中行数据
-        console.log(selectData);
+        console.log(selectData[3]);
         clickId = selectData[3];
 
         if(clickId != undefined && clickId != null){
             implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
             imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
-            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId=10&ProcedureId=53&ControlPointId=41").load();
+            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
         }
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","none");
@@ -999,7 +999,7 @@
          "scrollCollapse": "true",
          "paging": "false",
          ajax: {
-             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&ControlPointId="+clickId
+             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId
          },
          dom: 'tr',
          columns: [
@@ -1063,12 +1063,7 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     // console.log(row[3]);
-                     var dataType = "qualityFormInfo";
-                     // var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                     // return html;
+                     // var dataType = "qualityFormInfo";
                      var html = "";
                      html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                      if (row[3] === 0) {
