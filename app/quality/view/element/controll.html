@@ -275,7 +275,7 @@
                         </div>
                     </div>
                     <div class="mybtn"><div id='test3'><i class='fa fa-upload'></i>&nbsp;上传</div></div>
-                    <div class="bitCodes" style="display: none"><div id='bit'><i class='fa fa-check-square-o'></i>&nbsp;选择</div></div>
+                    <!--<div class="bitCodes" style="display: none"><div id='bit'><i class='fa fa-check-square-o'></i>&nbsp;选择</div></div>-->
                     <div class="mybtnAdd" style="display: none"><div id='addTest'><i class='fa fa-plus'></i>&nbsp;新增</div></div>
                 </div>
             </div>
@@ -720,6 +720,7 @@
         if(clickId != undefined && clickId != null){
             implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
             imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
+            funOnLine(selfidUnit,conThisId,clickId)
             onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
         }
         $(".bitCodes").css("display","none");
@@ -990,7 +991,8 @@
     var DivisionOnlineId ;
 
     //在线填报结构表格
-    onlineFill = $('#onlineFill').DataTable({
+    function funOnLine(selfidUnit,conThisId,clickId){
+        onlineFill = $('#onlineFill').DataTable({
          retrieve: true,
          processing: true,
          serverSide: true,
@@ -1095,7 +1097,8 @@
          language: {
              "zeroRecords": "没有找到记录"
          }
-     });
+    });
+    }
 
     var step = 0;
     var isView = false;
