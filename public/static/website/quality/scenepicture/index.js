@@ -99,6 +99,7 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
         elem: '#upload',
         url: '../../quality/common/upload?module=quality&use=quality_thumb',
         accept: 'file',//普通文件
+        size:89000,
         before: function(obj){
             obj.preview(function(index, file, result){
             })

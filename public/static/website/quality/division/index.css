@@ -81,3 +81,6 @@ i.fa-download:before,i.fa-plus:before,i.fa-download:hover:before,i.fa-plus:hover
     padding-right: 5px;
     color: #FFF;
 }
+.content,.tab-content{
+    border: none;
+}

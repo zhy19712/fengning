@@ -200,10 +200,11 @@ function formSave() {
                     top.layer.closeAll();
                 else
                     handleAfterSave(data.result);
-                if (parent.window.frames["web"].document.frames["webas"])
-                    parent.window.frames["web"].document.frames["webas"].loadQualityFormInfoData();
-                else
-                    parent.window.frames["web"].refresh();
+                // 刷新父页面列表
+                // if (parent.window.frames["web"].document.frames["webas"])
+                //     parent.window.frames["web"].document.frames["webas"].loadQualityFormInfoData();
+                // else
+                //     parent.window.frames["web"].refresh();
             };
         }
     });

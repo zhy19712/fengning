@@ -822,7 +822,6 @@
     $('#unitTab').tabs({
         border:false,
         onSelect:function(title,index){
-            console.log($("#homeWork").text())
             if(title === "控制点执行情况"){
                 if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
                     $(".mybtn").css("display","block");
@@ -842,6 +841,8 @@
                 if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
                     $(".mybtnAdd").css("display", "block");
                     $(".mybtn").css("display", "none");
+                }else if(clickId == undefined || clickId == null){
+                    layer.msg("请选择控制点!")
                 }
             }else if(title != "在线填报"){
                 $(".mybtnAdd").css("display","none");
@@ -1041,7 +1042,7 @@
 
     /*============在线填报开始==============*/
     //在线填报结构表格
-     onlineFill = $('#onlineFill').DataTable({
+    onlineFill = $('#onlineFill').DataTable({
          retrieve: true,
          processing: true,
          serverSide: true,
@@ -1081,7 +1082,23 @@
                  "targets": [2]
              },
              {
-                 "targets": [3]
+                 "targets": [3],
+                 "searchable": false,
+                 "orderable": false,
+                 "render": function (data, type, row) {
+                     if (data === 0) {
+                         return "待提交"
+                     }
+                     if (data === 1) {
+                         return "待审批"
+                     }
+                     if (data === 2) {
+                         return "已审批"
+                     }
+                     if (data === -1) {
+                         return "被退回"
+                     }
+                 }
              },
              {
                  "searchable": false,
@@ -1099,6 +1116,25 @@
              "zeroRecords": "没有找到记录"
          }
      });
+
+    var step = 0;
+    var isView = false;
+    var formId ;
+    //新增
+    $("#unitWorkRightBottom").on("click",".mybtnAdd",function () {
+        console.log(clickId);
+
+        layer.open({
+            type: 2,
+            title: '在线填报',
+            shadeClose: true,
+            area: ['980px', '90%'],
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep='+ step + '&isView='+ isView,
+            // end:function () {
+            //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+            // }
+        });
+    });
     /*============在线填报结束==============*/
 
 </script>

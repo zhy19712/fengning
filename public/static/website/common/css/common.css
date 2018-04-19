@@ -35,6 +35,7 @@ i.fa:hover:before{
 .ztree-title{
     position: absolute;
     top: -31px;
+    top:0\9;
     left: -1px;
     width: 100%;
     height: 30px;
@@ -43,7 +44,11 @@ i.fa:hover:before{
     z-index: 99;
     background: #FFF;
 }
-
+@media screen and(-ms-high-contrast:active),(-ms-high-contrast:none) {
+　　.ztree-title{
+        top: 0;
+    }
+}
 .ztree li a.curSelectedNode{
     background-color: #cecece;
 }
