@@ -332,9 +332,6 @@
 
     //点击新增模板
     $("#tableContent .mybtn").click(function () {
-        $("#typeName").val("");
-        $("#use").val("");
-        form.render('select');
         layer.open({
             type: 2,
             title: '新增模板',
@@ -342,26 +339,26 @@
             area: ['780px', '550px'],
             content: '{:url("add")}',
             end:function () {
-                form.render('select', 'type');
-                form.render('select', 'purpose');
+                $("#typeName").val("");
+                $("#use").val("");
+                form.render('select');
             }
         });
     });
 
     //点击编辑模板
     function editFile(id) {
-        $("#typeName").val("");
-        $("#use").val("");
-        form.render('select');
         layer.open({
             type: 2,
             title: '编辑模板',
             shadeClose: true,
             area: ['780px', '550px'],
-            content: '{:url("add")}?id='+id
-            // end:function () {
-            //     tableItem.ajax.url("{:url('contract/common/datatablesPre?tableName=contract')}").load();
-            // }
+            content: '{:url("add")}?id='+id,
+            end:function () {
+                $("#typeName").val("");
+                $("#use").val("");
+                form.render('select');
+            }
         });
     };
 
