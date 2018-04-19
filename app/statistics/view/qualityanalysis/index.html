@@ -92,7 +92,7 @@
     myChartBar.setOption(optionBar);
         //折线图
     var myChartLine = echarts.init(document.getElementById('mainLine'));
-    var data = [
+    var dataMonthNumber = [
         [
             {
                 name:"优良单元数量",
@@ -223,9 +223,12 @@
     var section = ['标段1','标段2','标段3'];//标段
     var excellent = [1,2,3]; //优良率
     var qualified = [1,2,3]; //合格率
-    var total = [2,4,6];  //合计
+    var excellentNumber = [1,2,3]; //优良数
+    var qualifiedNumber = [1,2,3]; //合格数
+    var total = [2,4,6];  //合计率
+    var totalNumber = [2,4,6];  //合计数
     var sectionHtml ='',excellentHtml='',qualifiedHtml='',totalHtml = '';//html
-    //初始化表格
+    //初始化图表
     function getInit(){
         for (var j = 0;j<section.length;j++){
             sectionHtml += '<th>'+section[j]+'</th>';
@@ -245,15 +248,15 @@
             series: [
                 {
                     name: '总计',
-                    data: [1, 3, 3]
+                    data: totalNumber
                 },
                 {
                     name: '合格',
-                    data: [2, 3, 3]
+                    data: excellentNumber
                 },
                 {
                     name: '优良',
-                    data: [3, 3, 3]
+                    data: qualifiedNumber
                 }
             ]
         });
@@ -262,7 +265,7 @@
                 formatter : function (parmas) {
                     var relVal = parmas[0].name;  //x轴名称
                     var index = parmas[0].dataIndex; //第几个
-                    var dataVal = data[index]; //选中数据
+                    var dataVal = dataMonthNumber[index]; //选中数据
                     for(var i = 0;i<dataVal.length;i++){
                         relVal += '<br/>' + dataVal[i].name + ' : ' + dataVal[i].value;
                     }
@@ -275,26 +278,40 @@
             series: [
                 {
                     name:'优良率',
-                    data: [20, 30, 50, 60, 20, 100, 10],
+                    data: excellentMonth,
                 }
             ]});
     }
     //初始化拉数据
-    // $.ajax({
-    //     url:"./getindex",
-    //     type:"GET",
-    //     dataType:"JSON",
-    //     success:function (res) {
-    //         if(res.code===1){
-    //             section = res.data.section;
-    //             excellent = res.data.excellent;
-    //             qualified = res.data.qualified;
-    //             total = res.data.total;
-    //             timeline = res.data.timeline; //月
-    //             excellentMonth = res.data.excellentMonth;//月优良率
-    //         }
-    //     }
-    // })
+    $.ajax({
+        url:"./getIndex",
+        type:"GET",
+        dataType:"JSON",
+        success:function (res) {
+            if(res.code===1){
+                section = res.result.section; //标段
+                for(var m = 0; m<section.length;m++){
+                    excellent[m] = res.result.section_rate[m].excellent_number;//优良率
+                    qualified[m] = res.result.section_rate[m].qualified_number;//合格率
+                    excellentNumber[m] = res.result.section_rate_number[m].excellent_number;//合格率
+                    qualifiedNumber[m] = res.result.section_rate_number[m].qualified_number;//合格率
+                }
+                total = res.result.total; //合计率
+                totalNumber = res.result.total_number; //合计率
+                timeline = res.data.timeline; //月
+                excellentMonth = res.data.excellentMonth;//月优良率
+                for(var k = 0; k<res.data.rate.length;k++){
+                     dataMonthNumber[k][0]={};
+                     dataMonthNumber[k][1]={};
+                     dataMonthNumber[k][0].value = res.data.rate[k].excellent_number;
+                     dataMonthNumber[k][1].value = res.data.rate[k].qualified_number;
+                     dataMonthNumber[k][0].name = '优良单元数量';
+                     dataMonthNumber[k][1].name = '合格单元数量';
+                 }
+                getInit()//初始化
+            }
+        }
+    })
 </script>
 </body>
 </html>
