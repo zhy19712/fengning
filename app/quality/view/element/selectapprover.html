@@ -20,18 +20,22 @@
     .sub i.fa:before {
         color: #ffffff;
     }
-
+    .layui-layer-iframe {
+         overflow-y: visible;
+    }
 
 </style>
 <div id="bodyCon">
-    <div id="tableContent" data-options="region:'center'" style="padding:5px;background:#ffffff;">
-        <div class="nei">
-            alflkwjflowaf
+    <div id="tableContent" data-options="region:'center'" style="background:#ffffff;">
+        <div class="tabCon">
+
         </div>
         <input type="hidden" name="inputId" id="hiddenValId" value="">
         <input type="hidden" name="inputName" id="hiddenValName" value="">
     </div>
     <div class="sub">
+        <span>已选择人员：</span>
+        <sapn>焦黎明</sapn>
         <div style="text-align: right;position: absolute;bottom: 20px;right: 5px;">
             <button id="btnSave" class="layui-btn"><i class="fa fa-save"></i> 保存
             </button>
@@ -42,6 +46,56 @@
 </div>
 {include file="../app/public/common_footer.html"}
 <script>
+
+    $("#btnSave").click(function () { $("#btnSave").attr("disabled", "disabled"); save(); });
+    $("#btnClose").click(function () { close(); });
+
+    // 保存审批人信息
+    function save() {
+        var $dom = $(".people"); // 获取class为people的div，该div的id属性记录的是审批人id
+        if ($dom.length === 0) {
+            layer.alert("请选择审批人。");
+            $("#btnSave").removeAttr("disabled");
+            return;
+        };
+        if ($("#referFlow").val()) {
+            var $referDom = $("#referDiv").find(".addpeople");
+            if ($dom.length !== $referDom.length - 1) {
+                layer.alert("请按照参考流程选择人员。");
+                $("#btnSave").removeAttr("disabled");
+                return;
+            }
+        };
+
+        var approverIds = "";
+        $.each($dom, function (i, item) {
+            approverIds += item.id.substring(3, item.id.length) + ","; //去除前面的div字符串
+        });
+        approverIds = approverIds.substring(0, approverIds.length - 1);
+        $.ajax({
+            type: "post",
+            url: "/Approve/Submit",
+            data: { "dataId": $("#dataId").val(), "dataType": $("#dataType").val(), "approverIds": approverIds },
+            success: function (data) {
+                if (data.result === "Success") {
+                    var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
+                    parentWin.contentWindow.refresh();//刷新列表数据
+                    parent.layer.closeAll();
+                    close();
+                }
+                else {
+                    layer.alert("提交失败。");
+                    $("#btnSave").removeAttr("disabled");
+                };
+            }
+        });
+    };
+
+    // 关闭窗体
+    function close() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index)
+    };
 
 </script>
 </html>
