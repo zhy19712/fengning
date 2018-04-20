@@ -178,11 +178,14 @@ class Qualityform extends Permissions
     public function GetCurrentUserSignature($id)
     {
         try {
-            if (empty($id)) {
-                return Admin::get(Session::get('current_id'), 'SignImg')['SignImg']['filepath'];
-            } else {
+            if (!empty($id)) {
                 //获取当前审批人
+                $currentApproverId = $this->qualityFormInfoService->where(['id' => $id])->field('CurrentApproverId')->find();
+                if (!empty($currentApproverId['CurrentApproverId'])) {
+                    return Admin::get($currentApproverId['CurrentApproverId'], 'SignImg')['SignImg']['filepath'];
+                }
             }
+            return Admin::get(Session::get('current_id'), 'SignImg')['SignImg']['filepath'];
         } catch (Exception $e) {
             return "";
         }
