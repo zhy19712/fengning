@@ -6,34 +6,42 @@
         background: #00c0ef;
         color: #ffffff;
     }
+
     #tableContent .mybtn,#tableContent .move{
         float: right;
         background-color: #00c0ef;
     }
+
     #tableContent .mybtn{
         margin-right: 0%;
         margin-bottom: 5px;
     }
+
     #tableContent .move{
         margin-top: -.5%;
         margin-bottom: 3px;
     }
+
     #tableContent .select-color {
         background-color: #FDD5B5 !important;
     }
+
     #tableContent h3 {
         margin-top: 5px;
         font-weight: 600;
         font-size: 16px;
         display: inline-block;
     }
+
     #tableContent .dataTables_wrapper .dataTables_scroll {
         position: relative;
         /*border-top: 1px dotted #cecece;*/
     }
+
     #tableContent #tableItem tr td a{
         color: #337ab7;
     }
+
     #tableContent .dataTables_wrapper ,#tableContent .tbcontainer {
         display: block;
     }
@@ -51,9 +59,9 @@
         padding: 8px;
     }
 
-    .layui-input[disabled], .layui-textarea[disabled], .layui-disabled, .layui-input[readonly], .layui-textarea[readonly], .layui-readonly {
-        background: #FFFFFF !important;
-    }
+    /*.layui-input[disabled], .layui-textarea[disabled], .layui-disabled, .layui-input[readonly], .layui-textarea[readonly], .layui-readonly {*/
+        /*background: #FFFFFF !important;*/
+    /*}*/
 
     .layui-input-inline p{
         height: 34px;
@@ -61,11 +69,17 @@
         font-weight: 800;
         margin-left: -25px;
     }
+
     .layui-layer-content {
         padding-top: 0px;
     }
+
     #nextStep{
         color: #337ab7;
+    }
+
+    .colorRed{
+        background: #eee;;
     }
 </style>
 
@@ -85,13 +99,13 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">当前审批人</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="contractCode" placeholder="当前审批人" lay-verify="required" autocomplete="off" class="layui-input">
+                            <input type="text" name="contractCode" value="66" readonly lay-verify="required" autocomplete="off" class="layui-input colorRed">
                         </div>
                     </div>
                     <div class="layui-inline" style="margin-left: 58px;">
                         <label class="layui-form-label">审批日期</label>
                         <div class="layui-input-inline" style="margin-left: 36px;">
-                            <input type="text" name="contractName" placeholder="审批日期" lay-verify="required" autocomplete="off" class="layui-input">
+                            <input type="text" name="contractName" readonly lay-verify="required" autocomplete="off" class="layui-input colorRed">
                         </div>
                     </div>
                 </div>
@@ -248,7 +262,7 @@
             title: '选择审批人',
             shadeClose: true,
             area: ['450px', '550px'],
-            content: '{:url("quality/element/selectapprover")}',
+            content: '{:url("approve/approve/selectMumber")}?dataType=app\\quality\\model\\QualityFormInfoModel\n'
         });
     });
     
