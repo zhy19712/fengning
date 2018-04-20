@@ -88,20 +88,6 @@ class Admin extends Model
     }
 
     /**
-     * 指定In查询条件
-     * @access public
-     * @param mixed  $field     查询字段
-     * @param mixed  $condition 查询条件
-     * @param string $logic     查询逻辑 and or xor
-     * @return $this
-     */
-    function whereIn($field, $condition, $logic = 'AND')
-    {
-        $this->parseWhereExp($logic, $field, 'in', $condition);
-        return $this;
-    }
-
-    /**
      * 根据角色类型管理 编号 关联删除 用户
      * @return array
      */
