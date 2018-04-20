@@ -59,7 +59,13 @@
         height: 34px;
         line-height: 40px;
         font-weight: 800;
-        margin-left: -30px;
+        margin-left: -25px;
+    }
+    .layui-layer-content {
+        padding-top: 0px;
+    }
+    #nextStep{
+        color: #337ab7;
     }
 </style>
 
@@ -94,9 +100,14 @@
                         <label class="layui-form-label">审批结果</label>
                         <div class="layui-input-inline" style="width: 92px;margin-right: 0px">
                             <input type="radio" name="sex" value="1" title="通过，" checked>
+                            <!--<p style="display: inline-block"><a href="javascript:;">下一步执行人</a>：<span>审批完成</span></p>-->
+                            <!--<input type="radio" name="sex" value="0" title="不通过">-->
+                            <!--<select name="isneedtemplate" id="itNeed" lay-filter="aihao">-->
+                                <!--<option value="">返回提交人：管理员</option>-->
+                            <!--</select>-->
                         </div>
                         <div class="layui-input-inline">
-                            <p><a href="javascript:;">下一步执行人</a>：<span>审批完成</span></p>
+                            <p><a href="javascript:;" id="nextStep">下一步执行人</a>：<span>审批完成</span></p>
                         </div>
 
                     </div>
@@ -226,6 +237,21 @@
             $('#tableItem_paginate').insertBefore(".mark");
         }
     });
+
+    //保存
     $(".move").html("<div id='test3'>保存</div>");
+
+    //点击下一步执行人
+    $("#nextStep").click(function () {
+        layer.open({
+            type: 2,
+            title: '选择审批人',
+            shadeClose: true,
+            area: ['450px', '550px'],
+            content: '{:url("quality/element/selectapprover")}',
+        });
+    });
+    
+    
 </script>
 </html>
