@@ -17,6 +17,10 @@ layui.use(['form', 'layedit', 'laydate', 'element', 'layer','upload'], function(
             })
         },
         done:function (res) {
+          if(res.code!=2){
+            layer.msg("上传失败");
+            return ;
+          }
             attachment_id = res.id;
             if($(".tabs-selected a span:first-child").html()==="图像资料"){
                 type = 2;

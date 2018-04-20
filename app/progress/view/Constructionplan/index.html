@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>计划表甘特图</title>
+    <meta charset="UTF-8">
+    <title>施工总进度计划</title>
     <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="__PUBLIC__/layui/css/modules/layer/default/layer.css" media="all">
     <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all">
@@ -11,22 +10,28 @@
     <script type="text/javascript" charset="utf8" src="__PUBLIC__/jquery/jquery.min.js"></script>
     <script type="text/javascript" charset="utf8" src="__PUBLIC__/layui/layui.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <link href="__PUBLIC__/gantts/scripts/miniui/themes/icons.css" rel="stylesheet" type="text/css" />
     <link href="__PUBLIC__/gantts/scripts/miniui/themes/default/miniui.css" rel="stylesheet" type="text/css" />
     <link href="__PUBLIC__/gantts/scripts/miniui/themes/blue/skin.css" rel="stylesheet" type="text/css" />
-    <link href="__PUBLIC__/gantts/scripts/miniui/themes/icons.css" rel="stylesheet" type="text/css" />
-    <style>
+    <style type="text/css">
         .myitem{
             background:#9ccc5e;border:solid 1px #6e845c;
             position:absolute;overflow:hidden;display:block;
             z-index:100;
         }
-        .myitem .mini-gantt-percentcomplete
+        .myitem2
         {
-            background:#1E9FFF;
+            background:#9ccc5e;border:solid 1px #0c3f5f;
+            position:absolute;overflow:hidden;
+        }
+        .percentcomplete
+        {
+            margin-top:1px;
+            height:10px;overflow:hidden;background:#0d55a4;
         }
     </style>
 </head>
-<body class="layui-layout-body">
+<body>
 <div class="layui-fluid">
     <div class="layui-row">
         <div class="layui-col-sm8" style="padding: 10px 0">
@@ -38,33 +43,59 @@
             <button class="layui-btn layui-btn-normal" onclick="save()">保存</button>
         </div>
     </div>
-    <div id="gantts">
-
+    <div id="viewCt">
     </div>
 </div>
 
+<script src="__PUBLIC__/jquery/jquery.min.js" type="text/javascript"></script>
 <script src="__PUBLIC__/gantts/scripts/miniui/miniui.js" type="text/javascript"></script>
 <script src="__PUBLIC__/gantts/scripts/miniui/locale/zh_CN.js" type="text/javascript"></script>
-<script src="__PUBLIC__/gantts/scripts/plusgantt/GanttMenu.js" type="text/javascript"></script>
-<script src="__PUBLIC__/gantts/scripts/plusgantt/GanttSchedule.js" type="text/javascript"></script>
-<script src="__PUBLIC__/gantts/scripts/plusgantt/GanttService.js" type="text/javascript"></script>
+<script src="__PUBLIC__/gantts/scripts/plusproject/js/CalendarWindow.js" type="text/javascript"></script>
+<script src="__PUBLIC__/gantts/scripts/plusproject/js/ProjectMenu.js" type="text/javascript"></script>
+<script src="__PUBLIC__/gantts/scripts/plusproject/js/StatusColumn.js" type="text/javascript"></script>
+<script src="__PUBLIC__/gantts/scripts/plusproject/js/TaskWindow.js" type="text/javascript"></script>
+<script src="__PUBLIC__/gantts/scripts/plusproject/js/ProjectServices.js" type="text/javascript"></script>
+<script src="__PUBLIC__/gantts/scripts/plusproject/js/ProjectServices.js" type="text/javascript"></script>
+<script src="__PUBLIC__/gantts/scripts/ThirdLibs/swfobject/swfobject.js" type="text/javascript"></script>
 </body>
 <script type="text/javascript">
+    //实例化甘特图
+    var project = new PlusProject();
+    project.setStyle("width:100%;height:800px");
+    project.setColumns([
+        new PlusProject.IDColumn(),
+        new PlusProject.StatusColumn(),
+        new PlusProject.NameColumn(),
+        new PlusProject.PredecessorLinkColumn(),
+        new PlusProject.PercentCompleteColumn(),
+        new PlusProject.DurationColumn(),
+        new PlusProject.StartColumn(),
+        new PlusProject.FinishColumn(),
+        new PlusProject.WorkColumn(),
+        new PlusProject.DepartmentColumn(),
+        new PlusProject.PrincipalColumn(),
+        new PlusProject.AssignmentsColumn()
+    ]);
+    project.setRowHeight(30);
+    project.setShowLinkLines(false);
+    project.render(document.getElementById("viewCt"));
+    //创建右键菜单
+    var menu = new ProjectMenu();
+    project.setContextMenu(menu);
+    menu.edit.on("click", function (e) {
+        ShowTaskWindow(project);
+    });
+    //获取数据
+    LoadJSONProject("__PUBLIC__/gantts/data/project.txt", project, function () {
+        var projectStart = mini.get("projectStart");
 
-    /* 创建甘特图对象，设置列配置
-    -----------------------------------------------------------------------------*/
+        project.setStartDate(new Date(2017,1,1));
+    });
+    /* 业务代码
+-----------------------------------------------------------------------------*/
 
-    var gantt = new CreateGantt();
-    gantt.setStyle("width:100%;height:800px");
-    gantt.render(document.getElementById("gantts"));
-    gantt.setRowHeight(30);
-    gantt.setShowLinkLines(false);
-    //    gantt.on("taskcreated", function (e) {
-    //        e.task.Start = null;
-    //        e.task.Finish = null;
-    //    });
     //1)自定义条形图外观显示
-    gantt.on("drawitem", function (e) {
+    project.on("drawitem", function (e) {
         var item = e.item;
         var left = e.itemBox.left,
             top = e.itemBox.top,
@@ -72,163 +103,18 @@
             height = e.itemBox.height;
 
         if (!item.Summary && !item.Milestone) {
-            if (e.baseline) {    //区分比较基准
+            var percentWidth = width * (item.PercentComplete / 100);
 
+            e.itemHtml = '<div id="' + item._id + '" class="myitem" style="left:' + left + 'px;top:' + top + 'px;width:' + width + 'px;height:' + (height) + 'px;">';
+            e.itemHtml += '<div style="width:' + (percentWidth) + 'px;" class="percentcomplete"></div>';
 
-            } else {
-                e.itemCls = "myitem";
+            //根据你自己逻辑，把任务分成几块，注意坐标和宽度
+            // e.itemHtml += '<div style="position:absolute;left:0px;top:0;height:100%;width:20px;background:red;"></div>';
 
-            }
+            e.itemHtml += '</div>';
+
+            // e.ItemHtml = '<a href="http://www.baidu.com" style="left:'+left+'px;top:'+top+'px;width:'+width+'px;height:'+(height-2)+'px;" class="myitem">111</a>';
         }
-    });
-    //2)自定义条形图label内容
-    gantt.on("drawitem", function (e) {
-        e.label = mini.formatDate();
-        e.labelAlign = "left";
-
-        e.label2 = mini.formatDate();
-        e.label2Align = "right";
-    });
-    //右键菜单
-    var ganttMenu = new GanttMenu();
-    gantt.setContextMenu(ganttMenu);
-
-    /* 业务代码
-    -----------------------------------------------------------------------------*/
-    function save() {
-        //获取当前任务树形数据
-        var tasktree = gantt.getTaskTree();
-        //获取所有被删除的任务
-        var taskRemoved = gantt.getRemovedTasks();
-        //将数据转换为JSON字符串
-        var taskJSON = mini.encode(tasktree);
-        var remvedJSON = mini.encode(taskRemoved);
-
-        //alert(taskJSON);
-        var params = {
-            tasks: taskJSON,
-            removeds: remvedJSON
-        };
-        alert("将甘特图的任务数据提交到服务端进行保存");
-
-        //使用jQuery的ajax，把任务数据，发送到服务端进行处理
-//    $.ajax({
-//        url: 'savegant.aspx',
-//        type: "POST",
-//        data: params,
-//        success: function (text) {
-//            alert("保存成功");
-//        }
-//    });
-    }
-
-    //加载树形数据
-    function loadTree() {
-        gantt.loading();
-        $.ajax({
-            url: "__PUBLIC__/gantts/data/taskTree.txt",
-            cache: false,
-            success: function (text) {
-                var data = mini.decode(text);
-
-                gantt.loadTasks(data);
-
-                gantt.unmask();
-
-                //折叠全部
-                //gantt.collapseAll();
-            }
-        });
-    }
-
-    //加载列表数据
-    function loadList() {
-        gantt.loading();
-        $.ajax({
-            url: "__PUBLIC__/gantts/data/taskList.txt",
-            cache: false,
-            success: function (text) {
-                var data = mini.decode(text);
-                //列表转树形
-                data = mini.arrayToTree(data, "children", "UID", "ParentTaskUID");
-                gantt.loadTasks(data);
-                gantt.unmask();
-            }
-        });
-    }
-    loadList();     //这个方式，服务端只需要生成列表数据就可以。
-    //loadTree();
-
-    function changeTopTimeScale(value) {
-        gantt.setTopTimeScale(value)
-    }
-    function changeBottomTimeScale(value) {
-        gantt.setBottomTimeScale(value)
-    }
-    function zoomIn() {
-        gantt.zoomIn();
-    }
-    function zoomOut() {
-        gantt.zoomOut();
-    }
-
-    function addTask() {
-        var newTask = gantt.newTask();
-        newTask.Name = '<新增任务>';    //初始化任务属性
-
-        var selectedTask = gantt.getSelected();
-        if (selectedTask) {
-            gantt.addTask(newTask, "before", selectedTask);   //插入到到选中任务之前
-            //project.addTask(newTask, "add", selectedTask);       //加入到选中任务之内
-        } else {
-            gantt.addTask(newTask);
-        }
-    }
-    function removeTask() {
-        var task = gantt.getSelected();
-        if (task) {
-            if (confirm("确定删除任务 \"" + task.Name + "\" ？")) {
-                gantt.removeTask(task);
-            }
-        } else {
-            alert("请选中任务");
-        }
-    }
-    function updateTask() {
-        var selectedTask = gantt.getSelected();
-        alert("编辑选中任务:" + selectedTask.Name);
-    }
-    function upgradeTask() {
-        var task = gantt.getSelected();
-        if (task) {
-            gantt.upgradeTask(task);
-        } else {
-            alert("请选选中任务");
-        }
-    }
-    function downgradeTask() {
-        var task = gantt.getSelected();
-        if (task) {
-            gantt.downgradeTask(task);
-        } else {
-            alert("请选选中任务");
-        }
-    }
-
-    //创建链接、删除链接事件处理
-    gantt.on("linkcreate", function (e) {
-        var link = e.link;
-        var task = gantt.getTask(link.TaskUID);
-        var preTask = gantt.getTask(link.PredecessorUID);
-
-        alert("-------------创建链接-------------\n任务：" + task.Name + "\n前置任务：" + preTask.Name + "\n链接类型：" + link.Type);
-    });
-    gantt.on("linkremove", function (e) {
-        var link = e.link;
-        var task = gantt.getTask(link.TaskUID);
-        var preTask = gantt.getTask(link.PredecessorUID);
-        alert("-------------删除链接-------------\n任务：" + task.Name + "\n前置任务：" + preTask.Name + "\n链接类型：" + link.Type);
     });
 </script>
 </html>
-

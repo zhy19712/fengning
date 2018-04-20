@@ -42,9 +42,6 @@
     #division #ztree,#unitWork #ztreeUnit{
         margin-top: 0px;
     }
-    /*#tableContent #tableItem{*/
-        /*display: none;*/
-    /*}*/
     .dataTables_wrapper{
         display: block;
     }
@@ -183,7 +180,13 @@
     #tableContent .dataTables_scroll,#unitWorkRightBottom .dataTables_scroll{
         height: 100%;
     }
-    #tableContent .dataTables_scrollBody,#unitWorkRightBottom .dataTables_scrollBody{
+    #tableContent .dataTables_scrollBody{
+        max-height: none!important;
+        width: 100%;
+        height: calc(100% - 39px)!important;
+        border-bottom: none!important;
+    }
+    #unitWorkRightBottom .dataTables_scrollBody{
         max-height: none!important;
         width: 100%;
         height: calc(100% - 39px)!important;
@@ -287,7 +290,7 @@
 <script type="text/javascript">
 
     //组织结构表格
-    var  tableItem, implementation, imageData, onlineFill, type=1;
+    var  tableItem, implementation, imageData, onlineFill, type=1, gridHeight;
 
     tableItem = $('#tableItem').DataTable({
         retrieve: true,
@@ -362,8 +365,8 @@
         }
     });
 
-    var layer = layui.layer;
     //查询提交
+    var layer = layui.layer;
     layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -393,8 +396,9 @@
         });
     });
 
-    /*==========开始初始化工程划分树节点=============*/
 
+
+    /*==========开始初始化工程划分树节点=============*/
     var selfid, nodeName, nodePid, zTreeObj, groupid, sNodes;
 
     var setting = {
@@ -455,13 +459,11 @@
     $('#openNode').click(function () {
         zTreeObj.expandAll(true);
     });
-
     /*==========结束初始化 工程划分树节点 =============*/
 
 
 
     /**==========开始初始化 单元工树 =================*/
-
     //声明单元树的变量
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
@@ -582,8 +584,9 @@
         })
     }
 
-    /**==========结束初始化 单元工树 =============*/
 
+
+    /**==========结束初始化 单元工树 =============*/
     //点击置灰
     $(".imgList").on("click","a",function () {
         $(this).css("color","#2213e9").siblings("a").css("color","#CDCDCD");
@@ -743,6 +746,38 @@
         // $("#imageData_wrapper").css("height","calc(100% - "+$("#tableContent").outerHeight()+"px - 35px)");
     });
 
+    //easyui点击显示选择
+    $('#unitTab').tabs({
+        border:false,
+        onSelect:function(title,index){
+            if(title === "控制点执行情况"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                    $(".mybtn").css("display","block");
+                }
+            }else if(title != "附件资料"){
+                $(".mybtn").css("display","none");
+            }
+            if(title === "附件资料"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                    $(".bitCodes").css("display","block");
+                    $(".mybtn").css("display","block");
+                }
+            }else if(title != "附件资料"){
+                $(".bitCodes").css("display","none");
+            }
+            if(title === "在线填报"){
+                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
+                    $(".mybtnAdd").css("display", "block");
+                    $(".mybtn").css("display", "none");
+                }else if(clickId == undefined || clickId == null){
+                    layer.msg("请选择控制点!")
+                }
+            }else if(title != "在线填报"){
+                $(".mybtnAdd").css("display","none");
+            }
+        }
+    });
+
     /*============控制点情况开始==============*/
     //控制点情况结构表格
     implementation = $('#implementation').DataTable({
@@ -750,7 +785,7 @@
         processing: true,
         serverSide: true,
         iDisplayLength:1000,
-        "scrollY": "200px",
+        "scrollY": "true",
         "scrollCollapse": "true",
         "paging": "false",
         ajax: {
@@ -813,40 +848,8 @@
         language: {
             "zeroRecords": "没有找到记录",
         },
-        // "fnDrawCallback": function( oSettings ) {
-        //     console.log($("#implementation_wrapper").attr("height"));
-        // }
-    });
-
-    //easyui点击显示选择
-    $('#unitTab').tabs({
-        border:false,
-        onSelect:function(title,index){
-            if(title === "控制点执行情况"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
-                    $(".mybtn").css("display","block");
-                }
-            }else if(title != "附件资料"){
-                $(".mybtn").css("display","none");
-            }
-            if(title === "附件资料"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
-                    $(".bitCodes").css("display","block");
-                    $(".mybtn").css("display","block");
-                }
-            }else if(title != "附件资料"){
-                $(".bitCodes").css("display","none");
-            }
-            if(title === "在线填报"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
-                    $(".mybtnAdd").css("display", "block");
-                    $(".mybtn").css("display", "none");
-                }else if(clickId == undefined || clickId == null){
-                    layer.msg("请选择控制点!")
-                }
-            }else if(title != "在线填报"){
-                $(".mybtnAdd").css("display","none");
-            }
+        "fnDrawCallback":function(obj){
+            outerHeight();
         }
     });
 
@@ -910,6 +913,29 @@
     /*============控制点情况结束==============*/
 
 
+    $(document).ready(function () {
+        AutoHeight();
+    });
+
+
+    function AutoHeight() {
+        var leftHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
+        if (leftHeight) {
+            $("#implementation_wrapper").css("height",leftHeight+"px");
+            $("#imageData_wrapper").css("height",leftHeight+"px");
+            $("#onlineFill_wrapper").css("height",leftHeight+"px");
+        }
+        console.log(leftHeight)
+
+        window.setTimeout("AutoHeight()", 1000);
+    }
+    AutoHeight();
+
+    function outerHeight() {
+        gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
+        $("#implementation_wrapper").css("height",gridHeight+"px");
+        console.log(gridHeight);
+    }
 
     /*============图像资料开始==============*/
     //图像资料结构表格
@@ -981,14 +1007,14 @@
              "zeroRecords": "没有找到记录"
          }
     });
-
     /*============图像资料结束==============*/
 
 
 
     /*============在线填报开始==============*/
-    var ProcedureOnlineId ;
-    var DivisionOnlineId ;
+    var step = 0;
+    var isView = false;
+    var formId ;
 
     //在线填报结构表格
     function funOnLine(selfidUnit,conThisId,clickId){
@@ -1100,11 +1126,7 @@
     });
     }
 
-    var step = 0;
-    var isView = false;
-    var formId ;
-
-    //新增
+    //在线填报-新增
     $("#unitWorkRightBottom").on("click",".mybtnAdd",function () {
         console.log(clickId);
         layer.open({
@@ -1116,7 +1138,7 @@
         });
     });
 
-    //查看
+    //在线填报-查看
     function seeOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1128,7 +1150,7 @@
         });
     }
 
-    //编辑
+    //在线填报-编辑
     function editOnLine(id) {
         console.log(clickId);
         isView = true;
@@ -1142,12 +1164,25 @@
         });
     }
 
-    //删除
+    //在线填报-删除
     function delOnLine(id) {
-        layer.msg("删除")
+        layer.confirm("你将删除该数据，是否确认删除？", function () {
+            $.ajax({
+                url: "{:url('quality/Qualityform/delForm')}",
+                type: "post",
+                data: {id: id},
+                success: function (res) {
+                    if (res.code === 1) {
+                        layer.msg("删除数据成功！", {time: 1500, shade: 0.1});
+                        onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+                    }
+                }
+            });
+        });
+        console.log(id)
     }
 
-    //提交
+    //在线填报-提交
     function submitOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1157,14 +1192,22 @@
             area: ['980px', '90%'],
             content: '{:url("quality/element/subonline")}'
         });
+        console.log(id)
     }
 
-    //审批
+    //在线填报-审批
     function approve(id) {
-        layer.msg("审批")
+        layer.open({
+            type: 2,
+            title: '提交审批',
+            shadeClose: true,
+            area: ['980px', '90%'],
+            content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=qualityFormInfo'
+        });
+        console.log(id);
     }
 
-    //审批历史
+    //在线填报-审批历史
     function historyOnLine(id) {
         console.log(clickId);
         layer.open({
@@ -1179,7 +1222,7 @@
         });
     }
 
-    //下载
+    //在线填报-下载
     function downOnLine(id) {
         layer.msg("下载")
     }

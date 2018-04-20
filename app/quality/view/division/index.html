@@ -141,14 +141,15 @@
                         },
                         dataType: "json",
                         success: function (res) {
-                            if(res.numberArr==''){
+                            if(res.number==''){
                                 RealBimOcx.SetAllHugeObjSubValidState(0);
                             }else{
                                 RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
                                 RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
                                 RealBimOcx.SetHugeObjSubValidStateInfo(res.number, 1); //设置单个模型可见
                                 RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
-                                RealBimOcx.FocusCameraToComponent(res.number,1); //3：视角距离
+                                RealBimOcx.SetSuitableCam();
+                                //RealBimOcx.FocusCameraToComponent(res.number,1); //3：视角距离
 
                             }
                         }
@@ -339,7 +340,7 @@
         </div>
     </div>
 </form>
-<div id="ztreeLayer">
+<div id="ztreeLayer" style="display: none">
     <ul class="ztree" id="typeZtree"></ul>
 </div>
 <!-- 添加施工依据 -->

@@ -45,6 +45,9 @@ class Qualityanalysis extends Permissions
         $section_rate = array();
         $total = array();
         $total_number = array();
+        $info = array();
+        $info_data = array();
+        $result_data = array();
         $StartMonth = date("Y-m-d",$date); //开始日期
         $EndMonth = date("Y-m-d"); //结束日期
         $ToStartMonth = strtotime( $StartMonth ); //转换一下
@@ -55,11 +58,38 @@ class Qualityanalysis extends Permissions
             $ToStartMonth = strtotime( $NewMonth );
             $i = true;
             $timeline[] = $NewMonth;//时间
+            $section = Db::name("section")->column("id");//标段名
+            foreach($section as $key=>$val)
+            {
+                $info[] = Db::name('quality_form_info')->alias('r')
+                    ->join('quality_unit u', 'u.id = r.DivisionId', 'left')
+                    ->join('quality_division c','c.id=u.division_id','left')
+                    ->join('section s', 'c.section_id = s.id', 'left')
+                    ->where('s.id',$val)->field("r.form_data")->select();
+            }
 
             $excellentMonth[] = 50;//优良率
 
             $rate[] = array("excellent_number"=>70,"qualified_number"=>20);//优良单元数量，合格单元数量
         }
+
+        foreach($info as $ke=>$va)
+        {
+            foreach ($va as $kee=>$vaa)
+            {
+                $info_data[]=(unserialize($vaa["form_data"]));
+            }
+        }
+
+
+        foreach($info_data as $a=>$b)
+        {
+            $result_data[]=($b[count($b)-9]);
+        }
+
+
+
+
         //柱状图
         $section = Db::name("section")->column("name");//标段名
         foreach($section as $k=>$v)
@@ -90,4 +120,25 @@ class Qualityanalysis extends Permissions
         }
         halt($data);
     }
+
+    public function test()
+    {
+
+
+        var_dump($this->one(100));
+
+    }
+
+    function one($n){
+        $array = array();
+        $array[0] = 1;
+        $array[1] = 1;
+        for($i=2;$i<$n;$i++){
+            $array[$i] = $array[$i-1]+$array[$i-2];
+        }
+        print_r($array);
+    }
+
+
+
 }
