@@ -5,7 +5,8 @@
  * Date: 2018/4/20
  * Time: 10:55
  */
-namespace  app\approve\model;
+
+namespace app\approve\model;
 /**
  * 涉及审批的业务需要实现该接口
  * 用以处理审批相关依赖逻辑
@@ -22,5 +23,12 @@ interface IApprove
      * @param int $approveStatus 审批状态：0新建；1审批中；2已审批；-1被退回
      * @return mixed
      */
-    public function SubmitHandle($dataId,$approverIds,$currentApproverId,$currentStep=1,$approveStatus=1);
+    public function SubmitHandle($dataId, $approverIds, $currentApproverId, $currentStep = 1, $approveStatus = 1);
+
+    /**
+     * 获取常用审批人
+     * @param $user_id 审批提交人Id
+     * @return mixed
+     */
+    public function FrequentlyUsedApprover($user_id);
 }

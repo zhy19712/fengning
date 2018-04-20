@@ -56,4 +56,9 @@ class Approve extends Permissions
         $this->assign('dataType', $dataType);
         return $this->fetch();
     }
+
+    public function FrequentlyUsedApprover($dataType)
+    {
+        $this->approveService->FrequentlyUsedApprover(new $dataType);
+    }
 }
