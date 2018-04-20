@@ -16,3 +16,40 @@ a{ text-decoration:none; color:#333;  }
     width: 100%;
     height: 100%;
 }
+
+.swiper-slide{
+    position: relative;
+}
+.mask{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: #333;
+    line-height: 12px;
+    filter:alpha(opacity=50);-moz-opacity:0.5;opacity:0.5;
+}
+.mask .right{
+    padding: 5px 0;
+    text-align: right;
+}
+.mask .right a{
+    margin-right: 5px;
+    display: inline-block;
+}
+.mask .scenter,.mask .center{
+    text-align: center;
+}
+.mask .scenter{
+    padding: 30px 0;
+}
+.mask .center{
+    padding: 10px 0;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 14px;
+}
+.mask .fa-search{
+    font-size: 30px;
+}
