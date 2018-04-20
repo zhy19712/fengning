@@ -49,6 +49,32 @@ class Approve extends Permissions
     }
 
     /**
+     * 审批流程
+     * @return mixed
+     */
+    public function Approve()
+    {
+        $par = input("param.");
+        if ($this->request->isAjax()) {
+
+        }
+        $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($par['dataId'], new $par['dataType'])));
+        return $this->fetch();
+    }
+
+    /**
+     * 业务数据完整性检测
+     * @param $dataId
+     * @param $dataType
+     * @param $currentStep
+     */
+    public function CheckBeforeSubmitOrApprove($dataId, $dataType,$currentStep)
+    {
+        $res=$this->approveService->CheckBeforeSubmitOrApprove($dataId,new $dataType,$currentStep);
+        return $res;
+    }
+
+    /**
      * 选择人员
      * @return mixed
      */
@@ -66,7 +92,7 @@ class Approve extends Permissions
     public function FrequentlyUsedApprover($dataType)
     {
         //QualityFormInfoModel::
-       $userlist= $this->approveService->FrequentlyUsedApprover(new $dataType);
-       return json($userlist);
+        $userlist = $this->approveService->FrequentlyUsedApprover(new $dataType);
+        return json($userlist);
     }
 }
