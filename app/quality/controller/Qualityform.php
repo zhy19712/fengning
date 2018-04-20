@@ -142,6 +142,7 @@ class Qualityform extends Permissions
             $mod['form_data'] = serialize($dto['QualityFormDatas']);
             if (empty($dto['Id'])) {
                 $mod['user_id'] = Session::get('current_id');
+                $mod['create_time'] = time();
                 $res = $this->qualityFormInfoService->insertGetId($mod);
                 $dto['Id'] = $res;
             } else {

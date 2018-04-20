@@ -80,6 +80,18 @@ class ApproveModel extends Model
         $userlist = $dataType->FrequentlyUsedApprover(Session::get('current_id'));
         return $userlist;
     }
+
+    /**
+     * 业务数据完整性检测
+     * @param $dataId
+     * @param IApprove $dataType
+     * @param $currentStep
+     * @return mixed
+     */
+    public function CheckBeforeSubmitOrApprove($dataId, IApprove $dataType, $currentStep)
+    {
+        return $dataType->CheckBeforeSubmitOrApprove($dataId,$currentStep);
+    }
 }
 
 class ApproveInfo

@@ -74,4 +74,24 @@ class QualityFormInfoModel extends Model implements IApprove
             return null;
         }
     }
+
+    /**
+     * 表单数据完整性检测
+     * @param $dataId
+     * @param $currentStep
+     * @return mixed|void
+     */
+    public function CheckBeforeSubmitOrApprove($dataId, $currentStep)
+    {
+        // TODO: Implement CheckBeforeSubmitOrApprove() method.
+        $mod = self::get($dataId);
+        $options = unserialize($mod['form_data']);
+        $res = "";
+        foreach ($options as $item) {
+            if ($item['Step'] == $currentStep && (!empty($item['Required'])) && empty($item['Value'])) {
+                $res .= $item['Required']." ";
+            }
+        }
+        return trim($res,",");
+    }
 }
