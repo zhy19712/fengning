@@ -10,6 +10,7 @@ namespace app\approve\controller;
 
 use app\admin\controller\Permissions;
 use app\approve\model\ApproveModel;
+use app\quality\model\QualityFormInfoModel;
 use think\Request;
 use think\Session;
 
@@ -57,8 +58,15 @@ class Approve extends Permissions
         return $this->fetch();
     }
 
+    /**
+     * 获取常用审批人
+     * @param $dataType 带有命名空间的业务模型
+     * @return \think\response\Json
+     */
     public function FrequentlyUsedApprover($dataType)
     {
-        $this->approveService->FrequentlyUsedApprover(new $dataType);
+        //QualityFormInfoModel::
+       $userlist= $this->approveService->FrequentlyUsedApprover(new $dataType);
+       return json($userlist);
     }
 }

@@ -29,7 +29,7 @@ class QualityFormInfoModel extends Model implements IApprove
      */
     public function FrequentlyUsedApprover($user_id)
     {
-        $userlist = self::where(['user_id' => $user_id])->whereNotNull(['ApproveIds'], 'and')->field('ApproveIds')->select();
+        $userlist = self::where(['user_id' => $user_id])->whereNotNull('ApproveIds', 'and')->field('ApproveIds')->select();
         $ids=array();
         foreach ($userlist as $item) {
             $_ids = explode(",", $item);
@@ -41,8 +41,12 @@ class QualityFormInfoModel extends Model implements IApprove
                 }
             }
         }
-        $adminService=new Admin();
-        $users=$adminService->whereIn('id',$ids)->column('id,nickname');
+        $users=array();
+        if (sizeof($ids)>0)
+        {
+            $adminService=new Admin();
+            $users=$adminService->whereIn('id',$ids)->column('id,nickname');
+        }
         return $users;
     }
 }
