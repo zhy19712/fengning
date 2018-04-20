@@ -1,28 +1,28 @@
 {include file="../app/public/common_header.html"}
 <script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
-    #tableContent{
-        overflow: auto;
-    }
+    /*#tableContent{*/
+        /*overflow: auto;*/
+    /*}*/
     #tableContent .dataTables_wrapper, .tbcontainer{
         display: block;
     }
-    #tableContent .mybtn,#tableContent .assModel,#tableContent .move,#tableContent .file,#tableContent .oneKeyArchiv{
-        float: right;
-        background-color: #00c0ef;
-    }
-    #tableContent .dataTables_wrapper {
-        position: relative;
-        clear: both;
-        zoom: 1;
-        overflow: auto;
-    }
-    #tableContent table{
-        width: 800px;
-    }
-    table td{word-break:break-all;}
+    /*#tableContent .mybtn,#tableContent .assModel,#tableContent .move,#tableContent .file,#tableContent .oneKeyArchiv{*/
+        /*float: right;*/
+        /*background-color: #00c0ef;*/
+    /*}*/
+    /*#tableContent .dataTables_wrapper {*/
+        /*position: relative;*/
+        /*clear: both;*/
+        /*zoom: 1;*/
+        /*overflow: auto;*/
+    /*}*/
+    /*#tableContent table{*/
+        /*width: 800px;*/
+    /*}*/
+    /*table td{word-break:break-all;}*/
 
-    table{table-layout:fixed;}
+    /*table{table-layout:fixed;}*/
 
     #tableContent .select-color {
         background-color: #FDD5B5 !important;
@@ -90,7 +90,6 @@
         processing: true,
         "scrollY": "336px",
         "scrollCollapse": "true",
-        "paging": "false",
         serverSide: true,
         ajax: {
             "url":"{:url('/standard/common/datatablesPre')}?tableName=quality_template"
