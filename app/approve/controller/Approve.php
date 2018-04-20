@@ -49,6 +49,19 @@ class Approve extends Permissions
     }
 
     /**
+     * 审批流程
+     * @param $dataId
+     * @param $dataType
+     * @param $currentSetp
+     * @return mixed
+     */
+    public function Approve($dataId, $dataType, $currentSetp)
+    {
+        $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($dataId, new $dataType)));
+        return $this->fetch();
+    }
+
+    /**
      * 选择人员
      * @return mixed
      */
@@ -66,7 +79,7 @@ class Approve extends Permissions
     public function FrequentlyUsedApprover($dataType)
     {
         //QualityFormInfoModel::
-       $userlist= $this->approveService->FrequentlyUsedApprover(new $dataType);
-       return json($userlist);
+        $userlist = $this->approveService->FrequentlyUsedApprover(new $dataType);
+        return json($userlist);
     }
 }

@@ -31,4 +31,11 @@ interface IApprove
      * @return mixed
      */
     public function FrequentlyUsedApprover($user_id);
+
+    /**
+     * 获取业务审批基本信息
+     * @param $dataId
+     * @return mixed
+     */
+    public function GetApproveInfo($dataId);
 }
