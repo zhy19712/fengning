@@ -150,14 +150,14 @@
                             base64PicData = strPicData;
                             base64RenData = strRenData;
                             if(window.state==1){
-                                img = addSnapshot(base64RenData);
+                                var img = addSnapshot(base64RenData);
                                 tagSwiper.prependSlide(img);
                                 tagSwiper.updateSlidesSize();
-                                window.state = 0;
+                                window.state = undefined;
                                 console.log('标注：'+window.state);
                             }else{
                                 //添加快照
-                                img = addSnapshot(base64RenData);
+                                var img = addSnapshot(base64RenData);
                                 snapshotSwiper.prependSlide(img);
                                 snapshotSwiper.updateSlidesSize();
                                 console.log('快照：'+window.state);

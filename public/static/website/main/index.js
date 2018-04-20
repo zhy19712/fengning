@@ -28,7 +28,7 @@ window.addSnapshot = function (base64RenData) {
                         '<i class="fa fa-save"></i>' +
                     '</a>' +
                     '<a href="javascript:;" title="删除快照">' +
-                        '<i class="fa fa-close"></i>' +
+                        '<i class="fa fa-close" id="del"></i>' +
                     '</a>' +
                 '</div>'+
                 '<div class="scenter">' +
@@ -69,3 +69,7 @@ $('#toogleAttr li').click(function () {
     $('#'+ uid).show().siblings('div').hide();
 });
 
+$('#del').click(function () {
+    $(this).parents('.swiper-wrapper').remove();
+    $(this).parents('.swiper-wrapper').html();
+})
