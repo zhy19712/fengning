@@ -1,42 +1,49 @@
 {include file="../app/public/common_header.html"}
 <script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
-    /*#tableContent{*/
-        /*overflow: auto;*/
-    /*}*/
+
     #tableContent .dataTables_wrapper, .tbcontainer{
         display: block;
     }
-    #tableContent .mybtn,#tableContent .assModel,#tableContent .move,#tableContent .file,#tableContent .oneKeyArchiv{
+
+    #tableContent .mybtn,#tableContent .move{
         float: right;
         background-color: #00c0ef;
     }
+
     #tableContent .dataTables_wrapper {
         position: relative;
         clear: both;
         zoom: 1;
         overflow: auto;
     }
+
     #tableContent table{
         width: 800px;
     }
+
     table td{word-break:break-all;}
+
     table{table-layout:fixed;}
 
     #tableContent .select-color {
         background-color: #FDD5B5 !important;
     }
+
     #tableContent .even {
         background-color: #ffffff;
     }
+
     #tableContent .odd {
         background-color: #f9f9f9;
     }
+
     #tableContent .sub{
         position: absolute;
         bottom:1%;
         left: 43%;
     }
+
     #tableContent .sub i.fa:before {
         color: #ffffff;
     }
@@ -65,6 +72,10 @@
 
     p2 {
         font-weight: 700;
+    }
+
+    .layui-layer-content {
+        padding-top: 0px;
     }
 
 </style>
