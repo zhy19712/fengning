@@ -781,6 +781,14 @@
         }
     });
 
+    //获取高度自适应
+    function outerHeight() {
+        gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
+        $("#implementation_wrapper").css("height",gridHeight+"px");
+        console.log(gridHeight);
+    }
+
+
     /*============控制点情况开始==============*/
     //控制点情况结构表格
     implementation = $('#implementation').DataTable({
@@ -915,11 +923,7 @@
 
     /*============控制点情况结束==============*/
 
-    function outerHeight() {
-        gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
-        $("#implementation_wrapper").css("height",gridHeight+"px");
-        console.log(gridHeight);
-    }
+
 
     /*============图像资料开始==============*/
     //图像资料结构表格
