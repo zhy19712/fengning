@@ -39,12 +39,9 @@ window.addSnapshot = function (base64RenData) {
                 '<div class="center">2018-04-20</div>'+
             '</div>'+
         '</div>';
-    snapshotSwiper.prependSlide(img);
-    snapshotSwiper.updateSlidesSize();
+    return img;
 }
 $('.swiper-wrapper').on('mouseover mouseleave','div',function (e) {
-    console.log(e);
-
     if(e.type == 'mouseover'){
         $(this).find('div.mask').stop(true,true).fadeIn(500);
     }else {
@@ -71,5 +68,4 @@ $('#toogleAttr li').click(function () {
     $(this).addClass('active').siblings().removeClass('active');
     $('#'+ uid).show().siblings('div').hide();
 });
-
 

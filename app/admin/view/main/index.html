@@ -48,9 +48,9 @@
                                   </div>
                               </div>
                               <div class="layui-form-item">
-                                  <i class="fa fa-pencil"></i>
-                                  <i class="fa fa-check"></i>
-                                  <i class="fa fa-reply"></i>
+                                  <i class="fa fa-pencil" id="edit"></i>
+                                  <i class="fa fa-check" id="save"></i>
+                                  <i class="fa fa-reply" id="back"></i>
                               </div>
                           </form>
                       </div>
@@ -113,6 +113,10 @@
                                 RealBimOcx.SubmitMarkerText(val);
                             })
 
+                            $('#save').click(function () {
+                                window.state=1;
+                                RealBimOcx.CreateMarkerEndInMem(true, 0, 0, true, true);  //保存标注
+                            });
 
                             switch (eType) {
                                 case "ADD_ANCHOR":
@@ -142,11 +146,22 @@
 
                         </script>
                         <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
+                            console.log('首位：'+window.state);
                             base64PicData = strPicData;
                             base64RenData = strRenData;
-                            //添加快照
-                            console.log('test');
-                            addSnapshot(base64RenData);
+                            if(window.state==1){
+                                img = addSnapshot(base64RenData);
+                                tagSwiper.prependSlide(img);
+                                tagSwiper.updateSlidesSize();
+                                window.state = 0;
+                                console.log('标注：'+window.state);
+                            }else{
+                                //添加快照
+                                img = addSnapshot(base64RenData);
+                                snapshotSwiper.prependSlide(img);
+                                snapshotSwiper.updateSlidesSize();
+                                console.log('快照：'+window.state);
+                            }
                             $('.scenter a').click(function () {
                                 RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
                             });
