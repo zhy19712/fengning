@@ -57,3 +57,40 @@ a{ text-decoration:none; color:#333;  }
 .mask .fa-search{
     font-size: 30px;
 }
+
+.toggle-attr li{
+    line-height: 1;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+.toggle-attr li:first-child{
+    padding-right: 5px;
+    border-right: 1px solid #666666;
+}
+.toggle-attr li.active,.toggle-attr li:hover{
+    color: #0c91e5;
+}
+.add-tag{
+    display: none;
+    padding-bottom: 10px;
+    text-align: right;
+}
+.add-tag h2{
+    text-align: center;
+}
+.add-tag i.fa{
+    margin: 0 5px;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    background: #00c0ef;
+    border-radius: 50%;
+}
+.add-tag i.fa:last-child{
+    background: #FF5722;
+}
+.add-tag i.fa:before ,.add-tag i.fa:hover:before{
+    color: #FFF;
+}
