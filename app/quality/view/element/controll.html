@@ -42,9 +42,6 @@
     #division #ztree,#unitWork #ztreeUnit{
         margin-top: 0px;
     }
-    /*#tableContent #tableItem{*/
-        /*display: none;*/
-    /*}*/
     .dataTables_wrapper{
         display: block;
     }
@@ -198,6 +195,9 @@
     .dataTables_scrollHeadInner,#tableItem_wrapper table,#imageData_wrapper table, #implementation_wrapper table, #onlineFill_wrapper table{
         width: 100% !important;
     }
+    #imageData_wrapper, #implementation_wrapper, #onlineFill_wrapper{
+        height: 100% !important;
+    }
 
 </style>
 <body  class="easyui-layout">
@@ -291,16 +291,9 @@
 
 </body>
 <script type="text/javascript">
-    var gridHeight ;
-    $(document).ready(function () {
-        // console.log($("#tableContent").height());
 
-        // $("#implementationParent").css({"height":gridHeight,"overflow":"auto"});
-
-        // console.log(gridHeight);
-    });
     //组织结构表格
-    var  tableItem, implementation, imageData, onlineFill, type=1;
+    var  tableItem, implementation, imageData, onlineFill, type=1, gridHeight;
 
     tableItem = $('#tableItem').DataTable({
         retrieve: true,
@@ -788,7 +781,14 @@
         }
     });
 
-    var flag;
+    //获取高度自适应
+    function outerHeight() {
+        gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
+        $("#implementation_wrapper").css("height",gridHeight+"px");
+        console.log(gridHeight);
+    }
+
+
     /*============控制点情况开始==============*/
     //控制点情况结构表格
     implementation = $('#implementation').DataTable({
@@ -922,15 +922,8 @@
     });
 
     /*============控制点情况结束==============*/
-    function outerHeight() {
-        // setTimeout(function () {
-            gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
-            $("#implementation_wrapper").css("height",gridHeight+"px");
-            // $("#unitWorkRightBottom .dataTables_scrollBody").css("height",gridHeight+"px - 39px");
-            console.log(gridHeight);
-            debugger;
-        // },3000)
-    }
+
+
 
     /*============图像资料开始==============*/
     //图像资料结构表格

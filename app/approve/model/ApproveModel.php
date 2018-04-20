@@ -10,12 +10,21 @@ namespace app\approve\model;
 
 use think\Exception;
 use think\Model;
+use think\Session;
 
 class ApproveModel extends Model
 {
     protected $name = 'approve';
     protected $autoWriteTimestamp = true;
 
+    /**
+     * 审批人
+     * @return \think\model\relation\HasOne
+     */
+    public function User()
+    {
+        return $this->hasOne('app\admin\Admin','id','user_id');
+    }
     /**
      * 提交审批
      * @param $dataId 业务id
@@ -38,5 +47,16 @@ class ApproveModel extends Model
         } catch (Exception $exception) {
             return -1;
         }
+    }
+
+    /**
+     * 获取业务下常用审批人
+     * @param IApprove $dataType 业务Model对象
+     * @return \think\response\Json
+     */
+    public function FrequentlyUsedApprover(IApprove $dataType)
+    {
+        $userlist=$dataType->FrequentlyUsedApprover(Session::get('current_id'));
+        return json($userlist);
     }
 }
