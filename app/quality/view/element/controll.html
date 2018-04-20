@@ -183,7 +183,13 @@
     #tableContent .dataTables_scroll,#unitWorkRightBottom .dataTables_scroll{
         height: 100%;
     }
-    #tableContent .dataTables_scrollBody,#unitWorkRightBottom .dataTables_scrollBody{
+    #tableContent .dataTables_scrollBody{
+        max-height: none!important;
+        width: 100%;
+        height: calc(100% - 39px)!important;
+        border-bottom: none!important;
+    }
+    #unitWorkRightBottom .dataTables_scrollBody{
         max-height: none!important;
         width: 100%;
         height: calc(100% - 39px)!important;
@@ -285,7 +291,14 @@
 
 </body>
 <script type="text/javascript">
+    var gridHeight ;
+    $(document).ready(function () {
+        // console.log($("#tableContent").height());
 
+        // $("#implementationParent").css({"height":gridHeight,"overflow":"auto"});
+
+        // console.log(gridHeight);
+    });
     //组织结构表格
     var  tableItem, implementation, imageData, onlineFill, type=1;
 
@@ -775,7 +788,7 @@
         }
     });
 
-
+    var flag;
     /*============控制点情况开始==============*/
     //控制点情况结构表格
     implementation = $('#implementation').DataTable({
@@ -783,7 +796,7 @@
         processing: true,
         serverSide: true,
         iDisplayLength:1000,
-        "scrollY": "200px",
+        "scrollY": "true",
         "scrollCollapse": "true",
         "paging": "false",
         ajax: {
@@ -846,9 +859,9 @@
         language: {
             "zeroRecords": "没有找到记录",
         },
-        // "fnDrawCallback": function( oSettings ) {
-        //     console.log($("#implementation_wrapper").attr("height"));
-        // }
+        "fnDrawCallback":function(obj){
+            outerHeight();
+        }
     });
 
     //上传点击
@@ -909,9 +922,15 @@
     });
 
     /*============控制点情况结束==============*/
-
-    console.log($("#tableContent").outerHeight());
-    // debugger;
+    function outerHeight() {
+        // setTimeout(function () {
+            gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
+            $("#implementation_wrapper").css("height",gridHeight+"px");
+            // $("#unitWorkRightBottom .dataTables_scrollBody").css("height",gridHeight+"px - 39px");
+            console.log(gridHeight);
+            debugger;
+        // },3000)
+    }
 
     /*============图像资料开始==============*/
     //图像资料结构表格
