@@ -98,8 +98,8 @@
                                           <div class="swiper-wrapper">
                                           </div>
                                           <!-- 如果需要导航按钮 -->
-                                          <div class="tag-button-prev"></div>
-                                          <div class="tag-button-next"></div>
+                                          <div class="swiper-button-prev tag-button-prev"></div>
+                                          <div class="swiper-button-next tag-button-next"></div>
                                     </div>
                               </div>
                               <div title="快照" style="overflow:auto;display:none;">
@@ -107,8 +107,8 @@
                                           <div class="swiper-wrapper">
                                           </div>
                                           <!-- 如果需要导航按钮 -->
-                                          <div class="snapshot-button-prev"></div>
-                                          <div class="snapshot-button-next"></div>
+                                          <div class="swiper-button-prev snapshot-button-prev"></div>
+                                          <div class="swiper-button-next snapshot-button-next"></div>
                                     </div>
                               </div>
                         </div>
@@ -143,7 +143,7 @@
                   '<img src="data:image/png;base64,'+ base64PicData +'" alt="">' +
                   '<div class="mask">' +
                         '<div class="right">' +
-                              '<a href="javascript:;" title="快照另存为">' +
+                              '<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">' +
                                     '<i class="fa fa-save"></i>' +
                               '</a>' +
                               '<a href="javascript:;" title="删除快照">' +
@@ -161,17 +161,29 @@
         snapshotSwiper.prependSlide(img);
         snapshotSwiper.updateSlidesSize();
     }
-    $('.swiperSlide').hover(function () {
+    $('.swiper-wrapper').on('mouseover mouseleave','div',function (e) {
+        console.log(e);
 
-    },function () {
-
+        if(e.type == 'mouseover'){
+            $(this).find('div.mask').stop(true,true).fadeIn(500);
+        }else {
+            $(this).find('div.mask').stop(true,true).fadeOut(500);
+        }
     });
 
       $(document).keyup(function () {
           RealBimOcx.SubmitMarkerText('1111');
       });
 
-
+      function imageSaveAs(imgURL) {
+          var pagePop = window.open(imgURL, "", "width=1, height=1, top=5000, left=5000");
+          for (; pagePop.document.readyState !== "complete";) {
+              if (pagePop.document.readyState === "complete")
+                  break;
+          }
+          pagePop.document.execCommand("SaveAs");
+          pagePop.close();
+      }
 
 
 </script>

@@ -19,8 +19,10 @@ a{ text-decoration:none; color:#333;  }
 
 .swiper-slide{
     position: relative;
+    cursor: pointer;
 }
 .mask{
+    display: none;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -28,7 +30,7 @@ a{ text-decoration:none; color:#333;  }
     height: 100%;
     background: #333;
     line-height: 12px;
-    filter:alpha(opacity=50);-moz-opacity:0.5;opacity:0.5;
+    filter:alpha(opacity=70);-moz-opacity:0.7;opacity:0.7;
 }
 .mask .right{
     padding: 5px 0;
@@ -42,13 +44,15 @@ a{ text-decoration:none; color:#333;  }
     text-align: center;
 }
 .mask .scenter{
-    padding: 30px 0;
+    padding: 20px 0;
 }
 .mask .center{
     padding: 10px 0;
     color: #FFF;
-    font-weight: bold;
     font-size: 14px;
+}
+.mask i.fa:before,.mask i.fa:hover:before{
+    color: #FFF;
 }
 .mask .fa-search{
     font-size: 30px;
