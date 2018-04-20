@@ -42,9 +42,6 @@
     #division #ztree,#unitWork #ztreeUnit{
         margin-top: 0px;
     }
-    /*#tableContent #tableItem{*/
-        /*display: none;*/
-    /*}*/
     .dataTables_wrapper{
         display: block;
     }
@@ -291,16 +288,9 @@
 
 </body>
 <script type="text/javascript">
-    var gridHeight ;
-    $(document).ready(function () {
-        // console.log($("#tableContent").height());
 
-        // $("#implementationParent").css({"height":gridHeight,"overflow":"auto"});
-
-        // console.log(gridHeight);
-    });
     //组织结构表格
-    var  tableItem, implementation, imageData, onlineFill, type=1;
+    var  tableItem, implementation, imageData, onlineFill, type=1, gridHeight;
 
     tableItem = $('#tableItem').DataTable({
         retrieve: true,
@@ -788,7 +778,6 @@
         }
     });
 
-    var flag;
     /*============控制点情况开始==============*/
     //控制点情况结构表格
     implementation = $('#implementation').DataTable({
@@ -922,14 +911,30 @@
     });
 
     /*============控制点情况结束==============*/
+
+
+    $(document).ready(function () {
+        AutoHeight();
+    });
+
+
+    function AutoHeight() {
+        var leftHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
+        if (leftHeight) {
+            $("#implementation_wrapper").css("height",leftHeight+"px");
+            $("#imageData_wrapper").css("height",leftHeight+"px");
+            $("#onlineFill_wrapper").css("height",leftHeight+"px");
+        }
+        console.log(leftHeight)
+
+        window.setTimeout("AutoHeight()", 1000);
+    }
+    AutoHeight();
+
     function outerHeight() {
-        // setTimeout(function () {
-            gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
-            $("#implementation_wrapper").css("height",gridHeight+"px");
-            // $("#unitWorkRightBottom .dataTables_scrollBody").css("height",gridHeight+"px - 39px");
-            console.log(gridHeight);
-            debugger;
-        // },3000)
+        gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
+        $("#implementation_wrapper").css("height",gridHeight+"px");
+        console.log(gridHeight);
     }
 
     /*============图像资料开始==============*/
