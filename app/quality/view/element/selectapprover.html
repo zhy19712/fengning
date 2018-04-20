@@ -1,9 +1,6 @@
 {include file="../app/public/common_header.html"}
 <script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
-    /*#tableContent{*/
-        /*overflow: auto;*/
-    /*}*/
 
     #tableContent .select-color {
         background-color: #FDD5B5 !important;
@@ -16,25 +13,28 @@
     #tableContent .odd {
         background-color: #f9f9f9;
     }
+
     .boder {
         border: 1px solid #bed5f3;
     }
+
     .sub i.fa:before {
         color: #ffffff;
     }
-    .layui-layer-iframe {
-         overflow-y: visible;
-    }
+
     .ligtop {
         text-align: center;
         margin: 10px;
         height: 273px;
     }
+
     .col-md-5 {
         float: left;
         width: 98%;
         padding: 5px;
+        padding-top:0px;
     }
+
     .hr-line-dashed {
         border-top: 1px dashed #e7eaec;
         color: #ffffff;
@@ -42,6 +42,7 @@
         height: 1px;
         margin:0;
     }
+
     .rted {
         color: #CDCDCD;
     }
@@ -53,6 +54,7 @@
     #selectDiv {
         display: none;
     }
+
     .ztree{
         margin-top: 0;
     }
@@ -77,7 +79,7 @@
             <div class="hr-line-dashed" style="margin:0px;"></div>
         </div>
         <div class="col-md-5" id="frequentlyUsedDiv">
-            <div class="boder" style="text-align: left; height:350px;">
+            <div class="boder" style="text-align: left; height:408px;">
                 <ul id="treeFrequentlyUsed" class="ztree" style="overflow: auto; height: 100%; width: 100%;"></ul>
             </div>
         </div>
