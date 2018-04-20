@@ -195,6 +195,9 @@
     .dataTables_scrollHeadInner,#tableItem_wrapper table,#imageData_wrapper table, #implementation_wrapper table, #onlineFill_wrapper table{
         width: 100% !important;
     }
+    #imageData_wrapper, #implementation_wrapper, #onlineFill_wrapper{
+        height: 100% !important;
+    }
 
 </style>
 <body  class="easyui-layout">
@@ -911,25 +914,6 @@
     });
 
     /*============控制点情况结束==============*/
-
-
-    $(document).ready(function () {
-        AutoHeight();
-    });
-
-
-    function AutoHeight() {
-        var leftHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
-        if (leftHeight) {
-            $("#implementation_wrapper").css("height",leftHeight+"px");
-            $("#imageData_wrapper").css("height",leftHeight+"px");
-            $("#onlineFill_wrapper").css("height",leftHeight+"px");
-        }
-        console.log(leftHeight)
-
-        window.setTimeout("AutoHeight()", 1000);
-    }
-    AutoHeight();
 
     function outerHeight() {
         gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
