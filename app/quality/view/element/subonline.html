@@ -126,6 +126,7 @@
     </div>
     <input type="hidden" name="inputId" id="hiddenValId" value="">
     <input type="hidden" name="inputName" id="hiddenValName" value="">
+    <input type="hidden" name="inputName" id="hiddenValUser" value="">
 </div>
 
 {include file="../app/public/common_footer.html"}
@@ -137,9 +138,10 @@
         $("#currentUserName").text($(top.document).find("#userName").text());
         $("#currentUserPhoto").attr("src", $(top.document).find("#userPhoto").attr("src"));
         initReferFlow();
-        initLastFlow();
+        // initLastFlow();
     });
 
+    var user =  $("#hiddenValUser").val();
     // 选择审批人
     function selPeople() {
         var index = layer.open({
@@ -150,8 +152,20 @@
         });
     };
 
+    var dataArr = [];
+    var subId ;
+
+
+
     // 添加审批人
     function addPeople(user) {
+        var dataId = $("#hiddenValId").val();
+        dataArr.push(dataId);
+        subId = dataArr.join(",");
+        console.log(dataArr);
+        console.log(subId);
+
+        console.log(user);
         var $dom = $(".people");
         //var haveAddPeoples = [];
         //$.each($dom, function (i, item) {
@@ -166,8 +180,8 @@
 
         var html = "<div class='people' id='div" + user.id + "'>";
         html += "<i class='fa fa-times-circle remove' onclick='removeApprover(\"" + user.id + "\")'></i>";
-        html += "<img alt='image' class='img-circle' src='" + user.image + "' title='"+ title +"' style='width:50px;height:50px;'>";
-        html += "<p>" + user.name + "</p>";
+        html += "<img alt='image' class='img-circle' src='__WEBSITE__/elementimg/1.png' title='"+ title +"' style='width:50px;height:50px;'>";
+        html += "<p>" + $("#hiddenValName").val() + "</p>";
         html += "</div>";
         html += "<img id='img" + user.id + "' alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png'/>";
         $("#approverDiv").append(html);
@@ -188,40 +202,46 @@
     // 保存审批人信息
     function save() {
         var $dom = $(".people"); // 获取class为people的div，该div的id属性记录的是审批人id
+        console.log($dom)
         if ($dom.length === 0) {
             layer.alert("请选择审批人。");
             $("#btnSave").removeAttr("disabled");
             return;
         };
-        if ($("#referFlow").val()) {
-            var $referDom = $("#referDiv").find(".addpeople");
-            if ($dom.length !== $referDom.length - 1) {
-                layer.alert("请按照参考流程选择人员。");
-                $("#btnSave").removeAttr("disabled");
-                return;
-            }
-        };
+        // if ($("#referFlow").val()) {
+        //     var $referDom = $("#referDiv").find(".addpeople");
+        //     if ($dom.length !== $referDom.length - 1) {
+        //         layer.alert("请按照参考流程选择人员。");
+        //         $("#btnSave").removeAttr("disabled");
+        //         return;
+        //     }
+        // };
 
-        var approverIds = "";
-        $.each($dom, function (i, item) {
-            approverIds += item.id.substring(3, item.id.length) + ","; //去除前面的div字符串
-        });
-        approverIds = approverIds.substring(0, approverIds.length - 1);
+        // var approverIds = "";
+        // $.each($dom, function (i, item) {
+        //     approverIds += item.id.substring(3, item.id.length) + ","; //去除前面的div字符串
+        // });
+        // approverIds = approverIds.substring(0, approverIds.length - 1);
+
         $.ajax({
             type: "post",
-            url: "/Approve/Submit",
-            data: { "dataId": $("#dataId").val(), "dataType": $("#dataType").val(), "approverIds": approverIds },
-            success: function (data) {
-                if (data.result === "Success") {
-                    var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
-                    parentWin.contentWindow.refresh();//刷新列表数据
-                    parent.layer.closeAll();
-                    close();
-                }
-                else {
-                    layer.alert("提交失败。");
-                    $("#btnSave").removeAttr("disabled");
-                };
+            url: "{:url('/approve/Approve/Submit')}",
+            data: {
+                dataId:subId ,
+                dataType:'app\\quality\\model\\QualityFormInfoModel\n' ,
+            },
+            success: function (data){
+                console.log(data);
+                // if (data.result === "Success") {
+                //     // var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
+                //     // parentWin.contentWindow.refresh();//刷新列表数据
+                //     // parent.layer.closeAll();
+                //     // close();
+                // }
+                // else {
+                //     layer.alert("提交失败。");
+                //     $("#btnSave").removeAttr("disabled");
+                // };
             }
         });
     };
