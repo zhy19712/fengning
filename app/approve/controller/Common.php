@@ -36,7 +36,7 @@ class Common extends Controller
      * 输入参数$length:分页长度 int
      * @return [type] [description]
      */
-    function datatablesPre()
+   public function datatablesPre()
     {
         //接收表名，列名数组 必要
         $columns = $this->request->param('columns/a');

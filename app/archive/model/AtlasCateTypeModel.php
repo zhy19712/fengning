@@ -89,7 +89,7 @@ class AtlasCateTypeModel extends Model
     public function editCatetype($param)
     {
         try{
-            $result = $this->allowField(true)->update($param,['id' => $param['id']]);
+            $result = $this->allowField(true)->save($param,['id' => $param['id']]);
             if(false === $result){
                 return ['code' => -1,'msg' => $this->getError()];
             }else{

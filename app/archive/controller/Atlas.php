@@ -43,7 +43,6 @@ class Atlas extends Permissions
             $nodeStr = $node->getNodeInfo();
             return json($nodeStr);
         }
-        return $this->fetch();
     }
 
     /**
@@ -75,7 +74,6 @@ class Atlas extends Permissions
                 return json($flag);
             }
         }
-        return $this->fetch();
     }
 
     /**
@@ -97,18 +95,21 @@ class Atlas extends Permissions
             {
                 foreach ($data as $k=>$v)
                 {
-                    $path = $v['path'];
+                    $attachment = Db::name("attachment")->where("id",$v["attachmentId"])->find();
+                    $path = "." .$attachment['filepath'];
                     $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-                    if(file_exists($path)){
-                        unlink($path); //删除上传的图片
+                    if($attachment['filepath'])
+                    {
+                        if(file_exists($path)){
+                            unlink($path); //删除上传的图片或文件
+                        }
+                        if(file_exists($pdf_path)){
+                            unlink($pdf_path); //删除生成的预览pdf
+                        }
                     }
-                    if(file_exists($pdf_path)){
-                        unlink($pdf_path); //删除生成的预览pdf
-                    }
+                    //删除attachment表中对应的记录
+                    Db::name('attachment')->where("id",$v["attachmentId"])->delete();
                 }
-            }else
-            {
-                return $this->fetch();
             }
             //根据传过来的节点id删除图册
             $catemodel->delselfidCate($param['id']);
@@ -120,11 +121,7 @@ class Atlas extends Permissions
 
             $flag = $model->delCatetype($param['id']);
             return json($flag);
-        }else
-        {
-            return $this->fetch();
         }
-
     }
 
     /**
@@ -144,18 +141,15 @@ class Atlas extends Permissions
                 $select_id = input('post.select_id'); // 当前节点的编号
                 $select_sort_id = input('post.select_sort_id'); // 当前节点的排序编号
 
-                Db::name('atlas_cate_type')->where('id', $select_id)->update(['sort_id' => $change_sort_id]);
-                Db::name('atlas_cate_type')->where('id', $change_id)->update(['sort_id' => $select_sort_id]);
+                Db::name('archive_atlas_cate_type')->where('id', $select_id)->update(['sort_id' => $change_sort_id]);
+                Db::name('archive_atlas_cate_type')->where('id', $change_id)->update(['sort_id' => $select_sort_id]);
 
                 return json(['code' => 1,'msg' => '移动成功']);
 
             }catch (PDOException $e){
                 return ['code' => -1,'msg' => $e->getMessage()];
             }
-
-
         }
-        return $this->fetch();
     }
     /**********************************右侧图册表************************/
     /*
@@ -169,7 +163,6 @@ class Atlas extends Permissions
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }
-        return $this->fetch();
     }
 
     /**
@@ -332,7 +325,6 @@ class Atlas extends Permissions
             $data = $model->getall($id);
             return json(['code' => 1, 'data' => $data]);
         }
-
     }
 
     /**
@@ -608,9 +600,6 @@ class Atlas extends Permissions
             $param = input('post.');
             $flag = $model->delblacklist($param);
             return json($flag);
-        }else
-        {
-            return $this->fetch();
         }
     }
 
@@ -620,7 +609,7 @@ class Atlas extends Permissions
      */
     public function getOrganization()
     {
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
             // 获取左侧的树结构
             $model = new AdminGroup();
             //定义一个空的字符串
