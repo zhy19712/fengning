@@ -56,7 +56,23 @@
                       </div>
                   </div>
                   <div title="讨论" style="overflow:auto;padding:20px;display:none;">
-                        tab2
+                      <form action="" class="layui-form">
+                          <div class="layui-form-item layui-form-text">
+                              <div class="layui-input-inline">
+                                  <textarea name="msg" placeholder="请输入内容" class="layui-textarea"></textarea>
+                              </div>
+                          </div>
+                          <div class="layui-form-item operate">
+                              <div class="layui-input-inline fa-wrap">
+                                  <i class="fa fa-paperclip" id="upload"></i>
+                                  <i class="fa fa-at" id="at"></i>
+                              </div>
+                              <div class="layui-input-inline btn-wrap">
+                                  <button class="layui-btn layui-btn-xs" lay-submit lay-filter="save">发送</button>
+                                  <button class="layui-btn layui-btn-xs layui-btn-primary">取消</button>
+                              </div>
+                          </div>
+                      </form>
                   </div>
                   <div title="附件" style="overflow:auto;padding:20px;display:none;">
                         tab3
@@ -191,6 +207,47 @@
                   </div>
             </div>
       </div>
+    <!-- 选择角色 -->
+    <div class="select-user" id="selectUser" style="display: none">
+        <div class="user-title">
+            <span>已选角色 ></span>
+        </div>
+        <div class="user-content">
+            <div class="user-ztree">
+                <div class="search">
+                    <form action="" class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">组织机构</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="" required lay-verify="required" placeholder="机构/部门/人员" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">
+                                <i class="fa fa-search"></i>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <ul id="ztree" class="ztree"></ul>
+            </div>
+            <div class="user-selected">
+                <form action="" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">角色用户</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="" required lay-verify="required" placeholder="人员" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                    <div class="layui-input-inline btn-wrap">
+                        <i class="fa fa-check-circle" lay-submit lay-filter="saveUser"></i>
+                        <i class="fa fa-times-circle"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/main/index.js"></script>
 </body>

@@ -14,6 +14,9 @@ use app\quality\model\DivisionUnitModel;
 use app\quality\model\UploadModel;
 use app\standard\model\ControlPoint;
 use app\standard\model\MaterialTrackingDivision;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Writer\PDF\DomPDF;
 use think\Db;
 use think\Exception;
 use think\File;
@@ -155,7 +158,17 @@ class Element extends Permissions
 
     public function download($cpr_id)
     {
+        $phpword = new PhpWord();
+    }
 
+    public function printPDF($cpr_id)
+    {
+        $cp = $this->divisionControlPointService->with('ControlPoint')->where('id', $cpr_id)->find();
+        $formPath = ROOT_PATH . 'public' . DS . "data\\form\\quality\\" . $cp['ControlPoint']['code'] . $cp['ControlPoint']['name'] . ".html";
+        $formPath=iconv('UTF-8', 'GB2312', $formPath);
+        $phpword=IOFactory::load($formPath);
+        $phpword=IOFactory::createWriter($phpword,"PDF");
+        $phpword->save("1.pdf");
     }
 
     ##单元验评
