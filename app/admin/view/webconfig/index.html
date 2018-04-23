@@ -20,21 +20,21 @@
       <div class="layui-form-item">
         <label class="layui-form-label">网站名称</label>
         <div class="layui-input-block" style="max-width: 400px">
-          <input name="name" lay-verify="pass" placeholder="请输入" autocomplete="off" class="layui-input" type="text" value="{$web_config.name}">
+          <input name="name" lay-verify="pass" placeholder="请输入" autocomplete="off" maxlength="20" class="layui-input" type="text" value="{$web_config.name}">
         </div>
       </div>
 
       <div class="layui-form-item">
         <label class="layui-form-label">关键词</label>
         <div class="layui-input-block" style="max-width: 600px">
-          <input name="keywords" lay-verify="pass" placeholder="请用','隔开" autocomplete="off" class="layui-input" type="text" value="{$web_config.keywords}">
+          <input name="keywords" lay-verify="pass" placeholder="请用','隔开" autocomplete="off" class="layui-input" type="text" maxlength="30" value="{$web_config.keywords}">
         </div>
       </div>
 
       <div class="layui-form-item">
         <label class="layui-form-label">描述</label>
         <div class="layui-input-block" style="max-width: 600px">
-          <textarea placeholder="请输入内容" class="layui-textarea" name="desc">{$web_config.desc}</textarea>
+          <textarea placeholder="请输入内容" class="layui-textarea" maxlength="500" name="desc">{$web_config.desc}</textarea>
         </div>
       </div>
 
@@ -55,7 +55,7 @@
       <div class="layui-form-item">
         <label class="layui-form-label">最大上传值</label>
         <div class="layui-input-inline" style="max-width: 600px">
-          <input name="file_size" lay-verify="pass" placeholder="单位kb" autocomplete="off" class="layui-input" type="text" value="{$web_config.file_size}">
+          <input name="file_size" lay-verify="pass" placeholder="单位kb" autocomplete="off" class="layui-input" lay-verify="number" type="text" value="{$web_config.file_size}">
         </div>
         <div class="layui-form-mid layui-word-aux">单位KB</div>
       </div>
@@ -63,14 +63,14 @@
       <div class="layui-form-item">
         <label class="layui-form-label">统计代码</label>
         <div class="layui-input-block" style="max-width: 600px">
-          <textarea placeholder="请输入完整的统计代码" class="layui-textarea" name="statistics">{$web_config.statistics}</textarea>
+          <textarea placeholder="请输入完整的统计代码" class="layui-textarea" maxlength="500" name="statistics">{$web_config.statistics}</textarea>
         </div>
       </div>
 
       <div class="layui-form-item">
         <label class="layui-form-label">IP黑名单</label>
         <div class="layui-input-block" style="max-width: 600px">
-          <textarea placeholder="用','隔开" class="layui-textarea" name="black_ip">{$web_config.black_ip}</textarea>
+          <textarea placeholder="用','隔开" class="layui-textarea" maxlength="500" name="black_ip">{$web_config.black_ip}</textarea>
         </div>
       </div>
 
