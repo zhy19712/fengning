@@ -1,10 +1,9 @@
-{include file="../../public/common_header"}
+{include file="../app/public/common_header.html"}
 <script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
 
-    #tableContent .mybtn i.fa:before,#tableContent .move i.fa:before{
-        background: #00c0ef;
-        color: #ffffff;
+    #tableContent .dataTables_wrapper, .tbcontainer{
+        display: block;
     }
 
     #tableContent .mybtn,#tableContent .move{
@@ -12,242 +11,283 @@
         background-color: #00c0ef;
     }
 
-    #tableContent .mybtn{
-        margin-right: 0%;
-        margin-bottom: 5px;
+    #tableContent .dataTables_wrapper {
+        position: relative;
+        clear: both;
+        zoom: 1;
+        overflow: auto;
     }
 
-    #tableContent .move{
-        margin-top: -.5%;
-        margin-bottom: 3px;
+    #tableContent table{
+        width: 800px;
     }
+
+    table td{word-break:break-all;}
+
+    table{table-layout:fixed;}
 
     #tableContent .select-color {
         background-color: #FDD5B5 !important;
     }
 
-    #tableContent h3 {
-        margin-top: 5px;
-        font-weight: 600;
-        font-size: 16px;
-        display: inline-block;
+    #tableContent .even {
+        background-color: #ffffff;
     }
 
-    #tableContent .dataTables_wrapper .dataTables_scroll {
+    #tableContent .odd {
+        background-color: #f9f9f9;
+    }
+
+    #tableContent .sub{
+        position: absolute;
+        bottom:1%;
+        left: 43%;
+    }
+
+    #tableContent .sub i.fa:before {
+        color: #ffffff;
+    }
+
+    .people, .addpeople {
+        float: left;
+        width: 70px;
+        text-align: center;
         position: relative;
-        /*border-top: 1px dotted #cecece;*/
+        cursor: pointer;
     }
 
-    #tableContent #tableItem tr td a{
-        color: #337ab7;
+    .remove {
+        position: absolute;
+        right: 0px;
+        color: #BFBFBF;
+        cursor: pointer;
     }
 
-    #tableContent .dataTables_wrapper ,#tableContent .tbcontainer {
-        display: block;
+    .arrow {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin: 15px 5px 38px 10px;
     }
 
-    #tableContent .borderColor{
-        height:25px;
-        padding-top: 5px;
-        padding-bottom: 3px;
-        border-bottom: 1px dashed #e7eaec;
-    }
-
-    #tableContent #txtArea {
-        width: 73.5%;
-        height: 60px;
-        padding: 8px;
-    }
-
-    /*.layui-input[disabled], .layui-textarea[disabled], .layui-disabled, .layui-input[readonly], .layui-textarea[readonly], .layui-readonly {*/
-        /*background: #FFFFFF !important;*/
-    /*}*/
-
-    .layui-input-inline p{
-        height: 34px;
-        line-height: 40px;
-        font-weight: 800;
-        margin-left: -25px;
+    p2 {
+        font-weight: 700;
     }
 
     .layui-layer-content {
         padding-top: 0px;
     }
 
-    #nextStep{
-        color: #337ab7;
-    }
-
-    .colorRed{
-        background: #eee;;
-    }
 </style>
-
-    <div id="tableContent" data-options="region:'center'" style="padding:5px;background:#ffffff;">
-        <div class="borderColor">
-            <div class="ibox-tools" style="float: left;margin-left:10px;">
-                <i class="fa fa-file-text-o" style="margin-right: 0px;"></i>
-                <p2>审批信息</p2>
-            </div>
-            <div class="move layui-btn layui-btn-sm"></div>
-        </div>
-        <div class="hr-line-dashed" style="margin: 8px 10px 10px;"></div>
+<div id="tableContent" data-options="region:'center'" style="padding:0 5px;height: 700px;background:#ffffff;">
+    <div position="center">
         <div>
-            <form class="layui-form" name="memberAdd" id="memberAdd" method="post"  action="#" onsubmit="return false">
-                <input type="hidden" name="id" id="addId" style="display: none;">
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">当前审批人</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="contractCode" value="66" readonly lay-verify="required" autocomplete="off" class="layui-input colorRed">
-                        </div>
-                    </div>
-                    <div class="layui-inline" style="margin-left: 58px;">
-                        <label class="layui-form-label">审批日期</label>
-                        <div class="layui-input-inline" style="margin-left: 36px;">
-                            <input type="text" name="contractName" readonly lay-verify="required" autocomplete="off" class="layui-input colorRed">
-                        </div>
-                    </div>
+            <div style="height:20px">
+                <div class="ibox-tools" style="float: left;margin-left:5px;margin-top: 4px;">
+                    <i class="fa fa-user" style="margin-right: 0px;margin-top: 5px;"></i>
+                    <p2>选择审批执行人</p2>
                 </div>
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">审批结果</label>
-                        <div class="layui-input-inline" style="width: 92px;margin-right: 0px">
-                            <input type="radio" name="sex" value="1" title="通过，" checked>
-                            <!--<p style="display: inline-block"><a href="javascript:;">下一步执行人</a>：<span>审批完成</span></p>-->
-                            <!--<input type="radio" name="sex" value="0" title="不通过">-->
-                            <!--<select name="isneedtemplate" id="itNeed" lay-filter="aihao">-->
-                                <!--<option value="">返回提交人：管理员</option>-->
-                            <!--</select>-->
-                        </div>
-                        <div class="layui-input-inline">
-                            <p><a href="javascript:;" id="nextStep">下一步执行人</a>：<span>审批完成</span></p>
-                        </div>
-
+            </div>
+            <div class="hr-line-dashed" style="margin:10px 10px 0;"></div>
+            <div style="height: 200px;margin-top: 10px;">
+                <div id="approverDiv">
+                    <div class="addpeople">
+                        <img alt='image' id="currentUserPhoto" class='img-circle' src='__WEBSITE__/elementimg/1.png' style='width:50px;height:50px;'>
+                        <p id="currentUserName">管理员</p>
                     </div>
-                    <div class="layui-inline">
-                        <div class="layui-input-inline" style="width: 92px;">
-                            <input type="radio" name="sex" value="0" title="不通过">
-                        </div>
-                        <div class="layui-input-inline">
-                            <select name="isneedtemplate" id="itNeed" lay-filter="aihao">
-                                <option value="">返回提交人：管理员</option>
-                            </select>
-                        </div>
-                    </div>
+                    <img alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png' />
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">审批意见</label>
-                    <textarea name="remark" id="txtArea" placeholder="审批意见"></textarea>
+                <div class="addpeople">
+                    <img alt="image" id="selPeople" class="img-circle" src="__WEBSITE__/elementimg/userAdd.png" style="width:50px;height:50px;margin-top: 3px;">
                 </div>
-            </form>
-        </div>
-        <div class="clearBoth"></div>
-        <div class="borderColor" style=" border-top: 1px dashed #e7eaec;margin-top: 5px;">
-            <div class="ibox-tools" style="float: left;margin-left:10px;">
-                <i class="fa fa-history" style="margin-right: 0px;margin-top: 5px;"></i>
-                <p2>审批历史</p2>
             </div>
         </div>
-        <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
-            <thead>
-                <tr>
-                    <th>审批人</th>
-                    <th>审批日期</th>
-                    <th>审批结果</th>
-                    <th>审批意见</th>
-                </tr>
-            </thead>
-        </table>
-        <div class="tbcontainer">
-            <div class="mark"></div>
+        <div style="display:block;border-top: 1px dotted" id="referContentDiv">
+            <div style="height:20px">
+                <div class="ibox-tools" style="float: left;margin-left:5px;margin-top: 4px;">
+                    <i class="fa fa-user" style="margin-right: 0px;margin-top: 5px;"></i>
+                    <p2>参考流程</p2>
+                </div>
+            </div>
+            <div class="hr-line-dashed" style="margin:10px 10px 0;"></div>
+            <div style="height: 150px;margin-top: 10px;">
+                <div id="referDiv">
+                </div>
+            </div>
+        </div>
+        <div class="sub">
+            <div class="col-xs-12" style="text-align: center;">
+                <button id="btnSave" class="layui-btn"><i class="fa fa-save"></i> 保存
+                </button>
+                <button id="btnClose" type="reset" class="layui-btn layui-btn-danger"><i class="fa fa-close"></i> 返回
+                </button>
+            </div>
         </div>
     </div>
+    <input type="hidden" name="inputId" id="dataId" value="{:$dataId}">
+    <input type="hidden" name="inputId" id="hiddenValId" value="">
+    <input type="hidden" name="inputName" id="hiddenValName" value="">
+    <input type="hidden" name="inputName" id="hiddenValUser" value="">
+</div>
 
-{include file="../../public/common_footer"}
-<script type="text/javascript">
-
-    //组织结构表格
-    var tableItem = $('#tableItem').DataTable({
-        pagingType: "full_numbers",
-        processing: true,
-        serverSide: true,
-        "scrollY": "360px",
-        "scrollCollapse": "true",
-        ajax: {
-            "url": "{:url('/approve/common/datatablesPre')}?tableName=approve&data_id=&data_type="
-        },
-        dom: 'lrtip',
-        columns: [
-            {
-                name: "user_id"
-            },
-            {
-                name: "create_time"
-            },
-            {
-                name: "result"
-            },
-            {
-                name: "mark"
-            },
-
-        ],
-        columnDefs: [
-            {
-                targets: [0]
-            },
-            {
-                targets:[1]
-            },
-            {
-                targets:[2]
-            },
-            {
-                targets: [3],
-                render: function (data, type, row) {
-                    if (data == 1) {
-                        return "已归档";
-                    }
-                    return "待归档";
-                }
-            }
-        ],
-        language: {
-            "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            "infoEmpty": "无记录",
-            "search": "搜索：",
-            "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            "paginate": {
-                "sFirst": "<<",
-                "sPrevious": "<",
-                "sNext": ">",
-                "sLast": ">>"
-            }
-        },
-        "fnInitComplete": function (oSettings, json) {
-            $('#tableItem_length').insertBefore(".mark");
-            $('#tableItem_info').insertBefore(".mark");
-            $('#tableItem_paginate').insertBefore(".mark");
-        }
+{include file="../app/public/common_footer.html"}
+<script>
+    $(function () {
+        $("#btnSave").click(function () { $("#btnSave").attr("disabled", "disabled"); save(); });
+        $("#btnClose").click(function () { close(); });
+        $("#selPeople").click(function () { selPeople(); });
+        $("#currentUserName").text($(top.document).find("#userName").text());
+        $("#currentUserPhoto").attr("src", $(top.document).find("#userPhoto").attr("src"));
+        initReferFlow();
+        // initLastFlow();
     });
 
-    //保存
-    $(".move").html("<div id='test3'>保存</div>");
-
-    //点击下一步执行人
-    $("#nextStep").click(function () {
-        layer.open({
+    var user =  $("#hiddenValUser").val();
+    // 选择审批人
+    function selPeople() {
+        var index = layer.open({
             type: 2,
-            title: '选择审批人',
-            shadeClose: true,
+            title: "选择审批人",
             area: ['450px', '550px'],
-            content: '{:url("approve/approve/selectMumber")}?dataType=app\\quality\\model\\QualityFormInfoModel\n'
+            content: '{:url("approve/approve/selectMumber")}',
         });
-    });
-    
-    
+    };
+
+    var dataArr = [];
+    var subId ;
+
+
+
+    // 添加审批人
+    function addPeople(user) {
+        var dataId = $("#hiddenValId").val();
+        dataArr.push(dataId);
+        subId = dataArr.join(",");
+        console.log(dataArr);
+        console.log(subId);
+
+        console.log(user);
+        var $dom = $(".people");
+        //var haveAddPeoples = [];
+        //$.each($dom, function (i, item) {
+        //    haveAddPeoples.push(item.id.substring(3, item.id.length)) // 防止重复添加同一个人
+        //});
+        //if (haveAddPeoples.indexOf(user.id) > -1)
+        //    return;
+        var title = "姓名：" + user.name + " \n";
+        title += "所属机构：" + user.organizationName + " \n";
+        title += "岗位：" + user.post + " \n";
+        title += "手机：" + user.mobile + " \n";
+
+        var html = "<div class='people' id='div" + user.id + "'>";
+        html += "<i class='fa fa-times-circle remove' onclick='removeApprover(\"" + user.id + "\")'></i>";
+        html += "<img alt='image' class='img-circle' src='__WEBSITE__/elementimg/1.png' title='"+ title +"' style='width:50px;height:50px;'>";
+        html += "<p>" + $("#hiddenValName").val() + "</p>";
+        html += "</div>";
+        html += "<img id='img" + user.id + "' alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png'/>";
+        $("#approverDiv").append(html);
+    };
+
+    // 移除审批人
+    function removeApprover(id) {
+        $("#div" + id).remove();
+        $("#img" + id).remove();
+    };
+
+    // 关闭窗体
+    function close() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index)
+    };
+
+    // 保存审批人信息
+    function save() {
+        var $dom = $(".people"); // 获取class为people的div，该div的id属性记录的是审批人id
+        // console.log($dom)
+        if ($dom.length === 0) {
+            layer.alert("请选择审批人。");
+            $("#btnSave").removeAttr("disabled");
+            return;
+        };
+        // if ($("#referFlow").val()) {
+        //     var $referDom = $("#referDiv").find(".addpeople");
+        //     if ($dom.length !== $referDom.length - 1) {
+        //         layer.alert("请按照参考流程选择人员。");
+        //         $("#btnSave").removeAttr("disabled");
+        //         return;
+        //     }
+        // };
+
+        // var approverIds = "";
+        // $.each($dom, function (i, item) {
+        //     approverIds += item.id.substring(3, item.id.length) + ","; //去除前面的div字符串
+        // });
+        // approverIds = approverIds.substring(0, approverIds.length - 1);
+
+        $.ajax({
+            type: "post",
+            url: "{:url('/approve/Approve/Submit')}",
+            data: {
+                dataId:$("#dataId").val(),
+                approveids:subId ,
+                dataType:'app\\quality\\model\\QualityFormInfoModel' ,
+            },
+            success: function (data){
+                console.log(data);
+                // if (data.result === "Success") {
+                //     // var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
+                //     // parentWin.contentWindow.refresh();//刷新列表数据
+                //     // parent.layer.closeAll();
+                //     // close();
+                // }
+                // else {
+                //     layer.alert("提交失败。");
+                //     $("#btnSave").removeAttr("disabled");
+                // };
+            }
+        });
+    };
+
+    // 初始化参考流程信息
+    function initReferFlow() {
+        if ($("#referFlow").val()) {
+            var temp = $("#referFlow").val().split("@");
+            var html = "";
+            $.each(temp, function (i, item) {
+                html += "<div class='addpeople'>";
+                html += " <img alt='image' class='img-circle' src='__WEBSITE__/elementimg/defaultPhoto.png' style='width:50px;height:50px;'>";
+                html += "  <p>" + item + "</p>";
+                html += "</div>";
+                if (i < temp.length - 1) {
+                    html += "<img alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png' />";
+                }
+            });
+            $("#referDiv").html(html);
+            $("#referContentDiv").show();
+        };
+    };
+
+    // 初始化上次流程
+    function initLastFlow() {
+        $.ajax({
+            type: "Get",
+            url: "/Approve/GetLastWorkflow?dataId=" + $("#dataId").val() + "&dataType=" + $("#dataType").val() + "&_t=" + new Date().getTime(),
+            success: function (data) {
+                $.each(data.result, function (i, item) {
+                    var title = "姓名：" + item.name + " \n";
+                    title += "所属机构：" + item.departmentName + " \n";
+                    title += "岗位：" + item.post + " \n";
+                    title += "手机：" + item.mobileNumber + " \n";
+                    var html = "<div class='people' id='div" + item.id + "'>";
+                    html += "<i class='fa fa-times-circle remove' onclick='removeApprover(\"" + item.id + "\")'></i>";
+                    html += "<img alt='image' class='img-circle' src='" + item.photoUrl + "' title='"+ title +"' style='width:50px;height:50px;'>";
+                    html += "<p>" + item.name + "</p>";
+                    html += "</div>";
+                    html += "<img id='img" + item.id + "' alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png'/>";
+                    $("#approverDiv").append(html);
+                });
+            }
+        });
+    };
 </script>
 </html>
