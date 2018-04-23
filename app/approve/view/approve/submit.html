@@ -156,7 +156,6 @@
                     <th>审批日期</th>
                     <th>审批结果</th>
                     <th>审批意见</th>
-                    <th>操作</th>
                 </tr>
             </thead>
         </table>
@@ -176,52 +175,35 @@
         "scrollY": "360px",
         "scrollCollapse": "true",
         ajax: {
-            "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
+            "url": "{:url('/approve/common/datatablesPre')}?tableName=approve&data_id=&data_type="
         },
         dom: 'lrtip',
         columns: [
             {
-                name: "docname"
-            },
-            {
-                name: "nickname"
+                name: "user_id"
             },
             {
                 name: "create_time"
             },
             {
-                name: "status"
+                name: "result"
             },
             {
-                name: "id"
-            }
+                name: "mark"
+            },
+
         ],
         columnDefs: [
             {
-                "searchable": false,
+                targets: [0]
+            },
+            {
+                targets:[1]
+            },
+            {
                 targets:[2]
             },
             {
-                targets: [0],
-                render: function (data, type, row) {
-                    return  '<a title="' + data + '" href="javascript:void(0);"  onclick=\"previewList('+row[4]+')\">'+data+'<i class="fa fa-lg-2 fa-file-o"></a>';
-                }
-            },
-            {
-                "searchable": false,
-                "orderable": false,
-                "targets": [4],
-                "render": function (data, type, row) {
-                    var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='AssFile(this)'><i title='关联文件' class='fa fa-chain'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='reviewHistory(this)'><i title='审阅历史' class='fa fa-file-text'></i></a>";
-                    return html;
-                }
-            },
-            {
-                "searchable": false,
                 targets: [3],
                 render: function (data, type, row) {
                     if (data == 1) {
