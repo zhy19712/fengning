@@ -45,7 +45,7 @@ class ApproveModel extends Model
             $mod['result'] = "提交";
             $mod['mark'] = "提交审批";
             $this->save($mod);
-            $dataType->SubmitHandle($dataId, $approveIds, $userId);
+            $dataType->SubmitHandle($dataId, $approveIds, explode(",",$approveIds)[0]);
             return ['code'=>1];
         } catch (Exception $exception) {
             return ['code'=>-1,'msg'=>$exception->getMessage()];
