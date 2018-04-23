@@ -43,7 +43,6 @@ class Atlas extends Permissions
             $nodeStr = $node->getNodeInfo();
             return json($nodeStr);
         }
-        return $this->fetch();
     }
 
     /**
@@ -75,7 +74,6 @@ class Atlas extends Permissions
                 return json($flag);
             }
         }
-        return $this->fetch();
     }
 
     /**
@@ -123,11 +121,7 @@ class Atlas extends Permissions
 
             $flag = $model->delCatetype($param['id']);
             return json($flag);
-        }else
-        {
-            return $this->fetch();
         }
-
     }
 
     /**
@@ -155,10 +149,7 @@ class Atlas extends Permissions
             }catch (PDOException $e){
                 return ['code' => -1,'msg' => $e->getMessage()];
             }
-
-
         }
-        return $this->fetch();
     }
     /**********************************右侧图册表************************/
     /*
@@ -172,7 +163,6 @@ class Atlas extends Permissions
             $data = $model->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
         }
-        return $this->fetch();
     }
 
     /**
@@ -335,7 +325,6 @@ class Atlas extends Permissions
             $data = $model->getall($id);
             return json(['code' => 1, 'data' => $data]);
         }
-
     }
 
     /**
@@ -611,9 +600,6 @@ class Atlas extends Permissions
             $param = input('post.');
             $flag = $model->delblacklist($param);
             return json($flag);
-        }else
-        {
-            return $this->fetch();
         }
     }
 
@@ -623,7 +609,7 @@ class Atlas extends Permissions
      */
     public function getOrganization()
     {
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
             // 获取左侧的树结构
             $model = new AdminGroup();
             //定义一个空的字符串
