@@ -124,6 +124,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" name="inputId" id="dataId" value="{:$dataId}">
     <input type="hidden" name="inputId" id="hiddenValId" value="">
     <input type="hidden" name="inputName" id="hiddenValName" value="">
     <input type="hidden" name="inputName" id="hiddenValUser" value="">
@@ -202,7 +203,7 @@
     // 保存审批人信息
     function save() {
         var $dom = $(".people"); // 获取class为people的div，该div的id属性记录的是审批人id
-        console.log($dom)
+        // console.log($dom)
         if ($dom.length === 0) {
             layer.alert("请选择审批人。");
             $("#btnSave").removeAttr("disabled");
@@ -227,8 +228,9 @@
             type: "post",
             url: "{:url('/approve/Approve/Submit')}",
             data: {
-                dataId:subId ,
-                dataType:'app\\quality\\model\\QualityFormInfoModel\n' ,
+                dataId:$("#dataId").val(),
+                approveids:subId ,
+                dataType:'app\\quality\\model\\QualityFormInfoModel' ,
             },
             success: function (data){
                 console.log(data);

@@ -1174,18 +1174,18 @@
 
     //在线填报-提交审批
     function submitOnLine(id) {
-        $.ajax({
-            url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
-            type: "post",
-            data: {
-                dataId: id,
-                dataType:'app\\quality\\model\\QualityFormInfoModel\n' ,
-                currentStep:0
-            },
-            success: function (res) {
-                console.log(res)
-            }
-        });
+        // $.ajax({
+        //     url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
+        //     type: "post",
+        //     data: {
+        //         dataId: id,
+        //         dataType:'app\\quality\\model\\QualityFormInfoModel\n' ,
+        //         currentStep:0
+        //     },
+        //     success: function (res) {
+        //         console.log(res)
+        //     }
+        // });
 
         // $.ajax({
         //     url: "{:url('quality/Qualityform/getDivsionInfo')}",
