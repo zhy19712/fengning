@@ -124,6 +124,7 @@
             </div>
         </div>
     </div>
+    <input id="referFlow" type="hidden" value="测量人@施工单位@监理单位" />
     <input type="hidden" name="inputId" id="dataId" value="{:$dataId}">
     <input type="hidden" name="inputId" id="hiddenValId" value="">
     <input type="hidden" name="inputName" id="hiddenValName" value="">
@@ -250,7 +251,7 @@
     // 初始化参考流程信息
     function initReferFlow() {
         // if ($("#referFlow").val()) {
-        //     var temp = $("#referFlow").val().split("@");
+            var temp = $("#referFlow").val().split("@");
             var html = "";
             $.each(temp, function (i, item) {
                 html += "<div class='addpeople'>";
