@@ -81,7 +81,7 @@ class QualityFormInfoModel extends Model implements IApprove
     public function GetApproveInfo($dataId)
     {
         try {
-            $mod = self::where(['id' => $dataId])->field('user_id,ApproveIds,CurrentApproveId,CurrentStep')->find();
+            $mod = self::where(['id' => $dataId])->field('user_id,ApproveIds,CurrentApproverId,CurrentStep')->find();
             return $mod;
         } catch (Exception $exception) {
             return null;
@@ -122,7 +122,7 @@ class QualityFormInfoModel extends Model implements IApprove
             'CurrentApproverId' => $currentApproveId,
             'CurrentStep' => $currentStep,
             'ApproveStatus' => $approveStatus
-        ]);
+        ],['id'=>$dataId]);
     }
 
 }

@@ -40,7 +40,7 @@ class Approve extends Permissions
         if ($this->request->isAjax()) {
             $par = input('post.');
             $res = $this->approveService->submit($par['dataId'], new $par['dataType'], Session::get('current_id'), $par['approveids']);
-            return json(['code' => $res]);
+            return json($res);
         }
         $this->assign("dataId", $dataId);
         $this->assign("dataType", $dataType);
