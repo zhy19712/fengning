@@ -50,15 +50,28 @@ class Approve extends Permissions
 
     /**
      * 审批流程
-     * @param $dataId
-     * @param $dataType
-     * @param $currentSetp
      * @return mixed
      */
-    public function Approve($dataId, $dataType, $currentSetp)
+    public function Approve()
     {
-        $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($dataId, new $dataType)));
+        $par = input("param.");
+        if ($this->request->isAjax()) {
+
+        }
+        $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($par['dataId'], new $par['dataType'])));
         return $this->fetch();
+    }
+
+    /**
+     * 业务数据完整性检测
+     * @param $dataId
+     * @param $dataType
+     * @param $currentStep
+     */
+    public function CheckBeforeSubmitOrApprove($dataId, $dataType,$currentStep)
+    {
+        $res=$this->approveService->CheckBeforeSubmitOrApprove($dataId,new $dataType,$currentStep);
+        return $res;
     }
 
     /**

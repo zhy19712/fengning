@@ -38,4 +38,12 @@ interface IApprove
      * @return mixed
      */
     public function GetApproveInfo($dataId);
+
+    /**
+     * 数据有效性检测
+     * @param $dataId
+     * @param $currentStep
+     * @return mixed
+     */
+    public function CheckBeforeSubmitOrApprove($dataId, $currentStep);
 }
