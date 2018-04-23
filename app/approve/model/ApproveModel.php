@@ -9,6 +9,7 @@
 namespace app\approve\model;
 
 use app\admin\model\Admin;
+use think\Db;
 use think\Exception;
 use think\Model;
 use think\Session;
@@ -39,15 +40,15 @@ class ApproveModel extends Model
         try {
             $mod = array();
             $mod['data_id'] = $dataId;
-            $mod['data_type'] = $dataType;
+            $mod['data_type'] = $dataType->class;
             $mod['user_id'] = $userId;
             $mod['result'] = "提交";
             $mod['mark'] = "提交审批";
             $this->save($mod);
             $dataType->SubmitHandle($dataId, $approveIds, $userId);
-            return 1;
+            return ['code'=>1];
         } catch (Exception $exception) {
-            return -1;
+            return ['code'=>-1,'msg'=>$exception->getMessage()];
         }
     }
 
@@ -61,6 +62,7 @@ class ApproveModel extends Model
      */
     public function Approve($dataId, IApprove $dataType, $approveResult, $approveMark)
     {
+        Db::startTrans();
         /// 审批逻辑：根据审批结果为通过或不通过 将业务数据标的CurrentApproverId修改为NextApproverId/PreApproverId，同时修改业务数据状态。
         /// 通过，且下一步审核人为空，表示已结束，业务数据状态改为2，下一步审核人不为空，只需修改CurrentApproverId，状态不需要修改，仍在审批中
         /// 不通过，CurrentApproverId修改为PreApproverId，状态修改为-1，标识已退回。
@@ -88,7 +90,7 @@ class ApproveModel extends Model
             $dataType->UpdateApproveInfo($dataId, $currentApproverId, $currentStep, $approveStatus);
             //记录审批历史
             self::save([
-                'data_type' => $dataType,
+                'data_type' => $dataType->class,
                 'data_id' => $dataId,
                 'user_id' => Session::get('current_id'),
                 'create_time' => time(),
@@ -97,6 +99,7 @@ class ApproveModel extends Model
             ]);
             return true;
         } catch (Exception $exception) {
+            $this->rollback();
             return false;
         }
     }
