@@ -325,4 +325,23 @@ class Scenepicture extends Permissions
     {
         return $this->fetch();
     }
+
+    /**
+     * 编辑一条现场图片位置信息
+     */
+    public function editPosition()
+    {
+        if(request()->isAjax()){
+            //实例化模型类
+            $model = new ScenePictureModel();
+            $param = input('post.');
+            $data = [
+                'id' => $param['id'],//现场图片自增id
+                'position' => $param['position']//位置信息
+            ];
+            $flag = $model->editScene($data);
+            return json($flag);
+        }
+    }
+
 }
