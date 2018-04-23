@@ -72,4 +72,24 @@ $('#toogleAttr li').click(function () {
 $('#del').click(function () {
     $(this).parents('.swiper-wrapper').remove();
     $(this).parents('.swiper-wrapper').html();
+});
+
+$.upload({
+    btnText:''
+});
+
+$('#at').click(function () {
+    layer.open({
+        title:'人员选择',
+        id:'100',
+        type:'1',
+        area:['1024px','500px'],
+        content:$('#selectUser'),
+        success:function () {
+
+        },
+        cancel: function(index, layero){
+            layer.close(layer.index);
+        }
+    });
 })
