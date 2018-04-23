@@ -46,4 +46,14 @@ interface IApprove
      * @return mixed
      */
     public function CheckBeforeSubmitOrApprove($dataId, $currentStep);
+
+    /**
+     * 更新审批信息
+     * @param $dataId
+     * @param $currentApproveId
+     * @param $currentStep
+     * @param $approveStatus
+     * @return mixed
+     */
+    public function UpdateApproveInfo($dataId,$currentApproveId,$currentStep,$approveStatus);
 }
