@@ -82,9 +82,6 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
             data:data.field,
             success: function (res) {
                 if(res.code == 1) {
-                  tableName = "";
-                  year = "";
-                  day = "";
                     var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
