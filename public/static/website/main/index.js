@@ -83,13 +83,61 @@ $('#at').click(function () {
         title:'人员选择',
         id:'100',
         type:'1',
-        area:['1024px','500px'],
+        area:['750px','550px'],
         content:$('#selectUser'),
         success:function () {
-
+            initZtree();
         },
         cancel: function(index, layero){
             layer.close(layer.index);
         }
     });
-})
+});
+
+
+//字符解码
+function ajaxDataFilter(treeId, parentNode, responseData) {
+
+    if (responseData) {
+        for(var i =0; i < responseData.length; i++) {
+            responseData[i] = JSON.parse(responseData[i]);
+            responseData[i].name = decodeURIComponent(responseData[i].name);
+        }
+    }
+    return responseData;
+}
+
+function initZtree() {
+    var setting = {
+        async: {
+            enable : true,
+            autoParam: ["pid"],
+            type : "post",
+            url : "../../archive/Atlas/getOrganization",
+            dataType :"json",
+            dataFilter: ajaxDataFilter
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pid"
+            }
+        },
+        view:{
+            selectedMulti: false
+        },
+        callback:{
+            onDblClick: zTreeOnDblClick
+        },
+        showLine:true,
+        showTitle:true,
+        showIcon:true
+    };
+    zTreeObj = $.fn.zTree.init($("#userZtree"), setting, null);
+}
+
+
+function zTreeOnDblClick(event, treeId, treeNode) {
+
+}
