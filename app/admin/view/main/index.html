@@ -3,7 +3,57 @@
       <div data-options="region:'east',title:'管理信息',split:true" style="width:345px;">
             <div id="dd" class="easyui-tabs" style="width:100%;height:100%;border: 0">
                   <div title="属性" style="padding:20px;display:none;">
-                        tab1
+                      <div class="attrWrap">
+                          <ul class="toggle-attr" id="toogleAttr">
+                              <li uid="baseAttr" class="active">基本属性</li>
+                              <li uid="manageAttr">管理属性</li>
+                          </ul>
+                          <div class="baseAttrWrap" id="baseAttr">
+                              <div class="layui-collapse">
+                                  <div class="layui-colla-item">
+                                      <h2 class="layui-colla-title">常规属性</h2>
+                                      <div class="layui-colla-content layui-show">内容区域</div>
+                                  </div>
+                                  <div class="layui-colla-item">
+                                      <h2 class="layui-colla-title">其他</h2>
+                                      <div class="layui-colla-content">内容区域</div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="customAttrWrap" id="manageAttr" style="display: none">
+                              <div class="customAttr">
+                                  <h2>
+                                      <span>自定义属性</span>
+                                      <a href="javascript:;"><i class="fa fa-plus"></i></a>
+                                  </h2>
+                                  <div class="addCustomAttr"></div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="add-tag addTag">
+                          <h2>基本信息</h2>
+                          <form class="layui-form">
+                              <div class="layui-form-item">
+                                  <label class="layui-form-label">创建人</label>
+                                  <div class="layui-form-mid layui-word-aux">管理员</div>
+                              </div>
+                              <div class="layui-form-item">
+                                  <label class="layui-form-label">创建日期</label>
+                                  <div class="layui-form-mid layui-word-aux">9999-9-9</div>
+                              </div>
+                              <div class="layui-form-item layui-form-text">
+                                  <label class="layui-form-label">标注信息</label>
+                                  <div class="layui-input-block">
+                                      <textarea name="info" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                  </div>
+                              </div>
+                              <div class="layui-form-item">
+                                  <i class="fa fa-pencil" id="edit"></i>
+                                  <i class="fa fa-check" id="save"></i>
+                                  <i class="fa fa-reply" id="back"></i>
+                              </div>
+                          </form>
+                      </div>
                   </div>
                   <div title="讨论" style="overflow:auto;padding:20px;display:none;">
                         tab2
@@ -23,7 +73,7 @@
                         <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
                             RealBimOcx.ExitSubObjFlicker();
                             RealBimOcx.BatchAddSubClrInfoBegin();
-                            RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ffa500);
+                            RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ff0000);
                             RealBimOcx.BatchAddSubClrInfoEnd();
                         </script>
                         <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
@@ -53,7 +103,20 @@
                                 RealBimOcx.AddAnchorEnd();
                                 RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
                             };
+                            function addTagInfo() {
+                                $('.attrWrap').hide();
+                                $('.addTag').show();
+                            };
 
+                            $('textarea[name="info"]').on('input propertychange',function () {
+                                var val = $(this).text();
+                                RealBimOcx.SubmitMarkerText(val);
+                            })
+
+                            $('#save').click(function () {
+                                window.state=1;
+                                RealBimOcx.CreateMarkerEndInMem(true, 0, 0, true, true);  //保存标注
+                            });
 
                             switch (eType) {
                                 case "ADD_ANCHOR":
@@ -67,6 +130,7 @@
                                 case "MARKER":
                                     clearOperate();
                                     RealBimOcx.CreateMarkerBegin();
+                                    addTagInfo();
                                     break;//添加标注
 
                                 case "CAPTURE":  //快照
@@ -79,13 +143,25 @@
                                     break;
 
                             }
+
                         </script>
                         <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
+                            console.log('首位：'+window.state);
                             base64PicData = strPicData;
                             base64RenData = strRenData;
-                            //添加快照
-                            console.log('test');
-                            addSnapshot(base64RenData);
+                            if(window.state==1){
+                                var img = addSnapshot(base64RenData);
+                                tagSwiper.prependSlide(img);
+                                tagSwiper.updateSlidesSize();
+                                window.state = undefined;
+                                console.log('标注：'+window.state);
+                            }else{
+                                //添加快照
+                                var img = addSnapshot(base64RenData);
+                                snapshotSwiper.prependSlide(img);
+                                snapshotSwiper.updateSlidesSize();
+                                console.log('快照：'+window.state);
+                            }
                             $('.scenter a').click(function () {
                                 RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
                             });
@@ -98,8 +174,8 @@
                                           <div class="swiper-wrapper">
                                           </div>
                                           <!-- 如果需要导航按钮 -->
-                                          <div class="tag-button-prev"></div>
-                                          <div class="tag-button-next"></div>
+                                          <div class="swiper-button-prev tag-button-prev"></div>
+                                          <div class="swiper-button-next tag-button-next"></div>
                                     </div>
                               </div>
                               <div title="快照" style="overflow:auto;display:none;">
@@ -107,8 +183,8 @@
                                           <div class="swiper-wrapper">
                                           </div>
                                           <!-- 如果需要导航按钮 -->
-                                          <div class="snapshot-button-prev"></div>
-                                          <div class="snapshot-button-next"></div>
+                                          <div class="swiper-button-prev snapshot-button-prev"></div>
+                                          <div class="swiper-button-next snapshot-button-next"></div>
                                     </div>
                               </div>
                         </div>
@@ -116,64 +192,6 @@
             </div>
       </div>
 {include file="../app/public/common_footer.html"}
-<script type="text/javascript">
-      //标注图片滚动
-      window.tagSwiper = new Swiper ('#tag', {
-          nextButton: '.tag-button-next',
-          prevButton: '.tag-button-prev',
-          slidesPerView : 4,
-          centeredSlides: false,
-          paginationClickable: true,
-          spaceBetween: 30,
-      });
-      //快照图片滚动
-      window.snapshotSwiper = new Swiper ('#snapshot', {
-          nextButton: '.snapshot-button-next',
-          prevButton: '.snapshot-button-prev',
-          slidesPerView : 4,
-          centeredSlides: false,
-          paginationClickable: true,
-          spaceBetween: 30,
-      });
-
-      //添加快照
-    window.addSnapshot = function (base64RenData) {
-        var img =
-            '<div class="swiper-slide swiperSlide">' +
-                  '<img src="data:image/png;base64,'+ base64PicData +'" alt="">' +
-                  '<div class="mask">' +
-                        '<div class="right">' +
-                              '<a href="javascript:;" title="快照另存为">' +
-                                    '<i class="fa fa-save"></i>' +
-                              '</a>' +
-                              '<a href="javascript:;" title="删除快照">' +
-                                    '<i class="fa fa-close"></i>' +
-                              '</a>' +
-                        '</div>'+
-                        '<div class="scenter">' +
-                              '<a href="javascript:;" title="查看快照">' +
-                                    '<i class="fa fa-search"></i>' +
-                              '</a>' +
-                        '</div>' +
-                        '<div class="center">2018-04-20</div>'+
-                  '</div>'+
-            '</div>';
-        snapshotSwiper.prependSlide(img);
-        snapshotSwiper.updateSlidesSize();
-    }
-    $('.swiperSlide').hover(function () {
-
-    },function () {
-
-    });
-
-      $(document).keyup(function () {
-          RealBimOcx.SubmitMarkerText('1111');
-      });
-
-
-
-
-</script>
+<script src="__WEBSITE__/main/index.js"></script>
 </body>
 </html>
