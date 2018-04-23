@@ -454,7 +454,10 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
-
+        // $(".imgList").css("display","none");
+        // implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
+        // imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
+        // funOnLine();
         initData(selfid);//调用单元工
     }
 
@@ -467,7 +470,6 @@
 
 
     /**==========开始初始化 单元工树 =================*/
-    //声明单元树的变量
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
         eTypeId ,controlPointId ,controlPointName ,
@@ -586,10 +588,10 @@
             }
         })
     }
-
-
-
     /**==========结束初始化 单元工树 =============*/
+
+
+
     //点击置灰
     $(".imgList").on("click","a",function () {
         $(this).css("color","#2213e9").siblings("a").css("color","#CDCDCD");
@@ -1170,27 +1172,62 @@
         console.log(id)
     }
 
-    //在线填报-提交
+    //在线填报-提交审批
     function submitOnLine(id) {
-        console.log(clickId);
-        layer.open({
-            type: 2,
-            title: '提交审批',
-            shadeClose: true,
-            area: ['980px', '90%'],
-            content: '{:url("quality/element/subonline")}'
+        $.ajax({
+            url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
+            type: "post",
+            data: {
+                dataId: id,
+                dataType:'app\\quality\\model\\QualityFormInfoModel\n' ,
+                currentStep:0
+            },
+            success: function (res) {
+                console.log(res)
+            }
         });
-        console.log(id)
-    }
 
-    //在线填报-审批
-    function approve(id) {
+        // $.ajax({
+        //     url: "{:url('quality/Qualityform/getDivsionInfo')}",
+        //     type: "post",
+        //     data: {
+        //         id: id,
+        //     },
+        //     success: function (res) {
+        //         console.log(res)
+        //     }
+        // });
+
+        // $.ajax({
+        //     url: "{:url('quality/Qualityform/getBuildBaseInfo')}",
+        //     type: "post",
+        //     data: {
+        //         id: id,
+        //     },
+        //     success: function (res) {
+        //         console.log(res)
+        //     }
+        // });
+
+        // console.log(clickId);
         layer.open({
             type: 2,
             title: '提交审批',
             shadeClose: true,
             area: ['980px', '90%'],
             content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n'
+        });
+        console.log(id)
+    }
+
+    //在线填报-流程审批
+    function approve(id) {
+        layer.open({
+            type: 2,
+            title: '流程审批',
+            shadeClose: true,
+            area: ['980px', '90%'],
+            content: '{:url("approve/approve/Approve")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n'
         });
         console.log(id);
     }
