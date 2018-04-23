@@ -99,4 +99,22 @@ class QualityFormInfoModel extends Model implements IApprove
         }
         return trim($res, ",");
     }
+
+    /**
+     * 更新审批信息
+     * @param $dataId
+     * @param $currentApproveId
+     * @param $currentStep
+     * @param $approveStatus
+     * @return mixed|void
+     */
+    public function UpdateApproveInfo($dataId, $currentApproveId, $currentStep, $approveStatus)
+    {
+        self::save([
+            'CurrentApproverId' => $currentApproveId,
+            'CurrentStep' => $currentStep,
+            'ApproveStatus' => $approveStatus
+        ]);
+    }
+
 }
