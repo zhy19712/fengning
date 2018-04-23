@@ -97,18 +97,21 @@ class Atlas extends Permissions
             {
                 foreach ($data as $k=>$v)
                 {
-                    $path = $v['path'];
+                    $attachment = Db::name("attachment")->where("id",$v["attachmentId"])->find();
+                    $path = "." .$attachment['filepath'];
                     $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-                    if(file_exists($path)){
-                        unlink($path); //删除上传的图片
+                    if($attachment['filepath'])
+                    {
+                        if(file_exists($path)){
+                            unlink($path); //删除上传的图片或文件
+                        }
+                        if(file_exists($pdf_path)){
+                            unlink($pdf_path); //删除生成的预览pdf
+                        }
                     }
-                    if(file_exists($pdf_path)){
-                        unlink($pdf_path); //删除生成的预览pdf
-                    }
+                    //删除attachment表中对应的记录
+                    Db::name('attachment')->where("id",$v["attachmentId"])->delete();
                 }
-            }else
-            {
-                return $this->fetch();
             }
             //根据传过来的节点id删除图册
             $catemodel->delselfidCate($param['id']);

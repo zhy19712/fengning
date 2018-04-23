@@ -134,7 +134,7 @@ class AtlasCateModel extends Model
      */
     public function getpicinfo($id)
     {
-        $data = $this->field("path")->where("selfid",$id)->select();
+        $data = $this->field("attachmentId")->where("selfid",$id)->select();
         return $data;
     }
 
