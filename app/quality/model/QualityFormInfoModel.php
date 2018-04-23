@@ -18,11 +18,19 @@ class QualityFormInfoModel extends Model implements IApprove
     protected $name = 'quality_form_info';
     protected $autoWriteTimestamp = true;
 
+    /**
+     * 审批人信息
+     * @return \think\model\relation\HasOne
+     */
     public function CurrentApprover()
     {
         return $this->hasOne('app\admin\model\Admin', 'id', 'CurrentApproverId');
     }
 
+
+
+
+    ## 审批相关接口实现
     /**
      * 提交审批业务关联逻辑
      * @param $dataId
