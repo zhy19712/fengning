@@ -548,9 +548,11 @@
         if(selfidUnit != undefined || selfidUnit != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
         }
-        // $(".mybtn").css("display","none");//新增
-        // $(".alldel").css("display","none");//全部删除
-        // $(".bitCodes").css("display","block");
+        // $(".imgList").css("display","none");
+        // implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
+        // imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
+        // funOnLine(selfidUnit,conThisId,clickId)
+        // onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -1219,7 +1221,7 @@
             area: ['980px', '90%'],
             content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n',
             end:function () {
-                funOnLine(selfidUnit,conThisId,clickId)
+                funOnLine(selfidUnit,conThisId,clickId);
                 onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
             }
         });
@@ -1238,7 +1240,13 @@
             success: function(layero, index){
                 var body = layer.getChildFrame('body', index);
                 body.find("#conCode").val(app);
+                body.find("#dataId").val(id);
+                body.find("#dataType").val('app\\quality\\model\\QualityFormInfoModel');
             },
+            end:function () {
+                funOnLine(selfidUnit,conThisId,clickId);
+                onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+            }
         });
         console.log(id);
     }
