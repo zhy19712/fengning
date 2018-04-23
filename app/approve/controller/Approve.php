@@ -56,7 +56,7 @@ class Approve extends Permissions
     {
         $par = input("param.");
         if ($this->request->isAjax()) {
-
+            $this->approveService->Approve($par['dataId'], $par['dataType'], $par['res'], $par['mark']);
         }
         $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($par['dataId'], new $par['dataType'])));
         return $this->fetch();
