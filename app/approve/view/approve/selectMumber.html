@@ -129,6 +129,10 @@
             $("#btnSave").removeAttr("disabled");
             return;
         };
+        $(window.parent.document).find("#hiddenValId").val($("#selectedUserId").val());
+        $(window.parent.document).find("#hiddenValName").val($("#selectedUserName").text());
+        console.log($("#selectedUserId").val());
+        close();
         var user = {
             "id": $("#selectedUserId").val(),
             "name": $("#selectedUserName").html(),
@@ -137,44 +141,41 @@
             "mobile": $("#selectMobile").val(),
             "organizationName": $("#selectOrganizationName").val()
         };
-        if ($("#referFlow").val()) {
-            var $referDom = $("#referDiv").find(".addpeople");
-            if ($dom.length !== $referDom.length - 1) {
-                layer.alert("请按照参考流程选择人员。");
-                $("#btnSave").removeAttr("disabled");
-                return;
-            }
-        };
 
-        var approverIds = "";
-        $.each($dom, function (i, item) {
-            approverIds += item.id.substring(3, item.id.length) + ","; //去除前面的div字符串
-        });
-        approverIds = approverIds.substring(0, approverIds.length - 1);
-        $.ajax({
-            type: "post",
-            url: "/Approve/Submit",
-            data: { "dataId": $("#dataId").val(), "dataType": $("#dataType").val(), "approverIds": approverIds },
-            success: function (data) {
-                if (data.result === "Success") {
-                    var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
-                    parentWin.contentWindow.refresh();//刷新列表数据
-                    parent.layer.closeAll();
-                    close();
-                }
-                else {
-                    layer.alert("提交失败。");
-                    $("#btnSave").removeAttr("disabled");
-                };
-            }
-        });
-    }
-
-    // 关闭窗体
-    function close() {
-        var index = parent.layer.getFrameIndex(window.name);
-        parent.layer.close(index)
-    }
+        $(window.parent.document).find("#hiddenValUser").val(user);
+        parent.addPeople(user);
+        //   if ($("#referFlow").val()) {
+        //       var $referDom = $("#referDiv").find(".addpeople");
+        //       if ($dom.length !== $referDom.length - 1) {
+        //           layer.alert("请按照参考流程选择人员。");
+        //           $("#btnSave").removeAttr("disabled");
+        //           return;
+        //       }
+        //   };
+        //
+        //   var approverIds = "";
+        //   $.each($dom, function (i, item) {
+        //       approverIds += item.id.substring(3, item.id.length) + ","; //去除前面的div字符串
+        //   });
+        //   approverIds = approverIds.substring(0, approverIds.length - 1);
+        //   $.ajax({
+        //       type: "post",
+        //       url: "/Approve/Submit",
+        //       data: { "dataId": $("#dataId").val(), "dataType": $("#dataType").val(), "approverIds": approverIds },
+        //       success: function (data) {
+        //           if (data.result === "Success") {
+        //               var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
+        //               parentWin.contentWindow.refresh();//刷新列表数据
+        //               parent.layer.closeAll();
+        //               close();
+        //           }
+        //           else {
+        //               layer.alert("提交失败。");
+        //               $("#btnSave").removeAttr("disabled");
+        //           };
+        //       }
+        //   });
+    };
 
     // 初始化常用联系人树
     function initFrequentlyUsedTree() {
@@ -195,31 +196,44 @@
             type: "Get",
             url: "{:url('approve/Approve/FrequentlyUsedApprover')}?dataType=app\\quality\\model\\QualityFormInfoModel\n",
             success: function (res) {
-                console.log(res);
+                // console.log(res);
+                var initArr =[];
+                for(var i=0;i<res.length;i++){
+                    var initObj = {
+                        id:'',
+                        name:''
+                    }
+                    initObj.id = res[i].id;
+                    initObj.name = res[i].nickname;
+                    initArr.push(initObj)
+                }
+                console.log(initArr)
                 // $.fn.zTree.init($("#treeFrequentlyUsed"), setting, [{"name":"王建伟",id:123},{"name":"丁志超",id:456}]);
+                $.fn.zTree.init($("#treeFrequentlyUsed"), setting, initArr);
             }
         });
     };
     initFrequentlyUsedTree()
-
+    // 关闭窗体
+    function close() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index)
+    };
     //切换
     $("#tgd a").click(function () {
         $(this).siblings('a').removeClass('select');
         $(this).addClass('select');
     });
-
     // 常用联系人
     function frequentlyUsedDivShow() {
         $("#frequentlyUsedDiv").show();
         $("#selectDiv").hide();
     };
-
     // 人员选择
     function selectDivShow() {
         $("#frequentlyUsedDiv").hide();
         $("#selectDiv").show();
     };
-
     //字符解码
     function ajaxDataFilter(treeId, parentNode, responseData) {
 
@@ -231,7 +245,6 @@
         }
         return responseData;
     }
-
     //组织结构树
     var setting = {
         view: {
@@ -265,7 +278,6 @@
     };
 
     treeObj = $.fn.zTree.init($("#treeDemo"), setting, null);
-
     //搜索树
     function SearchTree() {
         var key = $("#keywords").val();
@@ -274,7 +286,6 @@
             treeObj.expandNode(item.getParentNode(), true, false, true);
         });
     }
-
     //搜索树
     $('#keywords').bind('input propertychange', function() {
         var key = $("#keywords").val();
@@ -283,7 +294,6 @@
             treeObj.expandNode(item.getParentNode(), true, false, true);
         });
     });
-
     //左侧组织机构树双击事件处理
     function onClick(event, treeId, treeNode) {
         var html = "";
@@ -291,22 +301,20 @@
             return;
         else  //选择的是人员信息
             setSelectedInfo(treeNode);
-    }
-
+    };
     // 常用联系人树单击事件
     function onFrequentlyUsedTreeClick(event, treeId, treeNode) {
         setSelectedInfo(treeNode);
-    }
-
+    };
     // 设置选中的人员信息
     function setSelectedInfo(treeNode) {
+        // console.log(treeNode);
         $("#selectedUserId").val(treeNode.id);
         $("#selectedUserName").html(treeNode.name);
         $("#selectedUserImage").val(treeNode.data);
         $("#selectOrganizationName").val(treeNode.viewPoint);
         $("#selectPost").val(treeNode.post);
         $("#selectMobile").val(treeNode.dataExt);
-    }
-
+    };
 </script>
 </html>
