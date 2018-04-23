@@ -93,7 +93,6 @@
                             RealBimOcx.BatchAddSubClrInfoEnd();
                         </script>
                         <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
-
                         <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
                             // RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.58:8008/default.aspx?dir=url_res02&path=","res_fengning_kw_03");
 
@@ -112,10 +111,8 @@
                             }
                             RealBimOcx.SetSuitableCam();
                         </script>
-
                         <script for="RealBimOcx" event="UIClicked(eType,uButtonMode)" language='javascript'>
                             function clearOperate() {
-                                operateType = "";
                                 RealBimOcx.AddAnchorEnd();
                                 RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
                             };
@@ -162,7 +159,6 @@
 
                         </script>
                         <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
-                            console.log('首位：'+window.state);
                             base64PicData = strPicData;
                             base64RenData = strRenData;
                             if(window.state==1){
@@ -207,48 +203,16 @@
                   </div>
             </div>
       </div>
-    <!-- 选择角色 -->
-    <div class="select-user" id="selectUser" style="display: none">
-        <div class="user-title">
-            <span>已选角色 ></span>
-        </div>
-        <div class="user-content">
-            <div class="user-ztree">
-                <div class="search">
-                    <form action="" class="layui-form">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">组织机构</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="" required lay-verify="required" placeholder="机构/部门/人员" autocomplete="off" class="layui-input">
-                            </div>
-                            <div class="layui-form-mid layui-word-aux">
-                                <i class="fa fa-search"></i>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <ul id="ztree" class="ztree"></ul>
-            </div>
-            <div class="user-selected">
-                <form action="" class="layui-form">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">角色用户</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="" required lay-verify="required" placeholder="人员" autocomplete="off" class="layui-input">
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">
-                            <i class="fa fa-search"></i>
-                        </div>
-                    </div>
-                    <div class="layui-input-inline btn-wrap">
-                        <i class="fa fa-check-circle" lay-submit lay-filter="saveUser"></i>
-                        <i class="fa fa-times-circle"></i>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/main/index.js"></script>
+<script>
+    $(document).keyup(function (event) {
+        var KeyCode = (navigator.appname=="Esc")?event.which:window.event.keyCode;
+        if ( KeyCode == 27 ){
+            RealBimOcx.AddAnchorEnd();
+            RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
+        }
+    })
+</script>
 </body>
 </html>
