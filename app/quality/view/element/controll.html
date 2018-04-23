@@ -374,31 +374,7 @@
         var form = layui.form
             ,layer = layui.layer
             ,laydate = layui.laydate;
-
-        //日期
-        laydate.render({
-            elem: '#date'
-        });
-
-        //搜索
-        form.on('select(type)', function(data){
-            typeId = data.value;
-            tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
-        });
-
-        form.on('select(purpose)', function(data){
-            purposeId = data.value;
-            console.log(typeId);
-            console.log(purposeId);
-
-            if(purposeId == ""){
-                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId).load();
-            }else{
-                tableItem.ajax.url("{:url('/standard/common/datatablesPre')}?tableName=quality_template&type="+typeId+"&use="+purposeId).load();
-            }
-        });
     });
-
 
 
     /*==========开始初始化工程划分树节点=============*/
@@ -454,6 +430,12 @@
             $(".layout-panel-center .panel-title").text(sNodes.name);
         }
         groupid = sNodes.pId ;//父节点的id
+        $(".imgList").css("display","none");
+        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=").load();
+        implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
+        imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
+        // funOnLine();
+        // funOnLine(selfidUnit,conThisId,clickId);
 
         initData(selfid);//调用单元工
     }
@@ -467,7 +449,6 @@
 
 
     /**==========开始初始化 单元工树 =================*/
-    //声明单元树的变量
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
         eTypeId ,controlPointId ,controlPointName ,
@@ -546,9 +527,6 @@
         if(selfidUnit != undefined || selfidUnit != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
         }
-        // $(".mybtn").css("display","none");//新增
-        // $(".alldel").css("display","none");//全部删除
-        // $(".bitCodes").css("display","block");
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -586,10 +564,10 @@
             }
         })
     }
-
-
-
     /**==========结束初始化 单元工树 =============*/
+
+
+
     //点击置灰
     $(".imgList").on("click","a",function () {
         $(this).css("color","#2213e9").siblings("a").css("color","#CDCDCD");
@@ -1088,8 +1066,10 @@
                          html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                      }
                      else if (row[3] === 1) {
+                         var str = JSON.stringify(row[2]);
+
                          html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
-                         html += "<a title='审批' onclick='approve("+row[4]+")'><i class='fa fa fa-pencil-square-o'></i></a>";
+                         html += "<a title='审批' onclick='approve("+row[4]+","+str+")'><i class='fa fa fa-pencil-square-o'></i></a>";
                          html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
                      }
                      else if (row[3] === 2) {
@@ -1170,27 +1150,77 @@
         console.log(id)
     }
 
-    //在线填报-提交
+    //在线填报-提交审批
     function submitOnLine(id) {
-        console.log(clickId);
+        // $.ajax({
+        //     url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
+        //     type: "post",
+        //     data: {
+        //         dataId: id,
+        //         dataType:'app\\quality\\model\\QualityFormInfoModel\n' ,
+        //         currentStep:0
+        //     },
+        //     success: function (res) {
+        //         console.log(res)
+        //     }
+        // });
+
+        // $.ajax({
+        //     url: "{:url('quality/Qualityform/getDivsionInfo')}",
+        //     type: "post",
+        //     data: {
+        //         id: id,
+        //     },
+        //     success: function (res) {
+        //         console.log(res)
+        //     }
+        // });
+
+        // $.ajax({
+        //     url: "{:url('quality/Qualityform/getBuildBaseInfo')}",
+        //     type: "post",
+        //     data: {
+        //         id: id,
+        //     },
+        //     success: function (res) {
+        //         console.log(res)
+        //     }
+        // });
+
+        // console.log(clickId);
         layer.open({
             type: 2,
             title: '提交审批',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/element/subonline")}'
+            content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n',
+            end:function () {
+                funOnLine(selfidUnit,conThisId,clickId);
+                onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+            }
         });
         console.log(id)
     }
 
-    //在线填报-审批
-    function approve(id) {
+    //在线填报-流程审批
+    function approve(id,app) {
+        console.log(app)
         layer.open({
             type: 2,
-            title: '提交审批',
+            title: '流程审批',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n'
+            content: '{:url("approve/approve/Approve")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n',
+            success: function(layero, index){
+                var body = layer.getChildFrame('body', index);
+                body.find("#conCode").val(app);
+                body.find("#dataId").val(id);
+                body.find("#dataType").val('app\\quality\\model\\QualityFormInfoModel');
+            },
+            end:function () {
+                funOnLine(selfidUnit,conThisId,clickId);
+                onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+            }
         });
         console.log(id);
     }

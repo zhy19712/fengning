@@ -18,11 +18,19 @@ class QualityFormInfoModel extends Model implements IApprove
     protected $name = 'quality_form_info';
     protected $autoWriteTimestamp = true;
 
+    /**
+     * 审批人信息
+     * @return \think\model\relation\HasOne
+     */
     public function CurrentApprover()
     {
         return $this->hasOne('app\admin\model\Admin', 'id', 'CurrentApproverId');
     }
 
+
+
+
+    ## 审批相关接口实现
     /**
      * 提交审批业务关联逻辑
      * @param $dataId
@@ -73,7 +81,7 @@ class QualityFormInfoModel extends Model implements IApprove
     public function GetApproveInfo($dataId)
     {
         try {
-            $mod = self::where(['id' => $dataId])->field('user_id,ApproveIds,CurrentApproveId,CurrentStep')->find();
+            $mod = self::where(['id' => $dataId])->field('user_id,ApproveIds,CurrentApproverId,CurrentStep')->find();
             return $mod;
         } catch (Exception $exception) {
             return null;
@@ -99,4 +107,22 @@ class QualityFormInfoModel extends Model implements IApprove
         }
         return trim($res, ",");
     }
+
+    /**
+     * 更新审批信息
+     * @param $dataId
+     * @param $currentApproveId
+     * @param $currentStep
+     * @param $approveStatus
+     * @return mixed|void
+     */
+    public function UpdateApproveInfo($dataId, $currentApproveId, $currentStep, $approveStatus)
+    {
+        self::save([
+            'CurrentApproverId' => $currentApproveId,
+            'CurrentStep' => $currentStep,
+            'ApproveStatus' => $approveStatus
+        ],['id'=>$dataId]);
+    }
+
 }

@@ -40,7 +40,7 @@ class Approve extends Permissions
         if ($this->request->isAjax()) {
             $par = input('post.');
             $res = $this->approveService->submit($par['dataId'], new $par['dataType'], Session::get('current_id'), $par['approveids']);
-            return json(['code' => $res]);
+            return json($res);
         }
         $this->assign("dataId", $dataId);
         $this->assign("dataType", $dataType);
@@ -56,7 +56,11 @@ class Approve extends Permissions
     {
         $par = input("param.");
         if ($this->request->isAjax()) {
-            $this->approveService->Approve($par['dataId'], $par['dataType'], $par['res'], $par['mark']);
+            if ($this->approveService->Approve($par['dataId'], new $par['dataType'], $par['res'], $par['mark'])) {
+                return json(['code' => 1]);
+            } else {
+                return json(['code' => -1]);
+            }
         }
         $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($par['dataId'], new $par['dataType'])));
         return $this->fetch();
@@ -68,9 +72,9 @@ class Approve extends Permissions
      * @param $dataType
      * @param $currentStep
      */
-    public function CheckBeforeSubmitOrApprove($dataId, $dataType,$currentStep)
+    public function CheckBeforeSubmitOrApprove($dataId, $dataType, $currentStep)
     {
-        $res=$this->approveService->CheckBeforeSubmitOrApprove($dataId,new $dataType,$currentStep);
+        $res = $this->approveService->CheckBeforeSubmitOrApprove($dataId, new $dataType, $currentStep);
         return $res;
     }
 
