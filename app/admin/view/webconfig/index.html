@@ -20,14 +20,14 @@
       <div class="layui-form-item">
         <label class="layui-form-label">网站名称</label>
         <div class="layui-input-block" style="max-width: 400px">
-          <input name="name" lay-verify="pass" placeholder="请输入" autocomplete="off" maxlength="20" class="layui-input" type="text" value="{$web_config.name}">
+          <input name="name"  placeholder="请输入" autocomplete="off" maxlength="20" class="layui-input" type="text" value="{$web_config.name}">
         </div>
       </div>
 
       <div class="layui-form-item">
         <label class="layui-form-label">关键词</label>
         <div class="layui-input-block" style="max-width: 600px">
-          <input name="keywords" lay-verify="pass" placeholder="请用','隔开" autocomplete="off" class="layui-input" type="text" maxlength="30" value="{$web_config.keywords}">
+          <input name="keywords"  placeholder="请用','隔开" autocomplete="off" class="layui-input" type="text" maxlength="30" value="{$web_config.keywords}">
         </div>
       </div>
 
@@ -55,7 +55,7 @@
       <div class="layui-form-item">
         <label class="layui-form-label">最大上传值</label>
         <div class="layui-input-inline" style="max-width: 600px">
-          <input name="file_size" lay-verify="pass" placeholder="单位kb" autocomplete="off" class="layui-input" lay-verify="number" type="text" value="{$web_config.file_size}">
+          <input name="file_size"  placeholder="单位kb" autocomplete="off" class="layui-input" lay-verify="number" type="text" value="{$web_config.file_size}">
         </div>
         <div class="layui-form-mid layui-word-aux">单位KB</div>
       </div>
@@ -108,6 +108,12 @@
           var layer = layui.layer,
               $ = layui.jquery,
               form = layui.form;
+          form.verify({
+            pass:[
+              /^[a-zA-Z0-9,]+$/,
+              '输入不合法，输入英文逗号和字母数字
+            ]
+          });
           $(window).on('load', function() {
               form.on('submit(admin)', function(data) {
                   $.ajax({
