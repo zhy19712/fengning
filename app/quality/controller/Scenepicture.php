@@ -316,4 +316,13 @@ class Scenepicture extends Permissions
             return $flag;
         }
     }
+    /***************************************三维模型******************/
+    /**
+     * 模板首页
+     * @return mixed
+     */
+    public function positionset()
+    {
+        return $this->fetch();
+    }
 }

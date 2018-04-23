@@ -232,18 +232,19 @@
                 approveids:subId ,
                 dataType:'app\\quality\\model\\QualityFormInfoModel' ,
             },
-            success: function (data){
-                console.log(data);
-                // if (data.result === "Success") {
-                //     // var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
-                //     // parentWin.contentWindow.refresh();//刷新列表数据
-                //     // parent.layer.closeAll();
-                //     // close();
-                // }
-                // else {
-                //     layer.alert("提交失败。");
-                //     $("#btnSave").removeAttr("disabled");
-                // };
+            success: function (res){
+                console.log(res);
+                if (res.code === 1 ) {
+                    // var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
+                    // parentWin.contentWindow.refresh();//刷新列表数据
+                    // parent.layer.closeAll();
+                    // parent.onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+                    close();
+                }
+                else {
+                    layer.alert("提交失败。");
+                    $("#btnSave").removeAttr("disabled");
+                };
             }
         });
     };
