@@ -55,6 +55,8 @@ $('#searchZtreeBtn').click(function() {
         zTreeObj.selectNode(node,true)
     });
 });
+
+//搜索用户
 $('#searchUserNameBtn').click(function() {
     var userName = $("#userName").val();
     var tag = $('.tag');
@@ -70,3 +72,14 @@ $('#searchUserNameBtn').click(function() {
         }
     })
 });
+
+layui.use('form', function(){
+    var form = layui.form;
+    form.on('submit(saveUser)', function(data){
+        var selectedUser = $.trim($('#selectedUser').html());
+        window.opener.document.getElementById('selectedUser').innerHTML=selectedUser;
+        window.close();
+        return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+    });
+});
+

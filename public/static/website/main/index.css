@@ -116,3 +116,14 @@ a{ text-decoration:none; color:#333;  }
 .operate .btn-wrap{
     float: right;
 }
+.tag{
+    display: inline-block;
+    margin: 5px;
+    padding: 0px 9px;
+    border-radius: 50px;
+    background: #00c0ef;
+    color: #fff;
+}
+.tag i.fa{
+    margin-left: 5px;
+}
