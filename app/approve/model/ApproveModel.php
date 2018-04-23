@@ -51,6 +51,63 @@ class ApproveModel extends Model
         }
     }
 
+    /**
+     * 审批
+     * @param $dataId
+     * @param $dataType
+     * @param $approveResult 审批结果：1、通过，-1、退回
+     * @param $approveMark
+     * @throws \think\exception\DbException
+     */
+    public function Approve($dataId, IApprove $dataType, $approveResult, $approveMark)
+    {
+        /// 审批逻辑：根据审批结果为通过或不通过 将业务数据标的CurrentApproverId修改为NextApproverId/PreApproverId，同时修改业务数据状态。
+        /// 通过，且下一步审核人为空，表示已结束，业务数据状态改为2，下一步审核人不为空，只需修改CurrentApproverId，状态不需要修改，仍在审批中
+        /// 不通过，CurrentApproverId修改为PreApproverId，状态修改为-1，标识已退回。
+        try {
+            $ApproveInfo = $this->getApproveInfo($dataId, new $dataType);
+            $approveStatus = 1;
+            $currentApproverId = $ApproveInfo->NextApproverId;
+            $currentStep = intval($ApproveInfo->CurrentStep) + 1;
+            $resultStr = "";
+            if ($approveResult == -1) {
+                //退回上一审批人
+                $currentApproverId = $ApproveInfo->PreApproverId;
+                $currentStep = intval($ApproveInfo->CurrentStep) - 1;
+                $approveStatus = $currentStep == 0 ? -1 : 1;
+                $resultStr = "未通过";
+            } else {
+                //审批通过，判断流程是否结束
+                if (empty($ApproveInfo->NextApproverId)) {
+                    //审批完成
+                    $approveStatus = 2;
+                }
+                $resultStr = "通过";
+            }
+            //更新数据
+            $dataType->UpdateApproveInfo($dataId, $currentApproverId, $currentStep, $approveStatus);
+            //记录审批历史
+            self::save([
+                'data_type' => $dataType,
+                'data_id' => $dataId,
+                'user_id' => Session::get('current_id'),
+                'create_time' => time(),
+                'result' => $resultStr,
+                'mark' => $approveMark
+            ]);
+            return true;
+        } catch (Exception $exception) {
+            return false;
+        }
+    }
+
+    /**
+     * 获取审批信息
+     * @param $dataId
+     * @param IApprove $dataType
+     * @return ApproveInfo|int
+     * @throws \think\exception\DbException
+     */
     public function getApproveInfo($dataId, IApprove $dataType)
     {
         //得到业务基本信息  user_id approverIds,CurrentApproverId,CurrentStep
@@ -67,6 +124,7 @@ class ApproveModel extends Model
         }
         $mod->PreApproverId = $info['user_id'];
         $mod->PreApproverName = Admin::get($info['user_id'])['nickname'];
+        $mod->CurrentStep = $info['CurrentStep'];
         return $mod;
     }
 
@@ -90,7 +148,7 @@ class ApproveModel extends Model
      */
     public function CheckBeforeSubmitOrApprove($dataId, IApprove $dataType, $currentStep)
     {
-        return $dataType->CheckBeforeSubmitOrApprove($dataId,$currentStep);
+        return $dataType->CheckBeforeSubmitOrApprove($dataId, $currentStep);
     }
 }
 

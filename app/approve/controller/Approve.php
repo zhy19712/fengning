@@ -56,7 +56,11 @@ class Approve extends Permissions
     {
         $par = input("param.");
         if ($this->request->isAjax()) {
-
+            if ($this->approveService->Approve($par['dataId'], new $par['dataType'], $par['res'], $par['mark'])) {
+                return json(['code' => 1]);
+            } else {
+                return json(['code' => -1]);
+            }
         }
         $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($par['dataId'], new $par['dataType'])));
         return $this->fetch();
@@ -68,9 +72,9 @@ class Approve extends Permissions
      * @param $dataType
      * @param $currentStep
      */
-    public function CheckBeforeSubmitOrApprove($dataId, $dataType,$currentStep)
+    public function CheckBeforeSubmitOrApprove($dataId, $dataType, $currentStep)
     {
-        $res=$this->approveService->CheckBeforeSubmitOrApprove($dataId,new $dataType,$currentStep);
+        $res = $this->approveService->CheckBeforeSubmitOrApprove($dataId, new $dataType, $currentStep);
         return $res;
     }
 

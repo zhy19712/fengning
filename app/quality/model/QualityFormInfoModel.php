@@ -20,9 +20,9 @@ class QualityFormInfoModel extends Model implements IApprove
 
     public function CurrentApprover()
     {
-        return $this->hasOne('app\admin\model\Admin','id','CurrentApproverId');
+        return $this->hasOne('app\admin\model\Admin', 'id', 'CurrentApproverId');
     }
-    
+
     /**
      * 提交审批业务关联逻辑
      * @param $dataId
@@ -57,7 +57,7 @@ class QualityFormInfoModel extends Model implements IApprove
         $users = array();
         if (sizeof($ids) > 0) {
             $adminService = new Admin();
-            $users = $adminService->whereIn('id', $ids)->column('id,nickname');
+            $users = $adminService->whereIn('id', $ids)->field('id,nickname')->select();
         }
         return $users;
     }
@@ -94,9 +94,27 @@ class QualityFormInfoModel extends Model implements IApprove
         $res = "";
         foreach ($options as $item) {
             if ($item['Step'] == $currentStep && (!empty($item['Required'])) && empty($item['Value'])) {
-                $res .= $item['Required']." ";
+                $res .= $item['Required'] . " ";
             }
         }
-        return trim($res,",");
+        return trim($res, ",");
     }
+
+    /**
+     * 更新审批信息
+     * @param $dataId
+     * @param $currentApproveId
+     * @param $currentStep
+     * @param $approveStatus
+     * @return mixed|void
+     */
+    public function UpdateApproveInfo($dataId, $currentApproveId, $currentStep, $approveStatus)
+    {
+        self::save([
+            'CurrentApproverId' => $currentApproveId,
+            'CurrentStep' => $currentStep,
+            'ApproveStatus' => $approveStatus
+        ]);
+    }
+
 }
