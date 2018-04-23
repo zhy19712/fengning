@@ -57,11 +57,7 @@ class QualityFormInfoModel extends Model implements IApprove
         $users = array();
         if (sizeof($ids) > 0) {
             $adminService = new Admin();
-            $users = $adminService->whereIn('id', $ids)->column('id,nickname');
-        }
-        $res = array();
-        foreach ($users as $user) {
-            $res[] = ['id'=>$user['id'],'nickname'=>$user['nickname']];
+            $users = $adminService->whereIn('id', $ids)->field('id,nickname')->select();
         }
         return $users;
     }
