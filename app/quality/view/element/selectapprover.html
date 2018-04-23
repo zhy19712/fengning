@@ -143,6 +143,7 @@
       };
 
         $(window.parent.document).find("#hiddenValUser").val(user);
+        parent.addPeople(user);
       //   if ($("#referFlow").val()) {
       //       var $referDom = $("#referDiv").find(".addpeople");
       //       if ($dom.length !== $referDom.length - 1) {
@@ -185,10 +186,7 @@
         data: {
           simpleData: {
             enable: true
-          },
-            // key: {
-            //     name: "nickname"
-            // }
+          }
         },
         callback: {
           onClick: onFrequentlyUsedTreeClick
