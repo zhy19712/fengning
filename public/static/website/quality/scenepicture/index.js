@@ -315,6 +315,10 @@ function conPosition(id) {
         shadeClose: true,
         title: "空间位置设置",
         area: ["90%", "90%"],
-        content: "./PositionSet?id=" + id
+        content: "./PositionSet?id=" + id,
+        success: function(layero, index){
+          var body = layer.getChildFrame('body', index);
+          body.find('input').val(positionUrl)
+        }
     });
 }

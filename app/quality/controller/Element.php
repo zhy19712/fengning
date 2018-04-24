@@ -183,7 +183,7 @@ class Element extends Permissions
         Settings::setTempDir('temp');
         $phpword = new PhpWord();
         $phpword = $phpword->loadTemplate($formPath);
-        $infos = $this->qualityFormInfoService->getFormInfo($cp['division_id']);
+        $infos = $this->qualityFormInfoService->getFormBaseInfo($cp['division_id']);
         foreach ($infos as $key => $value) {
             $phpword->setValue('{' . $key . '}', $value);
         }
@@ -201,6 +201,10 @@ class Element extends Permissions
         fclose($file);
     }
 
+    public function formDownload($formId)
+    {
+        return 1;
+    }
     public function printPDF($cpr_id)
     {
         //todo 暂缓
