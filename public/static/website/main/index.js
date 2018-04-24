@@ -133,3 +133,21 @@ function saveAttr() {
 function closeAttr(that) {
     $(that).parents('.layui-input-inline').remove();
 }
+
+$('#addRemark').click(function () {
+    var picture_id = uObjSubIDArr;
+    var remarkVal = $('#remark').text();
+    $.ajax({
+        url: "./addRemark",
+        type: "post",
+        data: {
+            picture_id:picture_id,
+            remark:remarkVal
+        },
+        dataType: "json",
+        success: function (res) {
+            layer.msg(res.msg);
+            alert(res.msg);
+        }
+    })
+});
