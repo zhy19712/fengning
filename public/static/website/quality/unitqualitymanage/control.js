@@ -208,12 +208,15 @@ function download(that) {
         url:'../../fileDownload',
         data:{
             id:id
+        },
+        success: function (res) {
+            layer.msg(res.msg);
         }
     });
 }
 
 //打印
-function download(that) {
+function print(that) {
     var id = $(that).attr('uid');
     $.ajax({
         url: "../../printDocument",
@@ -223,7 +226,7 @@ function download(that) {
         },
         dataType: "json",
         success: function (res) {
-
+            layer.msg(res.msg);
         }
     })
 }
