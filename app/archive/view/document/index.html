@@ -745,6 +745,7 @@
                 layer.msg("请先选择一条数据！", {time: 1500, shade: 0.1});
                 return;
             }else {
+                document.cookie="unitId="+clickId;
                 window.open('./association');
             }
         });
@@ -1031,6 +1032,9 @@
                     }
                     $("#downInfo").append(strTr);
                     // }
+                    if(res.code == 0){
+                        layer.msg('历史记录' + res.msg);
+                    }
                 }
             })
         }
@@ -1162,7 +1166,10 @@
                 url:"{:url('document/getOne')}",
                 data:{id:id},
                 success: function (res) {
-                    // console.log(res)
+                    console.log(res);
+                    if(res.code == 0){
+                        layer.msg('获取一条数据' + res.msg);
+                    }
                     $("#fileName").text(res.name);
                     $("#fileCategory").text(treefileCategory);
                     $("#uploadPerson").text(uploadPle);
