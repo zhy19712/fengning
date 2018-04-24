@@ -35,8 +35,13 @@ class PictureModel extends Model
     public function getAllName()
     {
         // picture_type  1工程划分模型 2 建筑模型 3三D模型
-        $data = $this->where('picture_type',1)->field('id as picture_id,picture_number,picture_name')->select();
-        return $data;
+        $data = $this->where('picture_type',1)->column('id as picture_id,picture_number,picture_name');
+        $str = '';
+        foreach ($data as $v) {
+            $str .= '{ "id": "' . $v['picture_id'] . '", "pId":"' . 0 . '", "name":"' . $v['picture_name'] . '"' . ',"picture_number":"'.$v['picture_number'].'"' . ',"picture_id":"'.$v['picture_id'].'"';
+            $str .= '},';
+        }
+        return "[" . substr($str, 0, -1) . "]";
     }
 
 }

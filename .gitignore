@@ -3,3 +3,4 @@ runtime/*
 .idea/*
 vendor/*
 /public/uploads
+/public/temp

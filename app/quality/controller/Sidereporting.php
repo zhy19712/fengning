@@ -302,4 +302,31 @@ class Sidereporting extends Permissions
             return $flag;
         }
     }
+    /***************************************三维模型******************/
+    /**
+     * 模板首页
+     * @return mixed
+     */
+    public function positionset()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 编辑一条现场图片位置信息
+     */
+    public function editPosition()
+    {
+        if(request()->isAjax()){
+            //实例化模型类
+            $model = new SideReportingModel();
+            $param = input('post.');
+            $data = [
+                'id' => $param['id'],//现场图片自增id
+                'position' => $param['position']//位置信息
+            ];
+            $flag = $model->editSide($data);
+            return json($flag);
+        }
+    }
 }

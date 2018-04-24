@@ -67,6 +67,15 @@ class Approve extends Permissions
     }
 
     /**
+     * 审批历史
+     * @return mixed
+     */
+    public function ApproveHistory()
+    {
+        return $this->fetch();
+    }
+
+    /**
      * 业务数据完整性检测
      * @param $dataId
      * @param $dataType
