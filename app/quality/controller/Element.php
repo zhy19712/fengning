@@ -162,6 +162,15 @@ class Element extends Permissions
         }
     }
 
+    /**
+     * 控制点模板下载
+     * @param $cpr_id
+     * @return string
+     * @throws \PhpOffice\PhpWord\Exception\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function download($cpr_id)
     {
         $cp = $this->divisionControlPointService->with('ControlPoint')->where('id', $cpr_id)->find();
