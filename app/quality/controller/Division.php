@@ -756,7 +756,7 @@ class Division extends Permissions{
                 return json(['code' => 0,'msg' => '参数有误']);
             }
             // 是否已经关联过 picture_type  1工程划分模型 2 建筑模型 3三D模型
-            $is_related = Db::name('quality_model_picture_relation')->where(['picture_type'=>1,'relevance_id'=>$relevance_id,'picture_id'=>$picture_id])->value('id');
+            $is_related = Db::name('quality_model_picture_relation')->where(['type'=>1,'relevance_id'=>$relevance_id,'picture_id'=>$picture_id])->value('id');
             if(empty($is_related)){
                 $data['type'] = 1;
                 $data['relevance_id'] = $relevance_id;
