@@ -201,10 +201,51 @@ class Element extends Permissions
         fclose($file);
     }
 
+    /**
+     * 下载表单
+     * @param $formId
+     * @return string
+     * @throws \PhpOffice\PhpWord\Exception\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function formDownload($formId)
     {
-        return 1;
+        $cp = $this->qualityFormInfoService->with('ControlPoint')->where('id', $formId)->find();
+        $formPath = ROOT_PATH . 'public' . DS . "data\\form\\quality\\" . $cp['ControlPoint']['code'] . $cp['ControlPoint']['name'] . ".docx";
+        $formPath = iconv('UTF-8', 'GB2312', $formPath);
+        if (!file_exists($formPath)) {
+            return "文件不存在";
+        }
+        //设置临时文件，避免C盘Temp不可写报错
+        Settings::setTempDir('temp');
+        $phpword = new PhpWord();
+        $phpword = $phpword->loadTemplate($formPath);
+        $infos = $this->qualityFormInfoService->getFormBaseInfo($cp['DivisionId']);
+        foreach ($infos as $key => $value) {
+            $phpword->setValue('{' . $key . '}', $value);
+        }
+        $formInfo = unserialize($cp['form_data']);
+        foreach ($formInfo as $item) {
+            $phpword->setValue('{' . $item['Name'] . '}', $item['Value']);
+        }
+        $docname = $phpword->save();
+
+
+        header('Content-Disposition: attachment; filename="' . $cp['ControlPoint']['code'] . $cp['ControlPoint']['name'] . '.docx"');
+        //header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Transfer-Encoding: binary');
+        header("Content-type:application/octet-stream ");
+        header("Accept-Ranges:bytes ");
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
+
+        $file = fopen($docname, 'r');
+        echo fread($file, filesize($docname));
+        fclose($file);
     }
+
     public function printPDF($cpr_id)
     {
         //todo 暂缓

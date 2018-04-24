@@ -41,6 +41,15 @@ class QualityFormInfoModel extends Model implements IApprove
     }
 
     /**
+     * 控制点信息
+     * @return \think\model\relation\HasOne
+     */
+    public function ControlPoint()
+    {
+        return $this->hasOne('app\standard\model\ControlPoint', 'id', 'ControlPointId');
+    }
+
+    /**
      * 获取表单基本信息
      * @param $qualityUnit_id 检验批
      */
@@ -73,10 +82,19 @@ class QualityFormInfoModel extends Model implements IApprove
         return $output;
     }
 
+    /**
+     * 获取表单内信息
+     * @param $formId
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getFormInfo($formId)
     {
         return self::where(['id' => $formId])->find()['form_data'];
     }
+
     /**
      * 获取工程依据信息
      * @param $ids
