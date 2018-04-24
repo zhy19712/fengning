@@ -756,17 +756,19 @@ class Division extends Permissions{
                 return json(['code' => 0,'msg' => '参数有误']);
             }
             // 是否已经关联过 picture_type  1工程划分模型 2 建筑模型 3三D模型
-            $is_related = Db::name('quality_model_picture_relation')->where(['type'=>1,'relevance_id'=>$relevance_id,'picture_id'=>$picture_id])->value('id');
+            $is_related = Db::name('quality_model_picture_relation')->where(['type'=>1,'relevance_id'=>$relevance_id])->value('id');
+            $data['type'] = 1;
+            $data['relevance_id'] = $relevance_id;
+            $data['picture_id'] = $picture_id;
+            $picture = new PictureRelationModel();
             if(empty($is_related)){
-                $data['type'] = 1;
-                $data['relevance_id'] = $relevance_id;
-                $data['picture_id'] = $picture_id;
-                $picture = new PictureRelationModel();
                 // 关联模型图 一对一关联
                 $flag = $picture->insertTb($data);
                 return json($flag);
             }else{
-                return json(['code' => 0,'msg' => '已经关联过']);
+                $data['id'] = $is_related;
+                $flag = $picture->editTb($data);
+                return json($flag);
             }
         }
     }

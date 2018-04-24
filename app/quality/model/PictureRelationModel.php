@@ -33,6 +33,21 @@ class PictureRelationModel extends Model
         }
     }
 
+    public function editTb($param)
+    {
+        try {
+            $result = $this->allowField(true)->save($param, ['id' => $param['id']]);
+            if (false === $result) {
+                return ['code' => -1, 'msg' => $this->getError()];
+            } else {
+                return ['code' => 1, 'msg' => '关联成功'];
+            }
+        } catch (PDOException $e) {
+            return ['code' => 0, 'msg' => $e->getMessage()];
+        }
+    }
+
+
     public function getAllNumber($id)
     {
         // 获取 工程划分 或者 单元工程段号 关联 的模型图
