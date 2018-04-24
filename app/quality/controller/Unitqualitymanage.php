@@ -322,7 +322,7 @@ class Unitqualitymanage extends Permissions
             $old_existed = Db::name('quality_division_controlpoint_relation')->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id])->column('control_id');
             $new_add= array_diff($idArr,$old_existed);
             if(empty($new_add)){
-                json(['code'=>1,'msg'=>'已经添加过']);
+                return json(['code'=>1,'msg'=>'已经添加过']);
             }
             $data = [];
             foreach ($new_add as $k=>$v){
