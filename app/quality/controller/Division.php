@@ -771,6 +771,8 @@ class Division extends Permissions{
         }
     }
 
+    // 此方法只是临时 导入模型图 编号和名称的 txt文件时使用
+    // 不存在于 功能列表里面 后期可以删除掉
     // 获取txt文件内容并插入到数据库中 insertTxtContent
     public function insertTxtContent()
     {
