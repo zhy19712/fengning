@@ -3,7 +3,7 @@ body{
 	padding: 0px;
 }
 .bg{
-	background-image: url('../images/login/dh_login_bg.png');
+	background-image: url('../../static/public/images/login/dh_login_bg.png');
 	background-size: 100%,100%;
 	border:0px;
 }
@@ -16,7 +16,7 @@ body{
 	top:120px;
 	height: 1px;
 	width:100%;
-	background-image: url('../images/login/dh_line.png');
+	background-image: url('../../static/public/images/login/dh_line.png');
 }
 .bottom_line{
 	border:0px;
@@ -26,11 +26,11 @@ body{
 	color: #217566;
 	height: 1px;
 	width:100%;
-	background-image: url('../images/login/dh_line.png');
+	background-image: url('../../static/public/images/login/dh_line.png');
 }
 .logo{
 	position: absolute;
-	background-image: url('../images/login/Logo.png');
+	background-image: url('../../static/public/images/login/Logo.png');
 	background-repeat: repeat-x;
 	width: 466px;
 	height: 60px;
@@ -40,7 +40,7 @@ body{
 }
 .loginimg{
 	position: absolute;
-	background-image: url('../images/login/dh_loginframe_bg.png');
+	background-image: url('../../static/public/images/login/dh_loginframe_bg.png');
 	width: 384px;
 	height: 260px;
 	top: 50%;
@@ -50,7 +50,7 @@ body{
 }
 .logintable{
 	position: relative;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "Î¢ï¿½ï¿½ï¿½Åºï¿½";
 	width: 300px;
 	height: 100px;
 	top: 50%;
@@ -62,7 +62,7 @@ body{
 	height: 40px;
 }
 .login_button{
-	background-image: url('../images/login/dh_login_zc.png');
+	background-image: url('../../static/public/images/login/dh_login_zc.png');
 	width: 190px;
 	height: 26px;
 	margin-top: 30px;
@@ -77,7 +77,7 @@ body{
 	text-align: center;
 	background: #217566;
 	color: #fff;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "Î¢ï¿½ï¿½ï¿½Åºï¿½";
 	width: 100%;
 	border:0px;
 	bottom:0px;

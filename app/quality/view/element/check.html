@@ -80,10 +80,10 @@
     #tableContent .dataTables_wrapper .dataTables_scroll {
         position: relative;
     }
-    #tableContent .even {
+    #tableContent .even, #unitWorkRightBottom .even {
         background-color: #ffffff;
     }
-    #tableContent .odd {
+    #tableContent .odd, #unitWorkRightBottom .odd {
         background-color: #f9f9f9;
     }
     #tableContent .imgList {
@@ -172,10 +172,10 @@
     /*#tableItem_wrapper{*/
         /*height: calc(100% - 230px);*/
     /*}*/
-    #tableContent .dataTables_scroll{
+    #tableContent .dataTables_scroll,#unitWorkRightBottom .dataTables_scroll{
         height: 100%;
     }
-    #tableContent .dataTables_scrollBody{
+    #tableContent .dataTables_scrollBody,#unitWorkRightBottom .dataTables_scrollBody{
         max-height: none!important;
         width: 100%;
         height: calc(100% - 39px)!important;
@@ -183,6 +183,9 @@
     }
     .dataTables_scrollHeadInner,#tableItem_wrapper table,#imageData_wrapper table, #implementation_wrapper table{
         width: 100% !important;
+    }
+    #implementation_wrapper, #imageData_wrapper{
+        height: 100% !important;
     }
 
 </style>
