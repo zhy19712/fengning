@@ -22,7 +22,12 @@
         margin-right: 15px;
         float: right;
     }
-
+    #Text1
+    {width: 87px; height: 20px;}
+    #TextAnchorName
+    {
+        width: 100px;
+    }
     </style>
 </head>
 <body>
@@ -38,6 +43,8 @@
 
     </div>
 </div>
+<!--<object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%">-->
+<!--</object>-->
 <script>
   var str=location.search;
   str=str.substr(1); //取得所有参数   stringvar.substr(start [, length ]
@@ -88,6 +95,7 @@
 
 <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
   RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
+  // RealBimOcx.SwitchBIMSceneSimple("E:\\","res_fengning_kw_03");
 
   RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
 
@@ -108,12 +116,17 @@
     data: {"id": positionid },
     success: function (res) {
       console.log(res.data.position)
-      // if(res.data.position==0){
-      //   console.log(11)
-      //   RealBimOcx.ShowSnapshotOrMarkerInMem('');
-      // }else{
-      //   RealBimOcx.ShowSnapshotOrMarkerInMem(res.position);
-      // }
+      if(res.data.position==0){
+        console.log(11)
+      }else{
+        // RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
+        // RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
+        // RealBimOcx.SetHugeObjSubValidStateInfo(res.data.position, 1); //设置单个模型可见
+        // RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
+        RealBimOcx.ShowSnapshotOrMarkerInMem(res.data.position);
+        // RealBimOcx.SetSuitableCam();
+        // RealBimOcx.FocusCameraToComponent(res.data.position,1); //3：视角距离
+      }
     }
   });
 </script>
