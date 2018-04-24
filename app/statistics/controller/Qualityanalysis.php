@@ -51,13 +51,9 @@ class Qualityanalysis extends Permissions
             $i = true;
             $timeline[] = $NewMonth;//时间
 
-            $excellentMonth[] = 50;//优良率
-
-            $rate[] = array("excellent_number"=>70,"qualified_number"=>20);//优良单元数量，合格单元数量
         }
 
        array_pop($timeline);
-
 
 
         foreach($timeline as $keee=>$vaaa)
@@ -69,9 +65,16 @@ class Qualityanalysis extends Permissions
                 //结束日期
                 $end = mktime(23,59,59,date('m',strtotime($vaaa)),date('t'),date('Y',strtotime($vaaa)));
 
-                 $info[] = Db::name('quality_form_info')->field("form_data,id,create_time")->where("form_name like '%等级评定表%'")->where("create_time >= ".$start. " AND create_time <= ".$end)->select();
+                $temp_info_data= Db::name('quality_form_info')->field("form_data,id,create_time")->where("form_name like '%等级评定表%'")->where("create_time >= ".$start. " AND create_time <= ".$end)->select();
+                if($temp_info_data)
+                {
+                    $info[] = $temp_info_data;
+                }else
+                {
+                    $info[] = [];
+                }
 
-      }
+        }
 
 
 
@@ -79,38 +82,37 @@ class Qualityanalysis extends Permissions
         {
             foreach ($va as $kee=>$vaa)
             {
-                $info_data[$ke][$kee]=(unserialize($vaa["form_data"]));
+                $info[$ke][$kee]=(unserialize($vaa["form_data"]));
             }
         }
 
 
-        foreach($info_data as $a=>$b)
+        foreach($info as $a=>$b)
         {
             foreach($b as $c=>$d)
             {
-                $info_data[$a][$c] = ($d[count($d)-9]);
+                $info[$a][$c] = ($d[count($d)-9]);
             }
 
         }
-        //定义一个空的数组
-        $form_data = array();
-        foreach($info_data as $l=>$m)
+
+        foreach($info as $l=>$m)
         {
-            $info_data[$l]['changdu'] = count($m);//数组的长度
             foreach($m as $x=>$y)
             {
                if($y["Step"] == 3)
                {
-                   $form_data[$l][$x] = $y;
+                   $info[$l][$x] = $y;
                }
             }
 
         }
 
+
         //定义一个空的数组
         $form_result = array();
         $count_number = array();
-        foreach ($form_data as $o=>$p)
+        foreach ($info as $o=>$p)
         {
             $count = array_count_values(array_column($p,"Value"));//统计优良、合格、不合格的数量
             if(isset($count["优良"]) && isset($count["合格"]))
@@ -140,6 +142,14 @@ class Qualityanalysis extends Permissions
                 $count["优良"] = $count["优良"]?$count["优良"]:0;
                 //计算优良率，合格率不合格率
                 $form_result[$o]['excellent'] = round($count["优良"]/($count["优良"] + 0) * 100);//优良率
+                $form_result[$o]['qualified'] = 0;//合格率
+            }else
+            {
+                $count_number["excellent_number"] = 0;
+                $count_number["qualified_number"] = 0;
+                $form_result[$o]['count'] = $count_number;
+                //计算优良率，合格率不合格率
+                $form_result[$o]['excellent'] = 0;//优良率
                 $form_result[$o]['qualified'] = 0;//合格率
             }
 

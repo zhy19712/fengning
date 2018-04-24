@@ -289,25 +289,32 @@
         dataType:"JSON",
         success:function (res) {
             if(res.code===1){
-                section = res.result.section; //标段
+              ////标段
+                section = res.result.section;
+                form_result_result = res.result.form_result_result
+                total =[];
+                totalNumber = [];
                 for(var m = 0; m<section.length;m++){
-                    excellent[m] = res.result.section_rate[m].excellent_number;//优良率
-                    qualified[m] = res.result.section_rate[m].qualified_number;//合格率
-                    excellentNumber[m] = res.result.section_rate_number[m].excellent_number;//合格数
-                    qualifiedNumber[m] = res.result.section_rate_number[m].qualified_number;//合格数
+                    excellent[m] = form_result_result[m].excellent;//优良率
+                    qualified[m] = form_result_result[m].qualified;//合格率
+                    excellentNumber[m] = form_result_result[m].section_rate_number.excellent_number;//合格数
+                    qualifiedNumber[m] = form_result_result[m].section_rate_number.qualified_number;//合格数
+                    total.push(form_result_result[m].total_rate);//合计率
+                    totalNumber.push(form_result_result[m].section_rate_number.total); //合计数
                 }
-                total = res.result.total; //合计率
-                totalNumber = res.result.total_number; //合计率
+
+              //折线图
+                form_result = res.data.form_result;
                 timeline = res.data.timeline; //月
-                excellentMonth = res.data.excellentMonth;//月优良率
-                for(var k = 0; k<res.data.rate.length;k++){
+                for(var k = 0; k<form_result.length;k++){
                     dataMonthNumber[k]=[];
                      dataMonthNumber[k][0]={};
                      dataMonthNumber[k][1]={};
-                     dataMonthNumber[k][0].value = res.data.rate[k].excellent_number;
-                     dataMonthNumber[k][1].value = res.data.rate[k].qualified_number;
+                     dataMonthNumber[k][0].value = form_result[k].count.excellent_number;
+                     dataMonthNumber[k][1].value = form_result[k].count.qualified_number;
                      dataMonthNumber[k][0].name = '优良单元数量';
                      dataMonthNumber[k][1].name = '合格单元数量';
+                     excellentMonth.push(form_result[k].excellent); //月优良率
                  }
                 getInit()//初始化
             }
