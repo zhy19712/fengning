@@ -761,7 +761,7 @@ class Division extends Permissions{
                 $data['type'] = 1;
                 $data['relevance_id'] = $relevance_id;
                 $data['picture_id'] = $picture_id;
-                $picture = new PictureModel();
+                $picture = new PictureRelationModel();
                 // 关联模型图 一对一关联
                 $flag = $picture->insertTb($data);
                 return json($flag);
