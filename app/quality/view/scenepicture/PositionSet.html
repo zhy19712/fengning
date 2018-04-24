@@ -95,7 +95,6 @@
 
 <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
   RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
-  // RealBimOcx.SwitchBIMSceneSimple("E:\\","res_fengning_kw_03");
 
   RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
 
@@ -107,29 +106,26 @@
 <script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
   if(CompleteEvent == "LoadMainScene" && retError==0 ){
     RealBimOcx.SetAllHugeObjSubValidState(1);
-    // RealBimOcx.SetAllHugeObjSubValidState(0);
     RealBimOcx.SetSceHugeObjVisible(true);
-  }
-  $.ajax({
-    type: "Post",
-    url: "./getindex",
-    data: {"id": positionid },
-    success: function (res) {
-      console.log(res.data.position)
-      if(res.data.position==0){
-        console.log(11)
-      }else{
-        // RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
-        // RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
-        // RealBimOcx.SetHugeObjSubValidStateInfo(res.data.position, 1); //设置单个模型可见
-        // RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
-        RealBimOcx.ShowSnapshotOrMarkerInMem(res.data.position);
-        // RealBimOcx.SetSuitableCam();
-        // RealBimOcx.FocusCameraToComponent(res.data.position,1); //3：视角距离
+    RealBimOcx.SetAllHugeObjSubValidState(0);
+    $.ajax({
+      type: "Post",
+      url: "./getindex",
+      data: {"id": positionid },
+      success: function (res) {
+        if(res.data.position==0){
+          RealBimOcx.SetSuitableCam();
+        }else{
+          RealBimOcx.ShowSnapshotOrMarkerInMem(res.data.position);
+        }
       }
-    }
-  });
+    });
+  }
 </script>
+
+
+
+
 
 
 </body>

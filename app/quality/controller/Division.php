@@ -796,8 +796,8 @@ class Division extends Permissions{
 
         $data = [];
         foreach ($new_contents as $k=>$val){
-            $data[$k]['picture_name'] = next($val);
-            $data[$k]['picture_number'] = next($val);
+            $data[$k]['picture_name'] = trim(next($val));
+            $data[$k]['picture_number'] = trim(next($val));
         }
 
         array_pop($data);
