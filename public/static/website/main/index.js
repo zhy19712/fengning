@@ -1,14 +1,14 @@
-window.isCtrlDown = false;
+isCtrlDown = false;
 $(document).keydown(function (event) {
     var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
     if(KeyCode==17){
-        window.isCtrlDown = true;
+        isCtrlDown = true;
     }
 });
 $(document).keyup(function (event) {
     var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
     if(KeyCode==17){
-        window.isCtrlDown = false;
+        isCtrlDown = false;
     }
 })
 
@@ -94,4 +94,18 @@ $.upload({
 
 $('#at').click(function () {
     window.open("./selectperson", "人员选择", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+});
+
+$('#addAttr').click(function () {
+    var attrGroup = [];
+    attrGroup.push('<div class="layui-input-inline">');
+    attrGroup.push('<input type="text" name="title" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
+    attrGroup.push('<input type="text" name="title" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
+    attrGroup.push('<div class="layui-form-mid layui-word-aux">');
+    attrGroup.push('<i class="fa fa-check"></i>');
+    attrGroup.push('<i class="fa fa-close"></i>');
+    attrGroup.push('</div>');
+    attrGroup.push('</div>');
+
+    $('#attrGroup').append(attrGroup.join(' '));
 });

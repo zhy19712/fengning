@@ -8,30 +8,64 @@
                               <li uid="baseAttr" class="active">基本属性</li>
                               <li uid="manageAttr">管理属性</li>
                           </ul>
-                          <div class="baseAttrWrap" id="baseAttr" style="display: none">
+                          <div class="baseAttrWrap" id="baseAttr">
                               <div class="layui-collapse" id="baseAttrCon" style="display: none">
                                   <div class="layui-colla-item">
                                       <h2 class="layui-colla-title">常规属性</h2>
-                                      <div class="layui-colla-content layui-show">内容区域</div>
+                                      <div class="layui-colla-content layui-show" id="attrCon"></div>
                                   </div>
                                   <div class="layui-colla-item">
                                       <h2 class="layui-colla-title">其他</h2>
-                                      <div class="layui-colla-content">内容区域</div>
+                                      <div class="layui-colla-content" id="otherAttrCon"></div>
+                                  </div>
+                              </div>
+                              <div class="customAttrWrap" id="manageAttr">
+                                  <div class="custom-attr customAttr">
+                                      <form action="" class="layui-form">
+                                          <div class="layui-form-item">
+                                              <span class="layui-form-label">自定义属性</span>
+                                              <a href="javascript:;" class="layui-form-mid layui-word-aux" id="addAttr"><i class="fa fa-plus"></i></a>
+                                          </div>
+                                          <div class="layui-form-item attr-group" id="attrGroup"></div>
+                                          <div class="layui-form-item">
+                                              <span class="layui-form-label">备注信息</span>
+                                              <a href="javascript:;" class="layui-form-mid layui-word-aux"><i class="fa fa-check"></i></a>
+                                              <div class="layui-input-block">
+                                                  <textarea name="remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                              </div>
+                                          </div>
+                                      </form>
                                   </div>
                               </div>
                           </div>
                           <div class="customAttrWrap" id="manageAttr" style="display: none">
-                              <div class="customAttr">
-                                  <h2>
-                                      <span>自定义属性</span>
-                                      <a href="javascript:;"><i class="fa fa-plus"></i></a>
-                                  </h2>
-                                  <div class="addCustomAttr"></div>
+                              <div class="custom-attr customAttr">
+                                  <form action="" class="layui-form">
+                                      <div class="layui-form-item">
+                                          <span class="layui-form-label">自定义属性</span>
+                                          <a href="javascript:;" class="layui-form-mid layui-word-aux" id="addAttr"><i class="fa fa-plus"></i></a>
+                                      </div>
+                                      <div class="layui-form-item">
+                                          <div class="layui-input-inline">
+                                              <input type="text" name="title" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">
+                                          </div>
+                                          <div class="layui-input-inline">
+                                              <input type="text" name="title" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">
+                                          </div>
+                                      </div>
+                                      <div class="layui-form-item">
+                                          <span class="layui-form-label">备注信息</span>
+                                          <a href="javascript:;" class="layui-form-mid layui-word-aux"><i class="fa fa-plus"></i></a>
+                                          <div class="layui-input-block">
+                                              <textarea name="remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                          </div>
+                                      </div>
+                                  </form>
                               </div>
                           </div>
                       </div>
                       <div class="add-tag addTag">
-                          <h2>基本信息</h2>
+                          <h2>基本属性</h2>
                           <form class="layui-form">
                               <div class="layui-form-item">
                                   <label class="layui-form-label">创建人</label>
@@ -55,8 +89,8 @@
                           </form>
                       </div>
                   </div>
-                  <div title="讨论" style="overflow:auto;padding:20px;display:none;">
-                      <form action="" class="layui-form">
+                  <!--<div title="讨论" style="overflow:auto;padding:20px;">
+                      <form class="layui-form" id="comment" style="display: none">
                           <div class="layui-form-item layui-form-text">
                               <div class="layui-input-inline">
                                   <textarea name="msg" placeholder="请输入内容" class="layui-textarea"></textarea>
@@ -77,38 +111,35 @@
                   </div>
                   <div title="附件" style="overflow:auto;padding:20px;display:none;">
                         tab3
-                  </div>
+                  </div>-->
                   <div title="二维码" style="overflow:auto;padding:20px;display:none;">
                         tab4
                   </div>
             </div>
       </div>
-      <div data-options="region:'west',title:'管理视图',split:true" style="width:200px;"></div>
+      <!--<div data-options="region:'west',title:'管理视图',split:true" style="width:200px;"></div>-->
       <div data-options="region:'center',title:''" class="centent">
             <div class="easyui-layout" data-options="fit:true">
                   <div data-options="region:'center',title:''" style="padding:5px;">
                         <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
-                            var uObjSubIDArr = [];
-                            if(!window.isCtrlDown){
+                            $('#comment').show();//展示基本属性信息
+                            uObjSubIDArr = [];
+                            if(!isCtrlDown){
                                 RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
                                 RealBimOcx.BatchAddSubClrInfoBegin();
-                                RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ff0000);
+                                RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
                                 uObjSubIDArr.push(uObjSubID);
                                 RealBimOcx.BatchAddSubClrInfoEnd();
                                 $('#baseAttrCon').show();//展示基本属性信息
                                 console.log(111);
                             }else{
                                 RealBimOcx.BatchAddSubClrInfoBegin();
-                                RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ff0000);
+                                RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);   //第二个参数为透明度
                                 uObjSubIDArr.push(uObjSubID);
                                 RealBimOcx.BatchAddSubClrInfoEnd();
                                 console.log(222);
+                                console.log(uObjSubIDArr);//模型ID
                             }
-
-
-
-
-                            console.log(uObjSubIDArr);//模型ID
                         </script>
                         <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
                         <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
