@@ -12,10 +12,6 @@
  */
 namespace app\statistics\controller;
 use app\admin\controller\Permissions;
-use app\quality\model\DivisionModel;//工程划分
-use \think\Session;
-use think\exception\PDOException;
-use think\Loader;
 use think\Db;
 
 class Qualityanalysis extends Permissions
@@ -42,12 +38,8 @@ class Qualityanalysis extends Permissions
         $timeline = array();
         $excellentMonth = array();
         $rate = array();
-        $section_rate = array();
-        $total = array();
-        $total_number = array();
         $info = array();
         $info_data = array();
-        $result_data = array();
         $StartMonth = date("Y-m-d",$date); //开始日期
         $EndMonth = date("Y-m-d"); //结束日期
         $ToStartMonth = strtotime( $StartMonth ); //转换一下
@@ -58,84 +50,229 @@ class Qualityanalysis extends Permissions
             $ToStartMonth = strtotime( $NewMonth );
             $i = true;
             $timeline[] = $NewMonth;//时间
-            $section = Db::name("section")->column("id");//标段名
-            foreach($section as $key=>$val)
-            {
-                $info[] = Db::name('quality_form_info')->alias('r')
-                    ->join('quality_unit u', 'u.id = r.DivisionId', 'left')
-                    ->join('quality_division c','c.id=u.division_id','left')
-                    ->join('section s', 'c.section_id = s.id', 'left')
-                    ->where('s.id',$val)->field("r.form_data")->select();
-            }
 
             $excellentMonth[] = 50;//优良率
 
             $rate[] = array("excellent_number"=>70,"qualified_number"=>20);//优良单元数量，合格单元数量
         }
 
+       array_pop($timeline);
+
+
+
+        foreach($timeline as $keee=>$vaaa)
+        {
+
+                //开始日期
+                $start = mktime(0,0,0,date("m",strtotime($vaaa)),1,date("Y",strtotime($vaaa)));
+
+                //结束日期
+                $end = mktime(23,59,59,date('m',strtotime($vaaa)),date('t'),date('Y',strtotime($vaaa)));
+
+                 $info[] = Db::name('quality_form_info')->field("form_data,id,create_time")->where("form_name like '%等级评定表%'")->where("create_time >= ".$start. " AND create_time <= ".$end)->select();
+
+      }
+
+
+
         foreach($info as $ke=>$va)
         {
             foreach ($va as $kee=>$vaa)
             {
-                $info_data[]=(unserialize($vaa["form_data"]));
+                $info_data[$ke][$kee]=(unserialize($vaa["form_data"]));
             }
         }
 
 
         foreach($info_data as $a=>$b)
         {
-            $result_data[]=($b[count($b)-9]);
+            foreach($b as $c=>$d)
+            {
+                $info_data[$a][$c] = ($d[count($d)-9]);
+            }
+
+        }
+        //定义一个空的数组
+        $form_data = array();
+        foreach($info_data as $l=>$m)
+        {
+            $info_data[$l]['changdu'] = count($m);//数组的长度
+            foreach($m as $x=>$y)
+            {
+               if($y["Step"] == 3)
+               {
+                   $form_data[$l][$x] = $y;
+               }
+            }
+
         }
 
+        //定义一个空的数组
+        $form_result = array();
+        $count_number = array();
+        foreach ($form_data as $o=>$p)
+        {
+            $count = array_count_values(array_column($p,"Value"));//统计优良、合格、不合格的数量
+            if(isset($count["优良"]) && isset($count["合格"]))
+            {
+                $count_number["excellent_number"] = $count["优良"];
+                $count_number["qualified_number"] = $count["合格"];
+                $form_result[$o]['count'] = $count_number;
+                $count["优良"] = $count["优良"]?$count["优良"]:0;
+                $count["合格"] = $count["合格"]?$count["合格"]:0;
+                //计算优良率，合格率不合格率
+                $form_result[$o]['excellent'] = round($count["优良"]/($count["优良"] + $count["合格"]) * 100);//优良率
+                $form_result[$o]['qualified'] = round($count["合格"]/($count["优良"] + $count["合格"]) * 100);//合格率
+            }else if(!isset($count["优良"]) && isset($count["合格"]))
+            {
+                $count_number["excellent_number"] = 0;
+                $count_number["qualified_number"] = $count["合格"];
+                $form_result[$o]['count'] = $count_number;
+                $count["合格"] = $count["合格"]?$count["合格"]:0;
+                //计算优良率，合格率不合格率
+                $form_result[$o]['excellent'] = 0;//优良率
+                $form_result[$o]['qualified'] = round($count["合格"]/(0 + $count["合格"]) * 100);//合格率
+            }else if(isset($count["优良"]) && !isset($count["合格"]))
+            {
+                $count_number["excellent_number"] = $count["优良"];
+                $count_number["qualified_number"] = 0;
+                $form_result[$o]['count'] = $count_number;
+                $count["优良"] = $count["优良"]?$count["优良"]:0;
+                //计算优良率，合格率不合格率
+                $form_result[$o]['excellent'] = round($count["优良"]/($count["优良"] + 0) * 100);//优良率
+                $form_result[$o]['qualified'] = 0;//合格率
+            }
 
 
+
+        }
+
+        //定义空数组
+        $section_form_data = array();
 
         //柱状图
-        $section = Db::name("section")->column("name");//标段名
-        foreach($section as $k=>$v)
+        $section = Db::name("section")->column("name,id");//标段名
+        foreach ($section as $aa=>$bb)
         {
-            $section_rate_number[] = array("excellent_number"=>70,"qualified_number"=>20);//优良单元数量，合格单元数量
-
-            $total_number[] = 100;//总量
-
-            $section_rate[] = array("excellent_number"=>70,"qualified_number"=>20);//优良率，合格率
-
-            $total[] = 70+20;//总计 = 优良率+合格率
+            $section_name[]=$aa;
         }
 
-        $result = ["section"=>$section,"section_rate_number"=>$section_rate_number,"total_number"=>$total_number,"section_rate"=>$section_rate,"total"=>$total];
-        $data = ["timeline"=>$timeline,"excellentMonth"=>$excellentMonth,"rate"=>$rate];
+        foreach($section as $cc =>$dd)
+        {
 
+               $temp_data = Db::name('quality_form_info')->alias('r')
+                ->join('quality_unit u', 'u.id = r.DivisionId', 'left')
+                ->join('quality_division c','c.id=u.division_id','left')
+                ->join('section s', 'c.section_id = s.id', 'left')
+                ->where('s.id',$dd)
+                ->where("r.form_name like '%等级评定表%'")
+                ->field("r.form_data,r.id,r.create_time,s.id as section_id")->order("s.id asc")->select();
+
+            if($temp_data)
+            {
+                $section_form_data[]  = $temp_data;
+            }else
+            {
+                $section_form_data[]  = [];
+            }
+        }
+
+
+        foreach($section_form_data as $ee=>$ff)
+        {
+            foreach ($ff as $gg=>$hh)
+            {
+                $section_form_data[$ee][$gg]= (unserialize($hh["form_data"]));
+            }
+        }
+
+
+
+        foreach($section_form_data as $ii=>$jj)
+        {
+            foreach($jj as $kk=>$ll)
+            {
+                $section_form_data[$ii][$kk] = ($ll[count($ll)-9]);
+            }
+
+        }
+
+        foreach($section_form_data as $mm=>$nn)
+        {
+            foreach($nn as $oo=>$pp)
+            {
+                if($pp["Step"] != 3)
+                {
+                    unset($section_form_data[$mm][$oo]);
+                }
+            }
+
+        }
+
+
+        //定义一个空的数组
+        $form_result_result = array();
+        $section_rate_number = array();
+        foreach ($section_form_data as $qq=>$rr)
+        {
+            $count = array_count_values(array_column($rr,"Value"));//统计优良、合格、不合格的数量
+            if(isset($count["优良"]) && isset($count["合格"]))
+            {
+                $section_rate_number["excellent_number"] = $count["优良"];
+                $section_rate_number["qualified_number"] = $count["合格"];
+                $count["优良"] = $count["优良"]?$count["优良"]:0;
+                $count["合格"] = $count["合格"]?$count["合格"]:0;
+                $section_rate_number["total"] = $count["优良"] + $count["合格"];
+
+                $form_result_result[$qq]["section_rate_number"] = $section_rate_number;
+
+                //计算优良率，合格率不合格率
+                $form_result_result[$qq]['excellent'] = round($count["优良"]/($count["优良"] + $count["合格"]) * 100);//优良率
+                $form_result_result[$qq]['qualified'] = round($count["合格"]/($count["优良"] + $count["合格"]) * 100);//合格率
+                $form_result_result[$qq]['total_rate'] = $form_result_result[$qq]['excellent'] + $form_result_result[$qq]['qualified'];
+
+            }else if(!isset($count["优良"]) && isset($count["合格"]))
+            {
+                $section_rate_number["excellent_number"] = 0;
+                $section_rate_number["qualified_number"] = $count["合格"];
+                $count["合格"] = $count["合格"]?$count["合格"]:0;
+                $section_rate_number["total"] = 0 + $count["合格"];
+
+                $form_result_result[$qq]["section_rate_number"] = $section_rate_number;
+
+                //计算优良率，合格率不合格率
+                $form_result_result[$qq]['excellent'] = 0;//优良率
+                $form_result_result[$qq]['qualified'] = round($count["合格"]/(0 + $count["合格"]) * 100);//合格率
+                $form_result_result[$qq]['total_rate'] = $form_result_result[$qq]['excellent'] + $form_result_result[$qq]['qualified'];
+            }else if(isset($count["优良"]) && !isset($count["合格"]))
+            {
+                $section_rate_number["excellent_number"] = $count["优良"];
+                $section_rate_number["qualified_number"] = 0;
+                $count["优良"] = $count["优良"]?$count["优良"]:0;
+                $section_rate_number["total"] = $count["优良"] + 0;
+
+                $form_result_result[$qq]["section_rate_number"] = $section_rate_number;
+
+                //计算优良率，合格率不合格率
+                $form_result_result[$qq]['excellent'] = round($count["优良"]/($count["优良"] + 0) * 100);//优良率
+                $form_result_result[$qq]['qualified'] = 0;//合格率
+                $form_result_result[$qq]['total_rate'] = $form_result_result[$qq]['excellent'] + $form_result_result[$qq]['qualified'];
+            }else
+            {
+                $section_rate_number["excellent_number"] = 0;
+                $section_rate_number["qualified_number"] = 0;
+                $section_rate_number["total"] = 0;
+
+                $form_result_result[$qq]["section_rate_number"] = $section_rate_number;
+
+                //计算优良率，合格率不合格率
+                $form_result_result[$qq]['excellent'] = 0;//优良率
+                $form_result_result[$qq]['qualified'] = 0;//合格率
+                $form_result_result[$qq]['total_rate'] = $form_result_result[$qq]['excellent'] + $form_result_result[$qq]['qualified'];
+            }
+        }
+        $result = ["section"=>$section_name,"form_result_result"=>$form_result_result];
+        $data = ["timeline"=>$timeline,"form_result"=>$form_result];
         return json(["code"=>1,"data"=>$data,"result"=>$result]);
-
-
     }
-
-    public function getForm()
-    {
-        $data = array();
-        $info = Db::name("quality_form_info")->field("form_data")->select();
-        foreach ($info as $key=>$val) {
-           $data[$key]= unserialize($val["form_data"]);
-        }
-        halt($data);
-    }
-
-    public function test()
-    {
-
-    }
-
-    function one($n){
-        $array = array();
-        $array[0] = 1;
-        $array[1] = 1;
-        for($i=2;$i<$n;$i++){
-            $array[$i] = $array[$i-1]+$array[$i-2];
-        }
-        print_r($array);
-    }
-
-
-
 }
