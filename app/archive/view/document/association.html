@@ -118,18 +118,19 @@
                     //RealBimOcx.SetSceHugeObjVisible(false);
                 }
 
-                var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];
+                var unitId = document.cookie.split(';')[0].split('=')[1];
                 //保存关联模型
                 window.saveModel = function (add_id) {
                     $.ajax({
-                        url: "./addModelPicture",
+                        url: "{:url('quality/Division/addModelPicture')}",
                         type: "post",
                         data: {
-                            id:unitEnginNoId,
+                            id:unitId,
                             picture_id:add_id
                         },
                         dataType: "json",
                         success: function (res) {
+                            console.log(res);
                             layer.msg(res.msg);
                         }
                     })
@@ -137,13 +138,14 @@
                 //加载模型试图
                 window.loadModel = function (add_id) {
                     $.ajax({
-                        url: "./relevanceModelPicturePreview",
+                        url: "{:url('quality/Division/relevanceModelPicturePreview')}",
                         type: "post",
                         data: {
                             add_id:add_id
                         },
                         dataType: "json",
                         success: function (res) {
+                            console.log(res);
                             if(res.numberArr==''){
                                 RealBimOcx.SetAllHugeObjSubValidState(0);
                             }else{
@@ -185,25 +187,30 @@
 {include file="../app/public/common_footer.html"}
 <!--<script src="__WEBSITE__/quality/division/relationview.js"></script>-->
 <script>
-    var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];
-
+    var unitId = document.cookie.split(';')[0].split('=')[1];
+    console.log(unitId);
     //加载构件树
     var modelId = [];
     $.ajax({
-        url: "./openModelPicture",
+        url: "{:url('quality/Division/openModelPicture')}",
         type: "post",
         dataType: "json",
         data:{
-            id:window.unitEnginNoId
+            id:window.unitId
         },
         success: function (res) {
-            var nodeStr = res.nodeStrTwo;
-            var nodes =  JSON.parse(nodeStr);
-            console.log(nodes);
-            for(var i = 0;i<nodes.length;i++){
-                modelId.push(nodes[i].name);
+            console.log(res);
+            if(res.code ==1){
+                var nodeStr = res.data;
+                // var nodeStr = res.nodeStrTwo;
+                var nodes =  JSON.parse(nodeStr);
+                // var nodes =  nodeStr;
+                console.log(nodes);
+                for(var i = 0;i<nodes.length;i++){
+                    modelId.push(nodes[i].name);
+                }
+                setZtree(nodes);
             }
-            setZtree(nodes);
         }
     });
 
@@ -237,18 +244,31 @@
 
     //加载模型视图
     function zTreeOnCheck(event, treeId, treeNode) {
-        if(treeNode.checked){
-            loadModel(treeNode.add_id);
-        }
+        console.log(treeNode);
+        picture_id = treeNode.picture_id;
         var node = [];
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        var nodes = treeObj.getCheckedNodes(true);
-        for(var i = 0;i<nodes.length;i++){
-            if(nodes[i].isParent==undefined||nodes[i].isParent==false){
-                node.push(nodes[i]);
-            }
+        var checkedNodes = treeObj.getCheckedNodes(true);
+        for(var i = 0;i<checkedNodes.length;i++){
+            treeObj.checkNode(checkedNodes[i],false,false);
         }
+        node.push(treeNode);
+        treeObj.checkNode(treeNode,true,false);
         creatSelectedZtree(node);
+
+        // if(treeNode.checked){
+        //     loadModel(treeNode.add_id);
+        // }
+        // var node = [];
+        // var treeObj = $.fn.zTree.getZTreeObj("ztree");
+        // var nodes = treeObj.getCheckedNodes(true);
+        // for(var i = 0;i<nodes.length;i++){
+        //     if(nodes[i].isParent==undefined||nodes[i].isParent==false){
+        //         node.push(nodes[i]);
+        //         console.log(node)
+        //     }
+        // }
+        // creatSelectedZtree(node);
     }
 
     //构建已选构件树
@@ -278,19 +298,23 @@
         $('#selectCount').text(checkedNodes.length);
     }
 
-    var add_id;
     //选中关联节点及加载模型视图
     function zTreeOnClick(event, treeId, treeNode) {
-        add_id = treeNode.id;
+        var number = treeNode.picture_number;
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var nodes = treeObj.getNodesByParam("id",treeNode.id);
         treeObj.selectNode(nodes[0],true);
-        loadModel(treeNode.add_id);
+        console.log(treeObj)
+        window.loadModel(number);
     }
 
     $('#save').click(function () {
-        saveModel(add_id);
+        saveModel(picture_id);
     });
+
+    $('#close').click(function () {
+        window.close();
+    });
+
 </script>
-</body>
 </html>
