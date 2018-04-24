@@ -732,14 +732,10 @@ class Division extends Permissions{
             if($id == -1){
                 return json(['code' => 0,'msg' => '编号有误']);
             }
-            // 获取关联的模型图
-            $picture = new PictureRelationModel();
-            $data = $picture->getAllNumber([$id]);
-            $picture_number = $data['picture_number_arr'];
             // 获取工程划分下的 所有的模型图主键,编号,名称
             $picture = new PictureModel();
-            $data = $picture->getAllName();
-            return json(['code'=>1,'number'=>$picture_number,'data'=>$data,'msg'=>'模型图列表']);
+            $data = $picture->getAllName($id);
+            return json(['code'=>1,'one_picture_id'=>$data['one_picture_id'],'data'=>$data['str'],'msg'=>'模型图列表']);
         }
         return $this->fetch('relationview');
     }

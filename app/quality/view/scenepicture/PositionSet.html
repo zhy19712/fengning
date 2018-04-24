@@ -1,8 +1,6 @@
-
 <html>
 <head>
     <meta charset="UTF-8">
-
     <link rel="stylesheet" href="__PUBLIC__/easyui/easyui.css">
     <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
     <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all" />
@@ -22,19 +20,14 @@
         margin-right: 15px;
         float: right;
     }
-    #Text1
-    {width: 87px; height: 20px;}
-    #TextAnchorName
-    {
-        width: 100px;
-    }
     </style>
 </head>
 <body>
+<input type="hidden" id="positionUrl" value="">
 <div class="easyui-layout" data-options="fit:true">
     <div class="" data-options="region:'north',title:'',split:true" style="height: 10%;">
-        <button id="FT1" onclick="return FT1_onclick()" class="layui-btn" type="button"><i class="fa fa-check-circle"></i> 保存</button>
-        <button id="FT2" onclick="return FT2_onclick()" class="layui-btn" type="button"><i class="fa fa-check-circle"></i> 恢复位置</button>
+        <button id="FT1" onclick="return FT1_onclick()" class="layui-btn btn" type="button"><i class="fa fa-check-circle"></i> 保存</button>
+        <button id="FT2" onclick="return FT2_onclick()" class="layui-btn btn" type="button"><i class="fa fa-check-circle"></i> 恢复位置</button>
 
     </div>
     <div class="" data-options="region:'center',title:''" style="height: 90%;">
@@ -43,8 +36,6 @@
 
     </div>
 </div>
-<!--<object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%">-->
-<!--</object>-->
 <script>
   var str=location.search;
   str=str.substr(1); //取得所有参数   stringvar.substr(start [, length ]
@@ -79,9 +70,13 @@
 <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
   base64PicData = strPicData;
   base64RenData = strRenData;
+  positionUrl = $("#positionUrl").val();
+  if(positionUrl !="./editPosition"){
+    positionUrl += '/editPosition';
+  }
   $.ajax({
     type: "Post",
-    url: "./editPosition",
+    url: positionUrl,
     data: { "id": positionid, "position": base64RenData },
     success: function (res) {
       if (res.code == 1)
@@ -107,12 +102,18 @@
   if(CompleteEvent == "LoadMainScene" && retError==0 ){
     RealBimOcx.SetAllHugeObjSubValidState(1);
     RealBimOcx.SetSceHugeObjVisible(true);
-    RealBimOcx.SetAllHugeObjSubValidState(0);
+    getposition = $("#positionUrl").val();
+    if(getposition !="./editPosition"){
+      getposition += '/getindex';
+    }else{
+      getposition =  "./getindex";
+    }
     $.ajax({
       type: "Post",
-      url: "./getindex",
+      url: getposition,
       data: {"id": positionid },
       success: function (res) {
+        console.log(res.data.position);
         if(res.data.position==0){
           RealBimOcx.SetSuitableCam();
         }else{
@@ -122,7 +123,6 @@
     });
   }
 </script>
-
 
 
 
