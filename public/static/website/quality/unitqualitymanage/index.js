@@ -95,21 +95,21 @@ function controlPointStandard() {
 //事件
 $('#exportQcodeBtn').click(function () {
     var addId = window.treeNode.add_id;
+    $(this).attr('uid',addId);
     exportQcode(addId);
 });
 //方法
 function exportQcode(addId) {
-    $.ajax({
-        url: "./exportCode",
-        type: "post",
-        data: {
+    $.download({
+        that:$('#exportQcodeBtn'),
+        url:'./exportCode',
+        data:{
             add_id:addId
         },
-        dataType: "json",
-        success: function (res) {
+        success:function (res) {
             layer.msg(res.msg);
         }
-    })
+    });
 }
 
 /**
