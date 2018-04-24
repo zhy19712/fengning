@@ -12,6 +12,7 @@ use app\admin\controller\Permissions;
 use app\quality\model\DivisionModel;
 use app\quality\model\DivisionUnitModel;
 use app\quality\model\PictureModel;
+use app\quality\model\PictureRelationModel;
 use think\Db;
 use think\Loader;
 /**
@@ -208,10 +209,7 @@ class Division extends Permissions{
      */
     public function delNode()
     {
-        //Todo 等我的功能做完了，给张志方说让他删除标段的时候，也关联删除我的工程划分
-        /**
-         * 前台只需要给我传递 要删除的 节点的 id 编号
-         */
+        // 前台只需要给我传递 要删除的 节点的 id 编号
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         if($id != 0){
             $node = new DivisionModel();
@@ -220,11 +218,16 @@ class Division extends Permissions{
             if(!empty($exist)){
                 return json(['code' => -1,'msg' => '包含子节点,不能删除']);
             }
-            // 先批量删除 包含的 单元工程段号(单元划分)
-            $unit = new DivisionUnitModel();
-            $unit->batchDel($id);
 
-            //Todo 如果 单元工程段号(单元划分) 下面 还包含其他的数据 那么 也要关联删除
+            // 批量删除 包含的 单元工程段号(单元划分) 与 模型图的关联记录
+            $idArr = Db::name('quality_unit')->where('division_id',$id)->column('id');
+            if(sizeof($idArr)){
+                $picture = new PictureRelationModel();
+                $picture->deleteRelation($idArr);
+                // 批量删除 包含的 单元工程段号(单元划分)
+                $unit = new DivisionUnitModel();
+                $unit->batchDel($id);
+            }
 
             // 最后删除此节点
             $flag = $node->deleteTb($id);
@@ -635,11 +638,12 @@ class Division extends Permissions{
      */
     public function delUnit()
     {
-        /**
-         * 前台只需要给我传递 要删除的 单元工程段号(单元划分) 的 id 编号
-         */
+        // 前台只需要给我传递 要删除的 单元工程段号(单元划分) 的 id 编号
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         if($id != 0){
+            // 关联删除 此 单元工程段号 与 模型图的关联记录
+            $picture = new PictureRelationModel();
+            $picture->deleteRelation([$id]);
             $unit = new DivisionUnitModel();
             $flag = $unit->deleteTb($id);
             return json($flag);
@@ -668,33 +672,38 @@ class Division extends Permissions{
 
     /**
      * 获取 左侧工程划分下 所有的模型图编号
+     * 点击 工程划分 获取该 节点 包含的所有单元工程段号(单元划分) 对应的模型图编号 一对多
+     * 这里展示的是 完整的模型图
      * @return \think\response\Json
      * @author hutao
      */
     public function modelPictureAllNumber()
     {
-        // 前台 传递 选中的 工程划分 编号add_id
+        // 前台 传递 选中的 工程划分 编号 add_id
         if($this->request->isAjax()){
             $param = input('param.');
             $add_id = isset($param['add_id']) ? $param['add_id'] : -1;
             if($add_id == -1){
                 return json(['code' => 0,'msg' => '编号有误']);
             }
+            $id = Db::name('quality_unit')->where('division_id',$add_id)->column('id');
             // 获取关联的模型图
-            $picture = new PictureModel();
-            $data= $picture->getAllNumber($add_id);
-            $picture_id = $data['picture_id_arr'];
-            return json(['code'=>1,'numberArr'=>$picture_id,'msg'=>'模型图编号']);
+            $picture = new PictureRelationModel();
+            $data= $picture->getAllNumber($id);
+            $picture_number = $data['picture_number_arr'];
+            return json(['code'=>1,'numberArr'=>$picture_number,'msg'=>'工程划分-模型图编号']);
         }
     }
 
     /**
-     * 点击 单元工程段号(单元划分) 展示关联的模型图
+     * 点击 单元工程段号(单元划分) 展示关联的模型图 一对一关联
+     * 这里展示的是部分模型图
      * @return \think\response\Json
      * @author hutao
      */
     public function modelPicturePreview()
     {
+        // 前台 传递 选中的 单元工程段号 编号 id
         if($this->request->isAjax()){
             $param = input('param.');
             $id = isset($param['id']) ? $param['id'] : -1;
@@ -702,59 +711,33 @@ class Division extends Permissions{
                 return json(['code' => 0,'msg' => '编号有误']);
             }
             // 获取关联的模型图
-            $picture = new PictureModel();
-            $picture_id = $picture->getModelPicture($id);
-            return json(['code'=>1,'number'=>$picture_id,'msg'=>'模型图编号']);
+            $picture = new PictureRelationModel();
+            $data = $picture->getAllNumber([$id]);
+            $picture_number = $data['picture_number_arr'];
+            return json(['code'=>1,'number'=>$picture_number,'msg'=>'单元工程段号-模型图编号']);
         }
     }
 
-    // 打开关联模型 页面 openModelPicture
+    /**
+     * 打开关联模型 页面 openModelPicture
+     * @return mixed|\think\response\Json
+     * @author hutao
+     */
     public function openModelPicture()
     {
+        // 前台 传递 选中的 单元工程段号的 id编号
         if($this->request->isAjax()){
             $param = input('param.');
             $id = isset($param['id']) ? $param['id'] : -1;
             if($id == -1){
                 return json(['code' => 0,'msg' => '编号有误']);
             }
-            // 管理视图的节点树
-            $division = new DivisionModel();
-            $data = $division->getModelPictureTree($id);
-            // 获取关联的模型图
+            // 获取工程划分下的 所有的模型图主键,编号,名称
             $picture = new PictureModel();
-            $dataTwo = $picture->getAllNumber($data['pid']);
-            $id_arr = $dataTwo['id_arr'];
-            $picture_id_arr = $dataTwo['picture_id_arr'];
-            $picture_name_arr= $dataTwo['picture_name_arr'];
-            $nodeStrTwo = $data['str'];
-            // 勾件树
-            $i = 1;
-            foreach($id_arr as $k=>$v){
-                $node_id = $data['pid'] + $i;
-                $nodeStrTwo .= '{ "id": "' . $node_id . '", "pId":"' . $data['pid'] . '", "name":"' . $picture_name_arr[$k] . '"' . ',"add_id": "' . $v . '"';
-                $nodeStrTwo .= '},';$i++;
-            }
-            $nodeStrOne = "[" . substr($data['str'], 0, -1) . "]";
-            $nodeStrTwo = "[" . substr($nodeStrTwo, 0, -1) . "]";
-            return json(['code'=>1,'nodeStrOne'=>$nodeStrOne,'nodeStrTwo'=>$nodeStrTwo,'numberArr'=>$picture_id_arr,'msg'=>'模型图编号']);
+            $data = $picture->getAllName();
+            return json(['code'=>1,'data'=>$data,'msg'=>'模型图列表']);
         }
         return $this->fetch('relationview');
-    }
-
-    // 关联模型 页面 里 点击 模型图名称 加载模型图
-    public function relevanceModelPicturePreview()
-    {
-        if($this->request->isAjax()){
-            $param = input('param.');
-            $id = isset($param['add_id']) ? $param['add_id'] : -1;
-            if($id == -1){
-                return json(['code' => 0,'msg' => '编号有误']);
-            }
-            // 获取关联的模型图
-            $picture = new PictureModel();
-            $picture_id = $picture->getModelPictureNumber($id);
-            return json(['code'=>1,'number'=>$picture_id,'msg'=>'模型图编号']);
-        }
     }
 
     /**
@@ -764,22 +747,22 @@ class Division extends Permissions{
      */
     public function addModelPicture()
     {
-        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图编号 picture_id 模型图名称 picture_name
+        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图主键编号 picture_id
         if($this->request->isAjax()){
             $param = input('param.');
-            $division_id = isset($param['id']) ? $param['id'] : -1;
+            $relevance_id = isset($param['id']) ? $param['id'] : -1;
             $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
-            $picture_name = isset($param['picture_name']) ? $param['picture_name'] : -1;
-            if($division_id == -1 || $picture_id == -1 || $picture_name == -1){
+            if($relevance_id == -1 || $picture_id == -1){
                 return json(['code' => 0,'msg' => '参数有误']);
             }
-            // 是否已经关联过
-            $is_add = Db::name('quality_model_picture')->where(['division_id'=>$division_id,'picture_id'=>$picture_id])->value('id');
-            if(empty($is_add)){
-                $data['division_id'] = $division_id;
+            // 是否已经关联过 picture_type  1工程划分模型 2 建筑模型 3三D模型
+            $is_related = Db::name('quality_model_picture_relation')->where(['picture_type'=>1,'relevance_id'=>$relevance_id,'picture_id'=>$picture_id])->value('id');
+            if(empty($is_related)){
+                $data['type'] = 1;
+                $data['relevance_id'] = $relevance_id;
                 $data['picture_id'] = $picture_id;
-                $data['picture_name'] = $picture_name;
                 $picture = new PictureModel();
+                // 关联模型图 一对一关联
                 $flag = $picture->insertTb($data);
                 return json($flag);
             }else{
@@ -788,49 +771,40 @@ class Division extends Permissions{
         }
     }
 
+    // 此方法只是临时 导入模型图 编号和名称的 txt文件时使用
+    // 不存在于 功能列表里面 后期可以删除掉
     // 获取txt文件内容并插入到数据库中 insertTxtContent
-    public function indextxt()
+    public function insertTxtContent()
     {
-        /**
-         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-Z] [0]
-         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-X] [1]
-         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅵ-969.30-CZ0+024.000-0+054.000-S] [2]
-         *[丰宁开挖已编好ID号+外壳+岩锚梁] [Y-Ⅳ-983.00-CZ0+024.000-0+054.000-Z] [3]
-         */
         $filePath = './static/division/GolIdTable.txt';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }
-        $myfile = fopen($filePath, "r") or die("Unable to open file!");
+        $files = fopen($filePath, "r") or die("Unable to open file!");
         $contents = $new_contents =[];
-        while(!feof($myfile)) {
-            $contents[] = explode(" ",iconv('gb2312','utf-8//IGNORE',fgets($myfile)));
+        while(!feof($files)) {
+            $txt = iconv('gb2312','utf-8//IGNORE',fgets($files));
+            $txt = str_replace('[','',$txt);
+            $txt = str_replace(']','',$txt);
+            $txt = str_replace("\r\n",'',$txt);
+            $contents[] = $txt;
         }
 
         foreach ($contents as $v){
-            $new_v = $v;
-            $v[0] = str_replace('[','',$new_v[0]);
-            $v[0] = str_replace(']','',$new_v[0]);
-            $v[1] = str_replace('[','',$new_v[1]);
-            $v[1] = str_replace(']','',$new_v[1]);
-            $v[2] = str_replace('[','',$new_v[2]);
-            $v[2] = str_replace(']
-','',$new_v[2]);
-//            halt($v);
-            $new_contents[] = $v;
+            $new_contents[] = explode(' ',$v);
         }
+
         $data = [];
-        halt($new_contents);
-        foreach ($new_contents as $val){
-            halt($val);
-            $data[]['picture'] = $val[0];
-            $data[]['picture_name'] = $val[1];
-            $data[]['picture_id'] = $val[2];
+        foreach ($new_contents as $k=>$val){
+            $data[$k]['picture_name'] = next($val);
+            $data[$k]['picture_number'] = next($val);
         }
-        halt($data);
+
+        array_pop($data);
+
         $picture = new PictureModel();
-        $picture->insertTb($data);
-        fclose($myfile);
+        $picture->saveAll($data); // 使用saveAll 是因为 要 自动插入 时间
+        fclose($files);
     }
 
 
