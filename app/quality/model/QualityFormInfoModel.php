@@ -44,7 +44,7 @@ class QualityFormInfoModel extends Model implements IApprove
      * 获取表单基本信息
      * @param $qualityUnit_id 检验批
      */
-    public function getFormInfo($qualityUnit_id)
+    public function getFormBaseInfo($qualityUnit_id)
     {
         $mod = $this->divisionUnitService->with("Division.Section")->where(['id' => $qualityUnit_id])->find();
         $output = array();
@@ -73,6 +73,10 @@ class QualityFormInfoModel extends Model implements IApprove
         return $output;
     }
 
+    public function getFormInfo($formId)
+    {
+        return self::where(['id' => $formId])->find()['form_data'];
+    }
     /**
      * 获取工程依据信息
      * @param $ids

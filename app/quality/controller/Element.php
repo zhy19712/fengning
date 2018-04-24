@@ -183,7 +183,7 @@ class Element extends Permissions
         Settings::setTempDir('temp');
         $phpword = new PhpWord();
         $phpword = $phpword->loadTemplate($formPath);
-        $infos = $this->qualityFormInfoService->getFormInfo($cp['division_id']);
+        $infos = $this->qualityFormInfoService->getFormBaseInfo($cp['division_id']);
         foreach ($infos as $key => $value) {
             $phpword->setValue('{' . $key . '}', $value);
         }
