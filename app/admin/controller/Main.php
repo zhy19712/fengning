@@ -30,17 +30,15 @@ class Main extends Permissions
         if($this->request->isAjax()){
             $param = input('param.');
             $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
-            $attrKey = input('attrKey/a');
-            $attrVal = input('attrVal/a.');
-            if($picture_id == -1 || sizeof($attrKey) < 1 || sizeof($attrVal) < 1){
+            $attrKey = isset($param['attrKey']) ? $param['attrKey'] : -1;
+            $attrVal = isset($param['attrVal']) ? $param['attrVal'] : -1;
+            if($picture_id == -1 || $attrKey == -1 || $attrVal == -1){
                 return join(['code'=>-1,'msg'=>'参数有误']);
             }
             $data = [];
-            foreach($attrKey as $k=>$v){
-                $data[$k]['picture_id'] = $picture_id;
-                $data[$k]['attr_name'] = $v;
-                $data[$k]['attr_value'] = $attrVal[$k];
-            }
+            $data['picture_id'] = $picture_id;
+            $data['attr_name'] = $attrKey;
+            $data['attr_value'] = $attrVal;
             $custom = new CustomAttributeModel();
             $flag = $custom->insertTb($data);
             return json($flag);
