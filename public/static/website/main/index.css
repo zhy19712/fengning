@@ -16,3 +16,114 @@ a{ text-decoration:none; color:#333;  }
     width: 100%;
     height: 100%;
 }
+
+.swiper-slide{
+    position: relative;
+    cursor: pointer;
+}
+.mask{
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: #333;
+    line-height: 12px;
+    filter:alpha(opacity=70);-moz-opacity:0.7;opacity:0.7;
+}
+.mask .right{
+    padding: 5px 0;
+    text-align: right;
+}
+.mask .right a{
+    margin-right: 5px;
+    display: inline-block;
+}
+.mask .scenter,.mask .center{
+    text-align: center;
+}
+.mask .scenter{
+    padding: 20px 0;
+}
+.mask .center{
+    padding: 10px 0;
+    color: #FFF;
+    font-size: 14px;
+}
+.mask i.fa:before,.mask i.fa:hover:before{
+    color: #FFF;
+}
+.mask .fa-search{
+    font-size: 30px;
+}
+
+.toggle-attr li{
+    line-height: 1;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+.toggle-attr li:first-child{
+    padding-right: 5px;
+    border-right: 1px solid #666666;
+}
+.toggle-attr li.active,.toggle-attr li:hover{
+    color: #0c91e5;
+}
+.add-tag{
+    display: none;
+    padding-bottom: 10px;
+    text-align: right;
+}
+.add-tag h2{
+    text-align: center;
+}
+.add-tag i.fa{
+    margin: 0 5px;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    background: #00c0ef;
+    border-radius: 50%;
+}
+.add-tag i.fa:last-child{
+    background: #FF5722;
+}
+.add-tag i.fa:before ,.add-tag i.fa:hover:before{
+    color: #FFF;
+}
+.layui-form-text .layui-input-inline{
+    width: 100%;
+}
+.layui-form-text .layui-textarea:hover{
+    border: 1px solid #0c91e5 !important;
+}
+.operate .fa-wrap,.operate .btn-wrap{
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
+.operate .fa-wrap i.fa{
+    font-size: 14px;
+}
+.operate .fa-wrap .webuploader-pick{
+    padding: 6px;
+    margin-left: -11px;
+    background: transparent !important;
+}
+.operate .btn-wrap{
+    float: right;
+}
+.tag{
+    display: inline-block;
+    margin: 5px;
+    padding: 0px 9px;
+    border-radius: 50px;
+    background: #00c0ef;
+    color: #fff;
+}
+.tag i.fa{
+    margin-left: 5px;
+}

@@ -31,4 +31,29 @@ interface IApprove
      * @return mixed
      */
     public function FrequentlyUsedApprover($user_id);
+
+    /**
+     * 获取业务审批基本信息
+     * @param $dataId
+     * @return mixed
+     */
+    public function GetApproveInfo($dataId);
+
+    /**
+     * 数据有效性检测
+     * @param $dataId
+     * @param $currentStep
+     * @return mixed
+     */
+    public function CheckBeforeSubmitOrApprove($dataId, $currentStep);
+
+    /**
+     * 更新审批信息
+     * @param $dataId
+     * @param $currentApproveId
+     * @param $currentStep
+     * @param $approveStatus
+     * @return mixed
+     */
+    public function UpdateApproveInfo($dataId,$currentApproveId,$currentStep,$approveStatus);
 }

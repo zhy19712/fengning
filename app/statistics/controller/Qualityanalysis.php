@@ -124,9 +124,6 @@ class Qualityanalysis extends Permissions
     public function test()
     {
 
-
-        var_dump($this->one(100));
-
     }
 
     function one($n){

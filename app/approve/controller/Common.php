@@ -17,13 +17,6 @@ use \think\Session;
 
 class Common extends Controller
 {
-    protected $documentTypeService;
-
-    public function __construct(Request $request = null)
-    {
-        parent::__construct($request);
-    }
-
     /**
      * datatables单表查询搜索排序分页
      * 输入参数$table:表名 string
@@ -36,7 +29,7 @@ class Common extends Controller
      * 输入参数$length:分页长度 int
      * @return [type] [description]
      */
-    function datatablesPre()
+   public function datatablesPre()
     {
         //接收表名，列名数组 必要
         $columns = $this->request->param('columns/a');
@@ -89,12 +82,12 @@ class Common extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    function approve($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+  public  function approve($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询前置条件
         $par=array();
-        $par['data_type']=$this->request('dataType');
-        $par['data_id']=$this->request('dataId');
+        $par['data_type']=$this->request->param('dataType');
+        $par['data_id']=$this->request->param('dataId');
         //查询
         //条件过滤后记录数 必要
         $recordsFiltered = 0;

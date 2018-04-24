@@ -244,12 +244,19 @@ for (var i = 0, len = a_link.length; i < len; i++) {
         console.log(this.parentNode.children[1])
         if(this.parentNode.children[1]) {
             display = this.parentNode.children[1].style.display;
-             a_link.forEach(function(item,index){
+             /*a_link.forEach(function(item,index){     //IE11报对象不支持“forEach”属性或方法
                     if(item.parentNode.children[1]){
                      item.parentNode.children[1].style.display = 'none';
                      item.parentNode.children[0].children[2].children[0].className = 'fa fa-angle-down';
                     }
-                })
+                })*/
+             //兼容IE
+            $(a_link).each(function (index,item) {
+                if(item.parentNode.children[1]){
+                    item.parentNode.children[1].style.display = 'none';
+                    item.parentNode.children[0].children[2].children[0].className = 'fa fa-angle-down';
+                }
+            })
              if(display){
                     this.parentNode.children[1].style.display = display;
              }

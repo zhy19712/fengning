@@ -283,11 +283,14 @@ class Patrolrecord extends Permissions
             $attachment = Db::name("attachment")->where("id",$data_info["attachment_id"])->find();
             $path = "." .$attachment['filepath'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-            if(file_exists($path)){
-                unlink($path); //删除上传的图片或文件
-            }
-            if(file_exists($pdf_path)){
-                unlink($pdf_path); //删除生成的预览pdf
+            if($attachment['filepath'])
+            {
+                if(file_exists($path)){
+                    unlink($path); //删除上传的图片或文件
+                }
+                if(file_exists($pdf_path)){
+                    unlink($pdf_path); //删除生成的预览pdf
+                }
             }
 
             //删除attachment表中对应的记录
