@@ -35,10 +35,11 @@ class PictureRelationModel extends Model
 
     public function getAllNumber($id)
     {
-        // 取和 工程划分 或者 单元工程段号 关联 的模型图
+        // 获取 工程划分 或者 单元工程段号 关联 的模型图
+        // type 1工程划分模型 2 建筑模型 3三D模型
         $data = Db::name('quality_model_picture_relation')->alias('r')
             ->join('quality_model_picture p','r.picture_id = p.id','left')
-            ->where(['r.relevance_id'=>['in',$id]])->column('r.id,r.picture_id,p.picture_number,p.picture_name');
+            ->where(['type'=>1,'r.relevance_id'=>['in',$id]])->column('r.id,r.picture_id,p.picture_number,p.picture_name');
         $newData = ['id_arr'=>[],'picture_id'=>[],'picture_number_arr'=>[],'picture_name_arr'=>[]];
         foreach ($data as $v){
             $newData['id_arr'][] = $v['id']; // 关联表主键
@@ -49,17 +50,15 @@ class PictureRelationModel extends Model
         return $newData;
     }
 
-//    public function getModelPicture($id)
-//    {
-//        $picture_id = $this->where(['division_id'=>['eq',$id]])->value('picture_id');
-//        return $picture_id;
-//    }
-//
-//    public function getModelPictureNumber($id)
-//    {
-//        $picture_id = $this->where(['id'=>['eq',$id]])->value('picture_id');
-//        return $picture_id;
-//    }
+    public function deleteRelation($id)
+    {
+        try{
+            $this->where(['type'=>1,'relevance_id'=>['in',$id]])->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
 
 
 }
