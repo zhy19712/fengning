@@ -178,13 +178,13 @@ class Unitqualitymanage extends Permissions
             return json(['code' => '-1','msg' => '编号无效']);
         }
         $new_name = iconv("utf-8","gb2312",$file_obj['code'].$file_obj['name']);
-        $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
+        $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.docx';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){
             return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
         }else{
-            $fileName = $file_obj['name'];
+            $fileName = $file_obj['name'].'docx';
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
             $fileName = iconv("utf-8","gb2312",$fileName);
@@ -222,7 +222,7 @@ class Unitqualitymanage extends Permissions
             return json(['code' => '-1','msg' => '编号无效']);
         }
         $new_name = iconv("utf-8","gb2312",$file_obj['code'].$file_obj['name']);
-        $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
+        $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.docx';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }
