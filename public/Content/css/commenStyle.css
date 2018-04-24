@@ -3674,7 +3674,7 @@ th {
         .manage3d-body .nav-tabs > li.active > a,
         .manage3d-body .nav-tabs > li.active > a:hover,
         .manage3d-body .nav-tabs > li.active > a:focus {
-            background: rgba(0, 0, 0, 0) url("../../Content/images/bg_x.png") repeat-x scroll 0 -45px!important;
+            background: rgba(0, 0, 0, 0) url("../../static/public/images/bg_x.png") repeat-x scroll 0 -45px!important;
             border-color: #ccc #ccc transparent;
             border-image: none;
             border-style: solid;
