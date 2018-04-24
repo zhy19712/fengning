@@ -122,11 +122,11 @@ $('#addBtn').click(function () {
     //取消全选的事件绑定
     $("thead tr th:first-child").unbind();
     $('#tableItem_wrapper,#easyuiLayout').find('.tbcontainer').remove();
-})
+});
 
 //方法
 function addControl() {
-    layer.open({
+    var index = layer.open({
         title:'控制点选择',
         id:'1',
         type:'1',
@@ -149,14 +149,21 @@ function addControl() {
                 },
                 dataType: "json",
                 success: function (res) {
+                    if(!res.msg){
+                        res.msg = '添加失败';
+                    }
+                    layer.close(index);
                     layer.msg(res.msg);
-                    layer.close(layer.index);
+                    $('#pointLayer').css('visibility','hidden');
+                    var workId = $('#workId').val();
+                    $('a[uid='+ workId +']').click();   //刷新表
+                    $("input[name='checkList']").prop("checked", false);  //清空表格已选
                 }
             })
         },
         cancel: function(index, layero){
             $('#pointLayer').css('visibility','hidden');
-            layer.close(layer.index);
+            layer.close(index);
         }
     });
 }
@@ -258,12 +265,15 @@ function download(that) {
         url:'./fileDownload',
         data:{
             id:id
+        },
+        success:function (res) {
+            layer.msg(res.msg);
         }
     });
 }
 
 //打印
-function download(that) {
+function print(that) {
     var id = $(that).attr('uid');
     $.ajax({
         url: "./printDocument",
@@ -273,7 +283,7 @@ function download(that) {
         },
         dataType: "json",
         success: function (res) {
-
+            layer.msg(res.msg);
         }
     })
 }
