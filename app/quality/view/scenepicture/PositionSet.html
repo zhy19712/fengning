@@ -22,16 +22,16 @@
     }
     </style>
 </head>
-<body>
+<body style="width:100%;height: 100%;">
 <input type="hidden" id="positionUrl" value="">
-<div class="easyui-layout" data-options="fit:true">
-    <div class="" data-options="region:'north',title:'',split:true" style="height: 10%;">
+<div class="easyui-layout" data-options="fit:true" style="width:100%;height: 100%;">
+    <div class="" data-options="region:'north',title:'',split:true" >
         <button id="FT1" onclick="return FT1_onclick()" class="layui-btn btn" type="button"><i class="fa fa-check-circle"></i> 保存</button>
-        <button id="FT2" onclick="return FT2_onclick()" class="layui-btn btn" type="button"><i class="fa fa-check-circle"></i> 恢复位置</button>
+        <button id="FT2" onclick="return FT2_onclick()" class="layui-btn btn" type="button"><i class="fa fa-reply"></i> 恢复位置</button>
 
     </div>
     <div class="" data-options="region:'center',title:''" style="height: 90%;">
-        <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%">
+        <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD" id="obj" width="100%" height="90%" >
         </object>
 
     </div>
@@ -51,11 +51,16 @@
 
 
   function FT1_onclick() {
-    RealBimOcx.CreateSnapShootInMem(true, 0, 0, true, true);
+    //请求创建一个屏幕快照，数据以Base64字符串的形式通过SnapShootData事件参数返回给调用者
+    RealBimOcx.CreateSnapShootInMem(true, 0, 0, true, true); // 1 是否保留截图 2.3 宽高  4  是否保存创建快照时的渲染状态数据 5，是否禁用功能ui
 
   }
 
   function FT2_onclick() {
+    if(base64RenData==""){
+      return ;
+    }
+    //载入Base64形式的标注数据块并显示标注文件创建时的场景状态
     RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
   }
 
@@ -89,18 +94,18 @@
 
 
 <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
-  RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
 
-  RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
+      RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
+      RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
 
-  RealBimOcx.CreateAGolFont("CustomFont01","微软雅黑",true,true,14,14,32,1.0,0*64,"");
-  RealBimOcx.CreateAGolFont("CustomFont02","微软雅黑",true,true,12,12,8,1.0,0*64,"");
+      RealBimOcx.CreateAGolFont("CustomFont01","微软雅黑",true,true,14,14,32,1.0,0*64,"");
+      RealBimOcx.CreateAGolFont("CustomFont02","微软雅黑",true,true,12,12,8,1.0,0*64,"");
+
 
 
 </script>
 <script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
   if(CompleteEvent == "LoadMainScene" && retError==0 ){
-    RealBimOcx.SetAllHugeObjSubValidState(1);
     RealBimOcx.SetSceHugeObjVisible(true);
     getposition = $("#positionUrl").val();
     if(getposition !="./editPosition"){
@@ -113,18 +118,17 @@
       url: getposition,
       data: {"id": positionid },
       success: function (res) {
-        console.log(res.data.position);
         if(res.data.position==0){
+          RealBimOcx.SetAllHugeObjSubValidState(1);
           RealBimOcx.SetSuitableCam();
         }else{
+          RealBimOcx.SetAllHugeObjSubValidState(1);
           RealBimOcx.ShowSnapshotOrMarkerInMem(res.data.position);
         }
       }
     });
   }
 </script>
-
-
 
 
 

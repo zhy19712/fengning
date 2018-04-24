@@ -232,7 +232,7 @@ class Branch extends Permissions
                 return json(['code' => '-1', 'msg' => '编号无效']);
             }
             $new_name = iconv("utf-8", "gb2312", $file_obj['code'] . $file_obj['name']);
-            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
+            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.docx';
             if (!file_exists($filePath)) {
                 return json(['code' => '-1', 'msg' => '文件不存在']);
             } else {
@@ -247,8 +247,8 @@ class Branch extends Permissions
             ->where('s.id', $file_id)->field('c.code,c.name')->find();
 
             $new_name = iconv("utf-8", "gb2312", $file_obj['code'] . $file_obj['name']);
-            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
-            $fileName = $file_obj['name'];
+            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.docx';
+            $fileName = $file_obj['name'].'.docx';
             $file = fopen($filePath, "r"); //   打开文件
             //输入文件标签
             $fileName = iconv("utf-8","gb2312",$fileName);
@@ -282,7 +282,7 @@ class Branch extends Permissions
                 return json(['code' => '-1','msg' => '编号无效']);
             }
             $new_name = iconv("utf-8","gb2312",$file_obj['code'].$file_obj['name']);
-            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.doc';
+            $filePath = ROOT_PATH . 'public' . DS . 'Data' . DS . 'form' . DS . 'quality' . DS . $new_name . '.docx';
             if(!file_exists($filePath)){
                 return json(['code' => '-1','msg' => '文件不存在']);
             }

@@ -36,10 +36,7 @@ class Qualityanalysis extends Permissions
         $date = Db::name("quality_form_info")->where("create_time > 0")->min("create_time");
         //定义一个空的数组
         $timeline = array();
-        $excellentMonth = array();
-        $rate = array();
         $info = array();
-        $info_data = array();
         $StartMonth = date("Y-m-d",$date); //开始日期
         $EndMonth = date("Y-m-d"); //结束日期
         $ToStartMonth = strtotime( $StartMonth ); //转换一下
@@ -54,7 +51,6 @@ class Qualityanalysis extends Permissions
         }
 
        array_pop($timeline);
-
 
         foreach($timeline as $keee=>$vaaa)
         {
@@ -76,8 +72,6 @@ class Qualityanalysis extends Permissions
 
         }
 
-
-
         foreach($info as $ke=>$va)
         {
             foreach ($va as $kee=>$vaa)
@@ -85,7 +79,6 @@ class Qualityanalysis extends Permissions
                 $info[$ke][$kee]=(unserialize($vaa["form_data"]));
             }
         }
-
 
         foreach($info as $a=>$b)
         {
@@ -100,14 +93,12 @@ class Qualityanalysis extends Permissions
         {
             foreach($m as $x=>$y)
             {
-               if($y["Step"] == 3)
+               if($y["Step"] != 3)
                {
-                   $info[$l][$x] = $y;
+                   unset($info[$l][$x]);
                }
             }
-
         }
-
 
         //定义一个空的数组
         $form_result = array();
@@ -152,9 +143,6 @@ class Qualityanalysis extends Permissions
                 $form_result[$o]['excellent'] = 0;//优良率
                 $form_result[$o]['qualified'] = 0;//合格率
             }
-
-
-
         }
 
         //定义空数组
@@ -187,7 +175,6 @@ class Qualityanalysis extends Permissions
             }
         }
 
-
         foreach($section_form_data as $ee=>$ff)
         {
             foreach ($ff as $gg=>$hh)
@@ -195,8 +182,6 @@ class Qualityanalysis extends Permissions
                 $section_form_data[$ee][$gg]= (unserialize($hh["form_data"]));
             }
         }
-
-
 
         foreach($section_form_data as $ii=>$jj)
         {
@@ -218,7 +203,6 @@ class Qualityanalysis extends Permissions
             }
 
         }
-
 
         //定义一个空的数组
         $form_result_result = array();
