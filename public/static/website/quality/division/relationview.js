@@ -10,12 +10,7 @@ $.ajax({
         id:window.unitEnginNoId
     },
     success: function (res) {
-        var nodeStr = res.nodeStrTwo;
-        var nodes =  JSON.parse(nodeStr);
-        console.log(nodes);
-        for(var i = 0;i<nodes.length;i++){
-            modelId.push(nodes[i].name);
-        }
+        var nodes = JSON.parse(res.data)
         setZtree(nodes);
     }
 });
@@ -50,10 +45,12 @@ function setZtree(nodes) {
 
 //加载模型视图
 function zTreeOnCheck(event, treeId, treeNode) {
-    if(treeNode.checked){
+    //勾选定位模型
+    /*if(treeNode.checked){
         loadModel(treeNode.add_id);
-    }
-    var node = [];
+    }*/
+    // TODO:一对多
+    /*var node = [];
     var treeObj = $.fn.zTree.getZTreeObj("ztree");
     var nodes = treeObj.getCheckedNodes(true);
     for(var i = 0;i<nodes.length;i++){
@@ -61,6 +58,17 @@ function zTreeOnCheck(event, treeId, treeNode) {
             node.push(nodes[i]);
         }
     }
+    creatSelectedZtree(node);*/
+
+    // TODO:一对一
+    var node = [];
+    var treeObj = $.fn.zTree.getZTreeObj("ztree");
+    var checkedNodes = treeObj.getCheckedNodes(true);
+    for(var i = 0;i<checkedNodes.length;i++){
+        treeObj.checkNode(checkedNodes[i],false,false);
+    }
+    node.push(treeNode);
+    treeObj.checkNode(treeNode,true,false);
     creatSelectedZtree(node);
 }
 
@@ -94,11 +102,11 @@ window.creatSelectedZtree = function (node,uObjSubID) {
 var add_id;
 //选中关联节点及加载模型视图
 function zTreeOnClick(event, treeId, treeNode) {
-    add_id = treeNode.id;
+    var number = treeNode.picture_number;
     var treeObj = $.fn.zTree.getZTreeObj("ztree");
     var nodes = treeObj.getNodesByParam("id",treeNode.id);
     treeObj.selectNode(nodes[0],true);
-    loadModel(treeNode.add_id);
+    loadModel(number);
 }
 
 $('#save').click(function () {
