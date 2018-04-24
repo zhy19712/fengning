@@ -197,7 +197,7 @@ function formSave() {
             } else {
                 $("#id").val(data.result);
                 if (saveStyle === 0)
-                    top.layer.closeAll();
+                    parent.layer.closeAll();
                 else
                     handleAfterSave(data.result);
                 // 刷新父页面列表

@@ -37,7 +37,7 @@ class Rolemanagement extends Permissions
      */
     public function roletree()
     {
-        if ($this->request->isAjax()) {
+        if ($this->request->isAjax()){
             //实例化角色类型AdminCateType
             $model = new AdminCateType();
             //查询fengning_admin_cate_type角色类型表
@@ -84,7 +84,6 @@ class Rolemanagement extends Permissions
                 return json($flag);
             }
         }
-        return $this->fetch();
     }
 
     /**
@@ -132,15 +131,12 @@ class Rolemanagement extends Permissions
      */
     public function getOne($id)
     {
-        if(request()->isAjax()) {
+        if(request()->isAjax()){
             //实例化模型类
             $cate = new AdminCate();
             $param = input('post.');
             $data = $cate->getOne($param['id']);
             return json(['code'=> 1, 'data' => $data]);
-        }else
-        {
-            return $this->fetch();
         }
     }
 
@@ -179,7 +175,6 @@ class Rolemanagement extends Permissions
                 return json($flag);
             }
         }
-        return $this->fetch();
     }
 
     /**
@@ -260,9 +255,6 @@ class Rolemanagement extends Permissions
 
             $flag = $model->deladmincateid($param);
             return $flag;
-        }else
-        {
-            return $this->fetch();
         }
     }
 
@@ -316,11 +308,11 @@ class Rolemanagement extends Permissions
                 foreach((array)$user as $key=>$vo){
                     $id = $vo['id'] + 10000;
                     $str .= '{ "id": "' . $id . '", "pid":"' . $vo['admin_group_id'] . '", "name":"' . $vo['nickname'].'"';
-                    $str .= '}☆';
+                    $str .= '}*';
                 }
                 $str = substr($str, 0, -1);
 
-                $str = explode("☆",$str);
+                $str = explode("*",$str);
 
                 //$res,$str这两个数组都存在时，才可以合并
 
@@ -354,7 +346,7 @@ class Rolemanagement extends Permissions
         if($id > 0) {
 
             //是修改操作
-            if(request()->isAjax()) {
+            if(request()->isAjax()){
                 //是提交操作
                 $post = $this->request->post();
                 //验证  唯一规则： 表名，字段名，排除主键值，主键名

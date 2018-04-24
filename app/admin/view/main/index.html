@@ -1,15 +1,219 @@
-<!DOCTYPE html>
-<html>
-  <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>fengning_main</title>
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
-  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all">
+{include file="../app/public/common_header.html"}
+<link rel="stylesheet" href="__WEBSITE__/main/index.css">
+      <div data-options="region:'east',title:'管理信息',split:true" style="width:345px;">
+            <div id="dd" class="easyui-tabs" style="width:100%;height:100%;border: 0">
+                  <div title="属性" style="padding:20px;display:none;">
+                      <div class="attrWrap">
+                          <ul class="toggle-attr" id="toogleAttr">
+                              <li uid="baseAttr" class="active">基本属性</li>
+                              <li uid="manageAttr">管理属性</li>
+                          </ul>
+                          <div class="baseAttrWrap" id="baseAttr">
+                              <div class="layui-collapse">
+                                  <div class="layui-colla-item">
+                                      <h2 class="layui-colla-title">常规属性</h2>
+                                      <div class="layui-colla-content layui-show">内容区域</div>
+                                  </div>
+                                  <div class="layui-colla-item">
+                                      <h2 class="layui-colla-title">其他</h2>
+                                      <div class="layui-colla-content">内容区域</div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="customAttrWrap" id="manageAttr" style="display: none">
+                              <div class="customAttr">
+                                  <h2>
+                                      <span>自定义属性</span>
+                                      <a href="javascript:;"><i class="fa fa-plus"></i></a>
+                                  </h2>
+                                  <div class="addCustomAttr"></div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="add-tag addTag">
+                          <h2>基本信息</h2>
+                          <form class="layui-form">
+                              <div class="layui-form-item">
+                                  <label class="layui-form-label">创建人</label>
+                                  <div class="layui-form-mid layui-word-aux">管理员</div>
+                              </div>
+                              <div class="layui-form-item">
+                                  <label class="layui-form-label">创建日期</label>
+                                  <div class="layui-form-mid layui-word-aux">9999-9-9</div>
+                              </div>
+                              <div class="layui-form-item layui-form-text">
+                                  <label class="layui-form-label">标注信息</label>
+                                  <div class="layui-input-block">
+                                      <textarea name="info" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                  </div>
+                              </div>
+                              <div class="layui-form-item">
+                                  <i class="fa fa-pencil" id="edit"></i>
+                                  <i class="fa fa-check" id="save"></i>
+                                  <i class="fa fa-reply" id="back"></i>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  <div title="讨论" style="overflow:auto;padding:20px;display:none;">
+                      <form action="" class="layui-form">
+                          <div class="layui-form-item layui-form-text">
+                              <div class="layui-input-inline">
+                                  <textarea name="msg" placeholder="请输入内容" class="layui-textarea"></textarea>
+                              </div>
+                          </div>
+                          <div class="layui-form-item operate">
+                              <div class="layui-input-inline fa-wrap">
+                                  <i class="fa fa-paperclip" id="upload"></i>
+                                  <i class="fa fa-at" id="at"></i>
+                              </div>
+                              <div class="layui-input-inline btn-wrap">
+                                  <button class="layui-btn layui-btn-xs" lay-submit lay-filter="save">发送</button>
+                                  <button class="layui-btn layui-btn-xs layui-btn-primary">取消</button>
+                              </div>
+                          </div>
+                          <div id="selectedUser"></div>
+                      </form>
+                  </div>
+                  <div title="附件" style="overflow:auto;padding:20px;display:none;">
+                        tab3
+                  </div>
+                  <div title="二维码" style="overflow:auto;padding:20px;display:none;">
+                        tab4
+                  </div>
+            </div>
+      </div>
+      <div data-options="region:'west',title:'管理视图',split:true" style="width:200px;"></div>
+      <div data-options="region:'center',title:''" class="centent">
+            <div class="easyui-layout" data-options="fit:true">
+                  <div data-options="region:'center',title:''" style="padding:5px;">
+                        <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
+                            RealBimOcx.ExitSubObjFlicker();
+                            RealBimOcx.BatchAddSubClrInfoBegin();
+                            RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ff0000);
+                            RealBimOcx.BatchAddSubClrInfoEnd();
+                        </script>
+                        <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
+                        <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
+                            // RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.58:8008/default.aspx?dir=url_res02&path=","res_fengning_kw_03");
 
-  <body class="layui-layout-body" style="overflow-y:visible;">
+                            //设置服务url
+                            RealBimOcx.SwitchBIMSceneSimple("F:\\","res_fengning_kw_03");
+                            RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
 
-  </body>
+                            RealBimOcx.CreateAGolFont("CustomFont01","微软雅黑",true,true,14,14,32,1.0,0*64,"");
+                            RealBimOcx.CreateAGolFont("CustomFont02","微软雅黑",true,true,12,12,8,1.0,0*64,"");
+                        </script>
+
+                        <script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
+                            if(CompleteEvent == "LoadMainScene" && retError==0 ){
+                                RealBimOcx.SetAllHugeObjSubValidState(1);
+                                RealBimOcx.SetSceHugeObjVisible(true);
+                            }
+                            RealBimOcx.SetSuitableCam();
+                        </script>
+                        <script for="RealBimOcx" event="UIClicked(eType,uButtonMode)" language='javascript'>
+                            function clearOperate() {
+                                RealBimOcx.AddAnchorEnd();
+                                RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
+                            };
+                            function addTagInfo() {
+                                $('.attrWrap').hide();
+                                $('.addTag').show();
+                            };
+
+                            $('textarea[name="info"]').on('input propertychange',function () {
+                                var val = $(this).text();
+                                RealBimOcx.SubmitMarkerText(val);
+                            })
+
+                            $('#save').click(function () {
+                                window.state=1;
+                                RealBimOcx.CreateMarkerEndInMem(true, 0, 0, true, true);  //保存标注
+                            });
+
+                            switch (eType) {
+                                case "ADD_ANCHOR":
+                                    clearOperate();
+                                    RealBimOcx.AddAnchorBegin(0);//构件锚点开始
+                                    break; //添加锚点
+                                case "DISP_ANCHOR":
+                                    break; //显示锚点
+                                case "DISP_TAG":
+                                    break;
+                                case "MARKER":
+                                    clearOperate();
+                                    RealBimOcx.CreateMarkerBegin();
+                                    addTagInfo();
+                                    break;//添加标注
+
+                                case "CAPTURE":  //快照
+                                    clearOperate();
+                                    RealBimOcx.CreateSnapShootInMem(true, 0, 0, true, true);
+                                    break;
+                                case "DISP_ISOLATE":
+                                    break;
+                                case "DISP_HIDE":
+                                    break;
+
+                            }
+
+                        </script>
+                        <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
+                            base64PicData = strPicData;
+                            base64RenData = strRenData;
+                            if(window.state==1){
+                                var img = addSnapshot(base64RenData);
+                                tagSwiper.prependSlide(img);
+                                tagSwiper.updateSlidesSize();
+                                window.state = undefined;
+                                console.log('标注：'+window.state);
+                            }else{
+                                //添加快照
+                                var img = addSnapshot(base64RenData);
+                                snapshotSwiper.prependSlide(img);
+                                snapshotSwiper.updateSlidesSize();
+                                console.log('快照：'+window.state);
+                            }
+                            $('.scenter a').click(function () {
+                                RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
+                            });
+                        </script>
+                  </div>
+                  <div data-options="region:'south',title:'协同信息',split:true" style="height:250px;">
+                        <div id="tt" class="easyui-tabs" style="width:100%;height:200px;border: 0">
+                              <div title="标注" style="display:none;">
+                                    <div class="swiper-container" id="tag">
+                                          <div class="swiper-wrapper">
+                                          </div>
+                                          <!-- 如果需要导航按钮 -->
+                                          <div class="swiper-button-prev tag-button-prev"></div>
+                                          <div class="swiper-button-next tag-button-next"></div>
+                                    </div>
+                              </div>
+                              <div title="快照" style="overflow:auto;display:none;">
+                                    <div class="swiper-container" id="snapshot">
+                                          <div class="swiper-wrapper">
+                                          </div>
+                                          <!-- 如果需要导航按钮 -->
+                                          <div class="swiper-button-prev snapshot-button-prev"></div>
+                                          <div class="swiper-button-next snapshot-button-next"></div>
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div>
+{include file="../app/public/common_footer.html"}
+<script src="__WEBSITE__/main/index.js"></script>
+<script>
+    $(document).keyup(function (event) {
+        var KeyCode = (navigator.appname=="Esc")?event.which:window.event.keyCode;
+        if ( KeyCode == 27 ){
+            RealBimOcx.AddAnchorEnd();
+            RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
+        }
+    })
+</script>
+</body>
 </html>

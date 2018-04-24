@@ -105,6 +105,10 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
             })
         },
         done:function (res) {
+          if(res.code!=2){
+            layer.msg("上传失败");
+            return ;
+          }
           $.ajax({
               type:"post",
               data:{attachment_id:res.id},
@@ -113,6 +117,9 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
               success:function (res) {
                   if(res.code===1){
                       layer.msg("上传成功");
+                    month = "";
+                    year = "";
+                    day = "";
                       var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                       tableItem.ajax.url(url).load();
                       zTreeObj.reAsyncChildNodes(null, "refresh", false);
@@ -198,6 +205,9 @@ function conDel(id){
         success:function (res) {
             if(res.code===1){
                 layer.msg("删除成功");
+              month = "";
+              year = "";
+              day = "";
                 var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
                 tableItem.ajax.url(url).load();
                 zTreeObj.reAsyncChildNodes(null, "refresh", false);

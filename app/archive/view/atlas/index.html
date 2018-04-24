@@ -462,6 +462,10 @@
                 })
             },
             done:function (res) {
+              if(res.code!=2){
+                layer.msg("上传失败");
+                return ;
+              }
                 $("#file_name").val(res.filename);
                 $("#path").val(res.src);
                 $("#attachmentId").val(res.id);

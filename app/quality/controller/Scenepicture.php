@@ -298,11 +298,14 @@ class Scenepicture extends Permissions
             $attachment = Db::name("attachment")->where("id",$data_info["attachment_id"])->find();
             $path = "." .$attachment['filepath'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-            if(file_exists($path)){
-                unlink($path); //删除上传的图片或文件
-            }
-            if(file_exists($pdf_path)){
-                unlink($pdf_path); //删除生成的预览pdf
+            if($attachment['filepath'])
+            {
+                if(file_exists($path)){
+                    unlink($path); //删除上传的图片或文件
+                }
+                if(file_exists($pdf_path)){
+                    unlink($pdf_path); //删除生成的预览pdf
+                }
             }
 
             //删除attachment表中对应的记录
@@ -313,4 +316,32 @@ class Scenepicture extends Permissions
             return $flag;
         }
     }
+    /***************************************三维模型******************/
+    /**
+     * 模板首页
+     * @return mixed
+     */
+    public function positionset()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 编辑一条现场图片位置信息
+     */
+    public function editPosition()
+    {
+        if(request()->isAjax()){
+            //实例化模型类
+            $model = new ScenePictureModel();
+            $param = input('post.');
+            $data = [
+                'id' => $param['id'],//现场图片自增id
+                'position' => $param['position']//位置信息
+            ];
+            $flag = $model->editScene($data);
+            return json($flag);
+        }
+    }
+
 }
