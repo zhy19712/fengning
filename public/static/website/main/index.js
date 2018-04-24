@@ -1,3 +1,17 @@
+window.isCtrlDown = false;
+$(document).keydown(function (event) {
+    var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+    if(KeyCode==17){
+        window.isCtrlDown = true;
+    }
+});
+$(document).keyup(function (event) {
+    var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+    if(KeyCode==17){
+        window.isCtrlDown = false;
+    }
+})
+
 //标注图片滚动
 window.tagSwiper = new Swiper ('#tag', {
     nextButton: '.tag-button-next',
