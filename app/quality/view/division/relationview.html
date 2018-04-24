@@ -119,6 +119,8 @@
                     //RealBimOcx.SetSceHugeObjVisible(false);
                 }
 
+                RealBimOcx.SetSuitableCam();
+
                 var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];
                 //保存关联模型
                 window.saveModel = function (picture_id) {

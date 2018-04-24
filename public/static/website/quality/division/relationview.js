@@ -1,5 +1,5 @@
 var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];    //单元工程段号编号
-var picture_id; //模型主键
+var one_picture_id; //模型主键
 //加载构件树
 var modelId = [];
 $.ajax({
@@ -10,6 +10,8 @@ $.ajax({
         id:window.unitEnginNoId
     },
     success: function (res) {
+        one_picture_id = res.one_picture_id;
+        //转换节点数据
         var nodes = JSON.parse(res.data)
         setZtree(nodes);
     }
@@ -41,7 +43,20 @@ function setZtree(nodes) {
     };
 
     zTreeObj = $.fn.zTree.init($("#ztree"), setting, nodes);
+    echoRelation();
 }
+
+//回显已关联节点
+function echoRelation() {
+    var treeObj = $.fn.zTree.getZTreeObj("ztree");
+    if(!treeObj){
+        return false;
+    }
+    var checkedNode = treeObj.getNodeByParam('picture_id',one_picture_id);
+    console.log(checkedNode);
+    treeObj.checkNode(checkedNode,true,false);
+}
+echoRelation();
 
 //加载模型视图
 function zTreeOnCheck(event, treeId, treeNode) {
@@ -112,4 +127,8 @@ function zTreeOnClick(event, treeId, treeNode) {
 
 $('#save').click(function () {
     saveModel(picture_id);
+});
+
+$('#close').click(function () {
+    window.close();
 });

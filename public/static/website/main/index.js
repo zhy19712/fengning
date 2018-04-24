@@ -115,7 +115,8 @@ $('.saveAttr').click(function () {
         url: "",
         type: "post",
         data: {
-
+            attrKey:attrKey,
+            attrVal:attrVal
         },
         dataType: "json",
         success: function (res) {
