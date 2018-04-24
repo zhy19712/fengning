@@ -15,5 +15,9 @@ class Main extends Permissions
         return $this->fetch();
     }
 
+    public function selectperson()
+    {
+        return $this->fetch();
+    }
 
 }

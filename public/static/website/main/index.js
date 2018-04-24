@@ -79,17 +79,5 @@ $.upload({
 });
 
 $('#at').click(function () {
-    layer.open({
-        title:'人员选择',
-        id:'100',
-        type:'1',
-        area:['1024px','500px'],
-        content:$('#selectUser'),
-        success:function () {
-
-        },
-        cancel: function(index, layero){
-            layer.close(layer.index);
-        }
-    });
-})
+    window.open("./selectperson", "人员选择", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+});
