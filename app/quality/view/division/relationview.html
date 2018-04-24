@@ -119,47 +119,43 @@
                     //RealBimOcx.SetSceHugeObjVisible(false);
                 }
 
+                RealBimOcx.SetSuitableCam();
+
                 var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];
                 //保存关联模型
-                window.saveModel = function (add_id) {
+                window.saveModel = function (picture_id) {
+                    if(!picture_id){
+                        return false;
+                    }
                     $.ajax({
                         url: "./addModelPicture",
                         type: "post",
                         data: {
                             id:unitEnginNoId,
-                            picture_id:add_id
+                            picture_id:picture_id
                         },
                         dataType: "json",
                         success: function (res) {
                             layer.msg(res.msg);
+                            alert(res.msg);
                         }
                     })
                 }
                 //加载模型试图
-                window.loadModel = function (add_id) {
-                    $.ajax({
-                        url: "./relevanceModelPicturePreview",
-                        type: "post",
-                        data: {
-                            add_id:add_id
-                        },
-                        dataType: "json",
-                        success: function (res) {
-                            if(res.numberArr==''){
-                                RealBimOcx.SetAllHugeObjSubValidState(0);
-                            }else{
-                                RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
-                                RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
-                                RealBimOcx.SetHugeObjSubValidStateInfo(res.number, 1); //设置单个模型可见
-                                RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
-                                RealBimOcx.FocusCameraToComponent(res.number,1); //3：视角距离
-                                //模型视图闪烁
-                                RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
-                                RealBimOcx.AddFlickerSubObjects(res.number);
-                                RealBimOcx.SetSubObjFlickerEnd();
-                            }
-                        }
-                    })
+                window.loadModel = function (number) {
+                    if(number==''){
+                        RealBimOcx.SetAllHugeObjSubValidState(0);
+                    }else{
+                        RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
+                        RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
+                        RealBimOcx.SetHugeObjSubValidStateInfo(number, 1); //设置单个模型可见
+                        RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
+                        RealBimOcx.FocusCameraToComponent(number,1); //3：视角距离
+                        //模型视图闪烁
+                        RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
+                        RealBimOcx.AddFlickerSubObjects(number);
+                        RealBimOcx.SetSubObjFlickerEnd();
+                    }
                 };
 
                 //取消模型闪烁
