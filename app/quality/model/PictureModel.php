@@ -9,7 +9,6 @@
 namespace app\quality\model;
 
 
-use think\Db;
 use think\exception\PDOException;
 use think\Model;
 
@@ -33,30 +32,11 @@ class PictureModel extends Model
         }
     }
 
-    public function getAllNumber($add_id)
+    public function getAllName()
     {
-        $division_id = Db::name('quality_unit')->where('division_id',$add_id)->column('id');
-        $data = $this->where(['division_id'=>['in',$division_id]])->column('id,picture_id,picture_name');
-        $newData = ['id_arr'=>[],'picture_id_arr'=>[],'picture_name_arr'=>[]];
-        foreach ($data as $v){
-            $newData['id_arr'][] = $v['id'];
-            $newData['picture_id_arr'][] = $v['picture_id'];
-            $newData['picture_name_arr'][] = $v['picture_name'];
-        }
-        return $newData;
+        // picture_type  1工程划分模型 2 建筑模型 3三D模型
+        $data = $this->where('picture_type',1)->field('id as picture_id,picture_number,picture_name')->select();
+        return $data;
     }
-
-    public function getModelPicture($id)
-    {
-        $picture_id = $this->where(['division_id'=>['eq',$id]])->value('picture_id');
-        return $picture_id;
-    }
-
-    public function getModelPictureNumber($id)
-    {
-        $picture_id = $this->where(['id'=>['eq',$id]])->value('picture_id');
-        return $picture_id;
-    }
-
 
 }

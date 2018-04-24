@@ -506,7 +506,7 @@
         selfidUnit = zTreeObjUnit.getSelectedNodes()[0].id;//当前id
         nodeNameUnit = zTreeObjUnit.getSelectedNodes()[0].name;//当前name
         nodePidUnit = zTreeObjUnit.getSelectedNodes()[0].pid;//当前pid
-        console.log(selfidUnit + '---selfidUnit===id');
+        console.log(selfidUnit + '---单元工 selfidUnit id');
         console.log(nodeNameUnit + '---name');
         console.log(nodePidUnit + '---pid');
         var path = sNodesUnit.name; //选中节点的名字
@@ -590,7 +590,7 @@
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         }
         $("#tableContent .imgList").css('display','block');
-        console.log(id);
+        console.log(id + " 控制点工序 conThisId");
     }
 
     //下载封装的方法
@@ -698,7 +698,7 @@
         }
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItem.row(".select-color").data();//获取选中行数据
-        console.log(selectData[3]);
+        console.log(selectData[3] +" ------控制点 clickId");
         clickId = selectData[3];
 
         if(clickId != undefined && clickId != null){
@@ -732,14 +732,15 @@
         border:false,
         onSelect:function(title,index){
             if(title === "控制点执行情况"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                // if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                if(clickId != null && clickId != undefined){
                     $(".mybtn").css("display","block");
                 }
             }else if(title != "附件资料"){
                 $(".mybtn").css("display","none");
             }
             if(title === "附件资料"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                if(clickId != null && clickId != undefined){
                     $(".bitCodes").css("display","block");
                     $(".mybtn").css("display","block");
                 }
@@ -747,7 +748,7 @@
                 $(".bitCodes").css("display","none");
             }
             if(title === "在线填报"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
+                if(clickId != null && clickId != undefined){
                     $(".mybtnAdd").css("display", "block");
                     $(".mybtn").css("display", "none");
                 }else if(clickId == undefined || clickId == null){
@@ -763,7 +764,7 @@
     function outerHeight() {
         gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
         $("#implementation_wrapper").css("height",gridHeight+"px");
-        console.log(gridHeight);
+        // console.log(gridHeight);
     }
 
 
