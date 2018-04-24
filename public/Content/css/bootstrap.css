@@ -4373,7 +4373,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   line-height: 1.428571429;
   border: 1px solid transparent;
   border-radius: 2px 2px 0 0;
-  background:url(../images/bg_x.png) repeat-x 0 -305px;
+  background:url(../../static/public/images/bg_x.png) repeat-x 0 -305px;
   border-color: #ddd #ddd #ccc;
 }
 
@@ -4389,7 +4389,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   background-color: #ffffff;
   border: 1px solid #ccc;
   border-bottom-color: transparent;
-  background:url(../images/bg_x.png) repeat-x 0 -45px;
+  background:url(../../static/public/images/bg_x.png) repeat-x 0 -45px;
 }
 .nav_nofloat{ clear:none; overflow:hidden}
 .nav_style{
@@ -4405,7 +4405,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .nav_style > li.active > a:focus {
 	font-weight:bold;
 	color:#663300;
-  background:url(../images/bg_x.png) repeat-x 0 -480px;
+  background:url(../../static/public/images/bg_x.png) repeat-x 0 -480px;
 }
 
 
