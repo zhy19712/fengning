@@ -266,6 +266,23 @@ class Element extends Permissions
         ////$phpword->save("1.html");
     }
 
+    public function word2html()
+    {
+        $word = new \COM("word.application") or die("Unable to instanciate Word");
+        $word->Visible = 1;
+        $word->Documents->Open('D:\Works\php\fengning\public\1.docx');
+        $word->Documents[1]->SaveAs('./1.html',8);
+        $word->Quit();
+        $word = null;
+        unset($word);
+
+        //$word=new \COM("Word.Application") or die("无法打开 MS Word");
+        //$word->visible = 1 ;
+        //$word->Documents->Open('D:\\Works\\php\\fengning\\public\\1.docx')or die("无法打开这个文件");
+        //$htmlpath=substr('D:\\Works\\php\\fengning\\public\\1.docx',0,-4);
+        //$word->ActiveDocument->SaveAs($htmlpath,8);
+        //$word->quit(0);
+    }
     ##单元验评
 
     /**
