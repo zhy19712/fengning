@@ -741,23 +741,7 @@
 
         //关联模型
         $("#model").click(function (){
-            layer.msg("有待开发")
-            // $.ajax({
-            //     type:"post",
-            //     url:"{:url('document/archiving')}",
-            //     data:{id:clickId},
-            //     success: function (res) {
-            //         console.log(res)
-            //         if(res.code == 1){
-            //             var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="+selfid;
-            //             tableItem.ajax.url(url).load();
-            //             layer.msg("归档成功！")
-            //         }
-            //     },
-            //     error: function (data) {
-            //         debugger;
-            //     }
-            // })
+            window.open('./association');
         });
 
         //移动
