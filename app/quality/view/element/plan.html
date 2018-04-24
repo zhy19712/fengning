@@ -517,8 +517,11 @@
             url: url,
             type:"post",
             dataType: "json",
+            data:{cpr_id:id},
             success: function (res) {
-
+                if(res.code != 1){
+                    layer.msg(res.msg);
+                }else {
                     $("#form_container").empty();
                     var str = "";
                     str += ""
@@ -531,6 +534,7 @@
                         + "</form>"
                     $("#form_container").append(str);
                     $("#form_container").find(".btn" + id).click();
+                }
 
             }
         })
