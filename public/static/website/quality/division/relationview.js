@@ -1,5 +1,5 @@
-var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];
-
+var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];    //单元工程段号编号
+var picture_id; //模型主键
 //加载构件树
 var modelId = [];
 $.ajax({
@@ -45,6 +45,8 @@ function setZtree(nodes) {
 
 //加载模型视图
 function zTreeOnCheck(event, treeId, treeNode) {
+    console.log(treeNode);
+    picture_id = treeNode.picture_id;
     //勾选定位模型
     /*if(treeNode.checked){
         loadModel(treeNode.add_id);
@@ -99,7 +101,6 @@ window.creatSelectedZtree = function (node,uObjSubID) {
     $('#selectCount').text(checkedNodes.length);
 }
 
-var add_id;
 //选中关联节点及加载模型视图
 function zTreeOnClick(event, treeId, treeNode) {
     var number = treeNode.picture_number;
@@ -110,5 +111,5 @@ function zTreeOnClick(event, treeId, treeNode) {
 }
 
 $('#save').click(function () {
-    saveModel(add_id);
+    saveModel(picture_id);
 });

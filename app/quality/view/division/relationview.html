@@ -121,17 +121,21 @@
 
                 var unitEnginNoId = document.cookie.split(';')[0].split('=')[1];
                 //保存关联模型
-                window.saveModel = function (add_id) {
+                window.saveModel = function (picture_id) {
+                    if(!picture_id){
+                        return false;
+                    }
                     $.ajax({
                         url: "./addModelPicture",
                         type: "post",
                         data: {
                             id:unitEnginNoId,
-                            picture_id:add_id
+                            picture_id:picture_id
                         },
                         dataType: "json",
                         success: function (res) {
                             layer.msg(res.msg);
+                            alert(res.msg);
                         }
                     })
                 }
