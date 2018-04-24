@@ -201,6 +201,10 @@ class Element extends Permissions
         fclose($file);
     }
 
+    public function formDownload($formId)
+    {
+        return 1;
+    }
     public function printPDF($cpr_id)
     {
         //todo 暂缓
