@@ -7,7 +7,7 @@
  */
 /**
  * 质量管理-进度分析
- * Class Qualityanalysis
+ * Class Progrssanalysis
  * @package app\quality\controller
  */
 namespace app\statistics\controller;
@@ -18,7 +18,7 @@ use think\exception\PDOException;
 use think\Loader;
 use think\Db;
 
-class Progressanalysis extends Permissions
+class Progrssanalysis extends Permissions
 {
     /**
      * 模板首页
