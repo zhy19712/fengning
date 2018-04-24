@@ -261,15 +261,15 @@
         $("input[name='contractName']").val(subtime);
     }
     //点击下一步执行人
-    // $("#nextStep").click(function () {
-    //     layer.open({
-    //         type: 2,
-    //         title: '选择审批人',
-    //         shadeClose: true,
-    //         area: ['450px', '550px'],
-    //         content: '{:url("approve/approve/selectMumber")}?dataType=app\\quality\\model\\QualityFormInfoModel\n'
-    //     });
-    // });
+    $("#nextStep").click(function () {
+        layer.open({
+            type: 2,
+            title: '选择审批人',
+            shadeClose: true,
+            area: ['450px', '550px'],
+            content: '{:url("approve/approve/selectMumber")}?dataType=app\\quality\\model\\QualityFormInfoModel\n'
+        });
+    });
 
     //点击保存
     $("#test3").click(function () {
@@ -285,10 +285,10 @@
             success: function (res) {
                 console.log(res);
                 if(res.code == 1){
-                    layer.msg("保存成功!");
+                    parent.layer.msg("保存成功!");
                     close();
                 }else  if(res.code == -1){
-                    layer.msg("保存失败!");
+                    // parent.layer.msg("保存失败,请稍后再试!");
                 }
             }
         });

@@ -131,7 +131,7 @@
         };
         $(window.parent.document).find("#hiddenValId").val($("#selectedUserId").val());
         $(window.parent.document).find("#hiddenValName").val($("#selectedUserName").text());
-        console.log($("#selectedUserId").val());
+        // console.log($("#selectedUserId").val());
         close();
         var user = {
             "id": $("#selectedUserId").val(),
@@ -207,7 +207,8 @@
                     initObj.name = res[i].nickname;
                     initArr.push(initObj)
                 }
-                console.log(initArr)
+                // console.log(initArr)
+
                 // $.fn.zTree.init($("#treeFrequentlyUsed"), setting, [{"name":"王建伟",id:123},{"name":"丁志超",id:456}]);
                 $.fn.zTree.init($("#treeFrequentlyUsed"), setting, initArr);
             }

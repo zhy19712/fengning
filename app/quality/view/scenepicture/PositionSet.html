@@ -1,13 +1,136 @@
-<!doctype html>
-<html lang="en">
+
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+
+    <link rel="stylesheet" href="__PUBLIC__/easyui/easyui.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all" />
+    <script src="__PUBLIC__/jquery/jquery.min.js"></script>
+    <script src="__PUBLIC__/easyui/jquery.easyui.min.js"></script>
+    <style type="text/css">
+    body {
+        padding: 5px;
+        margin: 0;
+        padding-bottom: 15px;
+        min-height: 400px;
+        height: 100%;
+    }
+    .btn {
+        line-height: 1.02857;
+        border-radius: 60px;
+        margin-right: 15px;
+        float: right;
+    }
+    #Text1
+    {width: 87px; height: 20px;}
+    #TextAnchorName
+    {
+        width: 100px;
+    }
+    </style>
 </head>
 <body>
-12322222222222222
+<div class="easyui-layout" data-options="fit:true">
+    <div class="" data-options="region:'north',title:'',split:true" style="height: 10%;">
+        <button id="FT1" onclick="return FT1_onclick()" class="layui-btn" type="button"><i class="fa fa-check-circle"></i> 保存</button>
+        <button id="FT2" onclick="return FT2_onclick()" class="layui-btn" type="button"><i class="fa fa-check-circle"></i> 恢复位置</button>
+
+    </div>
+    <div class="" data-options="region:'center',title:''" style="height: 90%;">
+        <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%">
+        </object>
+
+    </div>
+</div>
+<!--<object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%">-->
+<!--</object>-->
+<script>
+  var str=location.search;
+  str=str.substr(1); //取得所有参数   stringvar.substr(start [, length ]
+  var arr=str.split("="); //各个参数放到数组里
+  var positionid = arr[1];
+
+
+</script>
+<script type="text/javascript">
+
+  var base64PicData = "";
+  var base64RenData = "";
+
+
+  function FT1_onclick() {
+    RealBimOcx.CreateSnapShootInMem(true, 0, 0, true, true);
+
+  }
+
+  function FT2_onclick() {
+    RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
+  }
+
+
+</script>
+
+
+
+
+
+
+<script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
+  base64PicData = strPicData;
+  base64RenData = strRenData;
+  $.ajax({
+    type: "Post",
+    url: "./editPosition",
+    data: { "id": positionid, "position": base64RenData },
+    success: function (res) {
+      if (res.code == 1)
+        alert("保存成功。");
+      else alert("保存失败。");
+    }
+  });
+
+</script>
+
+
+<script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
+  RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
+  // RealBimOcx.SwitchBIMSceneSimple("E:\\","res_fengning_kw_03");
+
+  RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
+
+  RealBimOcx.CreateAGolFont("CustomFont01","微软雅黑",true,true,14,14,32,1.0,0*64,"");
+  RealBimOcx.CreateAGolFont("CustomFont02","微软雅黑",true,true,12,12,8,1.0,0*64,"");
+
+
+</script>
+<script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
+  if(CompleteEvent == "LoadMainScene" && retError==0 ){
+    RealBimOcx.SetAllHugeObjSubValidState(1);
+    // RealBimOcx.SetAllHugeObjSubValidState(0);
+    RealBimOcx.SetSceHugeObjVisible(true);
+  }
+  $.ajax({
+    type: "Post",
+    url: "./getindex",
+    data: {"id": positionid },
+    success: function (res) {
+      console.log(res.data.position)
+      if(res.data.position==0){
+        console.log(11)
+      }else{
+        // RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
+        // RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
+        // RealBimOcx.SetHugeObjSubValidStateInfo(res.data.position, 1); //设置单个模型可见
+        // RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
+        RealBimOcx.ShowSnapshotOrMarkerInMem(res.data.position);
+        // RealBimOcx.SetSuitableCam();
+        // RealBimOcx.FocusCameraToComponent(res.data.position,1); //3：视角距离
+      }
+    }
+  });
+</script>
+
+
 </body>
 </html>

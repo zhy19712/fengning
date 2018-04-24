@@ -124,6 +124,7 @@
             </div>
         </div>
     </div>
+    <input id="referFlow" type="hidden" value="测量人@施工单位@监理单位" />
     <input type="hidden" name="inputId" id="dataId" value="{:$dataId}">
     <input type="hidden" name="inputId" id="hiddenValId" value="">
     <input type="hidden" name="inputName" id="hiddenValName" value="">
@@ -156,17 +157,15 @@
     var dataArr = [];
     var subId ;
 
-
-
     // 添加审批人
     function addPeople(user) {
         var dataId = $("#hiddenValId").val();
         dataArr.push(dataId);
         subId = dataArr.join(",");
-        console.log(dataArr);
+        // console.log(dataArr);
         console.log(subId);
 
-        console.log(user);
+        // console.log(user);
         var $dom = $(".people");
         //var haveAddPeoples = [];
         //$.each($dom, function (i, item) {
@@ -233,7 +232,7 @@
                 dataType:'app\\quality\\model\\QualityFormInfoModel' ,
             },
             success: function (res){
-                console.log(res);
+                // console.log(res);
                 if (res.code === 1 ) {
                     // var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
                     // parentWin.contentWindow.refresh();//刷新列表数据
@@ -251,7 +250,7 @@
 
     // 初始化参考流程信息
     function initReferFlow() {
-        if ($("#referFlow").val()) {
+        // if ($("#referFlow").val()) {
             var temp = $("#referFlow").val().split("@");
             var html = "";
             $.each(temp, function (i, item) {
@@ -265,7 +264,7 @@
             });
             $("#referDiv").html(html);
             $("#referContentDiv").show();
-        };
+        // };
     };
 
     // 初始化上次流程

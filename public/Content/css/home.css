@@ -4,7 +4,7 @@ table{ font-size:12px;}
     height:32px;
     line-height:32px;
     border-bottom:2px solid #B8CAD1;
-    background-image:url(../images/m_nav_bg.png);
+    background-image:url(../../static/public/images/m_nav_bg.png);
 }
 .maincontainer-right_path a{
     color:#000;
@@ -41,7 +41,7 @@ table{ font-size:12px;}
 	padding:8px;
 	text-align:center;
 	color:#fff;
-	background: url(../images/bg_x.png) 0 -242px;
+	background: url(../../static/public/images/bg_x.png) 0 -242px;
 }
 .panel-tiaoz .panel-default{ border-color:#688db2;}
 .panel-tiaoz .panel-heading:active{background:#4680ba;}
@@ -142,7 +142,7 @@ table{ font-size:12px;}
 	vertical-align:middle;
 	height:30px;
 	padding:0 5px;
- 	background:url(../images/bg_xth.png) repeat-x #ecf3f6;
+ 	background:url(../../static/public/images/bg_xth.png) repeat-x #ecf3f6;
  	border-bottom:1px;}
 	
 .table_th tr td{ height:30px}
@@ -173,7 +173,7 @@ table{ font-size:12px;}
 	height:35px;
 	padding:0 5px;
 	text-align:center;
- 	background:url(../images/bg_xth.png) repeat-x #ecf3f6;
+ 	background:url(../../static/public/images/bg_xth.png) repeat-x #ecf3f6;
  	border-bottom:1px;}
 .table_fuz thead tr th.thefuz{
 	font-size:12px;
@@ -199,7 +199,7 @@ table{ font-size:12px;}
 	height:35px;
 	padding:0 5px;
 	text-align:center;
- 	background:url(../images/bg_xth.png) repeat-x #ecf3f6;
+ 	background:url(../../static/public/images/bg_xth.png) repeat-x #ecf3f6;
  	border-bottom:1px;}
 .table_qingdan thead tr th.thefuz,
 .table_qingdan tbody tr th.thefuz{
@@ -222,7 +222,7 @@ table{ font-size:12px;}
 	height:35px;
 	padding:0 5px;
 	text-align:center;
- 	background:url(../images/bg_xth.png) repeat-x #ecf3f6;
+ 	background:url(../../static/public/images/bg_xth.png) repeat-x #ecf3f6;
  	border-bottom:1px;}
 .table_two thead tr th.thefuz{
 	font-size:12px;
@@ -248,7 +248,7 @@ table{ font-size:12px;}
 	color:#5c91be;}	
 	
 .table_lbg{background:#f3f3f3;}
-.table_tit{ background:url(../images/bg_x.png) 0 -1px repeat-x; height:20px;}
+.table_tit{ background:url(../../static/public/images/bg_x.png) 0 -1px repeat-x; height:20px;}
 .f_l{float:left;}
 .f_r{float:right;}
 	
@@ -291,7 +291,7 @@ table{ font-size:12px;}
 	line-height:25px;
 	padding-left:15px;
 	margin-left:20px;
-	background:url(../images/libg.png) no-repeat 3px 7px;}	
+	background:url(../../static/public/images/libg.png) no-repeat 3px 7px;}
 .arr_left_02 > ul > li:hover{ background-color:#f5f5f5}
 .arr_left_02 > ul > li a{ display:block;color:#000;}
 .arr_left_02 > ul > li.arr_now{ background-color:#ffebbf; }
@@ -328,7 +328,7 @@ table{ font-size:12px;}
 	line-height:35px;
 	padding-left:10px;
 	height:31px;
-	background:url(../images/bg_x.png) repeat-x;
+	background:url(../../static/public/images/bg_x.png) repeat-x;
 	border-bottom:solid 1px #d4e7f0;}	
 	
 	
@@ -337,7 +337,7 @@ table{ font-size:12px;}
 	line-height:28px;
 	padding-left:4px;
 	height:31px;
-	background:url(../images/bg_x.png) repeat-x;
+	background:url(../../static/public/images/bg_x.png) repeat-x;
 	border-bottom:solid 1px #d4e7f0;}
 .log_left_con{padding:10px;}	
 .log_right{
@@ -383,7 +383,7 @@ table{ font-size:12px;}
 .bggl_box{}
 .bggl_tit{
 	line-height:35px;
-	background:url(../images/bg_x.png) repeat-x 0 -133px;
+	background:url(../../static/public/images/bg_x.png) repeat-x 0 -133px;
 	padding:0 15px;
 	font-weight:bold;
 	font-size:16px;
@@ -401,11 +401,11 @@ table{ font-size:12px;}
 	width:100%;}
 .bggl_an{
 	border:none;
-	background:url(../images/bggl_an.png);
+	background:url(../../static/public/images/bggl_an.png);
 	width:40px;
 	height:48px;}
-.bggl_an:hover{background:url(../images/bggl_an.png) 0 -52px;}
-.bggl_an:active{background:url(../images/bggl_an.png) 0 -105px;}
+.bggl_an:hover{background:url(../../static/public/images/bggl_an.png) 0 -52px;}
+.bggl_an:active{background:url(../../static/public/images/bggl_an.png) 0 -105px;}
 
 .bggl_tabbox{
 	background:#d6dee0;
@@ -424,7 +424,7 @@ table{ font-size:12px;}
 	vertical-align:middle;}
 
 .table_bggl{ width:100%; background:#fff;text-align:center;border:solid 1px #d4d4d4;}
-.table_bggl tr th{background:url(../images/bg_x.png) 0 -176px;text-align:center; font-weight:lighter; line-height:20px; height:20px; font-size:12px;}
+.table_bggl tr th{background:url(../../static/public/images/bg_x.png) 0 -176px;text-align:center; font-weight:lighter; line-height:20px; height:20px; font-size:12px;}
 .table_bggl tr td{border:solid 1px #d4d4d4; padding:0 3px; font-size:12px; line-height:25px; height:25px;text-align:left;}
 
 .table_bggl tr.info{ background:#d9edf7;}
@@ -475,7 +475,7 @@ table{ font-size:12px;}
 	
 	.kaigong {margin-bottom: 2px;border:none;border-radius: 2px;}
 	.kaigong ul {margin-bottom: 2px;}
-	.kaigong_left .kaigong_tit{ line-height:23px; padding:2px 5px; background:url(../images/bg_x.png) 0 -242px;}
+	.kaigong_left .kaigong_tit{ line-height:23px; padding:2px 5px; background:url(../../static/public/images/bg_x.png) 0 -242px;}
 	.kaigong_left .kaigong_tit a{ color:#fff; display:block;}
 	.kaigong_left .kaigong_tit a:hover{ color:#FC0; text-decoration:none;}
 	.kaigong_left .kaigong_list li{ margin-top:2px;}
@@ -533,7 +533,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
 	padding-left:10px;
 	line-height:29px;
 	height:32px;
-	background:url(../images/bg_x.png) 0 -304px;}
+	background:url(../../static/public/images/bg_x.png) 0 -304px;}
 	
 .gchf_left_con{
 	padding:5px;
@@ -548,7 +548,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
 	padding-left:10px;
 	line-height:29px;
 	height:32px;
-	background:url(../images/bg_x.png) 0 -348px;}
+	background:url(../../static/public/images/bg_x.png) 0 -348px;}
 
 .gchf_right_con{ padding:10px;}
 
@@ -568,7 +568,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
   color: #25566f;
   font-size:14px;
   font-weight:bold;
-  background:url(../images/bg_x.png) repeat-x 0 -389px #d9edf7;
+  background:url(../../static/public/images/bg_x.png) repeat-x 0 -389px #d9edf7;
   border-color: #cedce1;
 }
 .panel-home > .panel-heading >.badge{
@@ -594,7 +594,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
 	width:9px;
 	height:9px;
 	display:inline-block;
-	background:url(../images/titicon.png);}
+	background:url(../../static/public/images/titicon.png);}
 	
 /* 欢迎 */
 .welcome{
@@ -603,7 +603,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
 	padding:0 0 5px 5px;
 	border-bottom:dashed 1px #b8cad1;}
 .welcome_icon{
-	background:url(../images/welcome_icon.png) no-repeat 4px 5px;
+	background:url(../../static/public/images/welcome_icon.png) no-repeat 4px 5px;
 	margin:0 8px;
 	width:8px;
 	display:inline-block;}
@@ -617,7 +617,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
 	border-radius:2px;
 	line-height:20px;
 	margin-left:4px;
-	background-image:url(../images/bg_x.png);}
+	background-image:url(../../static/public/images/bg_x.png);}
 	
 .welcome_role{ border-color:#dccf93;background-position:0 -452px; color:#996633}
 .welcome_a{
@@ -673,7 +673,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
 	margin:auto;
 	width:40px;
 	height:40px;
-	background:url(../images/welcomeicon.png) -61px -140px;}
+	background:url(../../static/public/images/welcomeicon.png) -61px -140px;}
 	.wel_01{ background-position:0px -42px;}
 	.wel_02{ background-position:-53px -42px;}
 	.wel_03{ background-position:0px -93px;}
@@ -686,7 +686,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
 	height:25px;
 	display:block;
 	margin:auto;
-	background:url(../images/welcomeicon.png);}
+	background:url(../../static/public/images/welcomeicon.png);}
 	.wel_arr_top{ background-position:-89px -4px;}
 	.wel_arr_left{ background-position:-47px -4px;}
 	.wel_arr_right{ background-position:-4px -4px;}
@@ -791,7 +791,7 @@ table.table-striped tbody tr.onclick:hover td{background:#ffeda7;}
 
 .audit_ico{
 	position:absolute;
-	background:url(../images/sh.png) no-repeat 10px 0;
+	background:url(../../static/public/images/sh.png) no-repeat 10px 0;
 	width:90px;
 	height:50px;
 	top:5px;}	

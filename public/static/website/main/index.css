@@ -8,6 +8,7 @@ body{ background:#fff; font:normal 12px/22px 宋体;  }
 img{ border:0;  }
 a{ text-decoration:none; color:#333;  }
 
+/* 标注/快照滚动 */
 .swiper-container {
     width: 100%;
     height: 150px;
@@ -57,7 +58,7 @@ a{ text-decoration:none; color:#333;  }
 .mask .fa-search{
     font-size: 30px;
 }
-
+/* 管理信息 */
 .toggle-attr li{
     line-height: 1;
     display: inline-block;
@@ -72,6 +73,7 @@ a{ text-decoration:none; color:#333;  }
 .toggle-attr li.active,.toggle-attr li:hover{
     color: #0c91e5;
 }
+/* 标注基本属性 */
 .add-tag{
     display: none;
     padding-bottom: 10px;
@@ -100,6 +102,7 @@ a{ text-decoration:none; color:#333;  }
 .layui-form-text .layui-textarea:hover{
     border: 1px solid #0c91e5 !important;
 }
+/* 讨论 */
 .operate .fa-wrap,.operate .btn-wrap{
     width: auto;
     display: inline-block;
@@ -116,31 +119,49 @@ a{ text-decoration:none; color:#333;  }
 .operate .btn-wrap{
     float: right;
 }
-.user-content .layui-input-inline{
+/* 讨论@人员 */
+.tag{
+    display: inline-block;
+    margin: 5px;
+    padding: 0px 9px;
+    border-radius: 50px;
+    background: #00c0ef;
+    color: #fff;
+}
+.tag i.fa{
+    margin-left: 5px;
+}
+
+/* 管理属性 */
+.custom-attr .layui-form-label{
+    padding: 9px 0;
+    width: auto;
+    font-weight: bold;
+    color: #0c91e5;
+}
+.custom-attr .layui-form-mid{
+    float: right;
+}
+.custom-attr .layui-input-block{
     margin: 0;
 }
- .user-content .layui-word-aux{
-     background: #0c91e5;
-     width: 38px;
-     border-top-right-radius: 4px;
-     border-bottom-right-radius: 4px;
-     text-align: center;
+.attr-group,.attr-group .layui-input-inline{
+    width: 100%;
 }
-.user-content i.fa:before{
-    color: #FFF;
+.attr-group .layui-input-inline{
+    margin-bottom: 10px;
 }
-.user-content .btn-wrap i.fa:before{
-    font-size: 24px;
-    color: #00c0ef;
+.attr-group .layui-input{
+    width: 40%;
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
 }
-.user-content .btn-wrap i.fa-times-circle:before{
-    color: #FF5722;
+.attr-group i.fa{
+    display: block;
+    margin: 3px 0;
+    font-size: 14px;
 }
-.user-ztree ,.user-selected{
-    float: left;
-    border: 1px solid #cecece;
-}
-.user-ztree{
-    margin-right: 10px;
-    width: 360px;
+.attr-group .layui-form-mid{
+    padding: 0 !important;
 }

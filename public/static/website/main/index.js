@@ -1,3 +1,17 @@
+isCtrlDown = false;
+$(document).keydown(function (event) {
+    var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+    if(KeyCode==17){
+        isCtrlDown = true;
+    }
+});
+$(document).keyup(function (event) {
+    var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+    if(KeyCode==17){
+        isCtrlDown = false;
+    }
+})
+
 //标注图片滚动
 window.tagSwiper = new Swiper ('#tag', {
     nextButton: '.tag-button-next',
@@ -79,17 +93,19 @@ $.upload({
 });
 
 $('#at').click(function () {
-    layer.open({
-        title:'人员选择',
-        id:'100',
-        type:'1',
-        area:['1024px','500px'],
-        content:$('#selectUser'),
-        success:function () {
+    window.open("./selectperson", "人员选择", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+});
 
-        },
-        cancel: function(index, layero){
-            layer.close(layer.index);
-        }
-    });
-})
+$('#addAttr').click(function () {
+    var attrGroup = [];
+    attrGroup.push('<div class="layui-input-inline">');
+    attrGroup.push('<input type="text" name="title" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
+    attrGroup.push('<input type="text" name="title" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
+    attrGroup.push('<div class="layui-form-mid layui-word-aux">');
+    attrGroup.push('<i class="fa fa-check"></i>');
+    attrGroup.push('<i class="fa fa-close"></i>');
+    attrGroup.push('</div>');
+    attrGroup.push('</div>');
+
+    $('#attrGroup').append(attrGroup.join(' '));
+});
