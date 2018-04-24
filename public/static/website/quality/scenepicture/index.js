@@ -308,7 +308,9 @@ function conPicshow(id){
 }
 //设置位置
 function conPosition(id) {
-    layer.open({
+  // window.open("./PositionSet?id=" + id);
+
+  layer.open({
         type: 2,
         shadeClose: true,
         title: "空间位置设置",

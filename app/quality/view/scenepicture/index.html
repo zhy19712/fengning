@@ -174,10 +174,10 @@
                 "orderable": false,
                 "targets": [4],
                 "render":function (data) {
-                    if(data==1){
-                        return "<img src='__WEBSITE__/quality/scenepicture/setValid.png'>" ;
+                    if(data==0){
+                        return "" ;
                     }else{
-                        return "";
+                      return "<img src='__WEBSITE__/quality/scenepicture/setValid.png'>" ;
                     }
                 }
             }
@@ -223,7 +223,7 @@
             if(res.code===1){
                 var html = "<option value=''>全部</option>";
                 for(var i =0; i<res.data.length;i++){
-                    html += `<option value=${res.data[i].id}>${res.data[i].name}</option>`;
+                    html += '<option value="'+res.data[i].id+'">'+res.data[i].name+'</option>';
                 }
                 $("#department").html(html);
             }

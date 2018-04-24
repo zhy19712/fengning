@@ -435,8 +435,14 @@
         implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
         imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
         // funOnLine();
-        // funOnLine(selfidUnit,conThisId,clickId);
-
+        console.log(clickId)
+        console.log(conThisId)
+        // funOnLine(1,1,1);
+        clickId ='';
+        conThisId ='';
+        $(".mybtn").css("display", "none");
+        $(".bitCodes").css("display","none");
+        $(".mybtnAdd").css("display","none");
         initData(selfid);//调用单元工
     }
 
@@ -452,7 +458,7 @@
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
         eTypeId ,controlPointId ,controlPointName ,
-        conThisId ,selectData ,clickId ,ControlPointOnlineId;//后台返的
+        conThisId = '' ,selectData ,clickId ='' ,ControlPointOnlineId;//后台返的
 
     //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
@@ -506,7 +512,7 @@
         selfidUnit = zTreeObjUnit.getSelectedNodes()[0].id;//当前id
         nodeNameUnit = zTreeObjUnit.getSelectedNodes()[0].name;//当前name
         nodePidUnit = zTreeObjUnit.getSelectedNodes()[0].pid;//当前pid
-        console.log(selfidUnit + '---selfidUnit===id');
+        console.log(selfidUnit + '---单元工 selfidUnit id');
         console.log(nodeNameUnit + '---name');
         console.log(nodePidUnit + '---pid');
         var path = sNodesUnit.name; //选中节点的名字
@@ -590,7 +596,7 @@
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         }
         $("#tableContent .imgList").css('display','block');
-        console.log(id);
+        console.log(id + " 控制点工序 conThisId");
     }
 
     //下载封装的方法
@@ -698,7 +704,7 @@
         }
         $(this).addClass("select-color").siblings().removeClass("select-color");
         selectData = tableItem.row(".select-color").data();//获取选中行数据
-        console.log(selectData[3]);
+        console.log(selectData[3] +" ------控制点 clickId");
         clickId = selectData[3];
 
         if(clickId != undefined && clickId != null){
@@ -722,9 +728,6 @@
             $(".mybtnAdd").css("display", "block");
             $(".mybtn").css("display", "none");
         }
-        // $("#implementation_wrapper").css("height","calc(100% - "+$("#tableContent").outerHeight()+"px - 35px)");
-        // console.log($("#implementation_wrapper").attr("height"));
-        // $("#imageData_wrapper").css("height","calc(100% - "+$("#tableContent").outerHeight()+"px - 35px)");
     });
 
     //easyui点击显示选择
@@ -732,26 +735,44 @@
         border:false,
         onSelect:function(title,index){
             if(title === "控制点执行情况"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                // alert('控制点执行情况');
+                // if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                // if((clickId != null || clickId != undefined) && (conThisId != null || conThisId != undefined)){
+                if(clickId && conThisId){
                     $(".mybtn").css("display","block");
+                }else if(clickId ==''|| conThisId == '') {
+                    $(".mybtn").css("display","none");
                 }
-            }else if(title != "附件资料"){
+            }else if(title != "控制点执行情况"){
                 $(".mybtn").css("display","none");
             }
+
             if(title === "附件资料"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
+                // alert('附件资料');
+                // if(clickId != null && clickId != undefined){
+                if(clickId && conThisId){
                     $(".bitCodes").css("display","block");
                     $(".mybtn").css("display","block");
+                }else if(clickId ==''|| conThisId == '') {
+                    $(".bitCodes").css("display","none");
                 }
             }else if(title != "附件资料"){
                 $(".bitCodes").css("display","none");
             }
+
             if(title === "在线填报"){
-                if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)) {
+                // alert('在线填报');
+                // if(clickId != null && clickId != undefined){
+                // if((clickId != null || clickId != undefined || clickId != '') && (conThisId != null && conThisId != undefined || conThisId != '')){
+                if(clickId && conThisId){
                     $(".mybtnAdd").css("display", "block");
                     $(".mybtn").css("display", "none");
+                    console.log(clickId)
+                    console.log(conThisId)
                 }else if(clickId == undefined || clickId == null){
                     layer.msg("请选择控制点!")
+                }else if(clickId == '' || conThisId == ''){
+                    $(".mybtnAdd").css("display","none");
                 }
             }else if(title != "在线填报"){
                 $(".mybtnAdd").css("display","none");
@@ -763,7 +784,7 @@
     function outerHeight() {
         gridHeight = parseInt($("#unitWorkRight").height() - $("#tableContent").height() - 49);
         $("#implementation_wrapper").css("height",gridHeight+"px");
-        console.log(gridHeight);
+        // console.log(gridHeight);
     }
 
 
@@ -1210,7 +1231,7 @@
             title: '流程审批',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("approve/approve/Approve")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n',
+            content: '{:url("approve/approve/Approve")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel',
             success: function(layero, index){
                 var body = layer.getChildFrame('body', index);
                 body.find("#conCode").val(app);
@@ -1233,7 +1254,7 @@
             title: '审批历史',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/element/conhistory")}',
+            content: '{:url("approve/approve/ApproveHistory")}',
             // end:function () {
             //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
             // }

@@ -209,10 +209,7 @@ class Division extends Permissions{
      */
     public function delNode()
     {
-        //Todo 等我的功能做完了，给张志方说让他删除标段的时候，也关联删除我的工程划分
-        /**
-         * 前台只需要给我传递 要删除的 节点的 id 编号
-         */
+        // 前台只需要给我传递 要删除的 节点的 id 编号
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         if($id != 0){
             $node = new DivisionModel();
@@ -221,11 +218,16 @@ class Division extends Permissions{
             if(!empty($exist)){
                 return json(['code' => -1,'msg' => '包含子节点,不能删除']);
             }
-            // 先批量删除 包含的 单元工程段号(单元划分)
-            $unit = new DivisionUnitModel();
-            $unit->batchDel($id);
 
-            //Todo 如果 单元工程段号(单元划分) 下面 还包含其他的数据 那么 也要关联删除
+            // 批量删除 包含的 单元工程段号(单元划分) 与 模型图的关联记录
+            $idArr = Db::name('quality_unit')->where('division_id',$id)->column('id');
+            if(sizeof($idArr)){
+                $picture = new PictureRelationModel();
+                $picture->deleteRelation($idArr);
+                // 批量删除 包含的 单元工程段号(单元划分)
+                $unit = new DivisionUnitModel();
+                $unit->batchDel($id);
+            }
 
             // 最后删除此节点
             $flag = $node->deleteTb($id);
@@ -636,13 +638,13 @@ class Division extends Permissions{
      */
     public function delUnit()
     {
-        /**
-         * 前台只需要给我传递 要删除的 单元工程段号(单元划分) 的 id 编号
-         */
+        // 前台只需要给我传递 要删除的 单元工程段号(单元划分) 的 id 编号
         $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
         if($id != 0){
+            // 关联删除 此 单元工程段号 与 模型图的关联记录
+            $picture = new PictureRelationModel();
+            $picture->deleteRelation([$id]);
             $unit = new DivisionUnitModel();
-            // TODO 后期要关联删除 此 单元工程段号 与 模型图的关联数据
             $flag = $unit->deleteTb($id);
             return json($flag);
         }else{
@@ -756,6 +758,7 @@ class Division extends Permissions{
             // 是否已经关联过 picture_type  1工程划分模型 2 建筑模型 3三D模型
             $is_related = Db::name('quality_model_picture_relation')->where(['picture_type'=>1,'relevance_id'=>$relevance_id,'picture_id'=>$picture_id])->value('id');
             if(empty($is_related)){
+                $data['type'] = 1;
                 $data['relevance_id'] = $relevance_id;
                 $data['picture_id'] = $picture_id;
                 $picture = new PictureModel();
@@ -768,6 +771,8 @@ class Division extends Permissions{
         }
     }
 
+    // 此方法只是临时 导入模型图 编号和名称的 txt文件时使用
+    // 不存在于 功能列表里面 后期可以删除掉
     // 获取txt文件内容并插入到数据库中 insertTxtContent
     public function insertTxtContent()
     {

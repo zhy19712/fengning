@@ -169,15 +169,15 @@ class Element extends Permissions
         $cp = $this->divisionControlPointService->with('ControlPoint')->where('id', $cpr_id)->find();
         $formPath = ROOT_PATH . 'public' . DS . "data\\form\\quality\\" . $cp['ControlPoint']['code'] . $cp['ControlPoint']['name'] . ".docx";
         $formPath = iconv('UTF-8', 'GB2312', $formPath);
-        Autoloader::register();
-        Settings::setTempDir('temp');
-
-        Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
-        Settings::setPdfRendererPath('/');
-        $phpword=IOFactory::load($formPath);
-        $phpword=IOFactory::createWriter($phpword,"PDF");
-        $phpword->save("1.pdf");
-        //$phpword->save("1.html");
+        //Autoloader::register();
+        //Settings::setTempDir('temp');
+        //Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
+        //Settings::setPdfRendererPath('/');
+        $phpword = IOFactory::load($formPath);
+        //$phpword
+        //$phpword = IOFactory::createWriter($phpword, "HTML");
+        $phpword->save("1.docx");
+        ////$phpword->save("1.html");
     }
 
     ##单元验评
