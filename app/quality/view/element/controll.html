@@ -1231,7 +1231,7 @@
             title: '流程审批',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("approve/approve/Approve")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n',
+            content: '{:url("approve/approve/Approve")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel',
             success: function(layero, index){
                 var body = layer.getChildFrame('body', index);
                 body.find("#conCode").val(app);
@@ -1254,7 +1254,7 @@
             title: '审批历史',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/element/conhistory")}',
+            content: '{:url("approve/approve/ApproveHistory")}',
             // end:function () {
             //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
             // }
