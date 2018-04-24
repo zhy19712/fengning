@@ -34,7 +34,7 @@
         <div data-options="region:'center'">
             <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
                 console.log(uObjSubID);
-                var node = [];
+                /*var node = [];
                 var treeObj = $.fn.zTree.getZTreeObj("ztree");
                 var nodes = treeObj.transformToArray(treeObj.getNodes());
                 for(var i = 0;i<nodes.length;i++){
@@ -42,7 +42,7 @@
                         node.push(nodes[i]);
                         treeObj.checkNode(nodes[i],true);
                     }
-                }
+                }*/
                 creatSelectedZtree(node,uObjSubID);
 
                 RealBimOcx.ExitSubObjFlicker();

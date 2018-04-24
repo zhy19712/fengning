@@ -72,7 +72,9 @@ class Unitqualitymanage extends Permissions
         if($id == 0){
             return json(['code' => '-1','msg' => '请选择工程划分节点']);
         }
-        if($this->request->isAjax()){
+        if($this->request->isAjax()) {
+            return json(['code' => 1,'msg'=>'导出成功']); // 文件存在，告诉前台可以执行下载
+        }else{
             $attachment_id = [];
             // 获取 工程划分 下 所有的 控制点
             $control = Db::name('quality_division_controlpoint_relation')->alias('d')

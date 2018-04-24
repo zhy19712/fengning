@@ -99,32 +99,55 @@ $('#at').click(function () {
 $('#addAttr').click(function () {
     var attrGroup = [];
     attrGroup.push('<div class="layui-input-inline">');
-    attrGroup.push('<input type="text" name="attrKey" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
-    attrGroup.push('<input type="text" name="attrVal" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
+    attrGroup.push('<input type="text" name="attrKey" id="attrKey" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
+    attrGroup.push('<input type="text" name="attrVal" id="attrVal" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
     attrGroup.push('<div class="layui-form-mid layui-word-aux">');
-    attrGroup.push('<i class="fa fa-check saveAttr"></i>');
-    attrGroup.push('<i class="fa fa-close closeAttr"></i>');
+    attrGroup.push('<i class="fa fa-check saveAttr" onclick="saveAttr()"></i>');
+    attrGroup.push('<i class="fa fa-close closeAttr" onclick="closeAttr(this)"></i>');
     attrGroup.push('</div>');
     attrGroup.push('</div>');
 
     $('#attrGroup').append(attrGroup.join(' '));
 });
 
-$('.saveAttr').click(function () {
+function saveAttr() {
+    var picture_id = uObjSubIDArr;
+    var attrKey = $('#attrKey').val();
+    var attrVal = $('#attrVal').val();
     $.ajax({
-        url: "",
+        url: "./addAttr",
         type: "post",
         data: {
+            picture_id:picture_id,
             attrKey:attrKey,
             attrVal:attrVal
         },
         dataType: "json",
         success: function (res) {
+            layer.msg(res.msg);
+            alert(res.msg);
+        }
+    });
+}
 
+function closeAttr(that) {
+    $(that).parents('.layui-input-inline').remove();
+}
+
+$('#addRemark').click(function () {
+    var picture_id = uObjSubIDArr;
+    var remarkVal = $('#remark').text();
+    $.ajax({
+        url: "./addRemark",
+        type: "post",
+        data: {
+            picture_id:picture_id,
+            remark:remarkVal
+        },
+        dataType: "json",
+        success: function (res) {
+            layer.msg(res.msg);
+            alert(res.msg);
         }
     })
-});
-
-$('.closeAttr').click(function () {
-
 });
