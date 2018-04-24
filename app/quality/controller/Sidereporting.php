@@ -319,13 +319,13 @@ class Sidereporting extends Permissions
     {
         if(request()->isAjax()){
             //实例化模型类
-            $model = new ScenePictureModel();
+            $model = new SideReportingModel();
             $param = input('post.');
             $data = [
                 'id' => $param['id'],//现场图片自增id
                 'position' => $param['position']//位置信息
             ];
-            $flag = $model->editScene($data);
+            $flag = $model->editSide($data);
             return json($flag);
         }
     }
