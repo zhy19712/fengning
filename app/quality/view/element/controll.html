@@ -435,8 +435,14 @@
         implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
         imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
         // funOnLine();
-        // funOnLine(selfidUnit,conThisId,clickId);
-
+        console.log(clickId)
+        console.log(conThisId)
+        // funOnLine(1,1,1);
+        clickId ='';
+        conThisId ='';
+        $(".mybtn").css("display", "none");
+        $(".bitCodes").css("display","none");
+        $(".mybtnAdd").css("display","none");
         initData(selfid);//调用单元工
     }
 
@@ -452,7 +458,7 @@
     var selfidUnit ,nodeNameUnit ,nodePidUnit ,
         zTreeObjUnit ,groupidUnit ,sNodesUnit ,
         eTypeId ,controlPointId ,controlPointName ,
-        conThisId ,selectData ,clickId ,ControlPointOnlineId;//后台返的
+        conThisId = '' ,selectData ,clickId ='' ,ControlPointOnlineId;//后台返的
 
     //名字拼接过滤方法
     function ajaxDataFilter(treeId, parentNode, responseData) {
@@ -729,27 +735,44 @@
         border:false,
         onSelect:function(title,index){
             if(title === "控制点执行情况"){
+                // alert('控制点执行情况');
                 // if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
-                if(clickId != null && clickId != undefined){
+                // if((clickId != null || clickId != undefined) && (conThisId != null || conThisId != undefined)){
+                if(clickId && conThisId){
                     $(".mybtn").css("display","block");
+                }else if(clickId ==''|| conThisId == '') {
+                    $(".mybtn").css("display","none");
                 }
-            }else if(title != "附件资料"){
+            }else if(title != "控制点执行情况"){
                 $(".mybtn").css("display","none");
             }
+
             if(title === "附件资料"){
-                if(clickId != null && clickId != undefined){
+                // alert('附件资料');
+                // if(clickId != null && clickId != undefined){
+                if(clickId && conThisId){
                     $(".bitCodes").css("display","block");
                     $(".mybtn").css("display","block");
+                }else if(clickId ==''|| conThisId == '') {
+                    $(".bitCodes").css("display","none");
                 }
             }else if(title != "附件资料"){
                 $(".bitCodes").css("display","none");
             }
+
             if(title === "在线填报"){
-                if(clickId != null && clickId != undefined){
+                // alert('在线填报');
+                // if(clickId != null && clickId != undefined){
+                // if((clickId != null || clickId != undefined || clickId != '') && (conThisId != null && conThisId != undefined || conThisId != '')){
+                if(clickId && conThisId){
                     $(".mybtnAdd").css("display", "block");
                     $(".mybtn").css("display", "none");
+                    console.log(clickId)
+                    console.log(conThisId)
                 }else if(clickId == undefined || clickId == null){
                     layer.msg("请选择控制点!")
+                }else if(clickId == '' || conThisId == ''){
+                    $(".mybtnAdd").css("display","none");
                 }
             }else if(title != "在线填报"){
                 $(".mybtnAdd").css("display","none");
