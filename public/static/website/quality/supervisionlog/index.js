@@ -303,7 +303,11 @@ function conPosition(id) {
         shadeClose: true,
         title: "空间位置设置",
         area: ["90%", "90%"],
-        content: "../scenepicture/PositionSet?id=" + id
+        content: "../scenepicture/PositionSet?id=" + id,
+        success: function(layero, index){
+            var body = layer.getChildFrame('body', index);
+            body.find('input').val(positionUrl)
+        }
     });
 }
 //datatables表格
@@ -355,10 +359,10 @@ var tableItem = $('#tableItem').DataTable( {
             "orderable": false,
             "targets": [4],
             "render":function (data) {
-                if(data==1){
-                    return "<img src='__WEBSITE__/quality/scenepicture/setValid.png'>" ;
+                if(data==0||!data){
+                    return "" ;
                 }else{
-                    return "";
+                    return "<img src='/static/webSite/quality/scenepicture/setValid.png'>" ;
                 }
             }
         }

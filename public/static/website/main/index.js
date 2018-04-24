@@ -99,13 +99,32 @@ $('#at').click(function () {
 $('#addAttr').click(function () {
     var attrGroup = [];
     attrGroup.push('<div class="layui-input-inline">');
-    attrGroup.push('<input type="text" name="title" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
-    attrGroup.push('<input type="text" name="title" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
+    attrGroup.push('<input type="text" name="attrKey" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
+    attrGroup.push('<input type="text" name="attrVal" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
     attrGroup.push('<div class="layui-form-mid layui-word-aux">');
-    attrGroup.push('<i class="fa fa-check"></i>');
-    attrGroup.push('<i class="fa fa-close"></i>');
+    attrGroup.push('<i class="fa fa-check saveAttr"></i>');
+    attrGroup.push('<i class="fa fa-close closeAttr"></i>');
     attrGroup.push('</div>');
     attrGroup.push('</div>');
 
     $('#attrGroup').append(attrGroup.join(' '));
+});
+
+$('.saveAttr').click(function () {
+    $.ajax({
+        url: "",
+        type: "post",
+        data: {
+            attrKey:attrKey,
+            attrVal:attrVal
+        },
+        dataType: "json",
+        success: function (res) {
+
+        }
+    })
+});
+
+$('.closeAttr').click(function () {
+
 });

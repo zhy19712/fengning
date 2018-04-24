@@ -41,10 +41,19 @@ class QualityFormInfoModel extends Model implements IApprove
     }
 
     /**
+     * 控制点信息
+     * @return \think\model\relation\HasOne
+     */
+    public function ControlPoint()
+    {
+        return $this->hasOne('app\standard\model\ControlPoint', 'id', 'ControlPointId');
+    }
+
+    /**
      * 获取表单基本信息
      * @param $qualityUnit_id 检验批
      */
-    public function getFormInfo($qualityUnit_id)
+    public function getFormBaseInfo($qualityUnit_id)
     {
         $mod = $this->divisionUnitService->with("Division.Section")->where(['id' => $qualityUnit_id])->find();
         $output = array();
@@ -71,6 +80,19 @@ class QualityFormInfoModel extends Model implements IApprove
         $output['DWName'] = $Info['DW']['d_name'];
         $output['DWCode'] = $Info['DW']['d_code'];
         return $output;
+    }
+
+    /**
+     * 获取表单内信息
+     * @param $formId
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getFormInfo($formId)
+    {
+        return self::where(['id' => $formId])->find()['form_data'];
     }
 
     /**
