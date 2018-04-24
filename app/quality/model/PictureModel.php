@@ -36,15 +36,8 @@ class PictureModel extends Model
     public function getAllName($id)
     {
         // type 和 picture_type  1工程划分模型 2 建筑模型 3三D模型
-        // 用于初始化时 选中(回显) 之前关联过的  -- 单条数据
-        $new_id = Db::name('quality_model_picture_relation')->where(['type'=>1,'relevance_id'=>$id])->value('picture_id');
-        $data = $this->where(['picture_type'=>1,'id'=>$new_id])->column('id as picture_id,picture_number,picture_name');
-        $one_str = '';
-        foreach ($data as $v) {
-            $one_str .= '{ "id": "' . $v['picture_id'] . '", "pId":"' . 0 . '", "name":"' . $v['picture_name'] . '"' . ',"picture_number":"'.$v['picture_number'].'"' . ',"picture_id":"'.$v['picture_id'].'"';
-            $one_str .= '},';
-        }
-
+        // 用于初始化时 选中(回显) 之前关联过的模型图的主键
+        $picture_id = Db::name('quality_model_picture_relation')->where(['type'=>1,'relevance_id'=>$id])->value('picture_id');
         // 全部的列表
         $data = $this->where('picture_type',1)->column('id as picture_id,picture_number,picture_name');
         $str = '';
@@ -52,7 +45,7 @@ class PictureModel extends Model
             $str .= '{ "id": "' . $v['picture_id'] . '", "pId":"' . 0 . '", "name":"' . $v['picture_name'] . '"' . ',"picture_number":"'.$v['picture_number'].'"' . ',"picture_id":"'.$v['picture_id'].'"';
             $str .= '},';
         }
-        $data['one_str'] =  "[" . substr($one_str, 0, -1) . "]";
+        $data['one_picture_id'] =  $picture_id;
         $data['str'] =  "[" . substr($str, 0, -1) . "]";
         return $data;
     }

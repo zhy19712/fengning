@@ -735,7 +735,7 @@ class Division extends Permissions{
             // 获取工程划分下的 所有的模型图主键,编号,名称
             $picture = new PictureModel();
             $data = $picture->getAllName($id);
-            return json(['code'=>1,'one_str'=>$data['one_str'],'data'=>$data['str'],'msg'=>'模型图列表']);
+            return json(['code'=>1,'one_picture_id'=>$data['one_picture_id'],'data'=>$data['str'],'msg'=>'模型图列表']);
         }
         return $this->fetch('relationview');
     }
