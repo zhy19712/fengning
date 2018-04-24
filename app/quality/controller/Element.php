@@ -11,6 +11,7 @@ namespace app\quality\controller;
 use app\admin\controller\Permissions;
 use app\quality\model\DivisionControlPointModel;
 use app\quality\model\DivisionUnitModel;
+use app\quality\model\QualityFormInfoModel;
 use app\quality\model\UploadModel;
 use app\standard\model\ControlPoint;
 use app\standard\model\MaterialTrackingDivision;
@@ -29,11 +30,13 @@ class Element extends Permissions
 {
     protected $divisionControlPointService;
     protected $uploadService;
+    protected $qualityFormInfoService;
 
     public function __construct(Request $request = null)
     {
         $this->divisionControlPointService = new DivisionControlPointModel();
         $this->uploadService = new UploadModel();
+        $this->qualityFormInfoService = new QualityFormInfoModel();
         parent::__construct($request);
     }
 ##单元策划
@@ -161,22 +164,51 @@ class Element extends Permissions
 
     public function download($cpr_id)
     {
+        $cp = $this->divisionControlPointService->with('ControlPoint')->where('id', $cpr_id)->find();
+        $formPath = ROOT_PATH . 'public' . DS . "data\\form\\quality\\" . $cp['ControlPoint']['code'] . $cp['ControlPoint']['name'] . ".docx";
+        $formPath = iconv('UTF-8', 'GB2312', $formPath);
+        if (!file_exists($formPath)) {
+            return "文件不存在";
+        }
+        //设置临时文件，避免C盘Temp不可写报错
+        Settings::setTempDir('temp');
         $phpword = new PhpWord();
+        $phpword = $phpword->loadTemplate($formPath);
+        $infos = $this->qualityFormInfoService->getFormInfo($cp['division_id']);
+        foreach ($infos as $key => $value) {
+            $phpword->setValue('{' . $key . '}', $value);
+        }
+        $docname = $phpword->save();
+
+
+        header('Content-Disposition: attachment; filename="' . $cp['ControlPoint']['code'] . $cp['ControlPoint']['name'] . '.docx"');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
+
+        $file = fopen($docname, 'r');
+        echo fread($file, filesize($docname));
+        fclose($file);
     }
 
     public function printPDF($cpr_id)
     {
+        //todo 暂缓
         $cp = $this->divisionControlPointService->with('ControlPoint')->where('id', $cpr_id)->find();
         $formPath = ROOT_PATH . 'public' . DS . "data\\form\\quality\\" . $cp['ControlPoint']['code'] . $cp['ControlPoint']['name'] . ".docx";
         $formPath = iconv('UTF-8', 'GB2312', $formPath);
-        //Autoloader::register();
-        //Settings::setTempDir('temp');
-        //Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
-        //Settings::setPdfRendererPath('/');
+        Autoloader::register();
+        Settings::setTempDir('temp');
+        Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
+        Settings::setPdfRendererPath(ROOT_PATH . 'extend\\PhpOffice\\PhpWord\\Writer\\PDF');
+        $phpword = new PhpWord();
         $phpword = IOFactory::load($formPath);
-        //$phpword
-        //$phpword = IOFactory::createWriter($phpword, "HTML");
-        $phpword->save("1.docx");
+        //$phpword=$phpword->loadTemplate($formPath);
+        //$phpword->setValue('SectionName','222');
+        $phpword = IOFactory::createWriter($phpword, "PDF");
+        return $phpword->save("./1.pdf");
+        //$phpword->saveAs('./1.docx');
         ////$phpword->save("1.html");
     }
 
