@@ -741,7 +741,12 @@
 
         //关联模型
         $("#model").click(function (){
-            window.open('./association');
+            if (!clickId) {
+                layer.msg("请先选择一条数据！", {time: 1500, shade: 0.1});
+                return;
+            }else {
+                window.open('./association');
+            }
         });
 
         //移动
