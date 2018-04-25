@@ -129,19 +129,14 @@
       url: getposition,
       data: {"id": positionid },
       success: function (res) {
-        if(res.data.position==0){
+        if(res.data.position==0||!res.data.position){
+          $("object").css("margin",0);
           RealBimOcx.SetAllHugeObjSubValidState(1);
           RealBimOcx.SetSuitableCam();
-          console.log(123);
-          $("object").css("margin",0)
-
         }else{
           RealBimOcx.SetAllHugeObjSubValidState(1);
           RealBimOcx.ShowSnapshotOrMarkerInMem(res.data.position);
-          $("object").css("margin",0)
-
-          console.log(123)
-
+          $("object").css("margin",0);
         }
       }
     });
