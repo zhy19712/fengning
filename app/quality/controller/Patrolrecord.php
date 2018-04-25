@@ -303,15 +303,6 @@ class Patrolrecord extends Permissions
     }
     /***************************************三维模型******************/
     /**
-     * 模板首页
-     * @return mixed
-     */
-    public function positionset()
-    {
-        return $this->fetch();
-    }
-
-    /**
      * 编辑一条现场图片位置信息
      */
     public function editPosition()

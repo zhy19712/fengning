@@ -626,9 +626,9 @@
                     var str = "";
                     str += ""
                         + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
-                        + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
+                        + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
                         + "<span class='file_name' style='color: #000;'>"+str+"</span>"
-                        + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                        + "<input class='file_url' style='display: none;' name='cpr_id' value="+ id +">"
                         // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                         + "<button type='submit' class=btn" + id +"></button>"
                         + "</form>"
@@ -642,10 +642,7 @@
 
     //点击下载控制点模板
     function downConFile(id) {
-        // download(id,"{:url('quality/element/download')}")
-        download(id,"{:url('quality/unitqualitymanage/fileDownload')}");
-        // console.log(id)
-        // window.open("http://www.fengning.com/quality/element/download.shtml?cpr_id="+id);
+        download(id,"{:url('quality/element/download')}");
     }
 
     //预览
