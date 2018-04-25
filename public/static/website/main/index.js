@@ -35,7 +35,7 @@ window.snapshotSwiper = new Swiper ('#snapshot', {
     spaceBetween: 30,
 });
 
-//添加快照
+//添加标注/快照
 window.addSnapshot = function (base64RenData) {
     var img =
         '<div class="swiper-slide swiperSlide">' +
@@ -258,3 +258,11 @@ function easyUiPanelToggle() {
         $('#easyuiLayout').layout('expand','east');
     }
 }
+
+function easyUiPanelToggleSouth() {
+    var number = $("#centent").layout("panel", "south")[0].clientWidth;
+    if(number<=0){
+        $('#centent').layout('expand','south');
+    }
+}
+
