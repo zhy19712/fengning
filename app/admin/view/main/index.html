@@ -101,7 +101,6 @@
                   <div data-options="region:'center',title:''" style="padding:5px;">
                         <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
                             $('#comment').show();//展示基本属性信息
-                            uObjSubIDArr = [];
                             if(!isCtrlDown){
                                 RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
                                 RealBimOcx.BatchAddSubClrInfoBegin();
@@ -176,7 +175,21 @@
                                     clearOperate();
                                     RealBimOcx.CreateSnapShootInMem(true, 0, 0, true, true);
                                     break;
-                                case "DISP_ISOLATE":
+                                case "DISP_ISOLATE":    //显示隔离
+                                    RealBimOcx.SetIsolateSubElemIDBegin();
+                                    if (uButtonMode === 1)                    //显示隔离
+                                    {
+                                        $.each(uObjSubIDArr, function (i, item) {
+                                            console.log(item);
+                                            RealBimOcx.SetIsolateSubElemID(item)
+                                        });
+                                        RealBimOcx.SetIsolateSubElemIDEnd();
+                                    }
+                                    else                                      //隐藏隔离
+                                    {
+                                        RealBimOcx.SetIsolateSubElemIDEnd();
+                                        RealBimOcx.SetAllHugeObjSubValidState(1);
+                                    }
                                     break;
                                 case "DISP_HIDE":
                                     break;

@@ -1,3 +1,4 @@
+uObjSubIDArr = [];      //已选模型ID
 isCtrlDown = false;
 $(document).keydown(function (event) {
     var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
@@ -135,6 +136,11 @@ function closeAttr(that) {
 }
 
 $('#addRemark').click(function () {
+    if(!uObjSubIDArr){
+        layer.msg('请选择模型');
+        alert('请选择模型');
+        return false;
+    }
     var picture_id = uObjSubIDArr;
     var remarkVal = $('#remark').text();
     $.ajax({
