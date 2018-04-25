@@ -256,14 +256,16 @@ function fileSelect(htmlElement) {
 // 文件上传完成后，根据“附件上传后要更新的目标html元素Id”的类型，进行操作，如img就设置目标元素的src进行图片显示
 function fileChange() {
     $.ajaxFileUpload({
-        url: "/Shared/Upload?folderName=Quality", // 用于文件上传的服务器端请求地址,其folderName代表附件存放的文件夹名称
+        // url: "/Shared/Upload?folderName=Quality", // 用于文件上传的服务器端请求地址,其folderName代表附件存放的文件夹名称
+        url: "/admin/common/upload?use=qualityform", // 用于文件上传的服务器端请求地址,其folderName代表附件存放的文件夹名称
         type: "post",
         secureuri: false, // 一般设置为false
         fileElementId: "file", // 文件上传控件的id属性
         dataType: "json",
         success: function (data, status) {
-            if (fileTargetHtmlElementId.split("_")[0] === "img")
-                $("#" + fileTargetHtmlElementId).attr("src", data.result.filePath);
+            // if (fileTargetHtmlElementId.split("_")[0] === "img")
+            if (data.code==2)
+                $("#" + fileTargetHtmlElementId).attr("src", data.src);
         },
         error: function (data, status, e) {
             alert("上传失败。");
