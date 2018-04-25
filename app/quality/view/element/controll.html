@@ -584,6 +584,7 @@
         $("#homeWork").css("color","#CDCDCD");
     });
 
+    var flag = true;
     //点击作业
     $(".imgList").on("click","#homeWork",function () {
         $(".bitCodes").css("display","none");
@@ -591,6 +592,14 @@
         $(".mybtnAdd").css("display","none");
         $(this).css("color","#2213e9").parent("span").next("span").children("a").css("color","#CDCDCD");
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
+        // if(clickId =='' || conThisId == '') {
+        //     $(".bitCodes").css("display","none");
+        //     $(".mybtn").css("display","none");
+        //     $(".mybtnAdd").css("display","none");
+        //     implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
+        //     imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
+        // }
+        flag = true;
     });
 
     //点击工序控制点名字
@@ -802,7 +811,7 @@
                 // alert('控制点执行情况');
                 // if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
                 // if((clickId != null || clickId != undefined) && (conThisId != null || conThisId != undefined)){
-                if(clickId && conThisId){
+                if(clickId && conThisId || flag == true){
                     $(".mybtn").css("display","block");
                 }else if(clickId ==''|| conThisId == '') {
                     $(".mybtn").css("display","none");
@@ -814,7 +823,7 @@
             if(title === "附件资料"){
                 // alert('附件资料');
                 // if(clickId != null && clickId != undefined){
-                if(clickId && conThisId){
+                if(clickId && conThisId || flag == true){
                     $(".bitCodes").css("display","block");
                     $(".mybtn").css("display","block");
                 }else if(clickId ==''|| conThisId == '') {
@@ -824,7 +833,7 @@
                 $(".bitCodes").css("display","none");
             }
 
-            if(title === "在线填报"){
+            if(title === "在线填报" || flag == true){
                 // alert('在线填报');
                 // if(clickId != null && clickId != undefined){
                 // if((clickId != null || clickId != undefined || clickId != '') && (conThisId != null && conThisId != undefined || conThisId != '')){
