@@ -1,7 +1,7 @@
 {include file="../app/public/common_header.html"}
 <link rel="stylesheet" href="__WEBSITE__/main/index.css">
       <div data-options="region:'east',title:'管理信息',split:true" style="width:345px;">
-            <div id="dd" class="easyui-tabs" style="width:100%;height:100%;border: 0">
+            <div id="dd" class="easyui-tabs" style="width:100%;height:100%;border: 0;display: none">
                   <div title="属性" style="padding:20px;display:none;">
                       <div class="attrWrap">
                           <ul class="toggle-attr" id="toogleAttr">
@@ -65,8 +65,6 @@
                               </div>
                           </form>
                       </div>
-                      <!-- 锚点业务层 -->
-                      <div class="anchorLayer"></div>
                   </div>
                   <!--<div title="讨论" style="overflow:auto;padding:20px;">
                       <form class="layui-form" id="comment" style="display: none">
@@ -95,6 +93,48 @@
                         tab4
                   </div>
                   -->
+            </div>
+            <!-- 锚点业务层 -->
+            <div class="anchorLayer" style="width:100%;height:100%;border: 0;">
+              <div id="anchorLayerTab" class="easyui-tabs" style="width:100%;height:100%;border: 0;">
+                  <div title="属性" style="padding:20px;display:none;">
+                      <h2>构件锚点信息</h2>
+                      <form action="" class="layui-form" id="">
+                          <div class="layui-form-item">
+                              <div class="autograph">
+                                  <label class="layui-form-label">锚点名称</label>
+                                  <div class="layui-form-mid layui-word-aux"></div>
+                              </div>
+                          </div>
+                          <div class="layui-form-item">
+                              <div class="autograph">
+                                  <label class="layui-form-label">关联构件名称</label>
+                                  <div class="layui-form-mid layui-word-aux"></div>
+                              </div>
+                          </div>
+                          <div class="layui-form-item">
+                              <div class="autograph">
+                                  <label class="layui-form-label">锚点名称</label>
+                                  <div class="layui-form-mid layui-word-aux"></div>
+                              </div>
+                          </div>
+                          <div class="layui-form-item">
+                              <div class="layui-input-block">
+                                  <textarea name="remark" placeholder="请输入描述" class="layui-textarea"></textarea>
+                              </div>
+                          </div>
+                          <div class="layui-form-item">
+                              <div class="layui-input-block">
+                                  <button class="layui-btn" lay-submit lay-filter="save" id="saveAnchor">保存</button>
+                                  <button type="button" class="layui-btn layui-btn-primary close">关闭</button>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+                  <div title="附件" style="overflow:auto;padding:20px;display:none;">
+                      tab2
+                  </div>
+              </div>
             </div>
       </div>
       <!--<div data-options="region:'west',title:'管理视图',split:true" style="width:200px;"></div>-->
