@@ -1200,7 +1200,7 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0&isView=true'
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0&isView=true'
         });
     }
 
@@ -1214,7 +1214,7 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0',
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0',
             end:function () {
                 onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
             }
@@ -1243,9 +1243,11 @@
     function submitOnLine(id) {
         // console.log(clickId);
         $.ajax({
-            url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}?dataId="+ id + "&dataType=app\\quality\\model\\QualityFormInfoModel",
+            url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
             type: "post",
             data: {
+                dataId:id,
+                dataType:"app\\quality\\model\\QualityFormInfoModel",
                 currentStep:0
             },
             success: function (res) {
