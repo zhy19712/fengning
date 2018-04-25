@@ -412,6 +412,5 @@ function conPicshow(id){
 }
 //打印
 function conPrint(id) {
-    printDocument
     showPdf(id,'./printDocument',"BranchfileModel");
 }
