@@ -102,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div style="display:block;border-top: 1px dotted" id="referContentDiv">
+        <div style="display:none;border-top: 1px dotted" id="referContentDiv">
             <div style="height:20px">
                 <div class="ibox-tools" style="float: left;margin-left:5px;margin-top: 4px;">
                     <i class="fa fa-user" style="margin-right: 0px;margin-top: 5px;"></i>
@@ -137,7 +137,7 @@
         $("#btnSave").click(function () { $("#btnSave").attr("disabled", "disabled"); save(); });
         $("#btnClose").click(function () { close(); });
         $("#selPeople").click(function () { selPeople(); });
-        $("#currentUserName").text($(top.document).find("#userName").text());
+        // $("#currentUserName").text($(top.document).find("#userName").text());
         $("#currentUserPhoto").attr("src", $(top.document).find("#userPhoto").attr("src"));
         initReferFlow();
         // initLastFlow();
@@ -160,7 +160,11 @@
     // 添加审批人
     function addPeople(user) {
         var dataId = $("#hiddenValId").val();
-        dataArr.push(dataId);
+        if(dataId >= 10000){
+            dataArr.push(dataId-10000)
+        }else{
+            dataArr.push(dataId)
+        }
         subId = dataArr.join(",");
         // console.log(dataArr);
         console.log(subId);
@@ -263,7 +267,8 @@
                 }
             });
             $("#referDiv").html(html);
-            $("#referContentDiv").show();
+            // $("#referContentDiv").show();
+            $("#referContentDiv").hide();
         // };
     };
 

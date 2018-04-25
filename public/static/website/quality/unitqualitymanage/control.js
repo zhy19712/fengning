@@ -207,7 +207,7 @@ function download(that) {
         that:that,
         url:'../../fileDownload',
         data:{
-            id:id
+            file_id:id
         },
         success: function (res) {
             layer.msg(res.msg);
