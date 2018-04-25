@@ -25,6 +25,7 @@ use think\Db;
 use think\Exception;
 use think\File;
 use think\Request;
+use think\Session;
 
 class Element extends Permissions
 {
@@ -139,6 +140,7 @@ class Element extends Permissions
      */
     public function controll()
     {
+        $this->assign('userId',Session::get('current_id'));
         return $this->fetch();
     }
 
