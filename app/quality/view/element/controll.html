@@ -730,23 +730,33 @@
         showPdf(id,"../Common/download","BranchfileModel")
     }
 
-    //控制点里面的删除
+    //删除封装的方法
+    function delData(id,url) {
+        layer.confirm('是否删除该数据?', function(index){
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {id:id},
+                success: function (res) {
+                    console.log(res);
+                    if(res.code ==1){
+                        layer.msg("删除成功！");
+                        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                        implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
+                        imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
+                    }else if(res.code !=1){
+                        layer.msg('返回数据错误！')
+                    }
+                }
+            })
+            layer.close(index);
+        });
+    }
+
+    //控制点执行情况、附件资料的删除
     function delFile(id) {
         console.log(id);
-        $.ajax({
-            type: "post",
-            url: "{:url('quality/element/delControlPointRelation')}",
-            data: {id:id},
-            success: function (res) {
-                console.log(res);
-                if(res.code ==1){
-                    layer.msg("删除成功！")
-                    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
-                    implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
-                    imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
-                }
-            }
-        })
+        delData(id,"{:url('quality/Unitqualitymanage/relationDel')}");
     }
 
     //点击行获取Id
