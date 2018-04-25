@@ -86,8 +86,8 @@
     success: function (res) {
       if (res.code == 1){
         alert("保存成功。");
-        window.close();
-        // window.opener.refreshTable();
+        // window.close(); //用ie就崩了
+        window.opener.refreshTable();
       }
       else alert("保存失败。");
     }
