@@ -104,7 +104,7 @@ function exportQcode(addId) {
         that:$('#exportQcodeBtn'),
         url:'./exportCode',
         data:{
-            add_id:addId
+            file_id:addId
         },
         success:function (res) {
             layer.msg(res.msg);
@@ -248,12 +248,11 @@ function delMethod(id) {
             ma_division_id:ma_division_id,
             id:id
         },
-        tablePath:'/quality/common/datatablesPre?tableName=unit_quality_control'
+        tablePath:'/quality/common/datatablesPre?tableName=unit_quality_control&pid='
     });
 }
 
 $('#delBtn').click(function () {
-    alert(1);
     delMethod(0);
 });
 
