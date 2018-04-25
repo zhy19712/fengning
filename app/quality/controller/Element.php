@@ -282,13 +282,36 @@ class Element extends Permissions
 
     public function word2html()
     {
-        $word = new \COM("word.application") or die("Unable to instanciate Word");
-        $word->Visible = 1;
-        $word->Documents->Open('D:\Works\php\fengning\public\1.docx');
-        $word->Documents[1]->SaveAs('./1.html', 8);
+        //$word = new \COM("word.application") or die("Unable to instanciate Word");
+        //$word->Visible = 1;
+        //$word->Documents->Open('D:\Works\php\fengning\public\1.docx');
+        //$word->Documents[1]->SaveAs('./1.html', 8);
+        //$word->Quit();
+        //$word = null;
+        //unset($word);
+
+        $word = new \COM("word.application") or die("Can't start Word!");
+        $word->Visible = 0;
+        $word->Documents->Open('D:\Works\php\fengning\public\1.docx', false, false, false, "1", "1", true);
+
+
+        $word->ActiveDocument->final = false;
+        $word->ActiveDocument->Saved = true;
+        $word->ActiveDocument->ExportAsFixedFormat(
+            'D:\Works\php\fengning\public\1.pdf',
+            17,                         // wdExportFormatPDF
+            false,                      // open file after export
+            0,                          // wdExportOptimizeForPrint
+            3,                          // wdExportFromTo
+            1,                          // begin page
+            5000,                       // end page
+            7,                          // wdExportDocumentWithMarkup
+            true,                       // IncludeDocProps
+            true,                       // KeepIRM
+            1                           // WdExportCreateBookmarks
+        );
+        $word->ActiveDocument->Close();
         $word->Quit();
-        $word = null;
-        unset($word);
 
         //$word=new \COM("Word.Application") or die("无法打开 MS Word");
         //$word->visible = 1 ;

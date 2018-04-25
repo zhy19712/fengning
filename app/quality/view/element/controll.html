@@ -1200,7 +1200,7 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0&isView=true'
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0&isView=true'
         });
     }
 
@@ -1214,7 +1214,7 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0',
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0',
             end:function () {
                 onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
             }
@@ -1241,53 +1241,39 @@
 
     //在线填报-提交审批
     function submitOnLine(id) {
+        // console.log(clickId);
         $.ajax({
             url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
             type: "post",
             data: {
-                dataId: id,
-                dataType:'app\\quality\\model\\QualityFormInfoModel' ,
+                dataId:id,
+                dataType:"app\\quality\\model\\QualityFormInfoModel",
                 currentStep:0
             },
             success: function (res) {
-                console.log(res)
-            }
-        });
-
-        $.ajax({
-            url: "{:url('quality/Qualityform/getDivsionInfo')}",
-            type: "post",
-            data: {
-                id: id,
+                console.log(res);
+                if(res == ""){
+                    layer.open({
+                        type: 2,
+                        title: '提交审批',
+                        shadeClose: true,
+                        area: ['980px', '90%'],
+                        content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel',
+                        end:function () {
+                            funOnLine(selfidUnit,conThisId,clickId);
+                            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+                        }
+                    });
+                }else if(res != ''){
+                    layer.alert(res);
+                }
             },
-            success: function (res) {
-                console.log(res)
+            error:function () {
+                alert("获取数据完整性检测异常")
             }
         });
 
-        $.ajax({
-            url: "{:url('quality/Qualityform/getBuildBaseInfo')}",
-            type: "post",
-            data: {
-                id: id,
-            },
-            success: function (res) {
-                console.log(res)
-            }
-        });
 
-        // console.log(clickId);
-        layer.open({
-            type: 2,
-            title: '提交审批',
-            shadeClose: true,
-            area: ['980px', '90%'],
-            content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel\n',
-            end:function () {
-                funOnLine(selfidUnit,conThisId,clickId);
-                onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
-            }
-        });
         console.log(id)
     }
 

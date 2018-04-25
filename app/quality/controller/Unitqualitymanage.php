@@ -63,27 +63,32 @@ class Unitqualitymanage extends Permissions
     /**
      * 批量下载 二维码
      * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * @author hutao
      */
     public function exportCode()
     {
         // 前台 传递 要下载 哪个节点 下的所有 二维码 add_id
-        $id = $this->request->has('add_id') ? $this->request->param('add_id', 0, 'intval') : 1;
+        $id = $this->request->has('file_id') ? $this->request->param('file_id', 0, 'intval') : 1;
         if($id == 0){
             return json(['code' => '-1','msg' => '请选择工程划分节点']);
+        }
+        // 获取 工程划分 下 所有的 控制点
+        $control = Db::name('quality_division_controlpoint_relation')->alias('d')
+            ->join('materialtrackingdivision m','d.ma_division_id = m.id','left')
+            ->join('controlpoint c','d.control_id = c.id','left')
+            ->where(['d.division_id'=>$id,'d.type'=>0])
+            ->field('d.control_id,m.name as m_name,c.name as c_name')->select();
+            // ->column('d.control_id,m.name as m_name,c.name as c_name'); // 使用column 会合并相同的数据
+        if(empty($control)){
+            return json(['code' => '-1','msg' => '没有数据']);
         }
         if($this->request->isAjax()) {
             return json(['code' => 1,'msg'=>'导出成功']); // 文件存在，告诉前台可以执行下载
         }else{
             $attachment_id = [];
-            // 获取 工程划分 下 所有的 控制点
-            $control = Db::name('quality_division_controlpoint_relation')->alias('d')
-                ->join('materialtrackingdivision m','d.ma_division_id = m.id','left')
-                ->join('controlpoint c','d.control_id = c.id','left')
-                ->where(['d.division_id'=>$id,'d.type'=>0])->column('d.control_id,m.name as m_name,c.name as c_name');
-            if(empty($control)){
-                return json(['code' => '-1','msg' => '没有数据']);
-            }
             $qrcode_bas_path = ROOT_PATH . 'public' .DS . 'uploads' . DS . 'quality' . DS . 'export-code';//文件路径
             if(!is_dir($qrcode_bas_path)){
                 mkdir($qrcode_bas_path, 0777, true);
@@ -146,7 +151,7 @@ class Unitqualitymanage extends Permissions
             //如果不要下载，下面这段删掉即可，如需返回压缩包下载链接，只需 return $zipName;
             header("Cache-Control: public");
             header("Content-Description: File Transfer");
-            header('Content-disposition: attachment; filename='.basename($zipName)); //文件名
+            header('Content-disposition: attachment; filename='.$new_png_name.'.zip'); //文件名
             header("Content-Type: application/zip"); //zip格式的
             header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
             header('Content-Length: '. filesize($zipName)); //告诉浏览器，文件大小
@@ -347,8 +352,13 @@ class Unitqualitymanage extends Permissions
      */
     public function editRelation()
     {
-        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 文件编号  attachment_id
+        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 上传的文件 file
+        // 执行上传文件 获取文件编号  attachment_id
         $param = input('param.');
+        $common = new \app\admin\controller\Common();
+        $param['attachment_id'] = $common->upload('quality','unitqualitymanage');
+        halt($param);
+        // 保存上传文件记录
         $id = isset($param['id']) ? $param['id'] : 0;
         $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
         $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
@@ -434,7 +444,10 @@ class Unitqualitymanage extends Permissions
         $file_obj = Db::name('quality_upload')->alias('q')
             ->join('attachment a','a.id=q.attachment_id','left')
             ->where('q.id',$id)->field('a.filename,a.filepath')->find();
-        $filePath = '.' . $file_obj['filepath'];
+        $filePath = '';
+        if(!empty($file_obj['filepath'])){
+            $filePath = '.' . $file_obj['filepath'];
+        }
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){
