@@ -262,7 +262,8 @@ function showPdf(id,url) {
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
-                if(res.path.split(".")[1]==="pdf"){
+              var houzhui = res.path.split(".");
+              if(houzhui[houzhui.length-1]=="pdf"){
                     window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
                 }else if(res.path.split(".")[1]==="png"||res.path.split(".")[1]==="jpg"||res.path.split(".")[1]==="jpeg"){
                     layer.photos({
@@ -298,19 +299,22 @@ function conPicshow(id){
 }
 //设置位置
 function conPosition(id) {
-  window.open("./PositionSet?id=" + id,"授权","height=600, width=900, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+  // window.open("../scenepicture/PositionSet?id=" + id,"_blank","height=600, width=900, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no",false );
 
-  // layer.open({
-  //       type: 2,
-  //       shadeClose: true,
-  //       title: "空间位置设置",
-  //       area: ["90%", "90%"],
-  //       content: "../scenepicture/PositionSet?id=" + id,
-  //       success: function(layero, index){
-  //           var body = layer.getChildFrame('body', index);
-  //           body.find('input').val(positionUrl)
-  //       }
-  //   });
+  layer.open({
+        type: 2,
+        shadeClose: true,
+        title: "空间位置设置",
+        area: ["900px", "600px"],
+        content: "../scenepicture/PositionSet?id=" + id,
+        success: function(layero, index){
+            var body = layer.getChildFrame('body', index);
+            body.find('input').val(positionUrl)
+        },
+        end:function () {
+          refreshTable();
+        }
+    });
 }
 //datatables表格
 var tableItem = $('#tableItem').DataTable( {
@@ -398,7 +402,13 @@ $('#tableItem tbody').on( 'mouseover', 'td', function () {
 }).on( 'mouseleave', 'td', function () {
     $(this).parent("tr").removeClass( 'highlight' );
 });
-
+//向子页面传参
 function getpositionUrl() {
   return positionUrl;
 }
+//刷新表格
+function refreshTable(){
+  var url = "/quality/common/datatablespre/tableName/"+tableName+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+  tableItem.ajax.url(url).load();
+}
+

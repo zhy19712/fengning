@@ -50,7 +50,7 @@ class Qualityanalysis extends Permissions
 
         }
 
-       array_pop($timeline);
+       array_pop($timeline);//去除掉多余的月份
 
         foreach($timeline as $keee=>$vaaa)
         {
@@ -59,7 +59,7 @@ class Qualityanalysis extends Permissions
                 $start = mktime(0,0,0,date("m",strtotime($vaaa)),1,date("Y",strtotime($vaaa)));
 
                 //结束日期
-                $end = mktime(23,59,59,date('m',strtotime($vaaa)),date('t'),date('Y',strtotime($vaaa)));
+                $end = mktime(23,59,59,date('m',strtotime($vaaa)),date('t',strtotime($vaaa)),date('Y',strtotime($vaaa)));
 
                 $temp_info_data= Db::name('quality_form_info')->field("form_data,id,create_time")->where("form_name like '%等级评定表%'")->where("create_time >= ".$start. " AND create_time <= ".$end)->select();
                 if($temp_info_data)
@@ -93,7 +93,7 @@ class Qualityanalysis extends Permissions
         {
             foreach($m as $x=>$y)
             {
-               if($y["Step"] != 3)
+               if($y["Step"] != 3)//去掉不是Step = 3的数据
                {
                    unset($info[$l][$x]);
                }
@@ -196,7 +196,7 @@ class Qualityanalysis extends Permissions
         {
             foreach($nn as $oo=>$pp)
             {
-                if($pp["Step"] != 3)
+                if($pp["Step"] != 3)//去掉不是Step = 3的数据
                 {
                     unset($section_form_data[$mm][$oo]);
                 }

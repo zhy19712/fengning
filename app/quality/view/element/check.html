@@ -286,7 +286,7 @@
         </div>
     </div>
 </div>
-
+<div id="form_container" style="display: none;"></div>
 </body>
 <script type="text/javascript">
 
@@ -346,32 +346,51 @@
                 "targets": [3],
                 "render": function (data, type, row) {
                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='downConFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[3]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
             }
         ],
         language: {
-            // "lengthMenu": "_MENU_",
-            "zeroRecords": "没有找到记录",
-            // "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            // "infoEmpty": "无记录",
-            // "search": "搜索：",
-            // "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            // "paginate": {
-            //     "sFirst": "<<",
-            //     "sPrevious": "<",
-            //     "sNext": ">",
-            //     "sLast": ">>"
-            // }
-        },
-        // "fnInitComplete": function (oSettings, json) {
-        //     $('#tableItem_length').insertBefore(".mark");
-        //     $('#tableItem_info').insertBefore(".mark");
-        //     $('#tableItem_paginate').insertBefore(".mark");
-        // }
+            "zeroRecords": "没有找到记录"
+        }
     });
+
+    //下载封装的方法
+    function download(id,url) {
+        $.ajax({
+            url: url,
+            type:"post",
+            dataType: "json",
+            data:{cpr_id:id},
+            success: function (res) {
+                if(res.code != 1){
+                    layer.msg(res.msg);
+                }else {
+                    $("#form_container").empty();
+                    var str = "";
+                    str += ""
+                        + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
+                        + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
+                        + "<span class='file_name' style='color: #000;'>"+str+"</span>"
+                        + "<input class='file_url' style='display: none;' name='cpr_id' value="+ id +">"
+                        // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
+                        + "<button type='submit' class=btn" + id +"></button>"
+                        + "</form>"
+                    $("#form_container").append(str);
+                    $("#form_container").find(".btn" + id).click();
+                }
+
+            }
+        })
+    }
+
+    //点击下载控制点模板
+    function downConFile(id) {
+        download(id,"{:url('quality/element/download')}");
+    }
+
 
     var layer = layui.layer;
     //查询提交
@@ -834,13 +853,13 @@
         });
     }
 
-    //下载封装的方法
-    function download(id,url) {
+    //下载list封装的方法
+    function downloadList(id,url) {
         $.ajax({
             url: url,
             type:"post",
             dataType: "json",
-            data:{cpr_id:id},
+            data:{id:id},
             success: function (res) {
                 if(res.code != 1){
                     layer.msg(res.msg);
@@ -849,7 +868,7 @@
                     var str = "";
                     str += ""
                         + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
-                        + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
+                        + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
                         + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                         + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
                         // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
@@ -863,24 +882,19 @@
         })
     }
 
-    //下载控制点模板
-    function downConFile(id) {
-        // download(id,"../Common/download","BranchfileModel")
-        window.open("http://www.fengning.com/quality/element/download.shtml?cpr_id="+id);
-    }
-
-    //下载 控制点情况 或图像
+    //点击下面的列表的下载
     function impDownFile(id) {
-        download(id,"../Common/download","")
+        downloadList(id,"{:url('quality/Unitqualitymanage/relationDownload')}");
     }
 
     //预览
-    function showPdf(id,url,type_model) {
+    function showPdf(id,url) {
         $.ajax({
             url: url,
             type: "post",
-            data: {id:id,type_model : type_model},
+            data: {id:id},
             success: function (res) {
+                console.log(res);
                 if(res.code === 1){
                     var path = res.path;
                     if(res.path.split(".")[1]==="pdf"){
@@ -913,9 +927,9 @@
         })
     }
 
-    //预览
-    function conPicshow(id){
-        showPdf(id,'../Common/preview',"BranchfileModel");
+    //点击打印模板
+    function conPicshow(id) {
+        showPdf(id,"{:url('quality/Unitqualitymanage/relationPreview')}");
     }
 
     //打印

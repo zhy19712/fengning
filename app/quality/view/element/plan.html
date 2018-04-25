@@ -187,7 +187,7 @@
                 "url": urlPlan
             },
             dom: 'l<"mybtn layui-btn layui-btn-sm">' +
-            '<"bitCodes layui-btn layui-btn-sm">' +
+            // '<"bitCodes layui-btn layui-btn-sm">' +
             // '<"alldel layui-btn layui-btn-sm">' +
             'rtip',
             columns: [
@@ -242,7 +242,7 @@
             }
         });
         //点击上传文件
-        $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二维码</div>");
+        // $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二维码</div>");
         $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
         // $(".alldel").html("<div id='delAll'><i class='fa fa-close'></i>全部删除</div>");
     // }
@@ -526,9 +526,9 @@
                     var str = "";
                     str += ""
                         + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
-                        + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
+                        + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
                         + "<span class='file_name' style='color: #000;'>"+str+"</span>"
-                        + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                        + "<input class='file_url' style='display: none;' name='cpr_id' value="+ id +">"
                         // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                         + "<button type='submit' class=btn" + id +"></button>"
                         + "</form>"
@@ -542,9 +542,8 @@
 
     //点击下载控制点模板
     function downConFile(id) {
-        // download(id,"{:url('quality/element/download')}")
+        download(id,"{:url('quality/element/download')}")
         // console.log(id)
-        window.open("http://www.fengning.com/quality/element/download.shtml?cpr_id="+id);
     }
 
     //删除控制点

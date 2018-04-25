@@ -160,7 +160,7 @@ var tableItem = $('#tableItem').DataTable( {
             "render" :  function(data,type,row) {
                 var a = data;
                 var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
-                html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPrint("+data+")'><i class='fa fa-print'></i></a>" ;
+                // html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPrint("+data+")'><i class='fa fa-print'></i></a>" ;
                 return html;
             }
         }
@@ -376,7 +376,8 @@ function showPdf(id,url,type_model) {
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
-                if(res.path.split(".")[1]==="pdf"){
+              var houzhui = res.path.split(".");
+              if(houzhui[houzhui.length-1]=="pdf"){
                     window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
                 }else if(res.path.split(".")[1]==="png"||res.path.split(".")[1]==="jpg"||res.path.split(".")[1]==="jpeg"){
                     layer.photos({
@@ -411,6 +412,5 @@ function conPicshow(id){
 }
 //打印
 function conPrint(id) {
-    printDocument
     showPdf(id,'./printDocument',"BranchfileModel");
 }

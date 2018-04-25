@@ -1,7 +1,7 @@
 {include file="../app/public/common_header.html"}
 <link rel="stylesheet" href="__WEBSITE__/main/index.css">
-      <div data-options="region:'east',title:'管理信息',split:true" style="width:345px;">
-            <div id="dd" class="easyui-tabs" style="width:100%;height:100%;border: 0">
+      <div data-options="region:'east',title:'管理信息',split:true,collapsed:true" style="width:345px;">
+            <div id="defaultAttr" class="easyui-tabs" style="width:100%;height:100%;border: 0;">
                   <div title="属性" style="padding:20px;display:none;">
                       <div class="attrWrap">
                           <ul class="toggle-attr" id="toogleAttr">
@@ -58,10 +58,10 @@
                                       <textarea name="info" placeholder="请输入内容" class="layui-textarea"></textarea>
                                   </div>
                               </div>
-                              <div class="layui-form-item">
+                              <div class="layui-form-item round">
                                   <i class="fa fa-pencil" id="edit"></i>
                                   <i class="fa fa-check" id="save"></i>
-                                  <i class="fa fa-reply" id="back"></i>
+                                  <i class="fa fa-reply fa-danger" id="back"></i>
                               </div>
                           </form>
                       </div>
@@ -94,6 +94,56 @@
                   </div>
                   -->
             </div>
+            <!-- 锚点业务层 -->
+            <div id="anchorLayer" style="width:100%;height:100%;border: 0;display: none">
+              <div id="anchorLayerTab" class="easyui-tabs" style="width:100%;height:100%;border: 0;">
+                  <div title="属性" style="padding:20px;display:none;">
+                      <h2 class="anchor-title"><i class="fa fa-anchor"></i>构件锚点信息</h2>
+                      <form action="" class="layui-form" id="">
+                          <input type="hidden" id="fObjSelX">
+                          <input type="hidden" id="fObjSelY">
+                          <input type="hidden" id="fObjSelZ">
+                          <div class="layui-form-item">
+                              <div class="anchor-list">
+                                  <label class="layui-form-label">锚点名称</label>
+                                  <div class="layui-form-mid layui-word-aux" id="anchorName">Anchor[85466][1524638166456]</div>
+                              </div>
+                          </div>
+                          <div class="layui-form-item">
+                              <div class="anchor-list">
+                                  <label class="layui-form-label">关联构件名称</label>
+                                  <div class="layui-form-mid layui-word-aux" id="componentNane">E-B-995.50-CZ0+266.500-0+296.500-S</div>
+                              </div>
+                          </div>
+                          <div class="layui-form-item">
+                              <div class="anchor-list">
+                                  <label class="layui-form-label">创建人</label>
+                                  <div class="layui-form-mid layui-word-aux" id="createName">管理员</div>
+                              </div>
+                          </div>
+                          <div class="layui-form-item">
+                              <div class="anchor-list">
+                                  <label class="layui-form-label">创建日期</label>
+                                  <div class="layui-form-mid layui-word-aux" id="createDate">2018-04-25</div>
+                              </div>
+                          </div>
+                          <div class="layui-form-item">
+                              <div class="layui-input-block" style="margin: 0">
+                                  <textarea name="remark" placeholder="锚点基本信息" class="layui-textarea"></textarea>
+                              </div>
+                          </div>
+                          <div class="layui-form-item round">
+                              <i class="fa fa-check" id="saveAnchor"></i>
+                              <i class="fa fa-reply fa-danger" id="backAnchor"></i>
+                              <i class="fa fa-close fa-danger" id="delAnchor"></i>
+                          </div>
+                      </form>
+                  </div>
+                  <div title="附件" style="overflow:auto;padding:20px;display:none;">
+                      tab2
+                  </div>
+              </div>
+            </div>
       </div>
       <!--<div data-options="region:'west',title:'管理视图',split:true" style="width:200px;"></div>-->
       <div data-options="region:'center',title:''" class="centent">
@@ -101,20 +151,47 @@
                   <div data-options="region:'center',title:''" style="padding:5px;">
                         <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
                             $('#comment').show();//展示基本属性信息
-                            uObjSubIDArr = [];
-                            if(!isCtrlDown){
+                            easyUiPanelToggle();
+                            uObjSubIdSingle = uObjSubID;
+                            //添加锚点
+                            var rnd = Math.floor(Math.random()*100000); //随机数
+                            var times = new Date().getTime();   //时间戳
+                            var anchorName = 'Anchor['+ rnd +']['+ times +']';  //锚点名称
+                            if(operateType == 'AddComponentAnchor'){
+                                RealBimOcx.DelAllAnchors();
                                 RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
+                                RealBimOcx.AddAnchor(anchorName,fObjSelX,fObjSelY,fObjSelZ,0);
+                                RealBimOcx.AddAnchorEnd();
                                 RealBimOcx.BatchAddSubClrInfoBegin();
                                 RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
-                                uObjSubIDArr.push(uObjSubID);
                                 RealBimOcx.BatchAddSubClrInfoEnd();
-                                $('#baseAttrCon').show();//展示基本属性信息
+                                $('#anchorName').html(anchorName);      //锚点名称
+                                $('#fObjSelX').val(fObjSelX);       //锚点坐标
+                                $('#fObjSelY').val(fObjSelY);
+                                $('#fObjSelZ').val(fObjSelZ);
+
                             }else{
-                                RealBimOcx.BatchAddSubClrInfoBegin();
-                                RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);   //第二个参数为透明度
-                                uObjSubIDArr.push(uObjSubID);
-                                RealBimOcx.BatchAddSubClrInfoEnd();
-                                console.log(uObjSubIDArr);//模型ID
+                                //单选/多选模型
+                                getAttr();
+                                getRemark();
+                                if(!isCtrlDown){
+                                    uObjSubIDArr = [];
+                                    hiddenArr = [];
+                                    RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
+                                    RealBimOcx.BatchAddSubClrInfoBegin();
+                                    RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
+                                    uObjSubIDArr.push(uObjSubID);
+                                    hiddenArr.push(uObjSubID);
+                                    RealBimOcx.BatchAddSubClrInfoEnd();
+                                    $('#baseAttrCon').show();//展示基本属性信息
+                                }else{
+                                    RealBimOcx.BatchAddSubClrInfoBegin();
+                                    RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);   //第二个参数为透明度
+                                    uObjSubIDArr.push(uObjSubID);
+                                    hiddenArr.push(uObjSubID);
+                                    RealBimOcx.BatchAddSubClrInfoEnd();
+                                    //console.log(uObjSubIDArr);//模型ID
+                                }
                             }
                         </script>
                         <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
@@ -137,15 +214,56 @@
                             }
                             RealBimOcx.SetSuitableCam();
                         </script>
-                        <script for="RealBimOcx" event="UIClicked(eType,uButtonMode)" language='javascript'>
+                      <script for="RealBimOcx" event="OnAnchorSelected(SelAnchorName)" language='javascript'>
+                          //点击锚点
+                          //SelAnchorName
+                          $('#anchorName').val(SelAnchorName);
+                      </script>
+                      <script>
+                            //删除锚点
+                            function delAnchor(anchorName) {
+                                RealBimOcx.DelAnchorBegin();
+                                RealBimOcx.DeleteAnchor(anchorName);
+                                RealBimOcx.DelAnchorEnd();
+                                RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
+                                $('#defaultAttr').show();
+                                $('#anchorLayer').hide();
+                            }
+                      </script>
+                      <script for="RealBimOcx" event="UIClicked(eType,uButtonMode)" language='javascript'>
                             function clearOperate() {
                                 RealBimOcx.AddAnchorEnd();
                                 RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
                             };
+                            //右侧对应属性显隐
                             function addTagInfo() {
                                 $('.attrWrap').hide();
                                 $('.addTag').show();
                             };
+                            //锚点回显的显示隐藏
+                            function anchorView() {
+                                $.ajax({
+                                    type: "Get",
+                                    url: "/Anchor/GetAnchorsByUser",
+                                    success: function (data) {
+                                        data = data.result.anchors;
+                                        if (uButtonMode == 1) {
+                                            RealBimOcx.AddAnchorBegin(0);
+                                            $.each(data, function (i, item) {
+                                                RealBimOcx.AddAnchor(item.name, item.xValue, item.yValue, item.zValue, 0);
+                                            });
+                                            RealBimOcx.AddAnchorEnd();
+                                        }
+                                        else {
+                                            RealBimOcx.DelAnchorBegin();
+                                            $.each(data, function (i, item) {
+                                                RealBimOcx.DeleteAnchor(item.name);
+                                            });
+                                            RealBimOcx.DelAnchorEnd();
+                                        }
+                                    }
+                                });
+                            }
 
                             $('textarea[name="info"]').on('input propertychange',function () {
                                 var val = $(this).text();
@@ -160,12 +278,15 @@
                             switch (eType) {
                                 case "ADD_ANCHOR":
                                     clearOperate();
+                                    operateType = "AddComponentAnchor"; //判断是否进入锚点状态
                                     RealBimOcx.AddAnchorBegin(0);//构件锚点开始
+                                    $('#defaultAttr,#backAnchor').hide();
+                                    $('#anchorLayer').show();
+                                    easyUiPanelToggle();
                                     break; //添加锚点
                                 case "DISP_ANCHOR":
+                                    anchorView();
                                     break; //显示锚点
-                                case "DISP_TAG":
-                                    break;
                                 case "MARKER":
                                     clearOperate();
                                     RealBimOcx.CreateMarkerBegin();
@@ -176,15 +297,60 @@
                                     clearOperate();
                                     RealBimOcx.CreateSnapShootInMem(true, 0, 0, true, true);
                                     break;
-                                case "DISP_ISOLATE":
+                                case "DISP_ISOLATE":    //显示隔离
+                                    RealBimOcx.SetIsolateSubElemIDBegin();
+                                    if (uButtonMode === 1)                    //显示隔离
+                                    {
+                                        isOlate = true; //是否为隔离状态
+                                        hiddenArr = [];
+                                        $.each(uObjSubIDArr, function (i, item) {
+                                            console.log(item);
+                                            RealBimOcx.SetIsolateSubElemID(item)
+                                        });
+                                        RealBimOcx.SetIsolateSubElemIDEnd();
+                                    }
+                                    else                                      //隐藏隔离
+                                    {
+                                        isOlate = false;    //是否为隔离状态
+                                        RealBimOcx.SetIsolateSubElemIDEnd();
+                                       /* RealBimOcx.SetAllHugeObjSubValidState(1);*/
+                                        RealBimOcx.SetHugeObjSubValidStateBegin();
+                                        $.each(uObjSubIDArr, function (i, item) {  //取消隔离
+                                            RealBimOcx.SetHugeObjSubValidStateInfo(item, 1);
+                                        });
+                                        RealBimOcx.SetHugeObjSubValidStateEnd();
+                                        uObjSubIDArr = [];
+                                    }
                                     break;
                                 case "DISP_HIDE":
+                                    if (uButtonMode === 1) {                    //隐藏选择的模型
+                                        uObjSubIDArr = [];
+                                        RealBimOcx.SetHugeObjSubValidStateBegin();
+                                        $.each(hiddenArr, function (i, item) {
+                                            RealBimOcx.SetHugeObjSubValidStateInfo(item, 0);
+                                        });
+                                        RealBimOcx.SetHugeObjSubValidStateEnd();
+                                    } else {
+                                        if(isOlate){    //为隔离状态
+                                            RealBimOcx.SetHugeObjSubValidStateBegin();
+                                            $.each(hiddenArr, function (i, item) {  //取消隐藏
+                                                RealBimOcx.SetHugeObjSubValidStateInfo(item, 1);
+                                            });
+                                            RealBimOcx.SetHugeObjSubValidStateEnd();
+                                            console.log(isOlate);
+                                        }else {
+                                            RealBimOcx.SetAllHugeObjSubValidState(1);
+                                        }
+                                        RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
+                                        hiddenArr = [];
+                                        console.log(isOlate);
+                                    }
                                     break;
 
                             }
 
-                        </script>
-                        <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
+                      </script>
+                      <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                             base64PicData = strPicData;
                             base64RenData = strRenData;
                             if(window.state==1){
@@ -203,7 +369,7 @@
                             $('.scenter a').click(function () {
                                 RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
                             });
-                        </script>
+                      </script>
                   </div>
                   <div data-options="region:'south',title:'协同信息',split:true,collapsed:true" style="height:250px;">
                         <div id="tt" class="easyui-tabs" style="width:100%;height:200px;border: 0">
@@ -232,6 +398,7 @@
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/main/index.js"></script>
 <script>
+    operateType = "";
     $(document).keyup(function (event) {
         var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
         if ( KeyCode == 27 ){

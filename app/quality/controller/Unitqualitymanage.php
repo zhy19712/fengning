@@ -13,6 +13,9 @@ use app\admin\controller\Permissions;
 use app\quality\model\DivisionModel;
 use app\quality\model\UnitqualitymanageModel;
 use think\Db;
+use app\quality\model\QualityFormInfoModel;
+use PhpOffice\PhpWord\Settings;
+use PhpOffice\PhpWord\PhpWord;
 use think\Loader;
 use think\Session;
 
@@ -63,27 +66,32 @@ class Unitqualitymanage extends Permissions
     /**
      * 批量下载 二维码
      * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * @author hutao
      */
     public function exportCode()
     {
         // 前台 传递 要下载 哪个节点 下的所有 二维码 add_id
-        $id = $this->request->has('add_id') ? $this->request->param('add_id', 0, 'intval') : 1;
+        $id = $this->request->has('file_id') ? $this->request->param('file_id', 0, 'intval') : 1;
         if($id == 0){
             return json(['code' => '-1','msg' => '请选择工程划分节点']);
+        }
+        // 获取 工程划分 下 所有的 控制点
+        $control = Db::name('quality_division_controlpoint_relation')->alias('d')
+            ->join('materialtrackingdivision m','d.ma_division_id = m.id','left')
+            ->join('controlpoint c','d.control_id = c.id','left')
+            ->where(['d.division_id'=>$id,'d.type'=>0])
+            ->field('d.control_id,m.name as m_name,c.name as c_name')->select();
+            // ->column('d.control_id,m.name as m_name,c.name as c_name'); // 使用column 会合并相同的数据
+        if(empty($control)){
+            return json(['code' => '-1','msg' => '没有数据']);
         }
         if($this->request->isAjax()) {
             return json(['code' => 1,'msg'=>'导出成功']); // 文件存在，告诉前台可以执行下载
         }else{
             $attachment_id = [];
-            // 获取 工程划分 下 所有的 控制点
-            $control = Db::name('quality_division_controlpoint_relation')->alias('d')
-                ->join('materialtrackingdivision m','d.ma_division_id = m.id','left')
-                ->join('controlpoint c','d.control_id = c.id','left')
-                ->where(['d.division_id'=>$id,'d.type'=>0])->column('d.control_id,m.name as m_name,c.name as c_name');
-            if(empty($control)){
-                return json(['code' => '-1','msg' => '没有数据']);
-            }
             $qrcode_bas_path = ROOT_PATH . 'public' .DS . 'uploads' . DS . 'quality' . DS . 'export-code';//文件路径
             if(!is_dir($qrcode_bas_path)){
                 mkdir($qrcode_bas_path, 0777, true);
@@ -146,7 +154,7 @@ class Unitqualitymanage extends Permissions
             //如果不要下载，下面这段删掉即可，如需返回压缩包下载链接，只需 return $zipName;
             header("Cache-Control: public");
             header("Content-Description: File Transfer");
-            header('Content-disposition: attachment; filename='.basename($zipName)); //文件名
+            header('Content-disposition: attachment; filename='.$new_png_name.'.zip'); //文件名
             header("Content-Type: application/zip"); //zip格式的
             header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
             header('Content-Length: '. filesize($zipName)); //告诉浏览器，文件大小
@@ -160,6 +168,7 @@ class Unitqualitymanage extends Permissions
     /**
      * 下载 控制点里 的模板文件
      * @return \think\response\Json
+     * @throws \PhpOffice\PhpWord\Exception\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -169,13 +178,13 @@ class Unitqualitymanage extends Permissions
     {
         // 前台需要 传递 文件编号 id
         $param = input('param.');
-        $file_id = isset($param['id']) ? $param['id'] : 0;
+        $file_id = isset($param['file_id']) ? $param['file_id'] : 0;
         if($file_id == 0){
             return json(['code' => '-1','msg' => '编号有误']);
         }
         $file_obj = Db::name('quality_division_controlpoint_relation')->alias('r')
             ->join('controlpoint c','c.id=r.control_id','left')
-            ->where('r.id',$file_id)->field('c.code,c.name')->find();
+            ->where('r.id',$file_id)->field('c.code,c.name,r.division_id')->find();
         if(empty($file_obj)){
             return json(['code' => '-1','msg' => '编号无效']);
         }
@@ -184,18 +193,26 @@ class Unitqualitymanage extends Permissions
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){
-            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+            return json(['code' => 1,'msg'=>'下载成功']); // 文件存在，告诉前台可以执行下载
         }else{
-            $fileName = $file_obj['name'].'docx';
-            $file = fopen($filePath, "r"); //   打开文件
-            //输入文件标签
-            $fileName = iconv("utf-8","gb2312",$fileName);
-            Header("Content-type:application/octet-stream ");
-            Header("Accept-Ranges:bytes ");
-            Header("Accept-Length:   " . filesize($filePath));
-            Header("Content-Disposition:   attachment;   filename= " . $fileName);
-            //   输出文件内容
-            echo fread($file, filesize($filePath));
+            //设置临时文件，避免C盘Temp不可写报错
+            Settings::setTempDir('temp');
+            $phpword = new PhpWord();
+            $phpword = $phpword->loadTemplate($filePath);
+            $qualityFormInfoService = new QualityFormInfoModel();
+            $infos = $qualityFormInfoService->getFormBaseInfo($file_obj['division_id']);
+            halt($infos);
+            foreach ($infos as $key => $value) {
+                $phpword->setValue('{' . $key . '}', $value);
+            }
+            $docname = $phpword->save();
+            header('Content-Disposition: attachment; filename="' . $file_obj['code'].$file_obj['name'] . '.docx"');
+            header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+            header('Content-Transfer-Encoding: binary');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Expires: 0');
+            $file = fopen($docname, 'r');
+            echo fread($file, filesize($docname));
             fclose($file);
             exit;
         }
@@ -320,6 +337,7 @@ class Unitqualitymanage extends Permissions
             return json(['code' => -1 ,'msg' => '请选择需要新增的控制点']);
         }
         if($this->request->isAjax()){
+            $idArr = array_unique($idArr); // 移除数组里的重复控制点主键编号 (前台传递的有可能存在重复的)
             // 首先验证 此控制点 是否已经 添加过
             $old_existed = Db::name('quality_division_controlpoint_relation')->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id])->column('control_id');
             $new_add= array_diff($idArr,$old_existed);
@@ -347,8 +365,14 @@ class Unitqualitymanage extends Permissions
      */
     public function editRelation()
     {
-        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 文件编号  attachment_id
-        $param = input('param.');
+        halt(11111);
+        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 上传的文件 file
+        // 执行上传文件 获取文件编号  attachment_id
+        $param = input('param.'); halt($param);
+        $common = new \app\admin\controller\Common();
+        $param['attachment_id'] = $common->upload('quality','unitqualitymanage');
+        halt($param);
+        // 保存上传文件记录
         $id = isset($param['id']) ? $param['id'] : 0;
         $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
         $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
@@ -386,11 +410,11 @@ class Unitqualitymanage extends Permissions
             $msg = '预览成功';
             $data = Db::name('quality_upload')->alias('q')
                 ->join('attachment a','a.id=q.attachment_id','left')
-                ->where('q.id',$id)->field('a.path')->find();
-            if(!$data['path'] || !file_exists("." .$data['path'])){
+                ->where('q.id',$id)->field('a.filepath')->find();
+            if(!$data['filepath'] || !file_exists("." .$data['filepath'])){
                 return json(['code' => '-1','msg' => '文件不存在']);
             }
-            $path = $data['path'];
+            $path = $data['filepath'];
             $extension = strtolower(get_extension(substr($path,1)));
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if(!file_exists($pdf_path)){
@@ -434,7 +458,10 @@ class Unitqualitymanage extends Permissions
         $file_obj = Db::name('quality_upload')->alias('q')
             ->join('attachment a','a.id=q.attachment_id','left')
             ->where('q.id',$id)->field('a.filename,a.filepath')->find();
-        $filePath = '.' . $file_obj['filepath'];
+        $filePath = '';
+        if(!empty($file_obj['filepath'])){
+            $filePath = '.' . $file_obj['filepath'];
+        }
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }else if(request()->isAjax()){

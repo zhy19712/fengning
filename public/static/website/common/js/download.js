@@ -17,7 +17,6 @@
             dataType: "json",
             data:option.data,
             success: function (res) {
-                console.log(res);
                 if(res.code != 1){
                     layer.msg(res.msg);
                 }else {
