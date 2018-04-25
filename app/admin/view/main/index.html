@@ -203,7 +203,6 @@
                                     uObjSubIDArr.push(uObjSubID);
                                     hiddenArr.push(uObjSubID);
                                     RealBimOcx.BatchAddSubClrInfoEnd();
-                                    //console.log(uObjSubIDArr);//模型ID
                                 }
                             }
                         </script>
@@ -309,7 +308,6 @@
                                         isOlate = true; //是否为隔离状态
                                         hiddenArr = [];
                                         $.each(uObjSubIDArr, function (i, item) {
-                                            console.log(item);
                                             RealBimOcx.SetIsolateSubElemID(item)
                                         });
                                         RealBimOcx.SetIsolateSubElemIDEnd();
@@ -342,13 +340,11 @@
                                                 RealBimOcx.SetHugeObjSubValidStateInfo(item, 1);
                                             });
                                             RealBimOcx.SetHugeObjSubValidStateEnd();
-                                            console.log(isOlate);
                                         }else {
                                             RealBimOcx.SetAllHugeObjSubValidState(1);
                                         }
                                         RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
                                         hiddenArr = [];
-                                        console.log(isOlate);
                                     }
                                     break;
                             }
@@ -372,18 +368,14 @@
                                 },
                                 dataType: "json",
                                 success: function (res) {
-                                    console.log(res);
+                                    layer.msg(res.msg);
                                 }
-                            });
-                            $('.scenter a').click(function () {
-                                RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
                             });
                       </script>
                         <!-- 保存标注 -->
                         <script language="javascript" for="RealBimOcx" EVENT="MarkerData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                               base64PicData = strPicData;
                               base64RenData = strRenData;
-                              console.log(base64RenData);
                               var img = addSnapshot(base64RenData);
                               tagSwiper.prependSlide(img);
                               tagSwiper.updateSlidesSize();
@@ -397,7 +389,7 @@
                                   },
                                   dataType: "json",
                                   success: function (res) {
-                                      console.log(res);
+                                      layer.msg(res.msg);
                                   }
                               });
                         </script>
@@ -441,10 +433,55 @@
         RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
         $('#defaultAttr').show();
         $('#anchorLayer').hide();
-    }
+    };
     //保存标注
     $('#save').click(function () {
         RealBimOcx.CreateMarkerEndInMem(true, 0, 0, true, true);  //保存标注
+    });
+    //回显标注
+    function getLabelSnapshot() {
+        $.ajax({
+            url: "./getLabelSnapshot",
+            type: "post",
+            data: {
+                picture_id:uObjSubIdSingle,
+                type:1
+            },
+            dataType: "json",
+            success: function (res) {
+                var imgPathArr = [];
+                for(var i = 0;i<res.data.length;i++){
+                    var base64PicData = res.data[i];
+                    imgPathArr.push('<div class="swiper-slide swiperSlide">');
+                    imgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                    imgPathArr.push('<div class="mask">');
+                    imgPathArr.push('<div class="right">');
+                    imgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">');
+                    imgPathArr.push('<i class="fa fa-save"></i>');
+                    imgPathArr.push('</a>');
+                    imgPathArr.push('<a href="javascript:;" title="删除快照">');
+                    imgPathArr.push('<i class="fa fa-close" id="del"></i>');
+                    imgPathArr.push('</a>');
+                    imgPathArr.push('</div>');
+                    imgPathArr.push('<div class="scenter">');
+                    imgPathArr.push('<a href="javascript:;" title="查看快照">');
+                    imgPathArr.push('<i class="fa fa-search"></i>');
+                    imgPathArr.push('</a>');
+                    imgPathArr.push('</div>');
+                    imgPathArr.push('<div class="center">2018-04-20</div>');
+                    imgPathArr.push('</div>');
+                    imgPathArr.push('</div>');
+                }
+                console.log(imgPathArr.join(' '));
+                tagSwiper.prependSlide(imgPathArr.join(' '));
+                tagSwiper.updateSlidesSize();
+            }
+        })
+    }
+    getLabelSnapshot();
+
+    $('.scenter a').click(function () {
+        RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
     });
     //键盘事件
     $(document).keyup(function (event) {
@@ -455,7 +492,7 @@
             RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
             uObjSubIDArr.length=0;
         }
-    })
+    });
 </script>
 </body>
 </html>
