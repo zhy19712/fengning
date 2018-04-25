@@ -97,18 +97,20 @@
 </script>
 
 <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
+setTimeout(function () {
+  RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
+  RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
 
-      RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
-      RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
+  RealBimOcx.CreateAGolFont("CustomFont01","微软雅黑",true,true,14,14,32,1.0,0*64,"");
+  RealBimOcx.CreateAGolFont("CustomFont02","微软雅黑",true,true,12,12,8,1.0,0*64,"");
+},1500)
 
-      RealBimOcx.CreateAGolFont("CustomFont01","微软雅黑",true,true,14,14,32,1.0,0*64,"");
-      RealBimOcx.CreateAGolFont("CustomFont02","微软雅黑",true,true,12,12,8,1.0,0*64,"");
 
 
 
 </script>
 <script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
-
+setTimeout(function () {
   if(CompleteEvent == "LoadMainScene" && retError==0 ){
     RealBimOcx.SetSceHugeObjVisible(true);
     getposition = $("#positionUrl").val();
@@ -132,6 +134,8 @@
       }
     });
   }
+},1500)
+
 
 </script>
 
