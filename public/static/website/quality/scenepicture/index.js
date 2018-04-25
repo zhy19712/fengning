@@ -308,17 +308,26 @@ function conPicshow(id){
 }
 //设置位置
 function conPosition(id) {
-  // window.open("./PositionSet?id=" + id);
+  window.open("./PositionSet?id=" + id,"位置信息","height=600, width=900, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no",false);
 
-  layer.open({
-        type: 2,
-        shadeClose: true,
-        title: "空间位置设置",
-        area: ["90%", "90%"],
-        content: "./PositionSet?id=" + id,
-        success: function(layero, index){
-          var body = layer.getChildFrame('body', index);
-          body.find('input').val(positionUrl)
-        }
-    });
+  // layer.open({
+  //       type: 2,
+  //       shadeClose: true,
+  //       title: "空间位置设置",
+  //       area: ["90%", "90%"],
+  //       content: "./PositionSet?id=" + id,
+  //       success: function(layero, index){
+  //         var body = layer.getChildFrame('body', index);
+  //         body.find('input').val(positionUrl)
+  //       }
+  //   });
+}
+//向位置页面传参
+function getpositionUrl() {
+  return positionUrl;
+}
+//刷新表格
+function refreshTable(){
+  var url = "/quality/common/datatablespre/tableName/quality_scene_picture/admin_group_id/"+admin_group_id+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+  tableItem.ajax.url(url).load();
 }

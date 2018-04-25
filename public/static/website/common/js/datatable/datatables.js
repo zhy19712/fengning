@@ -51,7 +51,6 @@
                 $('#tableItem_paginate').insertBefore(".mark");
             }
         });
-
        console.log('当前表格实例：'+window.tableItem.context[0].sTableId);
     }
 })(jQuery);
