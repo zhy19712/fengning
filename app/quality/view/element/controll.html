@@ -288,7 +288,8 @@
         </div>
     </div>
 </div>
-
+<div id="form_container" style="display: none;"></div>
+<div id="form_container_from" style="display: none;"></div>
 </body>
 <script type="text/javascript">
 
@@ -593,12 +594,21 @@
 
     //点击工序控制点名字
     function clickConName(id) {
+        clickId ='';
+        conThisId ='';
+        console.log(conThisId);
         conThisId = id;
+        console.log(conThisId);
         if(selfidUnit != undefined || selfidUnit != null && conThisId != undefined || conThisId != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         }
         $("#tableContent .imgList").css('display','block');
         console.log(id + " 控制点工序 conThisId");
+        if(clickId =='' || conThisId == '') {
+            $(".bitCodes").css("display","none");
+            $(".mybtn").css("display","none");
+            $(".mybtnAdd").css("display","none");
+        }
     }
 
     //下载封装的方法
@@ -633,8 +643,9 @@
     //点击下载控制点模板
     function downConFile(id) {
         // download(id,"{:url('quality/element/download')}")
+        download(id,"{:url('quality/unitqualitymanage/fileDownload')}");
         // console.log(id)
-        window.open("http://www.fengning.com/quality/element/download.shtml?cpr_id="+id);
+        // window.open("http://www.fengning.com/quality/element/download.shtml?cpr_id="+id);
     }
 
     //预览
@@ -1264,9 +1275,40 @@
         });
     }
 
+    //下载封装的方法
+    function downloadFrom(id,url) {
+        $.ajax({
+            url: url,
+            type:"post",
+            dataType: "json",
+            data:{formId:id},
+            success: function (res) {
+                if(res.code != 1){
+                    layer.msg(res.msg);
+                }else {
+                    $("#form_container_from").empty();
+                    var str = "";
+                    str += ""
+                        + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
+                        + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
+                        + "<span class='file_name' style='color: #000;'>"+str+"</span>"
+                        + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                        // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
+                        + "<button type='submit' class=btn" + id +"></button>"
+                        + "</form>"
+                    $("#form_container_from").append(str);
+                    $("#form_container_from").find(".btn" + id).click();
+                }
+
+            }
+        })
+    }
+
     //在线填报-下载
     function downOnLine(id) {
-        layer.msg("下载")
+        // downloadFrom(id,"{:url('quality/element/formDownload')}")
+        // console.log(id)
+        window.open("http://www.fengning.com/quality/element/formDownload.shtml?formId="+id);
     }
 
     /*============在线填报结束==============*/
