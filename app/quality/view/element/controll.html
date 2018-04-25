@@ -608,6 +608,8 @@
             $(".bitCodes").css("display","none");
             $(".mybtn").css("display","none");
             $(".mybtnAdd").css("display","none");
+            implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
+            imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
         }
     }
 
