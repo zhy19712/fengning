@@ -26,19 +26,24 @@ class Main extends Permissions
      */
     public function addAttr()
     {
-        // 前台需要传递 的是  模型图主键 picture_id 属性名数组 attrKey  属性值数组attrVal
+        // 前台需要传递 的是  模型图主键 picture_id 属性名 attrKey  属性值 attrVal
         if($this->request->isAjax()){
             $param = input('param.');
-            $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
-            $attrKey = isset($param['attrKey']) ? $param['attrKey'] : -1;
-            $attrVal = isset($param['attrVal']) ? $param['attrVal'] : -1;
-            if($picture_id == -1 || $attrKey == -1 || $attrVal == -1){
-                return join(['code'=>-1,'msg'=>'参数有误']);
+            // 验证规则
+            $rule = [
+                ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数'],
+                ['attrKey', 'require', '属性名不能为空'],
+                ['attrVal', 'require', '属性值不能为空']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $data = [];
-            $data['picture_id'] = $picture_id;
-            $data['attr_name'] = $attrKey;
-            $data['attr_value'] = $attrVal;
+            $data['picture_id'] = $param['picture_id'];
+            $data['attr_name'] = $param['attrKey'];
+            $data['attr_value'] = $param['attrVal'];
             $custom = new CustomAttributeModel();
             $flag = $custom->insertTb($data);
             return json($flag);
@@ -52,18 +57,23 @@ class Main extends Permissions
      */
     public function addRemark()
     {
-        // 前台需要传递 的是  模型图主键 picture_id 属性名数组 attrKey  属性值数组attrVal
+        // 前台需要传递 的是  模型图主键 picture_id 描述 remark
         if($this->request->isAjax()){
             $param = input('param.');
-            $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
-            $remark = isset($param['remark']) ? $param['remark'] : -1;
-            if($picture_id == -1 || $remark == -1){
-                return join(['code'=>-1,'msg'=>'参数有误']);
+            // 验证规则
+            $rule = [
+                ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数'],
+                ['remark', 'require', '描述不能为空']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
             }
-            $data['picture_id'] = $picture_id;
-            $data['remark'] = $remark;
+            $data['id'] = $param['picture_id'];
+            $data['remark'] = $param['remark'];
             $pic = new PictureModel();
-            $pic->insertTb($data);
+            $pic->editTb($data);
             return json(['code'=>1,'msg'=>'添加成功']);
         }
     }
