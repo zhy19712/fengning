@@ -354,9 +354,28 @@
                         <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                             base64PicData = strPicData;
                             base64RenData = strRenData;
-                            //添加快照
-                            var img = addSnapshot(base64RenData);
-                            snapshotSwiper.prependSlide(img);
+                            // TODO 需要重构
+                            var snapshotImgPathArr = [];
+                            snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
+                            snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                            snapshotImgPathArr.push('<div class="mask">');
+                            snapshotImgPathArr.push('<div class="right">');
+                            snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">');
+                            snapshotImgPathArr.push('<i class="fa fa-save"></i>');
+                            snapshotImgPathArr.push('</a>');
+                            snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
+                            snapshotImgPathArr.push('<i class="fa fa-close" id="del"></i>');
+                            snapshotImgPathArr.push('</a>');
+                            snapshotImgPathArr.push('</div>');
+                            snapshotImgPathArr.push('<div class="scenter">');
+                            snapshotImgPathArr.push('<a href="javascript:;" title="查看快照">');
+                            snapshotImgPathArr.push('<i class="fa fa-search"></i>');
+                            snapshotImgPathArr.push('</a>');
+                            snapshotImgPathArr.push('</div>');
+                            snapshotImgPathArr.push('<div class="center">2018-04-20</div>');
+                            snapshotImgPathArr.push('</div>');
+                            snapshotImgPathArr.push('</div>');
+                            snapshotSwiper.prependSlide(snapshotImgPathArr.join(' '));
                             snapshotSwiper.updateSlidesSize();
                             $.ajax({
                                 url: "./labelSnapshot",
@@ -376,8 +395,28 @@
                         <script language="javascript" for="RealBimOcx" EVENT="MarkerData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                               base64PicData = strPicData;
                               base64RenData = strRenData;
-                              var img = addSnapshot(base64RenData);
-                              tagSwiper.prependSlide(img);
+                              // TODO 需要重构
+                              var tagImgPathArr = [];
+                              tagImgPathArr.push('<div class="swiper-slide swiperSlide">');
+                              tagImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                              tagImgPathArr.push('<div class="mask">');
+                              tagImgPathArr.push('<div class="right">');
+                              tagImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="标注另存为">');
+                              tagImgPathArr.push('<i class="fa fa-save"></i>');
+                              tagImgPathArr.push('</a>');
+                              tagImgPathArr.push('<a href="javascript:;" title="删除标注">');
+                              tagImgPathArr.push('<i class="fa fa-close" id="del"></i>');
+                              tagImgPathArr.push('</a>');
+                              tagImgPathArr.push('</div>');
+                              tagImgPathArr.push('<div class="scenter">');
+                              tagImgPathArr.push('<a href="javascript:;" title="查看标注">');
+                              tagImgPathArr.push('<i class="fa fa-search"></i>');
+                              tagImgPathArr.push('</a>');
+                              tagImgPathArr.push('</div>');
+                              tagImgPathArr.push('<div class="center">2018-04-20</div>');
+                              tagImgPathArr.push('</div>');
+                              tagImgPathArr.push('</div>');
+                              tagSwiper.prependSlide(tagImgPathArr.join(' '));
                               tagSwiper.updateSlidesSize();
                               $.ajax({
                                   url: "./labelSnapshot",
@@ -439,7 +478,8 @@
         RealBimOcx.CreateMarkerEndInMem(true, 0, 0, true, true);  //保存标注
     });
     //回显标注
-    function getLabelSnapshot() {
+    // TODO 需要重构
+    function getLabelTag() {
         $.ajax({
             url: "./getLabelSnapshot",
             type: "post",
@@ -456,15 +496,15 @@
                     imgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
                     imgPathArr.push('<div class="mask">');
                     imgPathArr.push('<div class="right">');
-                    imgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">');
+                    imgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="标注另存为">');
                     imgPathArr.push('<i class="fa fa-save"></i>');
                     imgPathArr.push('</a>');
-                    imgPathArr.push('<a href="javascript:;" title="删除快照">');
+                    imgPathArr.push('<a href="javascript:;" title="删除标注">');
                     imgPathArr.push('<i class="fa fa-close" id="del"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('</div>');
                     imgPathArr.push('<div class="scenter">');
-                    imgPathArr.push('<a href="javascript:;" title="查看快照">');
+                    imgPathArr.push('<a href="javascript:;" title="查看标注">');
                     imgPathArr.push('<i class="fa fa-search"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('</div>');
@@ -475,6 +515,48 @@
                 console.log(imgPathArr.join(' '));
                 tagSwiper.prependSlide(imgPathArr.join(' '));
                 tagSwiper.updateSlidesSize();
+            }
+        })
+    }
+    getLabelTag();
+
+    //回显快照
+    // TODO 需要重构
+    function getLabelSnapshot() {
+        $.ajax({
+            url: "./getLabelSnapshot",
+            type: "post",
+            data: {
+                picture_id:uObjSubIdSingle,
+                type:2
+            },
+            dataType: "json",
+            success: function (res) {
+                var snapshotImgPathArr = [];
+                for(var i = 0;i<res.data.length;i++){
+                    var base64PicData = res.data[i];
+                    snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
+                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                    snapshotImgPathArr.push('<div class="mask">');
+                    snapshotImgPathArr.push('<div class="right">');
+                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">');
+                    snapshotImgPathArr.push('<i class="fa fa-save"></i>');
+                    snapshotImgPathArr.push('</a>');
+                    snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
+                    snapshotImgPathArr.push('<i class="fa fa-close" id="del"></i>');
+                    snapshotImgPathArr.push('</a>');
+                    snapshotImgPathArr.push('</div>');
+                    snapshotImgPathArr.push('<div class="scenter">');
+                    snapshotImgPathArr.push('<a href="javascript:;" title="查看快照">');
+                    snapshotImgPathArr.push('<i class="fa fa-search"></i>');
+                    snapshotImgPathArr.push('</a>');
+                    snapshotImgPathArr.push('</div>');
+                    snapshotImgPathArr.push('<div class="center">2018-04-20</div>');
+                    snapshotImgPathArr.push('</div>');
+                    snapshotImgPathArr.push('</div>');
+                }
+                snapshotSwiper.prependSlide(snapshotImgPathArr.join(' '));
+                snapshotSwiper.updateSlidesSize();
             }
         })
     }
