@@ -62,6 +62,8 @@ class Approve extends Permissions
                 return json(['code' => -1]);
             }
         }
+        $this->assign('dataId', $par['dataId']);
+        $this->assign('dataType', $par['dataType']);
         $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($par['dataId'], new $par['dataType'])));
         return $this->fetch();
     }
@@ -70,8 +72,10 @@ class Approve extends Permissions
      * 审批历史
      * @return mixed
      */
-    public function ApproveHistory()
+    public function ApproveHistory($dataId, $dataType)
     {
+        $info = $this->approveService->getApproveInfo($dataId, new $dataType);
+        $this->assign('approveinfo', json_encode($info));
         return $this->fetch();
     }
 

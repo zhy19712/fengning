@@ -151,6 +151,8 @@
                   <div data-options="region:'center',title:''" style="padding:5px;">
                         <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
                             $('#comment').show();//展示基本属性信息
+                            easyUiPanelToggle();
+                            uObjSubIdSingle = uObjSubID;
                             //添加锚点
                             var rnd = Math.floor(Math.random()*100000); //随机数
                             var times = new Date().getTime();   //时间戳
@@ -163,13 +165,15 @@
                                 RealBimOcx.BatchAddSubClrInfoBegin();
                                 RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
                                 RealBimOcx.BatchAddSubClrInfoEnd();
-                                $('#anchorName').html(anchorName);
-                                $('#fObjSelX').val(fObjSelX);
+                                $('#anchorName').html(anchorName);      //锚点名称
+                                $('#fObjSelX').val(fObjSelX);       //锚点坐标
                                 $('#fObjSelY').val(fObjSelY);
                                 $('#fObjSelZ').val(fObjSelZ);
 
                             }else{
                                 //单选/多选模型
+                                getAttr();
+                                getRemark();
                                 if(!isCtrlDown){
                                     uObjSubIDArr = [];
                                     hiddenArr = [];
@@ -186,7 +190,7 @@
                                     uObjSubIDArr.push(uObjSubID);
                                     hiddenArr.push(uObjSubID);
                                     RealBimOcx.BatchAddSubClrInfoEnd();
-                                    console.log(uObjSubIDArr);//模型ID
+                                    //console.log(uObjSubIDArr);//模型ID
                                 }
                             }
                         </script>
@@ -215,7 +219,7 @@
                           //SelAnchorName
                           $('#anchorName').val(SelAnchorName);
                       </script>
-                        <script>
+                      <script>
                             //删除锚点
                             function delAnchor(anchorName) {
                                 RealBimOcx.DelAnchorBegin();
@@ -225,8 +229,8 @@
                                 $('#defaultAttr').show();
                                 $('#anchorLayer').hide();
                             }
-                        </script>
-                        <script for="RealBimOcx" event="UIClicked(eType,uButtonMode)" language='javascript'>
+                      </script>
+                      <script for="RealBimOcx" event="UIClicked(eType,uButtonMode)" language='javascript'>
                             function clearOperate() {
                                 RealBimOcx.AddAnchorEnd();
                                 RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
@@ -278,10 +282,7 @@
                                     RealBimOcx.AddAnchorBegin(0);//构件锚点开始
                                     $('#defaultAttr,#backAnchor').hide();
                                     $('#anchorLayer').show();
-                                    var number = $("#easyuiLayout").layout("panel", "east")[0].clientWidth;
-                                    if(number<=0){
-                                        $('#easyuiLayout').layout('expand','east');
-                                    }
+                                    easyUiPanelToggle();
                                     break; //添加锚点
                                 case "DISP_ANCHOR":
                                     anchorView();
@@ -348,8 +349,8 @@
 
                             }
 
-                        </script>
-                        <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
+                      </script>
+                      <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                             base64PicData = strPicData;
                             base64RenData = strRenData;
                             if(window.state==1){
@@ -368,7 +369,7 @@
                             $('.scenter a').click(function () {
                                 RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
                             });
-                        </script>
+                      </script>
                   </div>
                   <div data-options="region:'south',title:'协同信息',split:true,collapsed:true" style="height:250px;">
                         <div id="tt" class="easyui-tabs" style="width:100%;height:200px;border: 0">
@@ -397,6 +398,7 @@
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/main/index.js"></script>
 <script>
+    operateType = "";
     $(document).keyup(function (event) {
         var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
         if ( KeyCode == 27 ){

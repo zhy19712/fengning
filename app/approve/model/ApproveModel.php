@@ -45,10 +45,10 @@ class ApproveModel extends Model
             $mod['result'] = "提交";
             $mod['mark'] = "提交审批";
             $this->save($mod);
-            $dataType->SubmitHandle($dataId, $approveIds, explode(",",$approveIds)[0]);
-            return ['code'=>1];
+            $dataType->SubmitHandle($dataId, $approveIds, explode(",", $approveIds)[0]);
+            return ['code' => 1];
         } catch (Exception $exception) {
-            return ['code'=>-1,'msg'=>$exception->getMessage()];
+            return ['code' => -1, 'msg' => $exception->getMessage()];
         }
     }
 
@@ -105,7 +105,6 @@ class ApproveModel extends Model
     }
 
 
-
     /**
      * 获取审批信息
      * @param $dataId
@@ -121,6 +120,7 @@ class ApproveModel extends Model
             return -1;
         }
         $mod = new ApproveInfo();
+        $mod->approveIds = $info['ApproveIds'];
         $approveIds = explode(',', $info['ApproveIds']);
         //流程结尾判断
         if ($info['CurrentStep'] < sizeof($approveIds)) {
@@ -159,6 +159,7 @@ class ApproveModel extends Model
 
 class ApproveInfo
 {
+    public $approveIds = "";
     //当前审批人
     public $CurrentApproverId = "";
     public $CurrentApproverName = "";
