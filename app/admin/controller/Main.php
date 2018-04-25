@@ -51,6 +51,31 @@ class Main extends Permissions
     }
 
     /**
+     * 获取自定义属性
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function getAttr()
+    {
+        // 前台需要传递 的是  模型图主键 picture_id
+        if($this->request->isAjax()){
+            $param = input('param.');
+            // 验证规则
+            $rule = [
+                ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+            $custom = new CustomAttributeModel();
+            $flag = $custom->getAttrTb($param['picture_id']);
+            return json($flag);
+        }
+    }
+
+    /**
      * 管理属性 -- 添加 描述
      * @return string|\think\response\Json
      * @author hutao
@@ -75,6 +100,31 @@ class Main extends Permissions
             $pic = new PictureModel();
             $pic->editTb($data);
             return json(['code'=>1,'msg'=>'添加成功']);
+        }
+    }
+
+    /**
+     * 获取模型图描述
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function getRemark()
+    {
+        // 前台需要传递 的是  模型图主键 picture_id
+        if($this->request->isAjax()){
+            $param = input('param.');
+            // 验证规则
+            $rule = [
+                ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+            $pic = new PictureModel();
+            $remark = $pic->getRemarkTb($param['picture_id']);
+            return json(['code'=>1,'remark'=>$remark,'msg'=>'模型图描述']);
         }
     }
 

@@ -33,5 +33,11 @@ class CustomAttributeModel extends Model
         }
     }
 
+    public function getAttrTb($picture_id)
+    {
+        $attr = $this->where(['picture_id'=>$picture_id])->column('attr_name as attrKey,attr_value as attrVal');
+        return ['code'=>1,'attr'=>$attr,'模型图自定义属性'];
+    }
+
 
 }
