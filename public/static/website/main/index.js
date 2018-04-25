@@ -136,6 +136,7 @@ function closeAttr(that) {
     $(that).parents('.layui-input-inline').remove();
 }
 
+//添加备注信息
 $('#addRemark').click(function () {
     if(!uObjSubIDArr){
         layer.msg('请选择模型');
