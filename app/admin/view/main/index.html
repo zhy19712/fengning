@@ -192,6 +192,19 @@
                                     }
                                     break;
                                 case "DISP_HIDE":
+                                    if (uButtonMode === 1) {                    //隐藏选择的模型
+                                        RealBimOcx.SetHugeObjSubValidStateBegin();
+                                        $.each(uObjSubIDArr, function (i, item) {
+                                            RealBimOcx.SetHugeObjSubValidStateInfo(item, 0);
+                                        });
+                                        RealBimOcx.SetHugeObjSubValidStateEnd();
+                                    } else {
+                                        RealBimOcx.SetHugeObjSubValidStateBegin();
+                                        $.each(uObjSubIDArr, function (i, item) {  //取消隐藏
+                                            RealBimOcx.SetHugeObjSubValidStateInfo(item, 1);
+                                        });
+                                        RealBimOcx.SetHugeObjSubValidStateEnd();
+                                    }
                                     break;
 
                             }
