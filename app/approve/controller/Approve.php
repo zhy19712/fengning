@@ -62,6 +62,8 @@ class Approve extends Permissions
                 return json(['code' => -1]);
             }
         }
+        $this->assign('dataId', $par['dataId']);
+        $this->assign('dataType', $par['dataType']);
         $this->assign('ApproveInfo', json_encode($this->approveService->getApproveInfo($par['dataId'], new $par['dataType'])));
         return $this->fetch();
     }
