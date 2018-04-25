@@ -23,7 +23,7 @@
     }
     </style>
 </head>
-<body >
+<body>
 <input type="hidden" id="positionUrl" value="">
 <div class="easyui-layout" data-options="fit:true" >
     <div class="" data-options="region:'north',title:'',split:true" >
@@ -31,7 +31,7 @@
         <button id="FT2" onclick="FT2_onclick()" class="layui-btn btn" type="button"><i class="fa fa-reply"></i> 恢复位置</button>
 
     </div>
-    <div class="" data-options="region:'center',title:''" >
+    <div class="" data-options="region:'center',title:''" id="objBox" >
         <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD" width="100%" height="90%">
             <param name="wmode" value="opaque">
         </object>
@@ -44,7 +44,6 @@
   str=str.substr(1); //取得所有参数   stringvar.substr(start [, length ]
   var arr=str.split("="); //各个参数放到数组里
   var positionid = arr[1];
-
 
 
 </script>
@@ -86,8 +85,8 @@
     success: function (res) {
       if (res.code == 1){
         alert("保存成功。");
-        window.close();
-        // window.opener.refreshTable();
+        // window.close(); //用ie就崩了
+        window.opener.refreshTable();
       }
       else alert("保存失败。");
     }
