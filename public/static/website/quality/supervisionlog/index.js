@@ -298,7 +298,7 @@ function conPicshow(id){
 }
 //设置位置
 function conPosition(id) {
-  window.open("./PositionSet?id=" + id,"授权","height=600, width=900, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
+  window.open("../scenepicture/PositionSet?id=" + id,"位置信息","height=600, width=900, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no",false );
 
   // layer.open({
   //       type: 2,
@@ -398,7 +398,13 @@ $('#tableItem tbody').on( 'mouseover', 'td', function () {
 }).on( 'mouseleave', 'td', function () {
     $(this).parent("tr").removeClass( 'highlight' );
 });
-
+//向子页面传参
 function getpositionUrl() {
   return positionUrl;
 }
+//刷新表格
+function refreshTable(){
+  var url = "/quality/common/datatablespre/tableName/"+tableName+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+  tableItem.ajax.url(url).load();
+}
+
