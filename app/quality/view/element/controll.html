@@ -1251,21 +1251,29 @@
                 currentStep:0
             },
             success: function (res) {
-                console.log(res)
+                console.log(res);
+                if(res == ""){
+                    layer.open({
+                        type: 2,
+                        title: '提交审批',
+                        shadeClose: true,
+                        area: ['980px', '90%'],
+                        content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel',
+                        end:function () {
+                            funOnLine(selfidUnit,conThisId,clickId);
+                            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+                        }
+                    });
+                }else if(res != ''){
+                    layer.alert(res);
+                }
+            },
+            error:function () {
+                alert("获取数据完整性检测异常")
             }
         });
 
-        layer.open({
-            type: 2,
-            title: '提交审批',
-            shadeClose: true,
-            area: ['980px', '90%'],
-            content: '{:url("approve/approve/submit")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel',
-            end:function () {
-                funOnLine(selfidUnit,conThisId,clickId);
-                onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
-            }
-        });
+
         console.log(id)
     }
 
