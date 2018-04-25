@@ -256,8 +256,8 @@ class Admin extends Permissions
             } else {
                 //非提交操作
                 $info['admin'] = $model->where('id',$id)->find();
-                $info['thumb'] = Db::name('attachment')->where('id',$info['admin']['thumb'])->column('filepath');
-                $info['signature'] = Db::name('attachment')->where('id',$info['admin']['signature'])->column('filepath');
+                $info['thumb'] = Db::name('attachment')->where('id',$info['admin']['thumb'])->value('filepath');
+                $info['signature'] = Db::name('attachment')->where('id',$info['admin']['signature'])->value('filepath');
                 $this->assign('info',$info);
                 return $this->fetch();
             }
