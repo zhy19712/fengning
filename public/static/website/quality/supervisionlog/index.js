@@ -299,19 +299,22 @@ function conPicshow(id){
 }
 //设置位置
 function conPosition(id) {
-  window.open("../scenepicture/PositionSet?id=" + id,"_blank","height=600, width=900, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no",false );
+  // window.open("../scenepicture/PositionSet?id=" + id,"_blank","height=600, width=900, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no",false );
 
-  // layer.open({
-  //       type: 2,
-  //       shadeClose: true,
-  //       title: "空间位置设置",
-  //       area: ["900px", "600px"],
-  //       content: "../scenepicture/PositionSet?id=" + id,
-  //       success: function(layero, index){
-  //           var body = layer.getChildFrame('body', index);
-  //           body.find('input').val(positionUrl)
-  //       }
-  //   });
+  layer.open({
+        type: 2,
+        shadeClose: true,
+        title: "空间位置设置",
+        area: ["900px", "600px"],
+        content: "../scenepicture/PositionSet?id=" + id,
+        success: function(layero, index){
+            var body = layer.getChildFrame('body', index);
+            body.find('input').val(positionUrl)
+        },
+        end:function () {
+          refreshTable();
+        }
+    });
 }
 //datatables表格
 var tableItem = $('#tableItem').DataTable( {
