@@ -176,7 +176,14 @@ class Element extends Permissions
         $cp = $this->divisionControlPointService->with('ControlPoint')->where('id', $cpr_id)->find();
         $formPath = ROOT_PATH . 'public' . DS . "data\\form\\quality\\" . $cp['ControlPoint']['code'] . $cp['ControlPoint']['name'] . ".docx";
         $formPath = iconv('UTF-8', 'GB2312', $formPath);
-        if (!file_exists($formPath)) {
+               $flag = file_exists($formPath);
+        if ($this->request->isAjax()) {
+            if (!$flag) {
+                return json(['code' => -1, 'msg' => '文件不存在!']);
+            }
+            return json(['code' => 1]);
+        }
+        if (!$flag) {
             return "文件不存在";
         }
         //设置临时文件，避免C盘Temp不可写报错
