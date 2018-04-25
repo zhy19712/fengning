@@ -70,8 +70,10 @@ class Approve extends Permissions
      * 审批历史
      * @return mixed
      */
-    public function ApproveHistory()
+    public function ApproveHistory($dataId, $dataType)
     {
+        $info = $this->approveService->getApproveInfo($dataId, new $dataType);
+        $this->assign('approveinfo', json_encode($info));
         return $this->fetch();
     }
 
