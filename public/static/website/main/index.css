@@ -1,13 +1,24 @@
 .centent{
     border: 0;
 }
-
-/* css 重置 */
-*{margin:0; padding:0; list-style:none; }
-body{ background:#fff; font:normal 12px/22px 宋体;  }
-img{ border:0;  }
-a{ text-decoration:none; color:#333;  }
-
+/* 圆形图标 */
+.round{
+    text-align: right;
+}
+.round i.fa{
+    margin: 0 5px;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    background: #00c0ef;
+    border-radius: 50%;
+}
+.round i.fa:last-child{
+    background: #FF5722;
+}
+.round i.fa:before ,.round i.fa:hover:before{
+    color: #FFF;
+}
 /* 标注/快照滚动 */
 .swiper-container {
     width: 100%;
@@ -82,20 +93,6 @@ a{ text-decoration:none; color:#333;  }
 .add-tag h2{
     text-align: center;
 }
-.add-tag i.fa{
-    margin: 0 5px;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    background: #00c0ef;
-    border-radius: 50%;
-}
-.add-tag i.fa:last-child{
-    background: #FF5722;
-}
-.add-tag i.fa:before ,.add-tag i.fa:hover:before{
-    color: #FFF;
-}
 .layui-form-text .layui-input-inline{
     width: 100%;
 }
@@ -164,4 +161,21 @@ a{ text-decoration:none; color:#333;  }
 }
 .attr-group .layui-form-mid{
     padding: 0 !important;
+}
+
+/* 锚点 */
+.autograph .layui-form-label{
+    padding: 5px 0;
+    width: auto;
+    font-size: 14px;
+    color: #666666;
+}
+.anchor-title{
+    padding-bottom: 10px;
+    text-align: center;
+    font-size: 16px;
+    color: #56abe4;
+}
+.anchor-title i.fa{
+    margin-right: 10px;
 }
