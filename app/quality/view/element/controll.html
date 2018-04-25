@@ -594,12 +594,21 @@
 
     //点击工序控制点名字
     function clickConName(id) {
+        clickId ='';
+        conThisId ='';
+        console.log(conThisId);
         conThisId = id;
+        console.log(conThisId);
         if(selfidUnit != undefined || selfidUnit != null && conThisId != undefined || conThisId != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         }
         $("#tableContent .imgList").css('display','block');
         console.log(id + " 控制点工序 conThisId");
+        if(clickId =='' || conThisId == '') {
+            $(".bitCodes").css("display","none");
+            $(".mybtn").css("display","none");
+            $(".mybtnAdd").css("display","none");
+        }
     }
 
     //下载封装的方法
