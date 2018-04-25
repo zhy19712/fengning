@@ -1185,7 +1185,10 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0&isView=false'
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0&isView=false',
+            end:function () {
+                onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+            }
         });
     });
 
@@ -1211,7 +1214,10 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0'
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&currentStep=0',
+            end:function () {
+                onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+            }
         });
     }
 
