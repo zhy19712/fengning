@@ -258,3 +258,11 @@ function easyUiPanelToggle() {
         $('#easyuiLayout').layout('expand','east');
     }
 }
+
+function easyUiPanelToggleSouth() {
+    var number = $("#centent").layout("panel", "south")[0].clientWidth;
+    if(number<=0){
+        $('#centent').layout('expand','south');
+    }
+}
+
