@@ -861,8 +861,8 @@
                 "targets": [4],
                 "render": function (data, type, row) {
                     var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    // 暂时去掉 var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                    var html = "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
@@ -996,8 +996,8 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                     //暂时去掉 var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                     var html = "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                      html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                      return html;
                  }
@@ -1289,9 +1289,9 @@
                     var str = "";
                     str += ""
                         + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
-                        + "<form name=download"+id +" action="+ url1 +" method='get' target=downloadFrame"+ id + ">"
+                        + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
                         + "<span class='file_name' style='color: #000;'>"+str+"</span>"
-                        + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                        + "<input class='file_url' style='display: none;' name='formId' value="+ id +">"
                         // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                         + "<button type='submit' class=btn" + id +"></button>"
                         + "</form>"
@@ -1305,9 +1305,8 @@
 
     //在线填报-下载
     function downOnLine(id) {
-        // downloadFrom(id,"{:url('quality/element/formDownload')}")
+        downloadFrom(id,"{:url('quality/element/formDownload')}")
         // console.log(id)
-        window.open("http://www.fengning.com/quality/element/formDownload.shtml?formId="+id);
     }
 
     /*============在线填报结束==============*/
