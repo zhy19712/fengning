@@ -158,3 +158,46 @@ $('#addRemark').click(function () {
         }
     })
 });
+
+// 添加锚点
+$('#saveAnchor').click(function () {
+    var anchorName = $('#anchorName').html();
+    var componentName = $('#componentName').html();
+    var createName = $('#createName').html();
+    var createDate = $('#createDate').html();
+    var remark = $('textarea[name="remark"]').text();
+    var fObjSelX = $('#fObjSelX').val(fObjSelX);
+    var fObjSelY = $('#fObjSelY').val(fObjSelY);
+    var fObjSelZ = $('#fObjSelZ').val(fObjSelZ);
+
+    $.ajax({
+        url: "",
+        type: "post",
+        data: {
+            anchorName:anchorName,
+            componentName:componentName,
+            createName:createName,
+            createDate:createDate,
+            remark:remark,
+            fObjSelX:fObjSelX,
+            fObjSelY:fObjSelY,
+            fObjSelZ:fObjSelZ
+        },
+        dataType: "json",
+        success: function (res) {
+            layer.msg(res.msg);
+        }
+    });
+});
+
+//删除锚点
+$('#delAnchor').click(function () {
+    var anchorName = $('#anchorName').html();
+    delAnchor(anchorName);
+});
+
+//返回
+$('#backAnchor').click(function(){
+    $('#defaultAttr').show();
+    $('#anchorLayer').hide();
+});
