@@ -647,6 +647,45 @@
         download(id,"{:url('quality/element/download')}");
     }
 
+    //下载list封装的方法
+    function downloadList(id,url) {
+        $.ajax({
+            url: url,
+            type:"post",
+            dataType: "json",
+            data:{id:id},
+            success: function (res) {
+                if(res.code != 1){
+                    layer.msg(res.msg);
+                }else {
+                    $("#form_container").empty();
+                    var str = "";
+                    str += ""
+                        + "<iframe name=downloadFrame"+ id +" style='display:none;'></iframe>"
+                        + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
+                        + "<span class='file_name' style='color: #000;'>"+str+"</span>"
+                        + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
+                        // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
+                        + "<button type='submit' class=btn" + id +"></button>"
+                        + "</form>"
+                    $("#form_container").append(str);
+                    $("#form_container").find(".btn" + id).click();
+                }
+
+            }
+        })
+    }
+
+    //点击下面的列表的下载
+    function downConFileImp(id) {
+        downloadList(id,"{:url('quality/Unitqualitymanage/relationDownload')}");
+    }
+
+    //点击下面的列表的下载
+    function downConFileData(id) {
+        downloadList(id,"{:url('quality/Unitqualitymanage/relationDownload')}");
+    }
+
     //预览
     function showPdf(id,url,type_model) {
         $.ajax({
@@ -691,23 +730,33 @@
         showPdf(id,"../Common/download","BranchfileModel")
     }
 
-    //控制点里面的删除
+    //删除封装的方法
+    function delData(id,url) {
+        layer.confirm('是否删除该数据?', function(index){
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {id:id},
+                success: function (res) {
+                    console.log(res);
+                    if(res.code ==1){
+                        layer.msg("删除成功！");
+                        tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
+                        implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
+                        imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
+                    }else if(res.code !=1){
+                        layer.msg('返回数据错误！')
+                    }
+                }
+            })
+            layer.close(index);
+        });
+    }
+
+    //控制点执行情况、附件资料的删除
     function delFile(id) {
         console.log(id);
-        $.ajax({
-            type: "post",
-            url: "{:url('quality/element/delControlPointRelation')}",
-            data: {id:id},
-            success: function (res) {
-                console.log(res);
-                if(res.code ==1){
-                    layer.msg("删除成功！")
-                    tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
-                    implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
-                    imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id="+clickId).load();
-                }
-            }
-        })
+        delData(id,"{:url('quality/Unitqualitymanage/relationDel')}");
     }
 
     //点击行获取Id
@@ -862,7 +911,7 @@
                 "render": function (data, type, row) {
                     var a = data;
                     // 暂时去掉 var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                    var html = "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    var html = "<a type='button' class='' style='margin-left: 5px;' onclick='downConFileImp("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
@@ -997,7 +1046,7 @@
                  "targets": [4],
                  "render": function (data, type, row) {
                      //暂时去掉 var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     var html = "<a type='button' class='' style='margin-left: 5px;' onclick='downConFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                     var html = "<a type='button' class='' style='margin-left: 5px;' onclick='downConFileData("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                      html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                      return html;
                  }
@@ -1186,40 +1235,40 @@
 
     //在线填报-提交审批
     function submitOnLine(id) {
-        // $.ajax({
-        //     url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
-        //     type: "post",
-        //     data: {
-        //         dataId: id,
-        //         dataType:'app\\quality\\model\\QualityFormInfoModel\n' ,
-        //         currentStep:0
-        //     },
-        //     success: function (res) {
-        //         console.log(res)
-        //     }
-        // });
+        $.ajax({
+            url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
+            type: "post",
+            data: {
+                dataId: id,
+                dataType:'app\\quality\\model\\QualityFormInfoModel' ,
+                currentStep:0
+            },
+            success: function (res) {
+                console.log(res)
+            }
+        });
 
-        // $.ajax({
-        //     url: "{:url('quality/Qualityform/getDivsionInfo')}",
-        //     type: "post",
-        //     data: {
-        //         id: id,
-        //     },
-        //     success: function (res) {
-        //         console.log(res)
-        //     }
-        // });
+        $.ajax({
+            url: "{:url('quality/Qualityform/getDivsionInfo')}",
+            type: "post",
+            data: {
+                id: id,
+            },
+            success: function (res) {
+                console.log(res)
+            }
+        });
 
-        // $.ajax({
-        //     url: "{:url('quality/Qualityform/getBuildBaseInfo')}",
-        //     type: "post",
-        //     data: {
-        //         id: id,
-        //     },
-        //     success: function (res) {
-        //         console.log(res)
-        //     }
-        // });
+        $.ajax({
+            url: "{:url('quality/Qualityform/getBuildBaseInfo')}",
+            type: "post",
+            data: {
+                id: id,
+            },
+            success: function (res) {
+                console.log(res)
+            }
+        });
 
         // console.log(clickId);
         layer.open({
