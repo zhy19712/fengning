@@ -101,17 +101,22 @@
                   <div data-options="region:'center',title:''" style="padding:5px;">
                         <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
                             $('#comment').show();//展示基本属性信息
+                            //单选/多选模型
                             if(!isCtrlDown){
+                                uObjSubIDArr = [];
+                                hiddenArr = [];
                                 RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
                                 RealBimOcx.BatchAddSubClrInfoBegin();
                                 RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
                                 uObjSubIDArr.push(uObjSubID);
+                                hiddenArr.push(uObjSubID);
                                 RealBimOcx.BatchAddSubClrInfoEnd();
                                 $('#baseAttrCon').show();//展示基本属性信息
                             }else{
                                 RealBimOcx.BatchAddSubClrInfoBegin();
                                 RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);   //第二个参数为透明度
                                 uObjSubIDArr.push(uObjSubID);
+                                hiddenArr.push(uObjSubID);
                                 RealBimOcx.BatchAddSubClrInfoEnd();
                                 console.log(uObjSubIDArr);//模型ID
                             }
@@ -141,6 +146,7 @@
                                 RealBimOcx.AddAnchorEnd();
                                 RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
                             };
+                            //右侧对应属性显隐
                             function addTagInfo() {
                                 $('.attrWrap').hide();
                                 $('.addTag').show();
@@ -179,6 +185,8 @@
                                     RealBimOcx.SetIsolateSubElemIDBegin();
                                     if (uButtonMode === 1)                    //显示隔离
                                     {
+                                        isOlate = true; //是否为隔离状态
+                                        hiddenArr = [];
                                         $.each(uObjSubIDArr, function (i, item) {
                                             console.log(item);
                                             RealBimOcx.SetIsolateSubElemID(item)
@@ -187,23 +195,39 @@
                                     }
                                     else                                      //隐藏隔离
                                     {
+                                        isOlate = false;    //是否为隔离状态
                                         RealBimOcx.SetIsolateSubElemIDEnd();
-                                        RealBimOcx.SetAllHugeObjSubValidState(1);
+                                       /* RealBimOcx.SetAllHugeObjSubValidState(1);*/
+                                        RealBimOcx.SetHugeObjSubValidStateBegin();
+                                        $.each(uObjSubIDArr, function (i, item) {  //取消隔离
+                                            RealBimOcx.SetHugeObjSubValidStateInfo(item, 1);
+                                        });
+                                        RealBimOcx.SetHugeObjSubValidStateEnd();
+                                        uObjSubIDArr = [];
                                     }
                                     break;
                                 case "DISP_HIDE":
                                     if (uButtonMode === 1) {                    //隐藏选择的模型
+                                        uObjSubIDArr = [];
                                         RealBimOcx.SetHugeObjSubValidStateBegin();
-                                        $.each(uObjSubIDArr, function (i, item) {
+                                        $.each(hiddenArr, function (i, item) {
                                             RealBimOcx.SetHugeObjSubValidStateInfo(item, 0);
                                         });
                                         RealBimOcx.SetHugeObjSubValidStateEnd();
                                     } else {
-                                        RealBimOcx.SetHugeObjSubValidStateBegin();
-                                        $.each(uObjSubIDArr, function (i, item) {  //取消隐藏
-                                            RealBimOcx.SetHugeObjSubValidStateInfo(item, 1);
-                                        });
-                                        RealBimOcx.SetHugeObjSubValidStateEnd();
+                                        if(isOlate){    //为隔离状态
+                                            RealBimOcx.SetHugeObjSubValidStateBegin();
+                                            $.each(hiddenArr, function (i, item) {  //取消隐藏
+                                                RealBimOcx.SetHugeObjSubValidStateInfo(item, 1);
+                                            });
+                                            RealBimOcx.SetHugeObjSubValidStateEnd();
+                                            console.log(isOlate);
+                                        }else {
+                                            RealBimOcx.SetAllHugeObjSubValidState(1);
+                                        }
+                                        RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
+                                        hiddenArr = [];
+                                        console.log(isOlate);
                                     }
                                     break;
 

@@ -1,4 +1,5 @@
-uObjSubIDArr = [];      //已选模型ID
+uObjSubIDArr = [];      //已选非隐藏模型ID
+hiddenArr = [];         //已选隐藏模型ID
 isCtrlDown = false;
 $(document).keydown(function (event) {
     var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
