@@ -33,6 +33,20 @@ class PictureModel extends Model
         }
     }
 
+    public function editTb($param)
+    {
+        try {
+            $result = $this->allowField(true)->save($param, ['id' => $param['id']]);
+            if (false === $result) {
+                return ['code' => -1, 'msg' => $this->getError()];
+            } else {
+                return ['code' => 1, 'msg' => '编辑成功'];
+            }
+        } catch (PDOException $e) {
+            return ['code' => 0, 'msg' => $e->getMessage()];
+        }
+    }
+
     public function getAllName($id)
     {
         // type 和 picture_type  1工程划分模型 2 建筑模型 3三D模型
@@ -48,6 +62,12 @@ class PictureModel extends Model
         $data['one_picture_id'] =  $picture_id;
         $data['str'] =  "[" . substr($str, 0, -1) . "]";
         return $data;
+    }
+
+    public function getRemarkTb($picture_id)
+    {
+        $remark = $this->where(['id'=>$picture_id])->value('remark');
+        return $remark;
     }
 
 }

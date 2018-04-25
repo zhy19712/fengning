@@ -9,12 +9,13 @@
 namespace app\quality\model;
 
 
+use think\Db;
 use think\exception\PDOException;
 use think\Model;
 
-class CustomAttributeModel extends Model
+class LabelSnapshotModel extends Model
 {
-    protected $name = 'quality_custom_attribute';
+    protected $name = 'quality_label_snapshot';
     //自动写入创建、更新时间 insertGetId和update方法中无效，只能用于save方法
     protected $autoWriteTimestamp = true;
 
@@ -32,10 +33,10 @@ class CustomAttributeModel extends Model
         }
     }
 
-    public function getAttrTb($picture_id)
+    public function getLabelSnapshotTb($type,$picture_id)
     {
-        $attr = $this->where(['picture_id'=>$picture_id])->column('attr_name as attrKey,attr_value as attrVal');
-        return ['code'=>1,'attr'=>$attr,'msg'=>'模型图自定义属性'];
+        $data = $this->where(['type'=>$type,'picture_id'=>$picture_id])->column('label_snapshot');
+        return ['code'=>1,'data'=>$data,'msg'=>'图片的base64值'];
     }
 
 

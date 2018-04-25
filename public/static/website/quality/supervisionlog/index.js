@@ -298,17 +298,19 @@ function conPicshow(id){
 }
 //设置位置
 function conPosition(id) {
-    layer.open({
-        type: 2,
-        shadeClose: true,
-        title: "空间位置设置",
-        area: ["90%", "90%"],
-        content: "../scenepicture/PositionSet?id=" + id,
-        success: function(layero, index){
-            var body = layer.getChildFrame('body', index);
-            body.find('input').val(positionUrl)
-        }
-    });
+  window.open("../scenepicture/PositionSet?id=" + id,"位置信息","height=600, width=900, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no",true );
+
+  // layer.open({
+  //       type: 2,
+  //       shadeClose: true,
+  //       title: "空间位置设置",
+  //       area: ["90%", "90%"],
+  //       content: "../scenepicture/PositionSet?id=" + id,
+  //       success: function(layero, index){
+  //           var body = layer.getChildFrame('body', index);
+  //           body.find('input').val(positionUrl)
+  //       }
+  //   });
 }
 //datatables表格
 var tableItem = $('#tableItem').DataTable( {
@@ -396,3 +398,13 @@ $('#tableItem tbody').on( 'mouseover', 'td', function () {
 }).on( 'mouseleave', 'td', function () {
     $(this).parent("tr").removeClass( 'highlight' );
 });
+//向子页面传参
+function getpositionUrl() {
+  return positionUrl;
+}
+//刷新表格
+function refreshTable(){
+  var url = "/quality/common/datatablespre/tableName/"+tableName+"/year/"+year+"/month/"+month+"/day/"+day+".shtml";
+  tableItem.ajax.url(url).load();
+}
+
