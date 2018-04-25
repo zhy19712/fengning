@@ -1,5 +1,4 @@
-﻿
-jQuery.extend({
+﻿jQuery.extend({
     createUploadIframe: function (id, uri) {
         //create frame
         var frameId = 'jUploadFrame' + id;
@@ -34,7 +33,6 @@ jQuery.extend({
         jQuery(oldElement).attr('id', fileId);
         jQuery(oldElement).before(newElement);
         jQuery(oldElement).appendTo(form);
-
 
 
         //set attributes
@@ -105,7 +103,7 @@ jQuery.extend({
                     jQuery.event.trigger("ajaxComplete", [xml, s]);
 
                 // Handle the global AJAX counter
-                if (s.global && ! --jQuery.active)
+                if (s.global && !--jQuery.active)
                     jQuery.event.trigger("ajaxStop");
 
                 // Process result
@@ -155,7 +153,10 @@ jQuery.extend({
         }
 
         jQuery('#' + frameId).load(uploadCallback);
-        return { abort: function () { } };
+        return {
+            abort: function () {
+            }
+        };
 
     },
 
@@ -167,8 +168,17 @@ jQuery.extend({
             jQuery.globalEval(data);
         // Get the JavaScript object, if JSON is used.
         if (type == "json")
-            eval("data = " + data);
-            //eval("data = \"" + data + "\"");
+            data = r.responseText;
+        var start = data.indexOf(">");
+        if (start != -1) {
+            var end = data.indexOf("<", start + 1);
+            if (end != -1) {
+                data = data.substring(start + 1, end);
+            }
+        }
+        eval("data = " + data);
+        // eval("data = \"" + data + "\"");
+        // data = jQuery.parseJSON(data);
         // evaluate scripts within html
         if (type == "html")
             jQuery("<div>").html(data).evalScripts();

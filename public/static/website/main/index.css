@@ -13,7 +13,7 @@
     background: #00c0ef;
     border-radius: 50%;
 }
-.round i.fa:last-child{
+.round i.fa-danger{
     background: #FF5722;
 }
 .round i.fa:before ,.round i.fa:hover:before{
@@ -164,11 +164,18 @@
 }
 
 /* 锚点 */
-.autograph .layui-form-label{
-    padding: 5px 0;
-    width: auto;
+.anchor-list .layui-form-label,.anchor-list .layui-form-mid{
+    float: none;
+    display: inline-block;
+    width: 180px;
+    vertical-align: top;
+}
+.anchor-list .layui-form-label{
+    padding-left: 0;
+    width: 85px;
     font-size: 14px;
     color: #666666;
+    text-align: left;
 }
 .anchor-title{
     padding-bottom: 10px;
