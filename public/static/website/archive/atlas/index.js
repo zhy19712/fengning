@@ -563,7 +563,7 @@ function showPdf(id,url) {
             if(res.code === 1){
                 var path = res.path;
                 console.log(res.path.split(".")[1]);
-                if(res.path.split(".")[1]==="pdf"){
+                if(res.path.split(".")[1]!="jpg" && res.path.split(".")[1]!="png" && res.path.split(".")[1]!="jpeg"){
                     window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
                 }else{
                     // var index = layer.open({

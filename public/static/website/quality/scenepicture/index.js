@@ -263,7 +263,7 @@ function showPdf(id,url) {
         success: function (res) {
             if(res.code === 1){
                 var path = res.path;
-                if(res.path.split(".")[1]==="pdf"){
+                if(res.path.split(".")[1]!="jpg" && res.path.split(".")[1]!="png" && res.path.split(".")[1]!="jpeg"){
                     window.open("/static/public/web/viewer.html?file=../../../" + path,"_blank");
                 }else if(res.path.split(".")[1]==="png"||res.path.split(".")[1]==="jpg"||res.path.split(".")[1]==="jpeg"){
                     // var index = layer.open({

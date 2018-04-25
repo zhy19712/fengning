@@ -25,6 +25,7 @@ use think\exception\PDOException;
 use think\Loader;
 use think\Db;
 use think\Request;
+use think\Session;
 
 class Branch extends Permissions
 {
