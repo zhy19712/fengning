@@ -297,13 +297,14 @@
 
     //点击保存
     $("#test3").click(function () {
+        console.log(typeId);
         $.ajax({
             url: "{:url('approve/approve/Approve')}",
             type: "post",
             data:{
                 dataId:$("#dataId").val(),
                 dataType:$("#dataType").val(),
-                res:typeId,
+                res:(typeId == -1)?"-1":"1",
                 mark:$("#txtArea").val()
             },
             success: function (res) {
