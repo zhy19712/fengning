@@ -6,6 +6,8 @@ namespace app\admin\controller;
 use app\quality\model\CustomAttributeModel;
 use app\quality\model\LabelSnapshotModel;
 use app\quality\model\PictureModel;
+use think\Db;
+use think\Session;
 
 class Main extends Permissions
 {
@@ -27,7 +29,8 @@ class Main extends Permissions
      */
     public function addAttr()
     {
-        // 前台需要传递 的是  模型图主键 picture_id 属性名 attrKey  属性值 attrVal
+        // 新增 前台需要传递 的是  模型图主键 picture_id 属性名 attrKey  属性值 attrVal
+        // 编辑 前台需要传递 的是  模型图主键 picture_id 属性名 attrKey  属性值 attrVal   和 这条属性的主键 attrId
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -46,13 +49,45 @@ class Main extends Permissions
             $data['attr_name'] = $param['attrKey'];
             $data['attr_value'] = $param['attrVal'];
             $custom = new CustomAttributeModel();
-            $flag = $custom->insertTb($data);
+            $id = $param['attrId'];
+            if(empty($id)){
+                $flag = $custom->insertTb($data);
+            }else{
+                if(!is_int($id)){
+                    return json(['code' => -1, 'msg' => '属性的编号只能是数字']);
+                }
+                $data['id'] = $id;
+                $flag = $custom->editTb($data);
+            }
             return json($flag);
         }
     }
 
     /**
-     * 获取自定义属性
+     * 删除属性
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function delAttr()
+    {
+        // 前台只需要给我传递 要删除的 属性的主键 attrId
+        $param = input('param.');
+        // 验证规则
+        $rule = [
+            ['attrId', 'require|number|gt:-1', '请选择要删除的属性|属性编号只能是数字|属性编号不能为负数']
+        ];
+        $validate = new \think\Validate($rule);
+        //验证部分数据合法性
+        if (!$validate->check($param)) {
+            return json(['code' => -1,'msg' => $validate->getError()]);
+        }
+        $node = new CustomAttributeModel();
+        $flag = $node->deleteTb($param['attrId']);
+        return json($flag);
+    }
+
+    /**
+     * 回显自定义属性
      * @return \think\response\Json
      * @author hutao
      */
@@ -100,7 +135,7 @@ class Main extends Permissions
             $data['remark'] = $param['remark'];
             $pic = new PictureModel();
             $pic->editTb($data);
-            return json(['code'=>1,'msg'=>'添加成功']);
+            return json(['code'=>1,'msg'=>'操作成功']);
         }
     }
 
@@ -153,8 +188,36 @@ class Main extends Permissions
             $data['type'] = $param['type'];
             $data['picture_id'] = $param['picture_id'];
             $data['label_snapshot'] = $param['label_snapshot'];
+            $user_id = Session::get('admin');
+            $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
             $pic = new LabelSnapshotModel();
             $flag = $pic->insertTb($data);
+            return json($flag);
+        }
+    }
+
+    /**
+     * 删除标注或者快照
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function delLabelSnapshot()
+    {
+        // 前台需要传递 的是  标注快照的主键 label_snapshot_id
+        if($this->request->isAjax()){
+            $param = input('param.');
+            // 验证规则
+            $rule = [
+                ['label_snapshot_id', 'require|number|gt:-1', '请选择要删除的标注或者快照|标注快照的编号只能是数字|标注快照的编号不能为负数']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+            $id = $param['label_snapshot_id'];
+            $pic = new LabelSnapshotModel();
+            $flag = $pic->deleteTb($id);
             return json($flag);
         }
     }
@@ -181,6 +244,54 @@ class Main extends Permissions
             }
             $pic = new LabelSnapshotModel();
             $flag = $pic->getLabelSnapshotTb($param['type'],$param['picture_id']);
+            return json($flag);
+        }
+    }
+
+    /**
+     * 创建人 和 创建日期
+     * @return \think\response\Json
+     * @author huao
+     */
+    public function labelAttr()
+    {
+         // 前台什么也不用传递
+        if($this->request->isAjax()){
+            $user_id = Session::get('admin');
+            $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
+            $data['create_time'] = date('Y-m-d H;i:s');
+            return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+        }
+    }
+
+    /**
+     * 编辑标注的备注
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function addLabelRemark()
+    {
+        // 前台传递 标注的主键 label_snapshot_id   创建人user_name 和 创建日期 create_time 标注的备注 remark
+        if($this->request->isAjax()){
+            $param = input('param.');
+            // 验证规则
+            $rule = [
+                ['label_snapshot_id', 'require|number|gt:-1', '请选择标注|标注的编号只能是数字|标注的编号不能为负数'],
+                ['user_name', 'require', '创建人不能为空'],
+                ['create_time', 'require|date', '创建时间不能为空|时间格式有误'],
+                ['remark', 'require', '备注不能为空']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+            $data['id'] = $param['label_snapshot_id'];
+            $data['user_name'] = $param['user_name'];
+            $data['create_time'] = strtotime($param['create_time']);
+            $data['remark'] = $param['remark'];
+            $pic = new LabelSnapshotModel();
+            $flag = $pic->editTb($data);
             return json($flag);
         }
     }

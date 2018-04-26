@@ -275,6 +275,7 @@
                                         <th>当前审批人</th>
                                         <th>审批状态</th>
                                         <th>操作</th>
+                                        <th style="display: none;">当前审批人Id</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -1105,6 +1106,9 @@
              },
              {
                  name: "id"
+             },
+             {
+                 name: "CurrentApproverId"
              }
          ],
          columnDefs: [
@@ -1151,10 +1155,9 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     // var dataType = "qualityFormInfo";
-                     console.log(row);
-                     console.log(row[2]);
-                     console.log($("#userId").val());
+                     // console.log(row);
+                     console.log(row[5]+"当前审批人Id");
+                     console.log($("#userId").val() + "当前登录人Id");
                      var html = "";
                      html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                      if (row[3] === 0) {
@@ -1162,7 +1165,7 @@
                          html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
                          html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                      }
-                     else if (row[3] === 1 ) {
+                     else if (row[3] === 1 && row[5] == $("#userId").val()) {
                          var str = JSON.stringify(row[2]);
                          html += "<a title='编辑' onclick='editOnLine ("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
                          html += "<a title='审批' onclick='approve("+row[4]+","+str+")'><i class='fa fa fa-pencil-square-o'></i></a>";
@@ -1182,6 +1185,11 @@
                      return html;
 
                  }
+             },
+             {
+                 "targets": [5],
+                 "visible": false,
+                 "searchable": false
              }
          ],
          language: {
