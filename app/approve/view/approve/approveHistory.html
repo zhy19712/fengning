@@ -76,6 +76,7 @@
         </div>
         <input type="hidden" name="inputId" id="hiddenValId" value='{$dataId}'>
         <input type="hidden" name="inputName" id="hiddenValType" value='{$dataType}'>
+        <input type="hidden" name="inputName" id="hiddenValUsers" value='{$users}'>
     </div>
 </div>
 
@@ -118,11 +119,17 @@
                     if (data == null || data == undefined || data == '') return '';
                     var time = new Date(data*1000);
                     var y = time.getFullYear();
-                    var m = time.getMonth() + 1;
-                    m = m < 10 ? '0' + m : m;
+                    var M = time.getMonth() + 1;
+                    M = M < 10 ? '0' + M : M;
                     var d = time.getDate();
                     d = d < 10 ? ('0' + d) : d;
-                    return y + '-' + m + '-' + d;
+                    var h = time.getHours() + ':';
+                    h = h < 10 ? '0' + h : h;
+                    var m = time.getMinutes() + ':';
+                    m = m < 10 ? '0' + m : m;
+                    var s = time.getSeconds();
+                    s = s < 10 ? '0' + s : s;
+                    return y + '-' + M + '-' + d +' '+ h + m + s;
                 }
             },
             {
@@ -207,62 +214,65 @@
     // 初始化当前流程信息
     function initFlowInfo() {
         var currentStep = 2; //流程步数
-        var users = [
-            {
-                UserName: "wangyanyun",
-                Password: "8f395bdbda78d7f7d6a1d4470600b304",
-                Name: "王艳云",
-                Code: null,
-                Post: null,
-                PhotoUrl: "__WEBSITE__/elementimg/1.png",
-                MobileNumber: null,
-                DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
-                DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
-            },
-            {
-                UserName: "wangyanyun",
-                Password: "8f395bdbda78d7f7d6a1d4470600b304",
-                Name: "王艳云",
-                Code: null,
-                Post: null,
-                PhotoUrl: "__WEBSITE__/elementimg/1.png",
-                MobileNumber: null,
-                DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
-                DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
-            },{
-                UserName: "wangyanyun",
-                Password: "8f395bdbda78d7f7d6a1d4470600b304",
-                Name: "王艳云",
-                Code: null,
-                Post: null,
-                PhotoUrl: "__WEBSITE__/elementimg/1.png",
-                MobileNumber: null,
-                DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
-                DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
-            },{
-                UserName: "wangyanyun",
-                Password: "8f395bdbda78d7f7d6a1d4470600b304",
-                Name: "王艳云",
-                Code: null,
-                Post: null,
-                PhotoUrl: "__WEBSITE__/elementimg/1.png",
-                MobileNumber: null,
-                DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
-                DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
-            }
-        ];
+
+        // var users = [
+        //     {
+        //         UserName: "wangyanyun",
+        //         Password: "8f395bdbda78d7f7d6a1d4470600b304",
+        //         Name: "王艳云",
+        //         Code: null,
+        //         Post: null,
+        //         PhotoUrl: "__WEBSITE__/elementimg/1.png",
+        //         MobileNumber: null,
+        //         DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
+        //         DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
+        //     },
+        //     {
+        //         UserName: "wangyanyun",
+        //         Password: "8f395bdbda78d7f7d6a1d4470600b304",
+        //         Name: "王艳云",
+        //         Code: null,
+        //         Post: null,
+        //         PhotoUrl: "__WEBSITE__/elementimg/1.png",
+        //         MobileNumber: null,
+        //         DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
+        //         DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
+        //     },{
+        //         UserName: "wangyanyun",
+        //         Password: "8f395bdbda78d7f7d6a1d4470600b304",
+        //         Name: "王艳云",
+        //         Code: null,
+        //         Post: null,
+        //         PhotoUrl: "__WEBSITE__/elementimg/1.png",
+        //         MobileNumber: null,
+        //         DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
+        //         DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
+        //     },{
+        //         UserName: "wangyanyun",
+        //         Password: "8f395bdbda78d7f7d6a1d4470600b304",
+        //         Name: "王艳云",
+        //         Code: null,
+        //         Post: null,
+        //         PhotoUrl: "__WEBSITE__/elementimg/1.png",
+        //         MobileNumber: null,
+        //         DepartmentId: "9b157b3f-73ee-4d44-8b07-bb353b52bc40",
+        //         DepartmentName: "中国水利水电第三工程局有限公司丰宁项目部"
+        //     }
+        // ];
+        var users = JSON.parse($("#hiddenValUsers").val());
+        console.log(JSON.parse($("#hiddenValUsers").val()));
         var html = "";
         $.each(users, function (i, item) {
-            var title = "姓名：" + item.Name + " \n";
-            title += "所属机构：" + item.DepartmentName + " \n";
-            title += "岗位：" + item.Post + " \n";
-            title += "手机：" + item.MobileNumber + " \n";
-            html += "<div class='addpeople'>";
-            html += " <img alt='image' class='img-circle' src='" + item.PhotoUrl + "' title='"+ title +"' style='width:50px;height:50px;'>";
+            // var title = "姓名：" + item.Name + " \n";
+            // title += "所属机构：" + item.DepartmentName + " \n";
+            // title += "岗位：" + item.Post + " \n";
+            // title += "手机：" + item.MobileNumber + " \n";
+            html = "<div class='addpeople'>";
+            html += " <img alt='image' class='img-circle' src='" + item.thumb + "' title='' style='width:50px;height:50px;'>";
             if (i < currentStep)
-                html += "  <p style='color:#008000;'>" + item.Name + "</p>";
+                html += "  <p style='color:#008000;'>" + item.nickname + "</p>";
             else
-                html += "  <p style='color:#CDCDCD;'>" + item.Name + "</p>";
+                html += "  <p style='color:#CDCDCD;'>" + item.nickname + "</p>";
             html += "</div>";
             if (i < users.length - 1) {
                 if (i < currentStep)

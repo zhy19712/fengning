@@ -158,13 +158,14 @@ function hide_phone($str)
  * 分类树function
  * @return [type] [description]
  */
-function tree($data, $pid = 0)
+function tree($data, $pid = 0,$level = 1)
 {
     static $treeList = array();
     foreach ($data as $v) {
         if ($v['pid'] == $pid) {
+            $v['level']=$level;
             $treeList[] = $v;//将结果装到$treeList中
-            tree($data, $v['id']);
+            tree($data, $v['id'],$level+1);
         }
     }
     return $treeList;

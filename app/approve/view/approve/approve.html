@@ -83,7 +83,7 @@
     }
 
     #nextStep{
-        color: #337ab7;
+        /*color: #337ab7;*/
     }
 
     .colorRed{
@@ -214,11 +214,17 @@
                     if (data == null || data == undefined || data == '') return '';
                     var time = new Date(data*1000);
                     var y = time.getFullYear();
-                    var m = time.getMonth() + 1;
-                    m = m < 10 ? '0' + m : m;
+                    var M = time.getMonth() + 1;
+                    M = M < 10 ? '0' + M : M;
                     var d = time.getDate();
                     d = d < 10 ? ('0' + d) : d;
-                    return y + '-' + m + '-' + d;
+                    var h = time.getHours() + ':';
+                    h = h < 10 ? '0' + h : h;
+                    var m = time.getMinutes() + ':';
+                    m = m < 10 ? '0' + m : m;
+                    var s = time.getSeconds();
+                    s = s < 10 ? '0' + s : s;
+                    return y + '-' + M + '-' + d +' '+ h + m + s;
                 }
             },
             {
@@ -266,15 +272,15 @@
         $("input[name='contractName']").val(subtime);
     }
     //点击下一步执行人
-    $("#nextStep").click(function () {
-        layer.open({
-            type: 2,
-            title: '选择审批人',
-            shadeClose: true,
-            area: ['450px', '550px'],
-            content: '{:url("approve/approve/selectMumber")}?dataType=app\\quality\\model\\QualityFormInfoModel\n'
-        });
-    });
+    // $("#nextStep").click(function () {
+    //     layer.open({
+    //         type: 2,
+    //         title: '选择审批人',
+    //         shadeClose: true,
+    //         area: ['450px', '550px'],
+    //         content: '{:url("approve/approve/selectMumber")}?dataType=app\\quality\\model\\QualityFormInfoModel\n'
+    //     });
+    // });
 
     var layer = layui.layer;
     var typeId;
