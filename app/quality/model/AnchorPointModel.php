@@ -9,13 +9,12 @@
 namespace app\quality\model;
 
 
-use think\Db;
 use think\exception\PDOException;
 use think\Model;
 
-class LabelSnapshotModel extends Model
+class AnchorPointModel extends Model
 {
-    protected $name = 'quality_label_snapshot';
+    protected $name = 'quality_anchor_point';
     //自动写入创建、更新时间 insertGetId和update方法中无效，只能用于save方法
     protected $autoWriteTimestamp = true;
 
@@ -23,11 +22,10 @@ class LabelSnapshotModel extends Model
     {
         try {
             $result = $this->allowField(true)->save($param);
-            $last_insert_id = $this->getLastInsID();
             if (false === $result) {
                 return ['code' => -1, 'msg' => $this->getError()];
             } else {
-                return ['code' => 1,'label_snapshot_id'=>$last_insert_id, 'msg' => '添加成功'];
+                return ['code' => 1, 'msg' => '添加成功'];
             }
         } catch (PDOException $e) {
             return ['code' => -1, 'msg' => $e->getMessage()];
@@ -58,12 +56,5 @@ class LabelSnapshotModel extends Model
         }
     }
 
-    public function getLabelSnapshotTb($type,$picture_number)
-    {
-        $data = Db::name('quality_label_snapshot')
-            ->where(['picture_type'=>1,'type'=>$type,'picture_number'=>$picture_number])
-            ->field('id as label_snapshot_id,label_snapshot,FROM_UNIXTIME(create_time) as create_time')->select();
-        return ['code'=>1,'data'=>$data,'msg'=>'图片的base64值'];
-    }
 
 }

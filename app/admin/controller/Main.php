@@ -3,6 +3,7 @@
 
 namespace app\admin\controller;
 
+use app\quality\model\AnchorPointModel;
 use app\quality\model\CustomAttributeModel;
 use app\quality\model\LabelSnapshotModel;
 use app\quality\model\PictureModel;
@@ -270,36 +271,93 @@ class Main extends Permissions
     }
 
     /**
-     * 创建人 和 创建日期
+     * 创建人 和 创建日期 和 关联构件名称
      * @return \think\response\Json
      * @author huao
      */
     public function labelAttr()
     {
          // 前台什么也不用传递
+        // 当前台传递type 等于 3 时 是锚点的请求 后台 返回 创建人 创建日期 关联构件名称
         if($this->request->isAjax()){
+            $param = input('param.');
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
             $data['create_time'] = date('Y-m-d H:i:s');
-            return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+            if(empty($param['type'])){
+                return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+            }else{
+                // 1工程划分模型 2 建筑模型 3三D模型
+                $data['componentName'] = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('picture_name');
+                return json(['code'=>1,'data'=>$data,'msg'=>'创建人,创建时间和关联构件名称']);
+            }
         }
     }
 
+    /**
+     * 添加锚点
+     * @return \think\response\Json
+     * @author hutao
+     */
     public function anchorPoint()
     {
-        // 前台需要传递 的是  模型图主键 picture_id
+        // 前台需要传递 的是  模型图编号 picture_id 锚点名称 anchorName 创建人 user_name 创建日期 create_time 关联构件名称 componentName 备注信息 remark 位置 fObjSelX fObjSelY fObjSelZ
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
             $rule = [
-                ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数']
+                ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数'],
+                ['anchorName', 'require', '锚点名称不能为空'],
+                ['user_name', 'require', '创建人不能为空'],
+                ['create_time', 'require|dateFormat:Y-m-d H:i:s', '创建时间不能为空|时间格式有误'],
+                ['componentName', 'require', '关联构件名称不能为空'],
+                ['fObjSelX', 'require', 'X坐标不能为空'],
+                ['fObjSelY', 'require', 'Y坐标不能为空'],
+                ['fObjSelZ', 'require', 'Z坐标不能为空']
             ];
             $validate = new \think\Validate($rule);
             //验证部分数据合法性
             if (!$validate->check($param)) {
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
-            $name = Db::name('quality_model_picture')->where(['picture_number'=>$param['picture_id']])->value('picture_name');
+            // 1工程划分模型 2 建筑模型 3三D模型
+            $data['picture_number'] = $param['picture_id'];
+            $data['anchor_name'] = $param['anchorName'];
+            $data['user_name'] = $param['user_name'];
+            $data['create_time'] = strtotime($param['create_time']);
+            $data['component_name'] = $param['componentName'];
+            $data['coordinate_x'] = $param['fObjSelX'];
+            $data['coordinate_y'] = $param['fObjSelY'];
+            $data['coordinate_z'] = $param['fObjSelZ'];
+            $anchor = new AnchorPointModel();
+            $flag = $anchor->insertTb($data);
+            return json($flag);
+        }
+    }
+
+    public function uploadAnchorPoint()
+    {
+        halt(11111);
+        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 上传的文件 file
+        // 执行上传文件 获取文件编号  attachment_id
+        $param = input('param.'); halt($param);
+        $common = new \app\admin\controller\Common();
+        $param['attachment_id'] = $common->upload('quality','unitqualitymanage');
+        halt($param);
+        // 保存上传文件记录
+        $id = isset($param['id']) ? $param['id'] : 0;
+        $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
+        $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
+        if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
+            return json(['code' => '-1','msg' => '参数有误']);
+        }
+        if($this->request->isAjax()){
+            $data['contr_relation_id'] = $id;
+            $data['attachment_id'] = $attachment_id;
+            $data['type'] = $type;
+            $unit = new UnitqualitymanageModel();
+            $nodeStr = $unit->saveTb($data);
+            return json($nodeStr);
         }
     }
 
