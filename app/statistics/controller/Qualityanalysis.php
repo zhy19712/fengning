@@ -54,7 +54,6 @@ class Qualityanalysis extends Permissions
 
         foreach($timeline as $keee=>$vaaa)
         {
-
                 //开始日期
                 $start = mktime(0,0,0,date("m",strtotime($vaaa)),1,date("Y",strtotime($vaaa)));
 
@@ -69,7 +68,6 @@ class Qualityanalysis extends Permissions
                 {
                     $info[] = [];
                 }
-
         }
 
         foreach($info as $ke=>$va)
@@ -86,7 +84,6 @@ class Qualityanalysis extends Permissions
             {
                 $info[$a][$c] = ($d[count($d)-9]);
             }
-
         }
 
         foreach($info as $l=>$m)
