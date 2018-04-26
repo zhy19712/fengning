@@ -255,22 +255,12 @@ class Main extends Permissions
      */
     public function labelAttr()
     {
-         // 前台传递 标注的主键 label_snapshot_id
+         // 前台什么也不用传递
         if($this->request->isAjax()){
-            $param = input('param.');
-            // 验证规则
-            $rule = [
-                ['label_snapshot_id', 'require|number|gt:-1', '请选择标注|标注的编号只能是数字|标注的编号不能为负数']
-            ];
-            $validate = new \think\Validate($rule);
-            //验证部分数据合法性
-            if (!$validate->check($param)) {
-                return json(['code' => -1,'msg' => $validate->getError()]);
-            }
-            $id = $param['label_snapshot_id'];
-            $pic = new LabelSnapshotModel();
-            $flag = $pic->getNameAndTime($id);
-            return json($flag);
+            $user_id = Session::get('admin');
+            $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
+            $data['create_time'] = date('Y-m-d H;i:s');
+            return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
         }
     }
 
@@ -281,12 +271,14 @@ class Main extends Permissions
      */
     public function addLabelRemark()
     {
-        // 前台传递 标注的主键 label_snapshot_id 标注的备注 remark
+        // 前台传递 标注的主键 label_snapshot_id   创建人user_name 和 创建日期 create_time 标注的备注 remark
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
             $rule = [
                 ['label_snapshot_id', 'require|number|gt:-1', '请选择标注|标注的编号只能是数字|标注的编号不能为负数'],
+                ['user_name', 'require', '创建人不能为空'],
+                ['create_time', 'require|date', '创建时间不能为空|时间格式有误'],
                 ['remark', 'require', '备注不能为空']
             ];
             $validate = new \think\Validate($rule);
@@ -295,6 +287,8 @@ class Main extends Permissions
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $data['id'] = $param['label_snapshot_id'];
+            $data['user_name'] = $param['user_name'];
+            $data['create_time'] = strtotime($param['create_time']);
             $data['remark'] = $param['remark'];
             $pic = new LabelSnapshotModel();
             $flag = $pic->editTb($data);
