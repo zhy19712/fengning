@@ -23,10 +23,11 @@ class LabelSnapshotModel extends Model
     {
         try {
             $result = $this->allowField(true)->save($param);
+            $last_insert_id = $this->getLastInsID();
             if (false === $result) {
                 return ['code' => -1, 'msg' => $this->getError()];
             } else {
-                return ['code' => 1, 'msg' => '添加成功'];
+                return ['code' => 1,'label_snapshot_id'=>$last_insert_id, 'msg' => '添加成功'];
             }
         } catch (PDOException $e) {
             return ['code' => -1, 'msg' => $e->getMessage()];
