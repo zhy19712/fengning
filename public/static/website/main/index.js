@@ -297,3 +297,7 @@ $.upload({
     btnText:'新增1',
     server: "./uploadAnchorPoint",
 });
+
+$('.panel-title').click(function () {
+    console.log(2123123);
+})

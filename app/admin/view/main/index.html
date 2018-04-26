@@ -413,7 +413,7 @@
                                     snapshotImgPathArr.push('</a>');
                                     snapshotImgPathArr.push('</div>');
                                     snapshotImgPathArr.push('<div class="scenter">');
-                                    snapshotImgPathArr.push('<a href="javascript:;" title="查看快照">');
+                                    snapshotImgPathArr.push('<a href="javascript:;" title="查看快照" uid='+ base64PicData +' onclick="view(this)">');
                                     snapshotImgPathArr.push('<i class="fa fa-search"></i>');
                                     snapshotImgPathArr.push('</a>');
                                     snapshotImgPathArr.push('</div>');
@@ -462,7 +462,7 @@
                                       tagImgPathArr.push('</a>');
                                       tagImgPathArr.push('</div>');
                                       tagImgPathArr.push('<div class="scenter">');
-                                      tagImgPathArr.push('<a href="javascript:;" title="查看标注">');
+                                      tagImgPathArr.push('<a href="javascript:;" title="查看标注"  uid='+ base64PicData +' onclick="view(this)">');
                                       tagImgPathArr.push('<i class="fa fa-search"></i>');
                                       tagImgPathArr.push('</a>');
                                       tagImgPathArr.push('</div>');
@@ -544,7 +544,7 @@
             },
             dataType: "json",
             success: function (res) {
-                console.log(res.data);
+                console.log(res);
                 var imgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
                     var base64PicData = res.data[i].label_snapshot;
@@ -561,7 +561,7 @@
                     imgPathArr.push('</a>');
                     imgPathArr.push('</div>');
                     imgPathArr.push('<div class="scenter">');
-                    imgPathArr.push('<a href="javascript:;" title="查看标注">');
+                    imgPathArr.push('<a href="javascript:;" uid='+ res.data[i].label_snapshot +' title="查看标注" onclick="view(this)">');
                     imgPathArr.push('<i class="fa fa-search"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('</div>');
@@ -603,7 +603,7 @@
                     snapshotImgPathArr.push('</a>');
                     snapshotImgPathArr.push('</div>');
                     snapshotImgPathArr.push('<div class="scenter">');
-                    snapshotImgPathArr.push('<a href="javascript:;" title="查看快照">');
+                    snapshotImgPathArr.push('<a href="javascript:;" uid='+ res.data[i].label_snapshot +' title="查看快照" onclick="view(this)">');
                     snapshotImgPathArr.push('<i class="fa fa-search"></i>');
                     snapshotImgPathArr.push('</a>');
                     snapshotImgPathArr.push('</div>');
@@ -618,9 +618,10 @@
     }
     getLabelSnapshot();
 
-    $('.scenter a').click(function () {
-        RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
-    });
+    function view(that) {
+        var base64PicData = $(that).attr('uid');
+        RealBimOcx.ShowSnapshotOrMarkerInMem(base64PicData);
+    }
     
     //删除标注/快照
     function del(that) {
