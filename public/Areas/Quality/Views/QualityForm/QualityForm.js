@@ -80,9 +80,9 @@ $(function () {
                 var d = e.date;
                 $nowInput.val(d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日");
             }, {
-                    title: "请选择日期",
-                    date: dDate,
-                });
+                title: "请选择日期",
+                date: dDate,
+            });
             $nowInput.removeAttr("readOnly");
         })
     }
@@ -113,12 +113,14 @@ function IsPC() {
     }
     return flag;
 }
+
 // 表单数据保存
 function formSave() {
     var canSave = true;
-    if ( typeof beforeSave === "function" ) {
+    if (typeof beforeSave === "function") {
         canSave = beforeSave();
-    };
+    }
+    ;
     if (!canSave) {
         saveStyle === 0;
         return;
@@ -205,7 +207,8 @@ function formSave() {
                 //     parent.window.frames["web"].document.frames["webas"].loadQualityFormInfoData();
                 // else
                 //     parent.window.frames["web"].refresh();
-            };
+            }
+            ;
         }
     });
 };
@@ -264,7 +267,7 @@ function fileChange() {
         dataType: "json",
         success: function (data, status) {
             // if (fileTargetHtmlElementId.split("_")[0] === "img")
-            if (data.code==2)
+            if (data.code == 2)
                 $("#" + fileTargetHtmlElementId).attr("src", data.src);
         },
         error: function (data, status, e) {
@@ -296,13 +299,15 @@ function signature(htmlElement) {
 
 // 表单附件
 function formAttachments() {
-    var divisionId = $("#divisionId").val();
-    var procedureId = $("#procedureId").val();
-    var controlPointId = $("#controlPointId").val();
+    // var divisionId = $("#divisionId").val();
+    // var procedureId = $("#procedureId").val();
+    // var controlPointId = $("#controlPointId").val();
+    var cpr = $("#cpr").val();
     top.layer.open({
         type: 2,
         title: "表单附件",
         area: ['800px', '400px'],
-        content: '/Quality/QualityForm/QalityFormAttachment?divisionId=' + divisionId + "&procedureId=" + procedureId + "&controlPointId=" + controlPointId + "&_t=" + new Date().getTime(),
+        // content: '/Quality/QualityForm/QalityFormAttachment?divisionId=' + divisionId + "&procedureId=" + procedureId + "&controlPointId=" + controlPointId + "&_t=" + new Date().getTime(),
+        content: '/Quality/QualityForm/QalityFormAttachment?cpr_id=' + cpr,
     });
 };
