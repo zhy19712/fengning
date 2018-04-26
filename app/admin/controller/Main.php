@@ -29,8 +29,8 @@ class Main extends Permissions
      */
     public function addAttr()
     {
-        // 新增 前台需要传递 的是  模型图主键 picture_id 属性名 attrKey  属性值 attrVal
-        // 编辑 前台需要传递 的是  模型图主键 picture_id 属性名 attrKey  属性值 attrVal   和 这条属性的主键 attrId
+        // 新增 前台需要传递 的是  模型图编号 picture_id 属性名 attrKey  属性值 attrVal
+        // 编辑 前台需要传递 的是  模型图编号 picture_id 属性名 attrKey  属性值 attrVal   和 这条属性的主键 attrId
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -45,7 +45,7 @@ class Main extends Permissions
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $data = [];
-            $data['picture_id'] = $param['picture_id'];
+            $data['picture_number'] = $param['picture_id'];
             $data['attr_name'] = $param['attrKey'];
             $data['attr_value'] = $param['attrVal'];
             $custom = new CustomAttributeModel();
@@ -93,7 +93,7 @@ class Main extends Permissions
      */
     public function getAttr()
     {
-        // 前台需要传递 的是  模型图主键 picture_id
+        // 前台需要传递 的是  模型图编号 picture_id
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -118,7 +118,7 @@ class Main extends Permissions
      */
     public function addRemark()
     {
-        // 前台需要传递 的是  模型图主键 picture_id 描述 remark
+        // 前台需要传递 的是  模型图编号 picture_id 描述 remark
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -131,7 +131,11 @@ class Main extends Permissions
             if (!$validate->check($param)) {
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
-            $data['id'] = $param['picture_id'];
+            // 1工程划分模型 2 建筑模型 3三D模型
+            $data['id'] = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('id');
+            if(empty($data['id'])){
+                return json(['code'=>1,'msg'=>'不存在的模型编号']);
+            }
             $data['remark'] = $param['remark'];
             $pic = new PictureModel();
             $pic->editTb($data);
@@ -146,7 +150,7 @@ class Main extends Permissions
      */
     public function getRemark()
     {
-        // 前台需要传递 的是  模型图主键 picture_id
+        // 前台需要传递 的是  模型图编号 picture_id
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -159,7 +163,12 @@ class Main extends Permissions
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $pic = new PictureModel();
-            $remark = $pic->getRemarkTb($param['picture_id']);
+            // 1工程划分模型 2 建筑模型 3三D模型
+            $id = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('id');
+            if(empty($data['id'])){
+                return json(['code'=>1,'msg'=>'不存在的模型编号']);
+            }
+            $remark = $pic->getRemarkTb($id);
             return json(['code'=>1,'remark'=>$remark,'msg'=>'模型图描述']);
         }
     }
@@ -171,7 +180,8 @@ class Main extends Permissions
      */
     public function labelSnapshot()
     {
-        // 前台需要传递 的是  模型图主键 picture_id 类型 type 1标注2快照  图片的base64值 label_snapshot
+        // 前台需要传递 的是  模型图编号 picture_id 类型 type 1标注2快照  图片的base64值 label_snapshot
+        // 注意：：：如果是标注 那么 就还要 传递 user_name 创建人 create_time 创建时间 remark 备注
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -180,16 +190,27 @@ class Main extends Permissions
                 ['type', 'require|number|between:1,2', '类型值不能为空|类型值只能是数字|类型值是1或者2'],
                 ['label_snapshot', 'require', '图片值不能为空']
             ];
+            // 类型 type 1标注2快照
+            if(!empty($param['type']) && $param['type'] == 1){
+                array_push($rule,['user_name', 'require', '创建人不能为空']);
+                array_push($rule,['create_time', 'require|dateFormat:Y-m-d H:i:s', '创建时间不能为空|时间格式有误']);
+                array_push($rule,['remark', 'require', '备注不能为空']);
+            }
             $validate = new \think\Validate($rule);
             //验证部分数据合法性
             if (!$validate->check($param)) {
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $data['type'] = $param['type'];
-            $data['picture_id'] = $param['picture_id'];
+            $data['picture_number'] = $param['picture_id'];
             $data['label_snapshot'] = $param['label_snapshot'];
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
+            // 类型 type 1标注2快照
+            if($data['type'] == 1){
+                $data['create_time'] = strtotime($param['create_time']);
+                $data['remark'] = $param['remark'];
+            }
             $pic = new LabelSnapshotModel();
             $flag = $pic->insertTb($data);
             return json($flag);
@@ -249,50 +270,71 @@ class Main extends Permissions
     }
 
     /**
-     * 创建人 和 创建日期
+     * 创建人 和 创建日期 和 关联构件名称
      * @return \think\response\Json
      * @author huao
      */
     public function labelAttr()
     {
          // 前台什么也不用传递
+        // 当前台传递type 等于 3 时 是锚点的请求 后台 返回 创建人 创建日期 关联构件名称
         if($this->request->isAjax()){
+            $param = input('param.');
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
-            $data['create_time'] = date('Y-m-d H;i:s');
-            return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+            $data['create_time'] = date('Y-m-d H:i:s');
+            if(empty($param['type'])){
+                return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+            }else{
+                // 1工程划分模型 2 建筑模型 3三D模型
+                $data['picture_name'] = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('picture_name');
+                return json(['code'=>1,'data'=>$data,'msg'=>'创建人,创建时间和关联构件名称']);
+            }
         }
     }
 
-    /**
-     * 编辑标注的备注
-     * @return \think\response\Json
-     * @author hutao
-     */
-    public function addLabelRemark()
+    public function anchorPoint()
     {
-        // 前台传递 标注的主键 label_snapshot_id   创建人user_name 和 创建日期 create_time 标注的备注 remark
+        // 前台需要传递 的是  模型图主键 picture_id
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
             $rule = [
-                ['label_snapshot_id', 'require|number|gt:-1', '请选择标注|标注的编号只能是数字|标注的编号不能为负数'],
-                ['user_name', 'require', '创建人不能为空'],
-                ['create_time', 'require|date', '创建时间不能为空|时间格式有误'],
-                ['remark', 'require', '备注不能为空']
+                ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数']
             ];
             $validate = new \think\Validate($rule);
             //验证部分数据合法性
             if (!$validate->check($param)) {
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
-            $data['id'] = $param['label_snapshot_id'];
-            $data['user_name'] = $param['user_name'];
-            $data['create_time'] = strtotime($param['create_time']);
-            $data['remark'] = $param['remark'];
-            $pic = new LabelSnapshotModel();
-            $flag = $pic->editTb($data);
-            return json($flag);
+            // 1工程划分模型 2 建筑模型 3三D模型
+            $name = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('picture_name');
+        }
+    }
+
+    public function uploadAnchorPoint()
+    {
+        halt(11111);
+        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 上传的文件 file
+        // 执行上传文件 获取文件编号  attachment_id
+        $param = input('param.'); halt($param);
+        $common = new \app\admin\controller\Common();
+        $param['attachment_id'] = $common->upload('quality','unitqualitymanage');
+        halt($param);
+        // 保存上传文件记录
+        $id = isset($param['id']) ? $param['id'] : 0;
+        $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
+        $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
+        if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
+            return json(['code' => '-1','msg' => '参数有误']);
+        }
+        if($this->request->isAjax()){
+            $data['contr_relation_id'] = $id;
+            $data['attachment_id'] = $attachment_id;
+            $data['type'] = $type;
+            $unit = new UnitqualitymanageModel();
+            $nodeStr = $unit->saveTb($data);
+            return json($nodeStr);
         }
     }
 

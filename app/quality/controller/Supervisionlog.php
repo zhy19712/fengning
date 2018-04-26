@@ -311,6 +311,7 @@ class Supervisionlog extends Permissions
             //实例化模型类
             $model = new SupervisionLogModel();
             $param = input('post.');
+            halt($param);
             $data = [
                 'id' => $param['id'],//现场图片自增id
                 'position' => $param['position']//位置信息

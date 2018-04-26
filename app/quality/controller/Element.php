@@ -237,10 +237,11 @@ class Element extends Permissions
         //设置临时文件，避免C盘Temp不可写报错
         Settings::setTempDir('temp');
         $phpword = new PhpWord();
-        $phpword = $phpword->loadTemplate($formPath);
+        //$phpword = $phpword->loadTemplate($formPath);
+        $phpword= new TemplateProcessor($formPath);
         $infos = $this->qualityFormInfoService->getFormBaseInfo($cp['DivisionId']);
         foreach ($infos as $key => $value) {
-            $phpword->setValue('{' . $key . '}', $value);
+            $phpword->setValue("{{$key}}", $value);
         }
         $formInfo = unserialize($cp['form_data']);
         foreach ($formInfo as $item) {
