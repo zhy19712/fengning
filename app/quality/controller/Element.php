@@ -243,9 +243,6 @@ class Element extends Permissions
         foreach ($infos as $key => $value) {
             $phpword->setValue("{{$key}}", $value);
         }
-        foreach ($infos as $info) {
-            $phpword->setValue("{{}}", $value);
-        }
         $formInfo = unserialize($cp['form_data']);
         foreach ($formInfo as $item) {
             $phpword->setValue('{' . $item['Name'] . '}', $item['Value']);
