@@ -270,24 +270,25 @@ class Main extends Permissions
     }
 
     /**
-     * 创建人 和 创建日期
+     * 创建人 和 创建日期 和 关联构件名称
      * @return \think\response\Json
      * @author huao
      */
     public function labelAttr()
     {
          // 前台什么也不用传递
+        // 当前台传递type 等于 3 时 是锚点的请求 后台 返回 创建人 创建日期 关联构件名称
         if($this->request->isAjax()){
             $param = input('param.');
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
             $data['create_time'] = date('Y-m-d H:i:s');
-            if(empty($param['type=3'])){
+            if(empty($param['type'])){
                 return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
             }else{
                 // 1工程划分模型 2 建筑模型 3三D模型
-                $name = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('picture_name');
-                return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+                $data['picture_name'] = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('picture_name');
+                return json(['code'=>1,'data'=>$data,'msg'=>'创建人,创建时间和关联构件名称']);
             }
         }
     }
