@@ -8,22 +8,14 @@
     <script src="__PUBLIC__/jquery/jquery.min.js"></script>
     <script src="__PUBLIC__/easyui/jquery.easyui.min.js"></script>
     <style type="text/css">
-    /*body {*/
-        /*padding: 5px;*/
-        /*margin: 0;*/
-        /*padding-bottom: 15px;*/
-        /*min-height: 400px;*/
-        /*!*height: 100%;*!*/
-    /*}*/
+
     .btn {
         line-height: 1.02857;
         border-radius: 60px;
         margin-right: 15px;
         float: right;
     }
-        /*#objBox{*/
-            /*position: absolute;*/
-        /*}*/
+
     </style>
 </head>
 <body style="position: relative;">
@@ -35,19 +27,15 @@
 
     </div>
     <div class="" data-options="region:'center',title:''" id="objBox" style="overflow: hidden" >
+
         <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD" width="100%" height="90%" style="margin-top: 99%" >
-            <!--<param name="wmode" value="opaque">-->
             <param name="wmode" value="transparent">
+            <span style="color: red;font-weight: bold;font-size: 22px; display: block;width: 100%;text-align: center;">请用ie11打开</span>
         </object>
 
     </div>
 </div>
 
-<!--<div id="Mask" style='position:absolute; left:0px; top:0px; width:100%; height:100%; z-Index:9;background-color:#FFF;'>-->
-    <!--<iframe id='iframebar' src="about:blank" frameBorder=0 marginHeight=0 marginWidth=0-->
-            <!--style="position:absolute; visibility:inherit; top:0px;left:6px;height:45px;width:100%; z-Index:1; filter='progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)';">-->
-    <!--</iframe>-->
-<!--</div>-->
 <script>
   var str=location.search;
   str=str.substr(1); //取得所有参数   stringvar.substr(start [, length ]
