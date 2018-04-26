@@ -86,7 +86,7 @@ class Common extends Controller
         $idArr = $this->documentTypeService->getChilds($id);
         $idArr[] = $id;
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->whereIn('a.type', $idArr)->count(0);
+        $recordsTotal = Db::name($table)->whereIn('type', $idArr)->count(0);
         $recordsFilteredResult = array();
         if (strlen($search) > 0) {
             //有搜索条件的情况
