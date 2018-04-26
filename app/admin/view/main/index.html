@@ -83,25 +83,25 @@
                       <div class="layui-form-item">
                           <div class="anchor-list">
                               <label class="layui-form-label">锚点名称</label>
-                              <div class="layui-form-mid layui-word-aux" id="anchorName">Anchor[85466][1524638166456]</div>
+                              <div class="layui-form-mid layui-word-aux" id="anchorName"></div>
                           </div>
                       </div>
                       <div class="layui-form-item">
                           <div class="anchor-list">
                               <label class="layui-form-label">关联构件名称</label>
-                              <div class="layui-form-mid layui-word-aux" id="componentNane">E-B-995.50-CZ0+266.500-0+296.500-S</div>
+                              <div class="layui-form-mid layui-word-aux" id="componentNane"></div>
                           </div>
                       </div>
                       <div class="layui-form-item">
                           <div class="anchor-list">
                               <label class="layui-form-label">创建人</label>
-                              <div class="layui-form-mid layui-word-aux createName" uid="createName">管理员</div>
+                              <div class="layui-form-mid layui-word-aux createName" uid="createName"></div>
                           </div>
                       </div>
                       <div class="layui-form-item">
                           <div class="anchor-list">
                               <label class="layui-form-label">创建日期</label>
-                              <div class="layui-form-mid layui-word-aux createDate" uid="createDate">2018-04-25</div>
+                              <div class="layui-form-mid layui-word-aux createDate" uid="createDate"></div>
                           </div>
                       </div>
                       <div class="layui-form-item">
@@ -177,10 +177,12 @@
                                 RealBimOcx.BatchAddSubClrInfoBegin();
                                 RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
                                 RealBimOcx.BatchAddSubClrInfoEnd();
+                                labelAttr(3);
                                 $('#anchorName').html(anchorName);      //锚点名称
                                 $('#fObjSelX').val(fObjSelX);       //锚点坐标
                                 $('#fObjSelY').val(fObjSelY);
                                 $('#fObjSelZ').val(fObjSelZ);
+                                console.log(fObjSelX);
 
                             }else{
                                 //单选/多选模型
@@ -269,15 +271,18 @@
                             };
 
                             //创建人 和 创建日期
-                            function labelAttr() {
+                            window.labelAttr = function (type) {
                                 $.ajax({
                                     url: "./labelAttr",
                                     type: "post",
-                                    data: {},
+                                    data: {
+                                        type:type
+                                    },
                                     dataType: "json",
                                     success: function (res) {
                                         $('.createName').html(res.data.user_name);
                                         $('.createDate').html(res.data.create_time);
+                                        $('.componentNane').html(res.data.create_time);
                                     }
                                 })
                             }
@@ -295,6 +300,7 @@
                                     RealBimOcx.AddAnchorBegin(0);//构件锚点开始
                                     $('#defaultAttr,#backAnchor,#addTag').hide();
                                     $('#anchorLayerTab').show();
+                                    anchorPoint();
                                     easyUiPanelToggle();
                                     break; //添加锚点
                                 case "DISP_ANCHOR":
