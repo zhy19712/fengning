@@ -33,11 +33,41 @@ class LabelSnapshotModel extends Model
         }
     }
 
+    public function editTb($param)
+    {
+        try {
+            $result = $this->allowField(true)->save($param, ['id' => $param['id']]);
+            if (false === $result) {
+                return ['code' => -1, 'msg' => $this->getError()];
+            } else {
+                return ['code' => 1, 'msg' => '编辑成功'];
+            }
+        } catch (PDOException $e) {
+            return ['code' => 0, 'msg' => $e->getMessage()];
+        }
+    }
+
+    public function deleteTb($id)
+    {
+        try {
+            $this->where('id', $id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        } catch (PDOException $e) {
+            return ['code' => -1, 'msg' => $e->getMessage()];
+        }
+    }
+
     public function getLabelSnapshotTb($type,$picture_id)
     {
-        $data = $this->where(['type'=>$type,'picture_id'=>$picture_id])->column('label_snapshot');
+        $data = $this->where(['type'=>$type,'picture_id'=>$picture_id])->field('id as label_snapshot_id,label_snapshot,FROM_UNIXTIME(create_time) as create_time')->select();
         return ['code'=>1,'data'=>$data,'msg'=>'图片的base64值'];
     }
 
+    public function getNameAndTime($id)
+    {
+        // 类型 type 1标注2快照
+        $data = $this->where(['type'=>1,'id'=>$id])->column('user_name,FROM_UNIXTIME(create_time) as create_time');
+        return ['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间'];
+    }
 
 }

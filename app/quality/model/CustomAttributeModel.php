@@ -32,9 +32,33 @@ class CustomAttributeModel extends Model
         }
     }
 
+    public function editTb($param)
+    {
+        try {
+            $result = $this->allowField(true)->save($param, ['id' => $param['id']]);
+            if (false === $result) {
+                return ['code' => -1, 'msg' => $this->getError()];
+            } else {
+                return ['code' => 1, 'msg' => '编辑成功'];
+            }
+        } catch (PDOException $e) {
+            return ['code' => 0, 'msg' => $e->getMessage()];
+        }
+    }
+
+    public function deleteTb($id)
+    {
+        try {
+            $this->where('id', $id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        } catch (PDOException $e) {
+            return ['code' => -1, 'msg' => $e->getMessage()];
+        }
+    }
+
     public function getAttrTb($picture_id)
     {
-        $attr = $this->where(['picture_id'=>$picture_id])->column('attr_name as attrKey,attr_value as attrVal');
+        $attr = $this->where(['picture_id'=>$picture_id])->column('id as attrId,attr_name as attrKey,attr_value as attrVal');
         return ['code'=>1,'attr'=>$attr,'msg'=>'模型图自定义属性'];
     }
 
