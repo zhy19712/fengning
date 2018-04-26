@@ -278,7 +278,7 @@ class Main extends Permissions
     public function labelAttr()
     {
          // 前台什么也不用传递
-        // 当前台传递type 等于 3 时 是锚点的请求 后台 返回 创建人 创建日期 关联构件名称
+        // 当前台传递 模型图主键 picture_id 类型 type 等于 3 时 是锚点的请求 后台 返回 创建人 创建日期 关联构件名称
         if($this->request->isAjax()){
             $param = input('param.');
             $user_id = Session::get('admin');
@@ -287,6 +287,16 @@ class Main extends Permissions
             if(empty($param['type'])){
                 return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
             }else{
+                // 验证规则
+                $rule = [
+                    ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数'],
+                    ['type', 'require|number', '类型值不能为空|类型值只能是数字']
+                ];
+                $validate = new \think\Validate($rule);
+                //验证部分数据合法性
+                if (!$validate->check($param)) {
+                    return json(['code' => -1,'msg' => $validate->getError()]);
+                }
                 // 1工程划分模型 2 建筑模型 3三D模型
                 $data['componentName'] = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('picture_name');
                 return json(['code'=>1,'data'=>$data,'msg'=>'创建人,创建时间和关联构件名称']);

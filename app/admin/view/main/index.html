@@ -73,55 +73,53 @@
                   -->
             </div>
             <!-- 锚点业务层 -->
-            <div id="anchorLayer" style="width:100%;height:100%;border: 0;display: none">
-              <div id="anchorLayerTab" class="easyui-tabs" style="width:100%;height:100%;border: 0;">
-                  <div title="属性" style="padding:20px;display:none;">
-                      <h2 class="anchor-title"><i class="fa fa-anchor"></i>构件锚点信息</h2>
-                      <form action="" class="layui-form" id="">
-                          <input type="hidden" id="fObjSelX">
-                          <input type="hidden" id="fObjSelY">
-                          <input type="hidden" id="fObjSelZ">
-                          <div class="layui-form-item">
-                              <div class="anchor-list">
-                                  <label class="layui-form-label">锚点名称</label>
-                                  <div class="layui-form-mid layui-word-aux" id="anchorName">Anchor[85466][1524638166456]</div>
-                              </div>
+          <div id="anchorLayerTab" class="easyui-tabs" style="width:100%;height:100%;border: 0;">
+              <div title="属性" style="padding:20px;display:none;">
+                  <h2 class="anchor-title"><i class="fa fa-anchor"></i>构件锚点信息</h2>
+                  <form action="" class="layui-form" id="">
+                      <input type="hidden" id="fObjSelX">
+                      <input type="hidden" id="fObjSelY">
+                      <input type="hidden" id="fObjSelZ">
+                      <div class="layui-form-item">
+                          <div class="anchor-list">
+                              <label class="layui-form-label">锚点名称</label>
+                              <div class="layui-form-mid layui-word-aux" id="anchorName"></div>
                           </div>
-                          <div class="layui-form-item">
-                              <div class="anchor-list">
-                                  <label class="layui-form-label">关联构件名称</label>
-                                  <div class="layui-form-mid layui-word-aux" id="componentNane">E-B-995.50-CZ0+266.500-0+296.500-S</div>
-                              </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <div class="anchor-list">
+                              <label class="layui-form-label">关联构件名称</label>
+                              <div class="layui-form-mid layui-word-aux" id="componentNane"></div>
                           </div>
-                          <div class="layui-form-item">
-                              <div class="anchor-list">
-                                  <label class="layui-form-label">创建人</label>
-                                  <div class="layui-form-mid layui-word-aux createName">管理员</div>
-                              </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <div class="anchor-list">
+                              <label class="layui-form-label">创建人</label>
+                              <div class="layui-form-mid layui-word-aux createName" uid="createName"></div>
                           </div>
-                          <div class="layui-form-item">
-                              <div class="anchor-list">
-                                  <label class="layui-form-label">创建日期</label>
-                                  <div class="layui-form-mid layui-word-aux createDate">2018-04-25</div>
-                              </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <div class="anchor-list">
+                              <label class="layui-form-label">创建日期</label>
+                              <div class="layui-form-mid layui-word-aux createDate" uid="createDate"></div>
                           </div>
-                          <div class="layui-form-item">
-                              <div class="layui-input-block" style="margin: 0">
-                                  <textarea name="remark" placeholder="锚点基本信息" class="layui-textarea"></textarea>
-                              </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <div class="layui-input-block" style="margin: 0">
+                              <textarea name="remark" placeholder="锚点基本信息" class="layui-textarea"></textarea>
                           </div>
-                          <div class="layui-form-item round">
-                              <i class="fa fa-check" id="saveAnchor"></i>
-                              <i class="fa fa-reply fa-danger" id="backAnchor"></i>
-                              <i class="fa fa-close fa-danger" id="delAnchor"></i>
-                          </div>
-                      </form>
-                  </div>
-                  <div title="附件" style="overflow:auto;padding:20px;display:none;">
-                      tab2
-                  </div>
+                      </div>
+                      <div class="layui-form-item round">
+                          <i class="fa fa-check" id="saveAnchor"></i>
+                          <i class="fa fa-reply fa-danger" id="backAnchor"></i>
+                          <i class="fa fa-close fa-danger" id="delAnchor"></i>
+                      </div>
+                  </form>
               </div>
-            </div>
+              <div title="附件" style="overflow:auto;padding:20px;display:none;">
+                  tab2
+              </div>
+          </div>
             <!-- 标注业务层 -->
             <div id="addTag" class="easyui-tabs" style="width:100%;height:100%;border: 0;display: none">
               <div title="属性" style="padding:20px;">
@@ -130,11 +128,11 @@
                       <form class="layui-form">
                           <div class="layui-form-item">
                               <label class="layui-form-label">创建人</label>
-                              <div class="layui-form-mid layui-word-aux createName"></div>
+                              <div class="layui-form-mid layui-word-aux createName" uid="createNameTag"></div>
                           </div>
                           <div class="layui-form-item">
                               <label class="layui-form-label">创建日期</label>
-                              <div class="layui-form-mid layui-word-aux createDate"></div>
+                              <div class="layui-form-mid layui-word-aux createDate" uid="createDateTag"></div>
                           </div>
                           <div class="layui-form-item layui-form-text">
                               <label class="layui-form-label">标注信息</label>
@@ -179,10 +177,12 @@
                                 RealBimOcx.BatchAddSubClrInfoBegin();
                                 RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
                                 RealBimOcx.BatchAddSubClrInfoEnd();
+                                labelAttr(3);
                                 $('#anchorName').html(anchorName);      //锚点名称
                                 $('#fObjSelX').val(fObjSelX);       //锚点坐标
                                 $('#fObjSelY').val(fObjSelY);
                                 $('#fObjSelZ').val(fObjSelZ);
+                                console.log(fObjSelX);
 
                             }else{
                                 //单选/多选模型
@@ -242,7 +242,7 @@
                             };
                             //右侧对应属性显隐
                             function addTagInfo() {
-                                $('#defaultAttr').hide();
+                                $('#defaultAttr,#anchorLayerTab').hide();
                                 $('#addTag').show();
                             };
                             //锚点回显的显示隐藏
@@ -271,15 +271,18 @@
                             };
 
                             //创建人 和 创建日期
-                            function labelAttr() {
+                            window.labelAttr = function (type) {
                                 $.ajax({
                                     url: "./labelAttr",
                                     type: "post",
-                                    data: {},
+                                    data: {
+                                        type:type
+                                    },
                                     dataType: "json",
                                     success: function (res) {
                                         $('.createName').html(res.data.user_name);
                                         $('.createDate').html(res.data.create_time);
+                                        $('.componentNane').html(res.data.create_time);
                                     }
                                 })
                             }
@@ -288,15 +291,16 @@
                             $('textarea[name="remarkTag"]').on('input propertychange',function () {
                                 var val = $(this).text();
                                 RealBimOcx.SubmitMarkerText(val);
-                            })
+                            });
 
                             switch (eType) {
                                 case "ADD_ANCHOR":
                                     clearOperate();
                                     operateType = "AddComponentAnchor"; //判断是否进入锚点状态
                                     RealBimOcx.AddAnchorBegin(0);//构件锚点开始
-                                    $('#defaultAttr,#backAnchor').hide();
-                                    $('#anchorLayer').show();
+                                    $('#defaultAttr,#backAnchor,#addTag').hide();
+                                    $('#anchorLayerTab').show();
+                                    anchorPoint();
                                     easyUiPanelToggle();
                                     break; //添加锚点
                                 case "DISP_ANCHOR":
@@ -370,29 +374,10 @@
                         <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                             base64PicData = strPicData;
                             base64RenData = strRenData;
+
+                            getLabelSnapshot();    //新增之后回显
                             // TODO 需要重构
                             var snapshotImgPathArr = [];
-                            snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                            snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
-                            snapshotImgPathArr.push('<div class="mask">');
-                            snapshotImgPathArr.push('<div class="right">');
-                            snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">');
-                            snapshotImgPathArr.push('<i class="fa fa-save"></i>');
-                            snapshotImgPathArr.push('</a>');
-                            snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
-                            snapshotImgPathArr.push('<i class="fa fa-close" class="del"></i>');
-                            snapshotImgPathArr.push('</a>');
-                            snapshotImgPathArr.push('</div>');
-                            snapshotImgPathArr.push('<div class="scenter">');
-                            snapshotImgPathArr.push('<a href="javascript:;" title="查看快照">');
-                            snapshotImgPathArr.push('<i class="fa fa-search"></i>');
-                            snapshotImgPathArr.push('</a>');
-                            snapshotImgPathArr.push('</div>');
-                            snapshotImgPathArr.push('<div class="center">2018-04-20</div>');
-                            snapshotImgPathArr.push('</div>');
-                            snapshotImgPathArr.push('</div>');
-                            snapshotSwiper.prependSlide(snapshotImgPathArr.join(' '));
-                            snapshotSwiper.updateSlidesSize();
                             $.ajax({
                                 url: "./labelSnapshot",
                                 type: "post",
@@ -403,6 +388,27 @@
                                 },
                                 dataType: "json",
                                 success: function (res) {
+                                    snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
+                                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                                    snapshotImgPathArr.push('<div class="mask">');
+                                    snapshotImgPathArr.push('<div class="right">');
+                                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">');
+                                    snapshotImgPathArr.push('<i class="fa fa-save"></i>');
+                                    snapshotImgPathArr.push('</a>');
+                                    snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
+                                    snapshotImgPathArr.push('<i class="fa fa-close" uid='+ res.label_snapshot_id +' onclick="del(this)"></i>');
+                                    snapshotImgPathArr.push('</a>');
+                                    snapshotImgPathArr.push('</div>');
+                                    snapshotImgPathArr.push('<div class="scenter">');
+                                    snapshotImgPathArr.push('<a href="javascript:;" title="查看快照">');
+                                    snapshotImgPathArr.push('<i class="fa fa-search"></i>');
+                                    snapshotImgPathArr.push('</a>');
+                                    snapshotImgPathArr.push('</div>');
+                                    snapshotImgPathArr.push('<div class="center">2018-04-20</div>');
+                                    snapshotImgPathArr.push('</div>');
+                                    snapshotImgPathArr.push('</div>');
+                                    snapshotSwiper.prependSlide(snapshotImgPathArr.join(' '));
+                                    snapshotSwiper.updateSlidesSize();
                                     layer.msg(res.msg);
                                 }
                             });
@@ -411,39 +417,47 @@
                         <script language="javascript" for="RealBimOcx" EVENT="MarkerData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                               base64PicData = strPicData;
                               base64RenData = strRenData;
+                              getLabelTag();    //新增之后回显
+
                               // TODO 需要重构
+                              var user_name = $('div[uid="createNameTag"]').html()
+                              var create_time = $('div[uid="createDateTag"]').html()
+                              var remark = $('#remarkTag').text();
                               var tagImgPathArr = [];
-                              tagImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                              tagImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
-                              tagImgPathArr.push('<div class="mask">');
-                              tagImgPathArr.push('<div class="right">');
-                              tagImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="标注另存为">');
-                              tagImgPathArr.push('<i class="fa fa-save"></i>');
-                              tagImgPathArr.push('</a>');
-                              tagImgPathArr.push('<a href="javascript:;" title="删除标注">');
-                              tagImgPathArr.push('<i class="fa fa-close" class="del"></i>');
-                              tagImgPathArr.push('</a>');
-                              tagImgPathArr.push('</div>');
-                              tagImgPathArr.push('<div class="scenter">');
-                              tagImgPathArr.push('<a href="javascript:;" title="查看标注">');
-                              tagImgPathArr.push('<i class="fa fa-search"></i>');
-                              tagImgPathArr.push('</a>');
-                              tagImgPathArr.push('</div>');
-                              tagImgPathArr.push('<div class="center">2018-04-20</div>');
-                              tagImgPathArr.push('</div>');
-                              tagImgPathArr.push('</div>');
-                              tagSwiper.prependSlide(tagImgPathArr.join(' '));
-                              tagSwiper.updateSlidesSize();
                               $.ajax({
                                   url: "./labelSnapshot",
                                   type: "post",
                                   data: {
                                       picture_id:uObjSubIdSingle,
                                       type:1,
-                                      label_snapshot:base64RenData
+                                      label_snapshot:base64RenData,
+                                      user_name:user_name,
+                                      create_time:create_time,
+                                      remark:remark
                                   },
                                   dataType: "json",
                                   success: function (res) {
+                                      tagImgPathArr.push('<div class="swiper-slide swiperSlide">');
+                                      tagImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                                      tagImgPathArr.push('<div class="mask">');
+                                      tagImgPathArr.push('<div class="right">');
+                                      tagImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="标注另存为">');
+                                      tagImgPathArr.push('<i class="fa fa-save"></i>');
+                                      tagImgPathArr.push('</a>');
+                                      tagImgPathArr.push('<a href="javascript:;" title="删除标注">');
+                                      tagImgPathArr.push('<i class="fa fa-close" uid='+ res.label_snapshot_id +' onclick="del(this)"></i>');
+                                      tagImgPathArr.push('</a>');
+                                      tagImgPathArr.push('</div>');
+                                      tagImgPathArr.push('<div class="scenter">');
+                                      tagImgPathArr.push('<a href="javascript:;" title="查看标注">');
+                                      tagImgPathArr.push('<i class="fa fa-search"></i>');
+                                      tagImgPathArr.push('</a>');
+                                      tagImgPathArr.push('</div>');
+                                      tagImgPathArr.push('<div class="center">2018-04-20</div>');
+                                      tagImgPathArr.push('</div>');
+                                      tagImgPathArr.push('</div>');
+                                      tagSwiper.prependSlide(tagImgPathArr.join(' '));
+                                      tagSwiper.updateSlidesSize();
                                       layer.msg(res.msg);
                                   }
                               });
@@ -487,7 +501,7 @@
         RealBimOcx.DelAnchorEnd();
         RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
         $('#defaultAttr').show();
-        $('#anchorLayer').hide();
+        $('#anchorLayerTab').hide();
     };
     //保存标注
     $('#save').click(function () {
@@ -508,7 +522,7 @@
                 console.log(res.data);
                 var imgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
-                    var base64PicData = res.data[i];
+                    var base64PicData = res.data[i].label_snapshot;
                     $('#img').append(img);
                     imgPathArr.push('<div class="swiper-slide swiperSlide">');
                     imgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
@@ -518,7 +532,7 @@
                     imgPathArr.push('<i class="fa fa-save"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('<a href="javascript:;" title="删除标注">');
-                    imgPathArr.push('<i class="fa fa-close" class="del"></i>');
+                    imgPathArr.push('<i class="fa fa-close" uid='+ res.data[i].label_snapshot_id +' onclick="del(this)"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('</div>');
                     imgPathArr.push('<div class="scenter">');
@@ -551,7 +565,7 @@
             success: function (res) {
                 var snapshotImgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
-                    var base64PicData = res.data[i];
+                    var base64PicData = res.data[i].label_snapshot;
                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
                     snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
                     snapshotImgPathArr.push('<div class="mask">');
@@ -560,7 +574,7 @@
                     snapshotImgPathArr.push('<i class="fa fa-save"></i>');
                     snapshotImgPathArr.push('</a>');
                     snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
-                    snapshotImgPathArr.push('<i class="fa fa-close" class="del"></i>');
+                    snapshotImgPathArr.push('<i class="fa fa-close" uid='+ res.data[i].label_snapshot_id +' onclick="del(this)"></i>');
                     snapshotImgPathArr.push('</a>');
                     snapshotImgPathArr.push('</div>');
                     snapshotImgPathArr.push('<div class="scenter">');
@@ -583,9 +597,9 @@
         RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
     });
     
-    //删除标注
-    $('.del').click(function(){
-        var label_snapshot_id = '';
+    //删除标注/快照
+    function del(that) {
+        var label_snapshot_id = $(that).attr('uid');
         $.ajax({
             url: "./delLabelSnapshot",
             type: "post",
@@ -594,10 +608,14 @@
             },
             dataType: "json",
             success: function (res) {
+                $(that).parents('.swiperSlide').remove();
                 layer.msg(res.msg);
             }
         });
-    });
+    }
+
+    //编辑标注的备注
+
 
     //键盘事件
     $(document).keyup(function (event) {
