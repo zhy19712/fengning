@@ -184,8 +184,8 @@ class Main extends Permissions
             // 类型 type 1标注2快照
             if(!empty($param['type']) && $param['type'] == 1){
                 array_push($rule,['user_name', 'require', '创建人不能为空']);
-                array_push($rule,['create_time', 'require|date', '创建时间不能为空|时间格式有误']);
-                array_push($rule,['remark', 'require|date', '备注不能为空']);
+                array_push($rule,['create_time', 'require|dateFormat:Y-m-d H:i:s', '创建时间不能为空|时间格式有误']);
+                array_push($rule,['remark', 'require', '备注不能为空']);
             }
             $validate = new \think\Validate($rule);
             //验证部分数据合法性
@@ -271,7 +271,7 @@ class Main extends Permissions
         if($this->request->isAjax()){
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
-            $data['create_time'] = date('Y-m-d H;i:s');
+            $data['create_time'] = date('Y-m-d H:i:s');
             return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
         }
     }
