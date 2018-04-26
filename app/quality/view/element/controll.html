@@ -811,7 +811,7 @@
                 // alert('控制点执行情况');
                 // if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
                 // if((clickId != null || clickId != undefined) && (conThisId != null || conThisId != undefined)){
-                if(clickId && conThisId || flag == true){
+                if(clickId && conThisId || flag == true && clickId){
                     $(".mybtn").css("display","block");
                 }else if(clickId ==''|| conThisId == '') {
                     $(".mybtn").css("display","none");
@@ -823,7 +823,7 @@
             if(title === "附件资料"){
                 // alert('附件资料');
                 // if(clickId != null && clickId != undefined){
-                if(clickId && conThisId || flag == true){
+                if(clickId && conThisId || flag == true && clickId){
                     $(".bitCodes").css("display","block");
                     $(".mybtn").css("display","block");
                 }else if(clickId ==''|| conThisId == '') {
@@ -833,11 +833,11 @@
                 $(".bitCodes").css("display","none");
             }
 
-            if(title === "在线填报" || flag == true){
+            if(title === "在线填报"){
                 // alert('在线填报');
                 // if(clickId != null && clickId != undefined){
                 // if((clickId != null || clickId != undefined || clickId != '') && (conThisId != null && conThisId != undefined || conThisId != '')){
-                if(clickId && conThisId){
+                if(clickId && conThisId || flag == true && clickId){
                     $(".mybtnAdd").css("display", "block");
                     $(".mybtn").css("display", "none");
                     console.log(clickId)
