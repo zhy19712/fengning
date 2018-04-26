@@ -191,7 +191,6 @@
                                 $('#fObjSelX').val(fObjSelX);       //锚点坐标
                                 $('#fObjSelY').val(fObjSelY);
                                 $('#fObjSelZ').val(fObjSelZ);
-                                console.log(fObjSelX);
 
                             }else{
                                 //单选/多选模型
@@ -264,10 +263,8 @@
                                     url: "./allAnchorPoint",
                                     success: function (data) {
                                         if (uButtonMode == 1) {
-                                            console.log(111);
                                             RealBimOcx.AddAnchorBegin(0);
                                             $.each(data, function (i, item) {
-                                                console.log(item);
                                                 RealBimOcx.AddAnchor(item.anchor_name, item.coordinate_x, item.coordinate_y, item.coordinate_z, 0);
                                             });
                                             RealBimOcx.AddAnchorEnd();
@@ -509,6 +506,8 @@
     operateType = "";
     //删除锚点
     function delAnchor(anchorName) {
+        var anchorName = $('#anchorName').html();
+        //锚点的名称：anchorName
         $.ajax({
             url: "./delAnchorPoint",
             type: "post",
@@ -523,7 +522,6 @@
                 RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
                 $('#defaultAttr').show();
                 $('#anchorLayerTab').hide();
-                console.log(res);
             }
         });
 
@@ -544,7 +542,6 @@
             },
             dataType: "json",
             success: function (res) {
-                console.log(res);
                 var imgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
                     var base64PicData = res.data[i].label_snapshot;
@@ -618,6 +615,7 @@
     }
     getLabelSnapshot();
 
+    //查看标注快照
     function view(that) {
         var base64PicData = $(that).attr('uid');
         RealBimOcx.ShowSnapshotOrMarkerInMem(base64PicData);
