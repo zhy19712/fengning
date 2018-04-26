@@ -228,7 +228,7 @@ class Rolemanagement extends Permissions
                     if(in_array($param["id"],$admincateid))
                     {
                         $res_info["id"] = $v["id"];
-                        $res_info["name"] = $v["name"];
+                        $res_info["name"] = $v["nickname"];
                         $data = $res_info;
                         $res[]=$data;
 

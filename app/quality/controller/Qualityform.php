@@ -85,6 +85,7 @@ class Qualityform extends Permissions
             $formdata = json_encode(unserialize($_formdata));
         }
         $htmlContent = str_replace('{formData}', $formdata, $htmlContent);
+        $htmlContent .= "<input type='hidden' id='cpr' value='{$cpr_id}'>";
         return $htmlContent;
     }
 
@@ -122,6 +123,19 @@ class Qualityform extends Permissions
             $htmlContent = str_replace("{{$key}}", $value, $htmlContent);
         }
         return $htmlContent;
+    }
+
+    /**
+     * 表单附件
+     * @param $divisionId
+     * @param $procedureId
+     * @param $controlPointId
+     * @return mixed
+     */
+    public function QalityFormAttachment($cpr_id)
+    {
+        $this->assign('cpr_id', $cpr_id);
+        return $this->fetch();
     }
 
     /**

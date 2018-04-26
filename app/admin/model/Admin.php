@@ -18,6 +18,15 @@ class Admin extends Model
         return $this->hasOne('Attachment','id','signature');
     }
 
+    /**
+     * 头像
+     * @return \think\model\relation\HasOne
+     */
+    public function Thumb()
+    {
+        return $this->hasOne('Attachment','id','thumb');
+    }
+
     public function log()
     {
         //关联日志表
@@ -136,15 +145,11 @@ class Admin extends Model
     public function deladmincateid($param)
     {
         //admin_id是admin表id，id为cate表id
-
         $admin_cate_id = $this->field("admin_cate_id")->where("id",$param['admin_id'])->find();
 
-
-
-        if($admin_cate_id["admin_cate_id"])
+        if(!empty($admin_cate_id["admin_cate_id"]))
         {
             $cate_id = explode(",",$admin_cate_id["admin_cate_id"]);
-
             foreach($cate_id as $k=>$v)
             {
                 if($v == $param['id'])
@@ -152,11 +157,16 @@ class Admin extends Model
                     unset($cate_id[$k]);
                 }
             }
-        }
-        if($cate_id)
-        {
-            $str = implode(",",$cate_id);
+            if(!empty($cate_id))
+            {
+                $str = implode(",",$cate_id);
 
+            }else{
+                $str = "";
+            }
+        }else
+        {
+            $str = "";
         }
 
         //把处理过得数据重新插入数组中
@@ -181,34 +191,30 @@ class Admin extends Model
         //先删除admin表中的所有的包含有当前传过来cate表id
         try {
             $admin_cate_id = $this->field("id,name,admin_cate_id")->select();
-            if ($admin_cate_id) {
+            if (!empty($admin_cate_id)) {
                 foreach ($admin_cate_id as $k => $v) {
+                    if(!empty($v['admin_cate_id']))
+                    {
+                        $cate_id = explode(",", $v['admin_cate_id']);
 
-                    $cate_id = explode(",", $v['admin_cate_id']);
-
-                    foreach ((array)$cate_id as $key => $val) {
-                        if ($val == $param['id']) {
-                            unset($cate_id[$key]);
+                        foreach ((array)$cate_id as $key => $val) {
+                            if ($val == $param['id']) {
+                                unset($cate_id[$key]);
+                            }
                         }
+
+                        $v['admin_cate_id'] = implode(",", $cate_id);
+
+                        //把新筛选的admin_cate_id重新插入数据库
+
+                        $this->allowField(true)->update(['admin_cate_id' => $v['admin_cate_id']], ['id' => $v['id']]);
                     }
-
-
-                    $v['admin_cate_id'] = implode(",", $cate_id);
-
-                    //把新筛选的admin_cate_id重新插入数据库
-
-                    $this->allowField(true)->update(['admin_cate_id' => $v['admin_cate_id']], ['id' => $v['id']]);
-
-
                 }
-
 
             }
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
-
-
 
     }
 
@@ -235,8 +241,7 @@ class Admin extends Model
 
         try {
 
-
-            if ($admin_cate_id) {
+            if (!empty($admin_cate_id)) {
                 foreach ($admin_cate_id as $k => $v) {
 
                     $cate_id = explode(",", $v['admin_cate_id']);
@@ -247,16 +252,13 @@ class Admin extends Model
                         }
                     }
 
-
                     $v['admin_cate_id'] = implode(",", $cate_id);
 
                     //把新筛选的admin_cate_id重新插入数据库
 
                     $this->allowField(true)->update(['admin_cate_id' => $v['admin_cate_id']], ['id' => $v['id']]);
 
-
                 }
-
 
             }
 
@@ -264,7 +266,7 @@ class Admin extends Model
             //再添加传过来的cate表中的id到admin_cate_id字段中
 
 
-            if ($param["admin_id"]) {
+            if (!empty($param["admin_id"])) {
                 foreach ($param["admin_id"] as $ke => $va) {
 
                     //根据admin_id查询admin表中的admin_cate_id,并插入传过来的id
@@ -275,10 +277,13 @@ class Admin extends Model
 
                         array_push($admin_cate_id_info_data, $param['id']);
 
+                    }else
+                    {
+                        $admin_cate_id_info_data = [$param['id']];
+
                     }
 
                     $str = implode(",", $admin_cate_id_info_data);
-
 
                     //把重新修改的admin_cate_id重新插入数据库
 

@@ -46,6 +46,11 @@ class UnitqualitymanageModel extends Model
             }else{
                 $relation_id = [$id];
             }
+
+            if(sizeof($relation_id) < 1){
+                return ['code' => -1,'msg' => '没有数据可删除!'];
+            }
+
             // 已经执行 的控制点 不能删除
             $status = $this->where(['division_id'=>$add_id,'ma_division_id'=>$ma_division_id,'control_id'=> ['in',$relation_id],'type'=>0,'status'=>1 ])->count();
             if($status > 0){

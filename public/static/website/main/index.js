@@ -13,7 +13,7 @@ $(document).keyup(function (event) {
     if(KeyCode==17){
         isCtrlDown = false;
     }
-})
+});
 
 //标注图片滚动
 window.tagSwiper = new Swiper ('#tag', {

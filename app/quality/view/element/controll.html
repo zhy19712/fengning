@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="__PUBLIC__/webupload/webuploader.css" media="all" />
     <link rel="stylesheet" href="__COMMONCSS__/common.css" />
     <link rel="stylesheet" href="__COMMONJS__/datatable/datatable.css" />
-
+    <link rel="stylesheet" href="__PUBLIC__/ztree/css/ztreequality/css/engineering.css">
     <script src="__PUBLIC__/jquery/jquery.min.js"></script>
     <script src="__PUBLIC__/layui/layui.js"></script>
     <script src="__PUBLIC__/ztree/js/jquery.ztree.all.min.js"></script>
@@ -275,6 +275,7 @@
                                         <th>当前审批人</th>
                                         <th>审批状态</th>
                                         <th>操作</th>
+                                        <th style="display: none;">当前审批人Id</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -949,7 +950,8 @@
             upload.render({
                 elem: '#test3',
                 url: "{:url('admin/common/upload?module=quality&use=element')}",
-                exts: 'doc|docx|pdf|png|jpg|xls',
+                // exts: 'doc|docx|pdf|png|jpg|xls',
+                acceptL:"file",
                 size:8192,
                 before: function(obj){
                     obj.preview(function(index, file, result){
@@ -1105,6 +1107,9 @@
              },
              {
                  name: "id"
+             },
+             {
+                 name: "CurrentApproverId"
              }
          ],
          columnDefs: [
@@ -1117,11 +1122,17 @@
                      if (data == null || data == undefined || data == '') return '';
                      var time = new Date(data*1000);
                      var y = time.getFullYear();
-                     var m = time.getMonth() + 1;
-                     m = m < 10 ? '0' + m : m;
+                     var M = time.getMonth() + 1;
+                     M = M < 10 ? '0' + M : M;
                      var d = time.getDate();
                      d = d < 10 ? ('0' + d) : d;
-                     return y + '-' + m + '-' + d;
+                     var h = time.getHours() + ':';
+                     h = h < 10 ? '0' + h : h;
+                     var m = time.getMinutes() + ':';
+                     m = m < 10 ? '0' + m : m;
+                     var s = time.getSeconds();
+                     s = s < 10 ? '0' + s : s;
+                     return y + '-' + M + '-' + d +' '+ h + m + s;
                  }
              },
              {
@@ -1151,9 +1162,9 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     // var dataType = "qualityFormInfo";
-                     console.log(row);
-                     console.log($("#userId").val());
+                     // console.log(row);
+                     console.log(row[5]+"当前审批人Id");
+                     console.log($("#userId").val() + "当前登录人Id");
                      var html = "";
                      html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                      if (row[3] === 0) {
@@ -1161,7 +1172,7 @@
                          html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
                          html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                      }
-                     else if (row[3] === 1 ) {
+                     else if (row[3] === 1 && row[5] == $("#userId").val()) {
                          var str = JSON.stringify(row[2]);
                          html += "<a title='编辑' onclick='editOnLine ("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
                          html += "<a title='审批' onclick='approve("+row[4]+","+str+")'><i class='fa fa fa-pencil-square-o'></i></a>";
@@ -1181,6 +1192,11 @@
                      return html;
 
                  }
+             },
+             {
+                 "targets": [5],
+                 "visible": false,
+                 "searchable": false
              }
          ],
          language: {
@@ -1212,7 +1228,7 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0&isView=true'
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0&isView=True'
         });
     }
 

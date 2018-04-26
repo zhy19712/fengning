@@ -83,7 +83,7 @@
     }
 
     #nextStep{
-        color: #337ab7;
+        /*color: #337ab7;*/
     }
 
     .colorRed{
@@ -187,7 +187,7 @@
         "scrollY": "360px",
         "scrollCollapse": "true",
         ajax: {
-            "url": "{:url('/Approve/Common/datatablesPre')}?tableName=approve&data_id="+$("#valId").val()+"&data_type="+$("#valType").val()
+            "url": "{:url('/Approve/Common/datatablesPre')}?tableName=approve&dataId="+$("#valId").val()+"&dataType="+$("#valType").val()
         },
         dom: 'lrtip',
         columns: [
@@ -209,19 +209,29 @@
                 targets: [0]
             },
             {
-                targets:[1]
+                targets:[1],
+                "render": function (data, type, row) {
+                    if (data == null || data == undefined || data == '') return '';
+                    var time = new Date(data*1000);
+                    var y = time.getFullYear();
+                    var M = time.getMonth() + 1;
+                    M = M < 10 ? '0' + M : M;
+                    var d = time.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    var h = time.getHours() + ':';
+                    h = h < 10 ? '0' + h : h;
+                    var m = time.getMinutes() + ':';
+                    m = m < 10 ? '0' + m : m;
+                    var s = time.getSeconds();
+                    s = s < 10 ? '0' + s : s;
+                    return y + '-' + M + '-' + d +' '+ h + m + s;
+                }
             },
             {
                 targets:[2]
             },
             {
-                targets: [3],
-                // render: function (data, type, row) {
-                //     if (data == 1) {
-                //         return "已归档";
-                //     }
-                //     return "待归档";
-                // }
+                targets: [3]
             }
         ],
         language: {
@@ -262,15 +272,15 @@
         $("input[name='contractName']").val(subtime);
     }
     //点击下一步执行人
-    $("#nextStep").click(function () {
-        layer.open({
-            type: 2,
-            title: '选择审批人',
-            shadeClose: true,
-            area: ['450px', '550px'],
-            content: '{:url("approve/approve/selectMumber")}?dataType=app\\quality\\model\\QualityFormInfoModel\n'
-        });
-    });
+    // $("#nextStep").click(function () {
+    //     layer.open({
+    //         type: 2,
+    //         title: '选择审批人',
+    //         shadeClose: true,
+    //         area: ['450px', '550px'],
+    //         content: '{:url("approve/approve/selectMumber")}?dataType=app\\quality\\model\\QualityFormInfoModel\n'
+    //     });
+    // });
 
     var layer = layui.layer;
     var typeId;
@@ -287,13 +297,14 @@
 
     //点击保存
     $("#test3").click(function () {
+        console.log(typeId);
         $.ajax({
             url: "{:url('approve/approve/Approve')}",
             type: "post",
             data:{
                 dataId:$("#dataId").val(),
                 dataType:$("#dataType").val(),
-                res:typeId,
+                res:(typeId == -1)?"-1":"1",
                 mark:$("#txtArea").val()
             },
             success: function (res) {
