@@ -85,6 +85,8 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
+                }else{
+                    layer.msg(res.msg);
                 }
             },
             error: function (data) {
@@ -126,6 +128,8 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
                             zTreeObj.expandAll(true);
                         },700);
 
+                    }else{
+                        layer.msg(res.msg)
                     }
                 }
             })
@@ -215,6 +219,8 @@ function conDel(id){
                 },700);
             }else if(res.code===-1){
                 layer.msg(res.msg);
+            }else{
+              layer.msg(res.msg);
             }
         }
     })

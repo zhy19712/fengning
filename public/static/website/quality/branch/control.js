@@ -40,6 +40,8 @@ layui.use(['form', 'layedit', 'laydate', 'element', 'layer','upload'], function(
                        tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
                        tableSituation.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/1/list_id/"+list_id+".shtml").load();
                        tableImage.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/2/list_id/"+list_id+".shtml").load();
+                   }else{
+                     layer.msg(res.msg);
                    }
                }
            })
