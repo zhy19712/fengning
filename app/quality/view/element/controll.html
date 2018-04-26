@@ -438,12 +438,27 @@
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=").load();
         implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
         imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
-        // funOnLine();
         console.log(clickId)
         console.log(conThisId)
-        // funOnLine(1,1,1);
+
         clickId ='';
         conThisId ='';
+        if(clickId == '' || conThisId == '') {
+            $(".mybtnAdd").css("display", "none");
+            onlineFill = $("#onlineFill").dataTable().fnDestroy(true);
+            $('#onlineFillParent').html("<table id=\"onlineFill\" class=\"table table-striped table-bordered\" cellspacing=\"0\"  width=\"100%\">\n" +
+                "                                <thead>\n" +
+                "                                    <tr style='text-align: center'>\n" +
+                "                                        <th>填报人</th>\n" +
+                "                                        <th>填报日期</th>\n" +
+                "                                        <th>当前审批人</th>\n" +
+                "                                        <th>审批状态</th>\n" +
+                "                                        <th>操作</th>\n" +
+                "                                        <th style=\"display: none;\">当前审批人Id</th>\n" +
+                "                                    </tr>\n" +
+                "                                </thead>\n" +
+                "                            </table>");
+        }
         $(".mybtn").css("display", "none");
         $(".bitCodes").css("display","none");
         $(".mybtnAdd").css("display","none");
@@ -1076,7 +1091,7 @@
     /*============在线填报开始==============*/
     var step = 0;
     var isView = false;
-    var formId ;
+    var reList = true ;
 
     //在线填报结构表格
     function funOnLine(selfidUnit,conThisId,clickId){
