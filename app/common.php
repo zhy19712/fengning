@@ -163,8 +163,8 @@ function tree($data, $pid = 0,$level = 1)
     static $treeList = array();
     foreach ($data as $v) {
         if ($v['pid'] == $pid) {
-            $treeList[] = $v;//将结果装到$treeList中
             $v['level']=$level;
+            $treeList[] = $v;//将结果装到$treeList中
             tree($data, $v['id'],$level+1);
         }
     }
