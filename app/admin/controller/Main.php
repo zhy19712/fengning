@@ -29,8 +29,8 @@ class Main extends Permissions
      */
     public function addAttr()
     {
-        // 新增 前台需要传递 的是  模型图主键 picture_id 属性名 attrKey  属性值 attrVal
-        // 编辑 前台需要传递 的是  模型图主键 picture_id 属性名 attrKey  属性值 attrVal   和 这条属性的主键 attrId
+        // 新增 前台需要传递 的是  模型图编号 picture_id 属性名 attrKey  属性值 attrVal
+        // 编辑 前台需要传递 的是  模型图编号 picture_id 属性名 attrKey  属性值 attrVal   和 这条属性的主键 attrId
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -45,7 +45,7 @@ class Main extends Permissions
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $data = [];
-            $data['picture_id'] = $param['picture_id'];
+            $data['picture_number'] = $param['picture_id'];
             $data['attr_name'] = $param['attrKey'];
             $data['attr_value'] = $param['attrVal'];
             $custom = new CustomAttributeModel();
@@ -93,7 +93,7 @@ class Main extends Permissions
      */
     public function getAttr()
     {
-        // 前台需要传递 的是  模型图主键 picture_id
+        // 前台需要传递 的是  模型图编号 picture_id
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -118,7 +118,7 @@ class Main extends Permissions
      */
     public function addRemark()
     {
-        // 前台需要传递 的是  模型图主键 picture_id 描述 remark
+        // 前台需要传递 的是  模型图编号 picture_id 描述 remark
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -131,7 +131,11 @@ class Main extends Permissions
             if (!$validate->check($param)) {
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
-            $data['id'] = $param['picture_id'];
+            // 1工程划分模型 2 建筑模型 3三D模型
+            $data['id'] = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('id');
+            if(empty($data['id'])){
+                return json(['code'=>1,'msg'=>'不存在的模型编号']);
+            }
             $data['remark'] = $param['remark'];
             $pic = new PictureModel();
             $pic->editTb($data);
@@ -146,7 +150,7 @@ class Main extends Permissions
      */
     public function getRemark()
     {
-        // 前台需要传递 的是  模型图主键 picture_id
+        // 前台需要传递 的是  模型图编号 picture_id
         if($this->request->isAjax()){
             $param = input('param.');
             // 验证规则
@@ -159,7 +163,12 @@ class Main extends Permissions
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $pic = new PictureModel();
-            $remark = $pic->getRemarkTb($param['picture_id']);
+            // 1工程划分模型 2 建筑模型 3三D模型
+            $id = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('id');
+            if(empty($data['id'])){
+                return json(['code'=>1,'msg'=>'不存在的模型编号']);
+            }
+            $remark = $pic->getRemarkTb($id);
             return json(['code'=>1,'remark'=>$remark,'msg'=>'模型图描述']);
         }
     }
@@ -171,7 +180,7 @@ class Main extends Permissions
      */
     public function labelSnapshot()
     {
-        // 前台需要传递 的是  模型图主键 picture_id 类型 type 1标注2快照  图片的base64值 label_snapshot
+        // 前台需要传递 的是  模型图编号 picture_id 类型 type 1标注2快照  图片的base64值 label_snapshot
         // 注意：：：如果是标注 那么 就还要 传递 user_name 创建人 create_time 创建时间 remark 备注
         if($this->request->isAjax()){
             $param = input('param.');
@@ -193,7 +202,7 @@ class Main extends Permissions
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $data['type'] = $param['type'];
-            $data['picture_id'] = $param['picture_id'];
+            $data['picture_number'] = $param['picture_id'];
             $data['label_snapshot'] = $param['label_snapshot'];
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
@@ -290,7 +299,7 @@ class Main extends Permissions
             if (!$validate->check($param)) {
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
-            $name = '';
+            $name = Db::name('quality_model_picture')->where(['picture_number'=>$param['picture_id']])->value('picture_name');
         }
     }
 
