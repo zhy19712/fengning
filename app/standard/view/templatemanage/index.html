@@ -145,6 +145,21 @@
     #tableContent .layui-input[disabled], .layui-textarea[disabled], .layui-disabled, .layui-input[readonly], .layui-textarea[readonly], .layui-readonly{
         background: #FFFFFF !important;
     }
+    .dataTables_scrollHeadInner,#tableItem_wrapper table{
+        width: 100% !important;
+    }
+    #tableItem_wrapper{
+        height: 90% !important;
+    }
+    #tableContent .dataTables_scroll{
+        height: 90%;
+    }
+    #tableContent .dataTables_scrollBody{
+        max-height: none!important;
+        width: 100%;
+        height: calc(100% - 125px)!important;
+        border-bottom: none!important;
+    }
 </style>
 
 <div id="tableContent" data-options="region:'center',title:'查询条件'" style="padding:5px;background:#ffffff;">
@@ -203,9 +218,11 @@
 
     //组织结构表格
     var tableItem = $('#tableItem').DataTable({
-        pagingType: "full_numbers",
+        retrieve: true,
         processing: true,
         serverSide: true,
+        "scrollY": "200px",
+        "scrollCollapse": "true",
         ajax: {
             "url":"{:url('/standard/common/datatablesPre')}?tableName=quality_template"
         },
