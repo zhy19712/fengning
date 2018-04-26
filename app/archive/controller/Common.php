@@ -97,7 +97,7 @@ class Common extends Controller
                     ->join('admin u', 'f.user_id=u.id', 'left')
                     ->field('a.id,a.docname,u.nickname,FROM_UNIXTIME(f.create_time) as create_time,a.status')
                     ->whereIn('a.type', $idArr)
-                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                    ->where('a.docname|u.nickname', 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
