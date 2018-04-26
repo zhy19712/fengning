@@ -1,6 +1,11 @@
 {include file="../app/public/common_header.html"}
 <script src="__PUBLIC__/jquery/jquery.min.js"></script>
 <style>
+    #treeFrequentlyUsed .level0 a .button{
+        background:url('/static/public/ztree/css/ztreeadmin/img/people.png') 0 0 no-repeat;
+    }
+</style>
+<style>
 
     #tableContent .select-color {
         background-color: #FDD5B5 !important;
@@ -242,9 +247,31 @@
             for(var i =0; i < responseData.length; i++) {
                 responseData[i] = JSON.parse(responseData[i]);
                 responseData[i].name = decodeURIComponent(responseData[i].name);
+              ztreeIcon(responseData[i]);
             }
         }
         return responseData;
+    }
+    //处理结构树图标
+    function ztreeIcon(data) {
+      if (!data.level){
+        data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/people.png";
+        return ;
+      }
+      switch (Number(data.level)) {
+        case 1 :
+          data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/top.png";
+          break;
+        case 2 :
+          data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/jigou.png";
+          break;
+        case 3 :
+          data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/bumen.png";
+          break;
+        default:
+          data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/bumen.png";
+          break;
+      }
     }
     //组织结构树
     var setting = {

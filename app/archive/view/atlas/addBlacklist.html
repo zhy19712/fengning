@@ -209,21 +209,21 @@
     //处理结构树图标
     function ztreeIcon(data) {
       if (!data.level){
-        data.icon =  "__WEBSITE__/admin/rolemanagement/img/people.png";
+        data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/people.png";
         return ;
       }
       switch (Number(data.level)) {
         case 1 :
-          data.icon =  "__WEBSITE__/admin/rolemanagement/img/top.png";
+          data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/top.png";
           break;
         case 2 :
-          data.icon =  "__WEBSITE__/admin/rolemanagement/img/jigou.png";
+          data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/jigou.png";
           break;
         case 3 :
-          data.icon =  "__WEBSITE__/admin/rolemanagement/img/bumen.png";
+          data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/bumen.png";
           break;
         default:
-          data.icon =  "__WEBSITE__/admin/rolemanagement/img/bumen.png";
+          data.icon =  "__PUBLIC__/ztree/css/ztreeadmin/img/bumen.png";
           break;
       }
     }
