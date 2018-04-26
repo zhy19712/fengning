@@ -125,6 +125,21 @@ class Qualityform extends Permissions
     }
 
     /**
+     * 表单附件
+     * @param $divisionId
+     * @param $procedureId
+     * @param $controlPointId
+     * @return mixed
+     */
+    public function QalityFormAttachment($divisionId, $procedureId, $controlPointId)
+    {
+        $this->assign('$divisionId', $divisionId);
+        $this->assign('$procedureId', $procedureId);
+        $this->assign('$controlPointId', $controlPointId);
+        return $this->fetch();
+    }
+
+    /**
      * 新增或编辑表单
      * @param $dto
      * @return \think\response\Json

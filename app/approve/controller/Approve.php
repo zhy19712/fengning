@@ -28,7 +28,7 @@ class Approve extends Permissions
     public function __construct(Request $request = null)
     {
         $this->approveService = new ApproveModel();
-        $this->adminService=new Admin();
+        $this->adminService = new Admin();
         parent::__construct($request);
     }
 
@@ -78,8 +78,10 @@ class Approve extends Permissions
     public function ApproveHistory($dataId, $dataType)
     {
         $info = $this->approveService->getApproveInfo($dataId, new $dataType);
-        $userlist=$this->adminService->whereIn('id',explode(',',$info->approveIds))->field('id,nickname')->select();
-        $this->assign('users',json_encode($userlist));
+        $userlist = $this->adminService->whereIn('id', explode(',', $info->approveIds))->field('id,nickname')->select();
+        $this->assign('dataId', $dataId);
+        $this->assign('dataType', $dataType);
+        $this->assign('users', json_encode($userlist));
         $this->assign('approveinfo', json_encode($info));
         return $this->fetch();
     }
