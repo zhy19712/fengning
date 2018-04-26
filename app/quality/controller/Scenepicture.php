@@ -267,7 +267,7 @@ class Scenepicture extends Permissions
     public function delPicture()
     {
 
-        if (request()->isAjax()) {
+        if (request()->isAjax()){
             //实例化model类型
             $model = new ScenePictureModel();
             $id = input('post.id');//要删除的现场图片id
@@ -343,5 +343,4 @@ class Scenepicture extends Permissions
             return json($flag);
         }
     }
-
 }
