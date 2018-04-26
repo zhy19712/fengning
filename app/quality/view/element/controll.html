@@ -950,7 +950,8 @@
             upload.render({
                 elem: '#test3',
                 url: "{:url('admin/common/upload?module=quality&use=element')}",
-                exts: 'doc|docx|pdf|png|jpg|xls',
+                // exts: 'doc|docx|pdf|png|jpg|xls',
+                acceptL:"file",
                 size:8192,
                 before: function(obj){
                     obj.preview(function(index, file, result){
@@ -1121,11 +1122,14 @@
                      if (data == null || data == undefined || data == '') return '';
                      var time = new Date(data*1000);
                      var y = time.getFullYear();
-                     var m = time.getMonth() + 1;
-                     m = m < 10 ? '0' + m : m;
+                     var M = time.getMonth() + 1;
+                     M = M < 10 ? '0' + M : M;
                      var d = time.getDate();
                      d = d < 10 ? ('0' + d) : d;
-                     return y + '-' + m + '-' + d;
+                     var h = time.getHours() + ':';
+                     var m = time.getMinutes() + ':';
+                     var s = time.getSeconds();
+                     return y + '-' + M + '-' + d +' '+ h + m + s;
                  }
              },
              {
