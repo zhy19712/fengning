@@ -64,9 +64,9 @@ class PictureModel extends Model
         return $data;
     }
 
-    public function getRemarkTb($picture_id)
+    public function getRemarkTb($id)
     {
-        $remark = $this->where(['id'=>$picture_id])->value('remark');
+        $remark = $this->where(['id'=>$id])->value('remark');
         return $remark;
     }
 

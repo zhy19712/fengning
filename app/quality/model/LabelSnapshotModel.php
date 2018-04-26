@@ -57,9 +57,11 @@ class LabelSnapshotModel extends Model
         }
     }
 
-    public function getLabelSnapshotTb($type,$picture_id)
+    public function getLabelSnapshotTb($type,$picture_number)
     {
-        $data = $this->where(['type'=>$type,'picture_id'=>$picture_id])->column('id as label_snapshot_id,label_snapshot,FROM_UNIXTIME(create_time) as create_time');
+        $data = Db::name('quality_label_snapshot')
+            ->where(['picture_type'=>1,'type'=>$type,'picture_number'=>$picture_number])
+            ->field('id as label_snapshot_id,label_snapshot,FROM_UNIXTIME(create_time) as create_time')->select();
         return ['code'=>1,'data'=>$data,'msg'=>'图片的base64值'];
     }
 
