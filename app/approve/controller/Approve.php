@@ -59,7 +59,7 @@ class Approve extends Permissions
     {
         $par = input("param.");
         if ($this->request->isAjax()) {
-            if ($this->approveService->Approve($par['dataId'], new $par['dataType'], $par['res'], $par['mark'])) {
+            if ($this->approveService->Approve($par['dataId'], new $par['dataType'], $par['mark'], $par['mark'])) {
                 return json(['code' => 1]);
             } else {
                 return json(['code' => -1]);
@@ -87,7 +87,7 @@ class Approve extends Permissions
                 'nickname' => $user['nickname'],
                 'thumb' => ''
             ];
-            if (!isNull($user['Thumb'])) {
+            if (!is_null($user['Thumb'])) {
                 $_user['thumb'] = $user['Thumb']['filepath'];
             }
             $userlist[] = $_user;
