@@ -133,9 +133,9 @@ class Qualityform extends Permissions
      */
     public function QalityFormAttachment($divisionId, $procedureId, $controlPointId)
     {
-        $this->assign('$divisionId', $divisionId);
-        $this->assign('$procedureId', $procedureId);
-        $this->assign('$controlPointId', $controlPointId);
+        $this->assign('divisionId', $divisionId);
+        $this->assign('procedureId', $procedureId);
+        $this->assign('controlPointId', $controlPointId);
         return $this->fetch();
     }
 
