@@ -95,9 +95,13 @@ class Permissions extends Controller
         }
         
         //得到用户的权限菜单
-        //
-        
-        $menus = Db::name('admin_cate')->where('id',Session::get('admin_cate_id'))->value('permissions');
+        $admin_cate_id = Session::get('admin_cate_id');
+        if(!empty($admin_cate_id))
+        {
+            $admin_cate_id = explode(',',$admin_cate_id);
+        }
+        $menus = Db::name('admin_cate')->whereIn('id',$admin_cate_id)->value('permissions');
+
         //将得到的菜单id集成的字符串拆分成数组
         $menus = explode(',',$menus);
 

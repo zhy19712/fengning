@@ -207,9 +207,31 @@
             for(var i =0; i < responseData.length; i++) {
                 responseData[i] = JSON.parse(responseData[i]);
                 responseData[i].name = decodeURIComponent(responseData[i].name);
+              ztreeIcon(responseData[i]);
             }
         }
         return responseData;
+    }
+    //处理结构树图标
+    function ztreeIcon(data) {
+      if (!data.level){
+        data.icon =  "__WEBSITE__/admin/rolemanagement/img/people.png";
+        return ;
+      }
+      switch (Number(data.level)) {
+        case 1 :
+          data.icon =  "__WEBSITE__/admin/rolemanagement/img/top.png";
+          break;
+        case 2 :
+          data.icon =  "__WEBSITE__/admin/rolemanagement/img/jigou.png";
+          break;
+        case 3 :
+          data.icon =  "__WEBSITE__/admin/rolemanagement/img/bumen.png";
+          break;
+        default:
+          data.icon =  "__WEBSITE__/admin/rolemanagement/img/bumen.png";
+          break;
+      }
     }
     //组织结构树
     var setting = {
@@ -252,6 +274,7 @@
             treeObj.expandNode(item.getParentNode(), true, false, true);
         });
     }
+
     //搜索树
     $('#keywords').bind('input propertychange', function() {
         var key = $("#keywords").val();

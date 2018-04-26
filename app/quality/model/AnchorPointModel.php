@@ -12,9 +12,9 @@ namespace app\quality\model;
 use think\exception\PDOException;
 use think\Model;
 
-class CustomAttributeModel extends Model
+class AnchorPointModel extends Model
 {
-    protected $name = 'quality_custom_attribute';
+    protected $name = 'quality_anchor_point';
     //自动写入创建、更新时间 insertGetId和update方法中无效，只能用于save方法
     protected $autoWriteTimestamp = true;
 
@@ -54,12 +54,6 @@ class CustomAttributeModel extends Model
         } catch (PDOException $e) {
             return ['code' => -1, 'msg' => $e->getMessage()];
         }
-    }
-
-    public function getAttrTb($picture_id)
-    {
-        $attr = $this->where(['picture_type'=>1,'picture_number'=>$picture_id])->column('id as attrId,attr_name as attrKey,attr_value as attrVal');
-        return ['code'=>1,'attr'=>$attr,'msg'=>'模型图自定义属性'];
     }
 
 
