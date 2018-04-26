@@ -278,10 +278,17 @@ class Main extends Permissions
     {
          // 前台什么也不用传递
         if($this->request->isAjax()){
+            $param = input('param.');
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
             $data['create_time'] = date('Y-m-d H:i:s');
-            return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+            if(empty($param['type=3'])){
+                return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+            }else{
+                // 1工程划分模型 2 建筑模型 3三D模型
+                $name = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('picture_name');
+                return json(['code'=>1,'data'=>$data,'msg'=>'创建人和创建时间']);
+            }
         }
     }
 
@@ -299,7 +306,34 @@ class Main extends Permissions
             if (!$validate->check($param)) {
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
-            $name = Db::name('quality_model_picture')->where(['picture_number'=>$param['picture_id']])->value('picture_name');
+            // 1工程划分模型 2 建筑模型 3三D模型
+            $name = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('picture_name');
+        }
+    }
+
+    public function uploadAnchorPoint()
+    {
+        halt(11111);
+        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 上传的文件 file
+        // 执行上传文件 获取文件编号  attachment_id
+        $param = input('param.'); halt($param);
+        $common = new \app\admin\controller\Common();
+        $param['attachment_id'] = $common->upload('quality','unitqualitymanage');
+        halt($param);
+        // 保存上传文件记录
+        $id = isset($param['id']) ? $param['id'] : 0;
+        $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
+        $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
+        if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
+            return json(['code' => '-1','msg' => '参数有误']);
+        }
+        if($this->request->isAjax()){
+            $data['contr_relation_id'] = $id;
+            $data['attachment_id'] = $attachment_id;
+            $data['type'] = $type;
+            $unit = new UnitqualitymanageModel();
+            $nodeStr = $unit->saveTb($data);
+            return json($nodeStr);
         }
     }
 
