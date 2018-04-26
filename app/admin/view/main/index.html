@@ -399,10 +399,10 @@
                                 dataType: "json",
                                 success: function (res) {
                                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
                                     snapshotImgPathArr.push('<div class="mask">');
                                     snapshotImgPathArr.push('<div class="right">');
-                                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">');
+                                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="快照另存为">');
                                     snapshotImgPathArr.push('<i class="fa fa-save"></i>');
                                     snapshotImgPathArr.push('</a>');
                                     snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
@@ -410,7 +410,7 @@
                                     snapshotImgPathArr.push('</a>');
                                     snapshotImgPathArr.push('</div>');
                                     snapshotImgPathArr.push('<div class="scenter">');
-                                    snapshotImgPathArr.push('<a href="javascript:;" title="查看快照" uid='+ base64PicData +' onclick="view(this)">');
+                                    snapshotImgPathArr.push('<a href="javascript:;" title="查看快照" uid='+ base64RenData +' onclick="view(this)">');
                                     snapshotImgPathArr.push('<i class="fa fa-search"></i>');
                                     snapshotImgPathArr.push('</a>');
                                     snapshotImgPathArr.push('</div>');
@@ -428,7 +428,7 @@
                               base64PicData = strPicData;
                               base64RenData = strRenData;
                               getLabelTag();    //新增之后回显
-
+                                console.log(base64RenData);
                               // TODO 需要重构
                               var user_name = $('div[uid="createNameTag"]').html()
                               var create_time = $('div[uid="createDateTag"]').html()
@@ -448,10 +448,10 @@
                                   dataType: "json",
                                   success: function (res) {
                                       tagImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                                      tagImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                                      tagImgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
                                       tagImgPathArr.push('<div class="mask">');
                                       tagImgPathArr.push('<div class="right">');
-                                      tagImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="标注另存为">');
+                                      tagImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="标注另存为">');
                                       tagImgPathArr.push('<i class="fa fa-save"></i>');
                                       tagImgPathArr.push('</a>');
                                       tagImgPathArr.push('<a href="javascript:;" title="删除标注">');
@@ -459,7 +459,7 @@
                                       tagImgPathArr.push('</a>');
                                       tagImgPathArr.push('</div>');
                                       tagImgPathArr.push('<div class="scenter">');
-                                      tagImgPathArr.push('<a href="javascript:;" title="查看标注"  uid='+ base64PicData +' onclick="view(this)">');
+                                      tagImgPathArr.push('<a href="javascript:;" title="查看标注"  uid='+ base64RenData +' onclick="view(this)">');
                                       tagImgPathArr.push('<i class="fa fa-search"></i>');
                                       tagImgPathArr.push('</a>');
                                       tagImgPathArr.push('</div>');
@@ -544,13 +544,13 @@
             success: function (res) {
                 var imgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
-                    var base64PicData = res.data[i].label_snapshot;
+                    var base64RenData = res.data[i].label_snapshot;
                     $('#img').append(img);
                     imgPathArr.push('<div class="swiper-slide swiperSlide">');
-                    imgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                    imgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
                     imgPathArr.push('<div class="mask">');
                     imgPathArr.push('<div class="right">');
-                    imgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="标注另存为">');
+                    imgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="标注另存为">');
                     imgPathArr.push('<i class="fa fa-save"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('<a href="javascript:;" title="删除标注">');
@@ -587,12 +587,12 @@
             success: function (res) {
                 var snapshotImgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
-                    var base64PicData = res.data[i].label_snapshot;
+                    var base64RenData = res.data[i].label_snapshot;
                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
                     snapshotImgPathArr.push('<div class="mask">');
                     snapshotImgPathArr.push('<div class="right">');
-                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64PicData)" title="快照另存为">');
+                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="快照另存为">');
                     snapshotImgPathArr.push('<i class="fa fa-save"></i>');
                     snapshotImgPathArr.push('</a>');
                     snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
@@ -617,8 +617,8 @@
 
     //查看标注快照
     function view(that) {
-        var base64PicData = $(that).attr('uid');
-        RealBimOcx.ShowSnapshotOrMarkerInMem(base64PicData);
+        var base64RenData = $(that).attr('uid');
+        RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
     }
     
     //删除标注/快照
