@@ -96,13 +96,13 @@
                           <div class="layui-form-item">
                               <div class="anchor-list">
                                   <label class="layui-form-label">创建人</label>
-                                  <div class="layui-form-mid layui-word-aux createName">管理员</div>
+                                  <div class="layui-form-mid layui-word-aux createName" uid="createName">管理员</div>
                               </div>
                           </div>
                           <div class="layui-form-item">
                               <div class="anchor-list">
                                   <label class="layui-form-label">创建日期</label>
-                                  <div class="layui-form-mid layui-word-aux createDate">2018-04-25</div>
+                                  <div class="layui-form-mid layui-word-aux createDate" uid="createDate">2018-04-25</div>
                               </div>
                           </div>
                           <div class="layui-form-item">
@@ -130,11 +130,11 @@
                       <form class="layui-form">
                           <div class="layui-form-item">
                               <label class="layui-form-label">创建人</label>
-                              <div class="layui-form-mid layui-word-aux createName"></div>
+                              <div class="layui-form-mid layui-word-aux createName" uid="createNameTag"></div>
                           </div>
                           <div class="layui-form-item">
                               <label class="layui-form-label">创建日期</label>
-                              <div class="layui-form-mid layui-word-aux createDate"></div>
+                              <div class="layui-form-mid layui-word-aux createDate" uid="createDateTag"></div>
                           </div>
                           <div class="layui-form-item layui-form-text">
                               <label class="layui-form-label">标注信息</label>
@@ -288,7 +288,7 @@
                             $('textarea[name="remarkTag"]').on('input propertychange',function () {
                                 var val = $(this).text();
                                 RealBimOcx.SubmitMarkerText(val);
-                            })
+                            });
 
                             switch (eType) {
                                 case "ADD_ANCHOR":
@@ -412,6 +412,9 @@
                               base64PicData = strPicData;
                               base64RenData = strRenData;
                               // TODO 需要重构
+                              var user_name = $('div[uid="createNameTag"]').html()
+                              var create_time = $('div[uid="createDateTag"]').html()
+                              var remark = $('#remarkTag').text();
                               var tagImgPathArr = [];
                               tagImgPathArr.push('<div class="swiper-slide swiperSlide">');
                               tagImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
@@ -434,13 +437,17 @@
                               tagImgPathArr.push('</div>');
                               tagSwiper.prependSlide(tagImgPathArr.join(' '));
                               tagSwiper.updateSlidesSize();
+
                               $.ajax({
                                   url: "./labelSnapshot",
                                   type: "post",
                                   data: {
                                       picture_id:uObjSubIdSingle,
                                       type:1,
-                                      label_snapshot:base64RenData
+                                      label_snapshot:base64RenData,
+                                      user_name:user_name,
+                                      create_time:create_time,
+                                      remark:remark
                                   },
                                   dataType: "json",
                                   success: function (res) {
@@ -598,6 +605,9 @@
             }
         });
     });
+
+    //编辑标注的备注
+
 
     //键盘事件
     $(document).keyup(function (event) {
