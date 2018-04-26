@@ -401,7 +401,7 @@ class Main extends Permissions
     }
 
     /**
-     * 回显锚点
+     * 单个回显锚点
      * @return \think\response\Json
      * @author hutao
      */
@@ -422,6 +422,21 @@ class Main extends Permissions
             $name = $param['anchorName'];
             $pic = new AnchorPointModel();
             $flag = $pic->getAnchorTb($name);
+            return json($flag);
+        }
+    }
+
+    /**
+     * 全部回显锚点
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function allAnchorPoint()
+    {
+        // 前台需要传递 的是 锚点的名称 anchorName
+        if($this->request->isAjax()){
+            $pic = new AnchorPointModel();
+            $flag = $pic->getAnchorTb();
             return json($flag);
         }
     }

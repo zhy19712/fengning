@@ -89,7 +89,7 @@
                       <div class="layui-form-item">
                           <div class="anchor-list">
                               <label class="layui-form-label">关联构件名称</label>
-                              <div class="layui-form-mid layui-word-aux" id="componentNane"></div>
+                              <div class="layui-form-mid layui-word-aux" id="componentName"></div>
                           </div>
                       </div>
                       <div class="layui-form-item">
@@ -106,7 +106,7 @@
                       </div>
                       <div class="layui-form-item">
                           <div class="layui-input-block" style="margin: 0">
-                              <textarea name="remark" placeholder="锚点基本信息" class="layui-textarea"></textarea>
+                              <textarea name="anchorRemark" placeholder="锚点基本信息" class="layui-textarea"></textarea>
                           </div>
                       </div>
                       <div class="layui-form-item round">
@@ -116,9 +116,18 @@
                       </div>
                   </form>
               </div>
-              <div title="附件" style="overflow:auto;padding:20px;display:none;">
-                  tab2
-              </div>
+              <!--<div title="附件" style="overflow:auto;padding:20px;display:none;">
+                  <ul class="toggle-attr" id="anchorFile">
+                      <li uid="image" class="active">图片</li>
+                      <li uid="file">文档</li>
+                  </ul>
+                  <div id="image">
+                      <button id="addImage"></button>
+                  </div>
+                  <div id="file" style="display: none">
+                      <button id="addFile"></button>
+                  </div>
+              </div>-->
           </div>
             <!-- 标注业务层 -->
             <div id="addTag" class="easyui-tabs" style="width:100%;height:100%;border: 0;display: none">
@@ -141,7 +150,6 @@
                               </div>
                           </div>
                           <div class="layui-form-item round">
-                              <i class="fa fa-pencil" id="edit"></i>
                               <i class="fa fa-check" id="save"></i>
                               <i class="fa fa-reply fa-danger" id="back"></i>
                           </div>
@@ -173,11 +181,12 @@
                                 RealBimOcx.DelAllAnchors();
                                 RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
                                 RealBimOcx.AddAnchor(anchorName,fObjSelX,fObjSelY,fObjSelZ,0);
+
                                 RealBimOcx.AddAnchorEnd();
                                 RealBimOcx.BatchAddSubClrInfoBegin();
                                 RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
                                 RealBimOcx.BatchAddSubClrInfoEnd();
-                                labelAttr(3);
+                                labelAttr(3,uObjSubID);
                                 $('#anchorName').html(anchorName);      //锚点名称
                                 $('#fObjSelX').val(fObjSelX);       //锚点坐标
                                 $('#fObjSelY').val(fObjSelY);
@@ -232,7 +241,10 @@
                         <script for="RealBimOcx" event="OnAnchorSelected(SelAnchorName)" language='javascript'>
                           //点击锚点
                           //SelAnchorName
-                          $('#anchorName').val(SelAnchorName);
+                          easyUiPanelToggle();
+                          $('#defaultAttr').hide();
+                          $('#anchorLayerTab').show();
+                          getAnchorPoint(SelAnchorName);
                         </script>
                         <!-- 点击模型操作按钮 -->
                         <script for="RealBimOcx" event="UIClicked(eType,uButtonMode)" language='javascript'>
@@ -248,21 +260,22 @@
                             //锚点回显的显示隐藏
                             function anchorView() {
                                 $.ajax({
-                                    type: "Get",
-                                    url: "/Anchor/GetAnchorsByUser",
+                                    type: "post",
+                                    url: "./allAnchorPoint",
                                     success: function (data) {
-                                        data = data.result.anchors;
                                         if (uButtonMode == 1) {
+                                            console.log(111);
                                             RealBimOcx.AddAnchorBegin(0);
                                             $.each(data, function (i, item) {
-                                                RealBimOcx.AddAnchor(item.name, item.xValue, item.yValue, item.zValue, 0);
+                                                console.log(item);
+                                                RealBimOcx.AddAnchor(item.anchor_name, item.coordinate_x, item.coordinate_y, item.coordinate_z, 0);
                                             });
                                             RealBimOcx.AddAnchorEnd();
                                         }
                                         else {
                                             RealBimOcx.DelAnchorBegin();
                                             $.each(data, function (i, item) {
-                                                RealBimOcx.DeleteAnchor(item.name);
+                                                RealBimOcx.DeleteAnchor(item.anchor_name);
                                             });
                                             RealBimOcx.DelAnchorEnd();
                                         }
@@ -271,18 +284,19 @@
                             };
 
                             //创建人 和 创建日期
-                            window.labelAttr = function (type) {
+                            window.labelAttr = function (type,picture_id) {
                                 $.ajax({
                                     url: "./labelAttr",
                                     type: "post",
                                     data: {
-                                        type:type
+                                        type:type,
+                                        picture_id:picture_id
                                     },
                                     dataType: "json",
                                     success: function (res) {
                                         $('.createName').html(res.data.user_name);
                                         $('.createDate').html(res.data.create_time);
-                                        $('.componentNane').html(res.data.create_time);
+                                        $('#componentName').html(res.data.componentName);
                                     }
                                 })
                             }
@@ -300,7 +314,6 @@
                                     RealBimOcx.AddAnchorBegin(0);//构件锚点开始
                                     $('#defaultAttr,#backAnchor,#addTag').hide();
                                     $('#anchorLayerTab').show();
-                                    anchorPoint();
                                     easyUiPanelToggle();
                                     break; //添加锚点
                                 case "DISP_ANCHOR":
@@ -496,12 +509,24 @@
     operateType = "";
     //删除锚点
     function delAnchor(anchorName) {
-        RealBimOcx.DelAnchorBegin();
-        RealBimOcx.DeleteAnchor(anchorName);
-        RealBimOcx.DelAnchorEnd();
-        RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
-        $('#defaultAttr').show();
-        $('#anchorLayerTab').hide();
+        $.ajax({
+            url: "./delAnchorPoint",
+            type: "post",
+            data: {
+                anchor_point_id:uObjSubIdSingle
+            },
+            dataType: "json",
+            success: function (res) {
+                RealBimOcx.DelAnchorBegin();
+                RealBimOcx.DeleteAnchor(anchorName);
+                RealBimOcx.DelAnchorEnd();
+                RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
+                $('#defaultAttr').show();
+                $('#anchorLayerTab').hide();
+                console.log(res);
+            }
+        });
+
     };
     //保存标注
     $('#save').click(function () {
@@ -613,9 +638,6 @@
             }
         });
     }
-
-    //编辑标注的备注
-
 
     //键盘事件
     $(document).keyup(function (event) {
