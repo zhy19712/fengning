@@ -345,31 +345,85 @@ class Main extends Permissions
         }
     }
 
-    public function uploadAnchorPoint()
+    /**
+     * 删除锚点
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function delAnchorPoint()
     {
-        halt(11111);
-        // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 上传的文件 file
-        // 执行上传文件 获取文件编号  attachment_id
-        $param = input('param.'); halt($param);
-        $common = new \app\admin\controller\Common();
-        $param['attachment_id'] = $common->upload('quality','unitqualitymanage');
-        halt($param);
-        // 保存上传文件记录
-        $id = isset($param['id']) ? $param['id'] : 0;
-        $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
-        $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
-        if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
-            return json(['code' => '-1','msg' => '参数有误']);
-        }
+        // 前台需要传递 的是 锚点的主键 anchor_point_id
         if($this->request->isAjax()){
-            $data['contr_relation_id'] = $id;
-            $data['attachment_id'] = $attachment_id;
-            $data['type'] = $type;
-            $unit = new UnitqualitymanageModel();
-            $nodeStr = $unit->saveTb($data);
-            return json($nodeStr);
+            $param = input('param.');
+            // 验证规则
+            $rule = [
+                ['anchor_point_id', 'require|number|gt:-1', '请选择要删除的标注或者快照|标注快照的编号只能是数字|标注快照的编号不能为负数']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+            $id = $param['anchor_point_id'];
+            $pic = new AnchorPointModel();
+            $flag = $pic->deleteTb($id);
+            return json($flag);
         }
     }
 
+    /**
+     * 上传附件
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function uploadAnchorPoint()
+    {
+        // 前台需要 传递 锚点的主键 anchor_point_id 上传的文件 file
+        // 执行上传文件 获取文件编号  attachment_id
+        $common = new \app\admin\controller\Common();
+        $attachment_id = $common->upload('quality','anchor_point');
+        // 保存上传文件记录
+        $param = input('param.');
+        // 验证规则
+        $rule = [
+            ['anchor_point_id', 'require|number|gt:-1', '请选择要删除的标注或者快照|标注快照的编号只能是数字|标注快照的编号不能为负数']
+        ];
+        $validate = new \think\Validate($rule);
+        //验证部分数据合法性
+        if (!$validate->check($param)) {
+            return json(['code' => -1,'msg' => $validate->getError()]);
+        }
+        $data['id'] = $param['anchor_point_id'];
+        $data['attachment_id'] = $attachment_id;
+        $unit = new AnchorPointModel();
+        $nodeStr = $unit->editTb($data);
+        return json($nodeStr);
+    }
+
+    /**
+     * 回显锚点
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function getAnchorPoint()
+    {
+        // 前台需要传递 的是 锚点的名称 anchorName
+        if($this->request->isAjax()){
+            $param = input('param.');
+            // 验证规则
+            $rule = [
+                ['anchorName', 'require', '请选择要回显的锚点名称']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+            $name = $param['anchorName'];
+            $pic = new AnchorPointModel();
+            $flag = $pic->getAnchorTb($name);
+            return json($flag);
+        }
+    }
 
 }
