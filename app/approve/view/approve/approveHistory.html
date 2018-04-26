@@ -74,8 +74,8 @@
         <div class="tbcontainer">
             <div class="mark"></div>
         </div>
-        <input type="hidden" name="inputId" id="hiddenValId" value="">
-        <input type="hidden" name="inputName" id="hiddenValType" value="">
+        <input type="hidden" name="inputId" id="hiddenValId" value='{$dataId}'>
+        <input type="hidden" name="inputName" id="hiddenValType" value='{$dataType}'>
     </div>
 </div>
 
@@ -91,7 +91,7 @@
         "scrollCollapse": "true",
         serverSide: true,
         ajax: {
-            "url":"{:url('/approve/Common/datatablesPre')}?tableName=approve&data_id="+ $("#hiddenValId").val()+"&data_type="+ $("#hiddenValType").val()
+            "url":"{:url('/approve/Common/datatablesPre')}?tableName=approve&dataId="+ $("#hiddenValId").val()+"&dataType="+ $("#hiddenValType").val()
         },
         dom: 'lrtip',
         columns: [
@@ -113,7 +113,17 @@
                 targets: [0]
             },
             {
-                targets:[1]
+                targets:[1],
+                "render": function (data, type, row) {
+                    if (data == null || data == undefined || data == '') return '';
+                    var time = new Date(data*1000);
+                    var y = time.getFullYear();
+                    var m = time.getMonth() + 1;
+                    m = m < 10 ? '0' + m : m;
+                    var d = time.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    return y + '-' + m + '-' + d;
+                }
             },
             {
                 targets:[2]
