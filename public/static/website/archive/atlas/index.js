@@ -13,6 +13,8 @@ $.ajax({
             for(var i =0; i<res.data.length;i++){
                 section += '<option value="'+res.data[i].name+'">'+res.data[i].name+'</option>';
             }
+        }else{
+          layer.msg(res.msg);
         }
     }
 })
@@ -178,6 +180,8 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
+                }else{
+                  layer.msg(res.msg);
                 }
             },
             error: function (data) {
@@ -199,6 +203,8 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
+                }else{
+                  layer.msg(res.msg);
                 }
             },
             error: function (data) {
@@ -291,6 +297,8 @@ function addNodetree() {
                         zTreeObj.addNodes(null,res.data);
                     }
 
+                }else{
+                  layer.msg(res.msg);
                 }
             }
         });
@@ -318,6 +326,8 @@ function editNodetree() {
                     sNodes[0].name = value;
                     zTreeObj.updateNode(sNodes[0]);//更新节点名称
                     layer.msg("编辑成功")
+                }else{
+                  layer.msg(res.msg);
                 }
             }
         });
@@ -343,6 +353,8 @@ function delNodetree() {
                         tableItem.ajax.url(url).load();
                         zTreeObj.removeNode(sNodes[0]);
                         selfid = "";
+                    }else{
+                      layer.msg(res.msg);
                     }
                 }
             });
@@ -398,9 +410,14 @@ function moveNode(zTreeObj,selectNode,state) {
         },
         dataType: "json",
         success: function (res) {
-            zTreeObj.moveNode(changeNode, selectNode, state);
-            changeNode.sort_id = select_sort_id;
-            selectNode.sort_id = change_sort_id;
+            if(res.code==1){
+              zTreeObj.moveNode(changeNode, selectNode, state);
+              changeNode.sort_id = select_sort_id;
+              selectNode.sort_id = change_sort_id;
+            }else{
+              layer.msg(res.msg);
+            }
+
         }
     });
 }
@@ -617,6 +634,8 @@ function getAdminname(id) {
             }else if(res.code===-1){
                 userList=[];
                 showUser();
+            }else{
+              layer.msg(res.msg);
             }
 
         },

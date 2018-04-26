@@ -129,6 +129,8 @@ layui.use(['element',"layer",'form'], function(){
                         tableItem.ajax.url(url).load();
                         parent.layer.msg('保存成功！');
                         layer.closeAll();
+                    }else{
+                      layer.msg(res.msg);
                     }
                 },
                 error: function (data) {
@@ -182,6 +184,8 @@ function addNodetree() {
                         zTreeObj.addNodes(null,res.data);
                     }
 
+                }else{
+                  layer.msg(res.msg);
                 }
             }
         });
@@ -210,7 +214,9 @@ function editNodetree() {
                     sNodes[0].name = value;
                     zTreeObj.updateNode(sNodes[0]);//更新节点名称
                     layer.msg("编辑成功")
-                 }
+                 }else{
+                  layer.msg(res.msg);
+                }
             }
         });
         layer.close(index);
@@ -239,6 +245,8 @@ function delNodetree() {
                         $(".path").html("");
                         zTreeObj.removeNode(sNodes[0]);
                         selfid = "";
+                    }else{
+                      layer.msg(res.msg);
                     }
                 }
             });
@@ -268,7 +276,10 @@ function conEdit(id){
         data: {id:id},
         dataType: "json",
         success: function (res) {
-            console.log(res);
+            if(res.code==0){
+              layer.msg(res.msg);
+              return;
+            }
             var nowtime = new Date().Format("yyyy-MM-dd");
             layer.open({
                 type: 1,
@@ -300,6 +311,8 @@ function conDel(id){
                     layer.msg("删除成功！");
                     var url = "/admin/common/datatablespre/tableName/admin_cate/id/"+selfid+".shtml";
                     tableItem.ajax.url(url).load();
+                }else{
+                  layer.msg(res.msg);
                 }
             }
         });
@@ -348,6 +361,8 @@ $(".userContainer").delegate("p a","click",function () {
                 layer.msg("删除成功");
                 console.log(that.parent("p"))
                 that.parent("p").remove();
+            }else{
+                layer.msg(res.msg);
             }
         },
         error: function (data) {

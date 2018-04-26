@@ -86,6 +86,8 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
                     tableItem.ajax.url(url).load();
                     parent.layer.msg('保存成功！');
                     layer.closeAll();
+                }else{
+                    layer.msg(res.msg);
                 }
             },
             error: function (data) {
@@ -127,6 +129,8 @@ layui.use(['element',"layer",'form','laydate','upload'], function(){
                           zTreeObj.expandAll(true);
                       },700);
 
+                  }else{
+                      layer.msg(res.msg)
                   }
               }
           })
@@ -175,14 +179,6 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
 });
 //点击编辑
 function conEdit(id) {
-    layer.open({
-        type: 1,
-        title: '编辑',
-        area: ['690px', '240px'],
-        content:sceneDom
-    });
-    $("#addId").val(id);
-
     $.ajax({
         type:"post",
         url:"./getindex",
@@ -190,7 +186,16 @@ function conEdit(id) {
         dataType:"json",
         success:function (res) {
             if(res.code===1){
+              layer.open({
+                type: 1,
+                title: '编辑',
+                area: ['690px', '240px'],
+                content:sceneDom
+              });
+              $("#addId").val(id);
                 $("#filename").val(res.data.filename);
+            }else{
+                layer.msg(res.msg)
             }
         }
     })
@@ -216,6 +221,8 @@ function conDel(id){
                 },700);
             }else if(res.code===-1){
                 layer.msg(res.msg);
+            }else{
+              layer.msg(res.msg);
             }
         }
     })

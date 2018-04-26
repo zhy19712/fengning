@@ -86,7 +86,7 @@ class Common extends Controller
         $idArr = $this->documentTypeService->getChilds($id);
         $idArr[] = $id;
         $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->count(0);
+        $recordsTotal = Db::name($table)->whereIn('type', $idArr)->count(0);
         $recordsFilteredResult = array();
         if (strlen($search) > 0) {
             //有搜索条件的情况
@@ -97,7 +97,7 @@ class Common extends Controller
                     ->join('admin u', 'f.user_id=u.id', 'left')
                     ->field('a.id,a.docname,u.nickname,FROM_UNIXTIME(f.create_time) as create_time,a.status')
                     ->whereIn('a.type', $idArr)
-                    ->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                    ->where('a.docname|u.nickname', 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
