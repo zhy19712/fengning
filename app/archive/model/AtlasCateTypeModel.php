@@ -37,6 +37,8 @@ class AtlasCateTypeModel extends Model
 
             $result = $this->column('id,pid,name,sort_id');
 
+            $result = tree($result);
+
             $sortArr = [];
             foreach ($result as $v){
                 $sortArr[] = $v['sort_id'];
@@ -46,7 +48,7 @@ class AtlasCateTypeModel extends Model
             foreach ($sortArr as $v){
                 foreach($result as $key=>$vo){
                     if($v == $vo['sort_id']){
-                        $str .= '{ "id": "' . $vo['id'] . '", "pid":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"'.',"sort_id":"'.$vo['sort_id'].'"';
+                        $str .= '{ "id": "' . $vo['id'] . '", "pid":"' . $vo['pid'] . '", "name":"' . $vo['name'].'"'.',"sort_id":"'.$vo['sort_id'].'","level":"'.$vo['level'].'"';
                         $str .= '},';
                     }
                 }
