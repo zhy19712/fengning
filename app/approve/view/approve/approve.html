@@ -187,7 +187,7 @@
         "scrollY": "360px",
         "scrollCollapse": "true",
         ajax: {
-            "url": "{:url('/Approve/Common/datatablesPre')}?tableName=approve&data_id="+$("#valId").val()+"&data_type="+$("#valType").val()
+            "url": "{:url('/Approve/Common/datatablesPre')}?tableName=approve&dataId="+$("#valId").val()+"&dataType="+$("#valType").val()
         },
         dom: 'lrtip',
         columns: [
@@ -209,19 +209,23 @@
                 targets: [0]
             },
             {
-                targets:[1]
+                targets:[1],
+                "render": function (data, type, row) {
+                    if (data == null || data == undefined || data == '') return '';
+                    var time = new Date(data*1000);
+                    var y = time.getFullYear();
+                    var m = time.getMonth() + 1;
+                    m = m < 10 ? '0' + m : m;
+                    var d = time.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    return y + '-' + m + '-' + d;
+                }
             },
             {
                 targets:[2]
             },
             {
-                targets: [3],
-                // render: function (data, type, row) {
-                //     if (data == 1) {
-                //         return "已归档";
-                //     }
-                //     return "待归档";
-                // }
+                targets: [3]
             }
         ],
         language: {
