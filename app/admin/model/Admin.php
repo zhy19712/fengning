@@ -201,23 +201,18 @@ class Admin extends Model
                         }
                     }
 
-
                     $v['admin_cate_id'] = implode(",", $cate_id);
 
                     //把新筛选的admin_cate_id重新插入数据库
 
                     $this->allowField(true)->update(['admin_cate_id' => $v['admin_cate_id']], ['id' => $v['id']]);
 
-
                 }
-
 
             }
         }catch(PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
         }
-
-
 
     }
 
@@ -256,16 +251,13 @@ class Admin extends Model
                         }
                     }
 
-
                     $v['admin_cate_id'] = implode(",", $cate_id);
 
                     //把新筛选的admin_cate_id重新插入数据库
 
                     $this->allowField(true)->update(['admin_cate_id' => $v['admin_cate_id']], ['id' => $v['id']]);
 
-
                 }
-
 
             }
 
@@ -284,10 +276,13 @@ class Admin extends Model
 
                         array_push($admin_cate_id_info_data, $param['id']);
 
+                    }else
+                    {
+                        $admin_cate_id_info_data = [$param['id']];
+
                     }
 
                     $str = implode(",", $admin_cate_id_info_data);
-
 
                     //把重新修改的admin_cate_id重新插入数据库
 

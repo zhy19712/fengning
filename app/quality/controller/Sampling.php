@@ -36,7 +36,7 @@ class Sampling extends Permissions
      */
     public function tree()
     {
-        if ($this->request->isAjax()) {
+        if ($this->request->isAjax()){
             //实例化模型
             $model = new SamplingModel();
             //查询抽检记录表
