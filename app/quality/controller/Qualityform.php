@@ -72,7 +72,7 @@ class Qualityform extends Permissions
         $htmlContent = str_replace('{controlPointId}', $cp['control_id'], $htmlContent);
         $htmlContent = str_replace('{formName}', $cp['ControlPoint']['name'], $htmlContent);
         $htmlContent = str_replace('{currentStep}', $currentStep, $htmlContent);
-        $htmlContent = str_replace('{isView}', $isView, $htmlContent);
+        $htmlContent = str_replace('{isView}', strtoupper( $isView), $htmlContent);
 
         //输出模板内容
         //Todo 暂时使用replace替换，后期修改模板使用fetch自定义模板渲染
