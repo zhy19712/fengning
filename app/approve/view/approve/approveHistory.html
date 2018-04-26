@@ -75,7 +75,7 @@
             <div class="mark"></div>
         </div>
         <input type="hidden" name="inputId" id="hiddenValId" value="">
-        <input type="hidden" name="inputName" id="hiddenValName" value="">
+        <input type="hidden" name="inputName" id="hiddenValType" value="">
     </div>
 </div>
 
@@ -91,7 +91,7 @@
         "scrollCollapse": "true",
         serverSide: true,
         ajax: {
-            "url":"{:url('/approve/Common/datatablesPre')}?tableName=approve&data_id=&data_type="
+            "url":"{:url('/approve/Common/datatablesPre')}?tableName=approve&data_id="+ $("#hiddenValId").val()+"&data_type="+ $("#hiddenValType").val()
         },
         dom: 'lrtip',
         columns: [

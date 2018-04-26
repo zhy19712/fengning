@@ -1,4 +1,5 @@
-uObjSubIDArr = [];      //已选非隐藏模型ID
+uObjSubIdSingle = new Number();      //已选非隐藏单个模型ID
+uObjSubIDArr = [];      //已选非隐藏模型ID数组
 hiddenArr = [];         //已选隐藏模型ID
 isCtrlDown = false;
 $(document).keydown(function (event) {
@@ -23,6 +24,7 @@ window.tagSwiper = new Swiper ('#tag', {
     paginationClickable: true,
     spaceBetween: 30,
 });
+
 //快照图片滚动
 window.snapshotSwiper = new Swiper ('#snapshot', {
     nextButton: '.snapshot-button-next',
@@ -98,24 +100,25 @@ $('#at').click(function () {
     window.open("./selectperson", "人员选择", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
 });
 
+//添加自定义属性
 $('#addAttr').click(function () {
     var attrGroup = [];
-    attrGroup.push('<div class="layui-input-inline">');
-    attrGroup.push('<input type="text" name="attrKey" id="attrKey" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
-    attrGroup.push('<input type="text" name="attrVal" id="attrVal" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
+    attrGroup.push('<div class="layui-input-inline attrGroup">');
+    attrGroup.push('<input type="text" name="attrKey" required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
+    attrGroup.push('<input type="text" name="attrVal" required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
     attrGroup.push('<div class="layui-form-mid layui-word-aux">');
-    attrGroup.push('<i class="fa fa-check saveAttr" onclick="saveAttr()"></i>');
+    attrGroup.push('<i class="fa fa-check saveAttr" onclick="saveAttr(this)"></i>');
     attrGroup.push('<i class="fa fa-close closeAttr" onclick="closeAttr(this)"></i>');
     attrGroup.push('</div>');
     attrGroup.push('</div>');
-
     $('#attrGroup').append(attrGroup.join(' '));
 });
 
-function saveAttr() {
-    var picture_id = uObjSubIDArr;
-    var attrKey = $('#attrKey').val();
-    var attrVal = $('#attrVal').val();
+//保存自定义属性
+function saveAttr(that) {
+    var picture_id = uObjSubIdSingle;
+    var attrKey = $(that).parents('.attrGroup').find('input[name="attrKey"]').val();
+    var attrVal = $(that).parents('.attrGroup').find('input[name="attrVal"]').val();
     $.ajax({
         url: "./addAttr",
         type: "post",
@@ -127,23 +130,53 @@ function saveAttr() {
         dataType: "json",
         success: function (res) {
             layer.msg(res.msg);
-            alert(res.msg);
         }
     });
 }
 
+//回显自定义属性
+function getAttr() {
+    var picture_id = uObjSubIdSingle;
+    $.ajax({
+        url: "./getAttr",
+        type: "post",
+        data: {
+            picture_id:picture_id,
+        },
+        dataType: "json",
+        success: function (res) {
+            $('#attrGroup').empty();
+            var attrGroup = [];
+            for(key in res.attr){
+                if(res.attr.hasOwnProperty(key)){
+                    var val = res.attr[key];
+                    attrGroup.push('<div class="layui-input-inline attrGroup">');
+                    attrGroup.push('<input type="text" name="attrKey" value='+ key +' required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
+                    attrGroup.push('<input type="text" name="attrVal" value='+ val +' required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
+                    attrGroup.push('<div class="layui-form-mid layui-word-aux">');
+                    attrGroup.push('<i class="fa fa-check saveAttr" onclick="saveAttr(this)"></i>');
+                    attrGroup.push('<i class="fa fa-close closeAttr" onclick="closeAttr(this)"></i>');
+                    attrGroup.push('</div>');
+                }
+            }
+            attrGroup.push('</div>');
+            $('#attrGroup').append(attrGroup.join(' '));
+        }
+    });
+}
+
+//删除自定义属性
 function closeAttr(that) {
     $(that).parents('.layui-input-inline').remove();
 }
 
 //添加备注信息
 $('#addRemark').click(function () {
-    if(!uObjSubIDArr){
+    if(!uObjSubIdSingle){
         layer.msg('请选择模型');
-        alert('请选择模型');
         return false;
     }
-    var picture_id = uObjSubIDArr;
+    var picture_id = uObjSubIdSingle;
     var remarkVal = $('#remark').text();
     $.ajax({
         url: "./addRemark",
@@ -155,10 +188,25 @@ $('#addRemark').click(function () {
         dataType: "json",
         success: function (res) {
             layer.msg(res.msg);
-            alert(res.msg);
         }
     })
 });
+
+//回显备注信息
+function getRemark() {
+    var picture_id = uObjSubIdSingle;
+    $.ajax({
+        url: "./getRemark",
+        type: "post",
+        data: {
+            picture_id:picture_id
+        },
+        dataType: "json",
+        success: function (res) {
+            $('#remark').text(res.remark);
+        }
+    })
+}
 
 // 添加锚点
 $('#saveAnchor').click(function () {
@@ -202,3 +250,19 @@ $('#backAnchor').click(function(){
     $('#defaultAttr').show();
     $('#anchorLayer').hide();
 });
+
+//easyui面板显隐
+function easyUiPanelToggle() {
+    var number = $("#easyuiLayout").layout("panel", "east")[0].clientWidth;
+    if(number<=0){
+        $('#easyuiLayout').layout('expand','east');
+    }
+}
+
+function easyUiPanelToggleSouth() {
+    var number = $("#centent").layout("panel", "south")[0].clientWidth;
+    if(number<=0){
+        $('#centent').layout('expand','south');
+    }
+}
+
