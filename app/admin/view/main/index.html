@@ -10,6 +10,7 @@
                               <li uid="manageAttr">管理属性</li>
                           </ul>
                           <div class="baseAttrWrap" id="baseAttr">
+                              <div id="img"></div>
                               <div class="layui-collapse" id="baseAttrCon" style="display: none">
                                   <div class="layui-colla-item">
                                       <h2 class="layui-colla-title">常规属性</h2>
@@ -95,13 +96,13 @@
                           <div class="layui-form-item">
                               <div class="anchor-list">
                                   <label class="layui-form-label">创建人</label>
-                                  <div class="layui-form-mid layui-word-aux" id="createName">管理员</div>
+                                  <div class="layui-form-mid layui-word-aux createName">管理员</div>
                               </div>
                           </div>
                           <div class="layui-form-item">
                               <div class="anchor-list">
                                   <label class="layui-form-label">创建日期</label>
-                                  <div class="layui-form-mid layui-word-aux" id="createDate">2018-04-25</div>
+                                  <div class="layui-form-mid layui-word-aux createDate">2018-04-25</div>
                               </div>
                           </div>
                           <div class="layui-form-item">
@@ -129,11 +130,11 @@
                       <form class="layui-form">
                           <div class="layui-form-item">
                               <label class="layui-form-label">创建人</label>
-                              <div class="layui-form-mid layui-word-aux" id="createNameTag"></div>
+                              <div class="layui-form-mid layui-word-aux createName"></div>
                           </div>
                           <div class="layui-form-item">
                               <label class="layui-form-label">创建日期</label>
-                              <div class="layui-form-mid layui-word-aux" id="createDateTag"></div>
+                              <div class="layui-form-mid layui-word-aux createDate"></div>
                           </div>
                           <div class="layui-form-item layui-form-text">
                               <label class="layui-form-label">标注信息</label>
@@ -267,7 +268,22 @@
                                         }
                                     }
                                 });
+                            };
+
+                            //创建人 和 创建日期
+                            function labelAttr() {
+                                $.ajax({
+                                    url: "./labelAttr",
+                                    type: "post",
+                                    data: {},
+                                    dataType: "json",
+                                    success: function (res) {
+                                        $('.createName').html(res.data.user_name);
+                                        $('.createDate').html(res.data.create_time);
+                                    }
+                                })
                             }
+                            labelAttr();
 
                             $('textarea[name="remarkTag"]').on('input propertychange',function () {
                                 var val = $(this).text();
@@ -364,7 +380,7 @@
                             snapshotImgPathArr.push('<i class="fa fa-save"></i>');
                             snapshotImgPathArr.push('</a>');
                             snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
-                            snapshotImgPathArr.push('<i class="fa fa-close" id="del"></i>');
+                            snapshotImgPathArr.push('<i class="fa fa-close" class="del"></i>');
                             snapshotImgPathArr.push('</a>');
                             snapshotImgPathArr.push('</div>');
                             snapshotImgPathArr.push('<div class="scenter">');
@@ -405,7 +421,7 @@
                               tagImgPathArr.push('<i class="fa fa-save"></i>');
                               tagImgPathArr.push('</a>');
                               tagImgPathArr.push('<a href="javascript:;" title="删除标注">');
-                              tagImgPathArr.push('<i class="fa fa-close" id="del"></i>');
+                              tagImgPathArr.push('<i class="fa fa-close" class="del"></i>');
                               tagImgPathArr.push('</a>');
                               tagImgPathArr.push('</div>');
                               tagImgPathArr.push('<div class="scenter">');
@@ -489,9 +505,11 @@
             },
             dataType: "json",
             success: function (res) {
+                console.log(res.data);
                 var imgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
                     var base64PicData = res.data[i];
+                    $('#img').append(img);
                     imgPathArr.push('<div class="swiper-slide swiperSlide">');
                     imgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
                     imgPathArr.push('<div class="mask">');
@@ -500,7 +518,7 @@
                     imgPathArr.push('<i class="fa fa-save"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('<a href="javascript:;" title="删除标注">');
-                    imgPathArr.push('<i class="fa fa-close" id="del"></i>');
+                    imgPathArr.push('<i class="fa fa-close" class="del"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('</div>');
                     imgPathArr.push('<div class="scenter">');
@@ -512,7 +530,6 @@
                     imgPathArr.push('</div>');
                     imgPathArr.push('</div>');
                 }
-                console.log(imgPathArr.join(' '));
                 tagSwiper.prependSlide(imgPathArr.join(' '));
                 tagSwiper.updateSlidesSize();
             }
@@ -543,7 +560,7 @@
                     snapshotImgPathArr.push('<i class="fa fa-save"></i>');
                     snapshotImgPathArr.push('</a>');
                     snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
-                    snapshotImgPathArr.push('<i class="fa fa-close" id="del"></i>');
+                    snapshotImgPathArr.push('<i class="fa fa-close" class="del"></i>');
                     snapshotImgPathArr.push('</a>');
                     snapshotImgPathArr.push('</div>');
                     snapshotImgPathArr.push('<div class="scenter">');
@@ -565,6 +582,23 @@
     $('.scenter a').click(function () {
         RealBimOcx.ShowSnapshotOrMarkerInMem(base64RenData);
     });
+    
+    //删除标注
+    $('.del').click(function(){
+        var label_snapshot_id = '';
+        $.ajax({
+            url: "./delLabelSnapshot",
+            type: "post",
+            data: {
+                label_snapshot_id:label_snapshot_id
+            },
+            dataType: "json",
+            success: function (res) {
+                layer.msg(res.msg);
+            }
+        });
+    });
+
     //键盘事件
     $(document).keyup(function (event) {
         var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;

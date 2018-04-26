@@ -1127,8 +1127,11 @@
                      var d = time.getDate();
                      d = d < 10 ? ('0' + d) : d;
                      var h = time.getHours() + ':';
+                     h = h < 10 ? '0' + h : h;
                      var m = time.getMinutes() + ':';
+                     m = m < 10 ? '0' + m : m;
                      var s = time.getSeconds();
+                     s = s < 10 ? '0' + s : s;
                      return y + '-' + M + '-' + d +' '+ h + m + s;
                  }
              },
@@ -1225,7 +1228,7 @@
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0&isView=true'
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0&isView=True'
         });
     }
 
