@@ -9,6 +9,7 @@
 namespace app\approve\controller;
 
 use app\admin\controller\Permissions;
+use app\admin\model\Admin;
 use app\approve\model\ApproveModel;
 use app\quality\model\QualityFormInfoModel;
 use think\Request;
@@ -22,10 +23,12 @@ use think\Session;
 class Approve extends Permissions
 {
     protected $approveService;
+    protected $adminService;
 
     public function __construct(Request $request = null)
     {
         $this->approveService = new ApproveModel();
+        $this->adminService = new Admin();
         parent::__construct($request);
     }
 
@@ -75,6 +78,23 @@ class Approve extends Permissions
     public function ApproveHistory($dataId, $dataType)
     {
         $info = $this->approveService->getApproveInfo($dataId, new $dataType);
+        $_userlist = $this->adminService->whereIn('id', explode(',', $info->approveIds))->with('Thumb')->select();
+        $userlist = array();
+        foreach ($_userlist as $user) {
+            $_user = array();
+            $_user = [
+                'id' => $user['id'],
+                'nickname' => $user['nickname'],
+                'thumb' => ''
+            ];
+            if (!isNull($user['Thumb'])) {
+                $_user['thumb'] = $user['Thumb']['filepath'];
+            }
+            $userlist[] = $_user;
+        }
+        $this->assign('dataId', $dataId);
+        $this->assign('dataType', $dataType);
+        $this->assign('users', json_encode($userlist));
         $this->assign('approveinfo', json_encode($info));
         return $this->fetch();
     }

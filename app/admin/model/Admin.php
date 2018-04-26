@@ -18,6 +18,15 @@ class Admin extends Model
         return $this->hasOne('Attachment','id','signature');
     }
 
+    /**
+     * 头像
+     * @return \think\model\relation\HasOne
+     */
+    public function Thumb()
+    {
+        return $this->hasOne('Attachment','id','thumb');
+    }
+
     public function log()
     {
         //关联日志表

@@ -285,67 +285,66 @@ class Branch extends Permissions
      * 控制点里的模板文件打印
      * @return \think\response\Json
      */
-    public function  printDocument()
-    {
-        if(request()->isAjax()){
-            // 前台需要 传递 文件编号 id
-            $param = input('param.');
-            $file_id = isset($param['id']) ? $param['id'] : 0;
-            if($file_id == 0){
-                return json(['code' => '-1','msg' => '编号有误']);
-            }
-            $file_obj = Db::name('quality_subdivision_planning_list')->alias('s')
-                ->join('controlpoint c','c.id=s.controller_point_id','left')
-                ->where('s.id',$file_id)->field('c.code,c.name,s.selfid')->find();
-            if(empty($file_obj)){
-                return json(['code' => '-1','msg' => '编号无效']);
-            }
-            $formPath = ROOT_PATH . 'public' . DS . "data\\form\\quality\\" . $file_obj['code'] . $file_obj['name'] . ".docx";
-
-            $formPath = iconv('UTF-8', 'GB2312', $formPath);
-
-
-            if(!file_exists($formPath)){
-                return json(['code' => '-1','msg' => '文件不存在']);
-            }
-
-            //设置临时文件，避免C盘Temp不可写报错
-            Settings::setTempDir('temp');
-            $phpword = new PhpWord();
-            $phpword = $phpword->loadTemplate($formPath);
-            $infos = $this->qualityFormInfoService->getFormBaseInfo($file_obj['selfid']);
-            foreach ($infos as $key => $value) {
-                $phpword->setValue('{' . $key . '}', $value);
-            }
-            // 预览里有 打印
-                $code = 1;
-                $msg = '预览成功';
-                $path = $formPath;
-                $extension = strtolower(get_extension(substr($path,1)));
-                $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
-                $pdf_path = iconv('GB2312', 'UTF-8', $pdf_path);
-                if(!file_exists($pdf_path)){
-                    if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
-                        doc_to_pdf($path);
-                    }else if($extension === 'xls' || $extension === 'xlsx'){
-                        excel_to_pdf($path);
-                    }else if($extension === 'ppt' || $extension === 'pptx'){
-                        ppt_to_pdf($path);
-                    }else if($extension === 'pdf'){
-                        $pdf_path = $path;
-                    }else if($extension === "jpg" || $extension === "png" || $extension === "jpeg"){
-                        $pdf_path = $path;
-                    }else {
-                        $code = 0;
-                        $msg = '不支持的文件格式';
-                    }
-
-                    return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
-                }else{
-                    return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
-                }
-        }
-    }
+//    public function  printDocument()
+//    {
+//        if(request()->isAjax()){
+//            // 前台需要 传递 文件编号 id
+//            $param = input('param.');
+//            $file_id = isset($param['id']) ? $param['id'] : 0;
+//            if($file_id == 0){
+//                return json(['code' => '-1','msg' => '编号有误']);
+//            }
+//            $file_obj = Db::name('quality_subdivision_planning_list')->alias('s')
+//                ->join('controlpoint c','c.id=s.controller_point_id','left')
+//                ->where('s.id',$file_id)->field('c.code,c.name,s.selfid')->find();
+//            if(empty($file_obj)){
+//                return json(['code' => '-1','msg' => '编号无效']);
+//            }
+////            \uploads\admin\admin_thumb\20180323\3452ba9d4fc1794d4325edf2365aee25.jpg
+//            $formPath = ROOT_PATH . 'public' . DS . "data\\form\\quality\\" . $file_obj['code'] . $file_obj['name'] . ".docx";
+//            $formPath = iconv('UTF-8', 'GB2312', $formPath);
+//
+//            if(!file_exists($formPath)){
+//                return json(['code' => '-1','msg' => '文件不存在']);
+//            }
+//
+////            设置临时文件，避免C盘Temp不可写报错
+////            Settings::setTempDir('temp');
+////            $phpword = new PhpWord();
+////            $phpword = $phpword->loadTemplate($formPath);
+////            $infos = $this->qualityFormInfoService->getFormBaseInfo($file_obj['selfid']);
+////            foreach ($infos as $key => $value) {
+////                $phpword->setValue('{' . $key . '}', $value);
+////            }
+////            $docname = $phpword->save();
+//            // 预览里有 打印
+//                $code = 1;
+//                $msg = '预览成功';
+//                $path =   DS."data\\form\\quality\\".$file_obj['code'].$file_obj['name'].".docx";
+//                $extension = strtolower(get_extension(substr($path,1)));
+//                $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
+//                if(!file_exists($pdf_path)){
+//                    if($extension === 'doc' || $extension === 'docx' || $extension === 'txt'){
+//                        doc_to_pdf($path);
+//                    }else if($extension === 'xls' || $extension === 'xlsx'){
+//                        excel_to_pdf($path);
+//                    }else if($extension === 'ppt' || $extension === 'pptx'){
+//                        ppt_to_pdf($path);
+//                    }else if($extension === 'pdf'){
+//                        $pdf_path = $path;
+//                    }else if($extension === "jpg" || $extension === "png" || $extension === "jpeg"){
+//                        $pdf_path = $path;
+//                    }else {
+//                        $code = 0;
+//                        $msg = '不支持的文件格式';
+//                    }
+//
+//                    return json(['code' => $code, 'path' => substr($pdf_path,1), 'msg' => $msg]);
+//                }else{
+//                    return json(['code' => $code,  'path' => substr($pdf_path,1), 'msg' => $msg]);
+//                }
+//        }
+//    }
 
     /**
      * 删除控制点

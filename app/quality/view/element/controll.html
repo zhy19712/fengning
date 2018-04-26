@@ -290,6 +290,7 @@
 </div>
 <div id="form_container" style="display: none;"></div>
 <div id="form_container_from" style="display: none;"></div>
+<input type="hidden" id="userId" value='{$userId}'>
 </body>
 <script type="text/javascript">
 
@@ -348,7 +349,7 @@
                     var a = data;
                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='downConFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='printConFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printConFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
                     return html;
                 }
             }
@@ -583,6 +584,7 @@
         $("#homeWork").css("color","#CDCDCD");
     });
 
+    var flag = true;
     //点击作业
     $(".imgList").on("click","#homeWork",function () {
         $(".bitCodes").css("display","none");
@@ -590,6 +592,14 @@
         $(".mybtnAdd").css("display","none");
         $(this).css("color","#2213e9").parent("span").next("span").children("a").css("color","#CDCDCD");
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
+        // if(clickId =='' || conThisId == '') {
+        //     $(".bitCodes").css("display","none");
+        //     $(".mybtn").css("display","none");
+        //     $(".mybtnAdd").css("display","none");
+        //     implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id=").load();
+        //     imageData.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=2&cpr_id=").load();
+        // }
+        flag = true;
     });
 
     //点击工序控制点名字
@@ -687,12 +697,13 @@
     }
 
     //预览
-    function showPdf(id,url,type_model) {
+    function showPdf(id,url) {
         $.ajax({
             url: url,
             type: "post",
-            data: {id:id,type_model : type_model},
+            data: {id:id},
             success: function (res) {
+                console.log(res);
                 if(res.code === 1){
                     var path = res.path;
                     if(res.path.split(".")[1]==="pdf"){
@@ -727,7 +738,7 @@
 
     //点击打印模板
     function printConFile(id) {
-        showPdf(id,"../Common/download","BranchfileModel")
+        showPdf(id,"{:url('quality/Unitqualitymanage/relationPreview')}");
     }
 
     //删除封装的方法
@@ -800,7 +811,7 @@
                 // alert('控制点执行情况');
                 // if((conThisId != undefined && clickId != undefined) || (conThisId != null && clickId != null)){
                 // if((clickId != null || clickId != undefined) && (conThisId != null || conThisId != undefined)){
-                if(clickId && conThisId){
+                if(clickId && conThisId || flag == true && clickId){
                     $(".mybtn").css("display","block");
                 }else if(clickId ==''|| conThisId == '') {
                     $(".mybtn").css("display","none");
@@ -812,7 +823,7 @@
             if(title === "附件资料"){
                 // alert('附件资料');
                 // if(clickId != null && clickId != undefined){
-                if(clickId && conThisId){
+                if(clickId && conThisId || flag == true && clickId){
                     $(".bitCodes").css("display","block");
                     $(".mybtn").css("display","block");
                 }else if(clickId ==''|| conThisId == '') {
@@ -826,7 +837,7 @@
                 // alert('在线填报');
                 // if(clickId != null && clickId != undefined){
                 // if((clickId != null || clickId != undefined || clickId != '') && (conThisId != null && conThisId != undefined || conThisId != '')){
-                if(clickId && conThisId){
+                if(clickId && conThisId || flag == true && clickId){
                     $(".mybtnAdd").css("display", "block");
                     $(".mybtn").css("display", "none");
                     console.log(clickId)
@@ -910,8 +921,8 @@
                 "targets": [4],
                 "render": function (data, type, row) {
                     var a = data;
-                    // 暂时去掉 var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                    var html = "<a type='button' class='' style='margin-left: 5px;' onclick='downConFileImp("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFileImp("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                     return html;
                 }
@@ -1045,8 +1056,8 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     //暂时去掉 var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     var html = "<a type='button' class='' style='margin-left: 5px;' onclick='downConFileData("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
+                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFileData("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
                      html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
                      return html;
                  }
@@ -1141,6 +1152,9 @@
                  "targets": [4],
                  "render": function (data, type, row) {
                      // var dataType = "qualityFormInfo";
+                     console.log(row);
+                     console.log(row[2]);
+                     console.log($("#userId").val());
                      var html = "";
                      html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                      if (row[3] === 0) {
@@ -1148,10 +1162,9 @@
                          html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
                          html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                      }
-                     else if (row[3] === 1) {
+                     else if (row[3] === 1 ) {
                          var str = JSON.stringify(row[2]);
-
-                         html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
+                         html += "<a title='编辑' onclick='editOnLine ("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
                          html += "<a title='审批' onclick='approve("+row[4]+","+str+")'><i class='fa fa fa-pencil-square-o'></i></a>";
                          html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
                      }
@@ -1308,7 +1321,7 @@
             title: '审批历史',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("approve/approve/ApproveHistory")}',
+            content: '{:url("approve/approve/ApproveHistory")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel',
             // end:function () {
             //     tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
             // }
