@@ -473,20 +473,7 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
 });
 //点击编辑图册
 function conEdit(id) {
-    layer.open({
-        type: 1,
-        title: '图册管理—新增',
-        area: ['690px', '540px'],
-        content:atlasFormDom
-    });
-    $("#addId").val(selfid);
-    $("#section").html(section);
-    //日期
 
-    layui.laydate.render({
-        elem: '#completion_date',
-        type: 'month'
-    });
     layui.form.render();
     $.ajax({
         type:"post",
@@ -495,6 +482,21 @@ function conEdit(id) {
         dataType:"json",
         success:function (res) {
             if(res.code===1){
+              layer.open({
+                type: 1,
+                title: '图册管理—新增',
+                area: ['690px', '540px'],
+                content:atlasFormDom
+              });
+              //日期
+              layui.laydate.render({
+                elem: '#completion_date',
+                type: 'month'
+              });
+
+
+              $("#addId").val(selfid);
+              $("#section").html(section);
                 $("#picture_number").val(res.data.picture_number);
                 $("#picture_name").val(res.data.picture_name);
                 $("#picture_papaer_num").val(res.data.picture_papaer_num);
@@ -507,6 +509,8 @@ function conEdit(id) {
                 $("#paper_category").val(res.data.paper_category);
                 $("#editId").val(res.data.id);
                 layui.form.render('select');
+            }else{
+                layer.msg(res.msg);
             }
         }
     })
