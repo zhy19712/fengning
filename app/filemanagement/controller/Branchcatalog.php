@@ -93,7 +93,7 @@ class Branchcatalog extends Permissions
      * 删除项目分类树
      * @return \think\response\Json
      */
-    public function delCatetype()
+    public function delNode()
     {
         if (request()->isAjax()){
             //实例化模型类
