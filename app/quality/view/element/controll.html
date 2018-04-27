@@ -1192,13 +1192,13 @@
                      M = M < 10 ? '0' + M : M;
                      var d = time.getDate();
                      d = d < 10 ? ('0' + d) : d;
-                     var h = time.getHours() + ':';
+                     var h = time.getHours();
                      h = h < 10 ? '0' + h : h;
-                     var m = time.getMinutes() + ':';
+                     var m = time.getMinutes();
                      m = m < 10 ? '0' + m : m;
                      var s = time.getSeconds();
                      s = s < 10 ? '0' + s : s;
-                     return y + '-' + M + '-' + d +' '+ h + m + s;
+                     return y + '-' + M + '-' + d +' '+ h + ':' + m + ':' + s;
                  }
              },
              {
