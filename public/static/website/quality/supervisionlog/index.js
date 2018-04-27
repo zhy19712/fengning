@@ -178,13 +178,7 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
 });
 //点击编辑
 function conEdit(id) {
-    layer.open({
-        type: 1,
-        title: '编辑',
-        area: ['690px', '240px'],
-        content:sceneDom
-    });
-    $("#addId").val(id);
+
 
     $.ajax({
         type:"post",
@@ -193,7 +187,16 @@ function conEdit(id) {
         dataType:"json",
         success:function (res) {
             if(res.code===1){
+              layer.open({
+                type: 1,
+                title: '编辑',
+                area: ['690px', '240px'],
+                content:sceneDom
+              });
+              $("#addId").val(id);
                 $("#filename").val(res.data.filename);
+            }else{
+                layer.msg(res.msg);
             }
         }
     })
