@@ -37,19 +37,19 @@
         border-radius: 50%;
         border: 0;
     }
-    .addpeople {
-        float: left;
-        width: 70px;
-        text-align: center;
-        position: relative;
-        cursor: pointer;
-    }
-    .arrow {
-        width: 18px;
-        height: 18px;
-        float: left;
-        margin: 15px 5px 38px 10px;
-    }
+    /*.addpeople {*/
+        /*float: left;*/
+        /*width: 70px;*/
+        /*text-align: center;*/
+        /*position: relative;*/
+        /*cursor: pointer;*/
+    /*}*/
+    /*.arrow {*/
+        /*width: 18px;*/
+        /*height: 18px;*/
+        /*float: left;*/
+        /*margin: 15px 5px 38px 10px;*/
+    /*}*/
 
 </style>
 <div class="easyui-layout" data-options="fit:true">
@@ -264,28 +264,27 @@
         var users = JSON.parse($("#hiddenValUsers").val());
         console.log(JSON.parse($("#hiddenValUsers").val()));
         var html = '';
-        $.each(users, function (i, item) {
-            console.log(i)
-            console.log(item)
-            // var title = "姓名：" + item.Name + " \n";
-            // title += "所属机构：" + item.DepartmentName + " \n";
-            // title += "岗位：" + item.Post + " \n";
-            // title += "手机：" + item.MobileNumber + " \n";
-            html = "<div class='addpeople'>";
-            html += " <img alt='image' class='img-circle' src='" + item.thumb + "' title='' style='width:50px;height:50px;'>";
-            if (i < step)
-                html += "  <p style='color:#008000;'>" + item.nickname + "</p>";
-            else
-                html += "  <p style='color:#CDCDCD;'>" + item.nickname + "</p>";
-            html += "</div>";
-            if (i < users.length - 1) {
+        html = "<div class='addpeople' style='text-align: left;position: relative;cursor: pointer;'>";
+            $.each(users, function (i, item) {
+                // var title = "姓名：" + item.Name + " \n";
+                // title += "所属机构：" + item.DepartmentName + " \n";
+                // title += "岗位：" + item.Post + " \n";
+                // title += "手机：" + item.MobileNumber + " \n";
+                html += "<div style='display: inline-block;margin-left:10px;'>";
+                html += " <img alt='image' class='img-circle' src='" + item.thumb + "' title='' style='width:50px;height:50px;'>";
                 if (i < step)
-                    html += "<img alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png' />";
+                    html += "  <p style='color:#008000;text-align: center;margin-top: 5px;'>" + item.nickname + "</p>";
                 else
-                    html += "<img alt='image' class='arrow' src='__WEBSITE__/elementimg/right1.png' />";
-            }
-
-        });
+                    html += "  <p style='color:#CDCDCD;text-align: center;margin-top: 5px;'>" + item.nickname + "</p>";
+                html += "</div>";
+                if (i < users.length - 1) {
+                    if (i < step)
+                        html += "<img alt='image' class='arrow' style='width: 18px;height: 18px;margin: -15px 5px 38px 10px;' src='__WEBSITE__/elementimg/right.png' />";
+                    else
+                        html += "<img alt='image' class='arrow' style = ' width: 18px;height: 18px;margin: -15px 5px 38px 10px;' src='__WEBSITE__/elementimg/right1.png' />";
+                }
+            });
+        html += "</div>";
         $("#flowDiv").html(html);
     };
     initFlowInfo()
