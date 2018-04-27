@@ -12,6 +12,7 @@
  */
 namespace app\statistics\controller;
 use app\admin\controller\Permissions;
+use think\exception\PDOException;
 use think\Db;
 
 class Qualityanalysis extends Permissions

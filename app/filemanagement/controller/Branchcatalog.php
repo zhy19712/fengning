@@ -13,6 +13,7 @@
 namespace app\filemanagement\controller;
 use app\admin\controller\Permissions;
 use app\filemanagement\model\FilebranchtypeModel;//档案管理-分支目录管理-项目分类
+use app\filemanagement\model\FilebranchModel;//档案管理-分支目录管理
 use think\exception\PDOException;
 use think\Loader;
 use think\Db;
@@ -98,13 +99,19 @@ class Branchcatalog extends Permissions
         if (request()->isAjax()){
             //实例化模型类
             $model = new FilebranchtypeModel();
+            $branch_model = new FilebranchModel();
             $id = input('post.id');
-            $id = 2;
             //因为固定住前四项删不掉，所以id为1,2,3,4,5的删不掉
             $judge_id = array('1','2','3','4','5');
             if(in_array($id,$judge_id))
             {
                 return json(['code' => -1, 'msg' => '系统节点不允许操作！']);
+            }
+            //判断当前节点下是否有数据，有数据的话是不能删除的
+            $result = $branch_model->judgeClassifyid($id);
+            if(!empty($result))
+            {
+                return json(['code' => -1, 'msg' => '包含数据，不允许删除！']);
             }
             //节点树对应下的项目分类
 

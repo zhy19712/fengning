@@ -6,10 +6,11 @@
  * Time: 15:26
  */
 /*
- * 档案管理-分支目录管理-项目分类
+ * 档案管理-分支目录管理-项目分类-树节点
  * @package app\filemanagement\model
  */
 namespace app\filemanagement\model;
+use think\exception\PDOException;
 use \think\Model;
 
 class FilebranchtypeModel extends Model
@@ -36,7 +37,14 @@ class FilebranchtypeModel extends Model
             if(false === $result){
                 return ['code' => -1,'msg' => $this->getError()];
             }else{
-                return ['code' => 1,'msg' => '添加成功'];
+                $last_id = $this->getLastInsID();
+                $data = $this->where("id",$last_id)->find();
+
+                if(!empty($data)){
+                    return ['code' => 1,'msg' => '添加成功','data'=>$data];
+                }else{
+                    return ['code' => -1,'msg' => $this->getError()];
+                }
             }
         }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
