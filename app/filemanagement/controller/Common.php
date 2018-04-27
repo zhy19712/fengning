@@ -10,6 +10,7 @@
  * Class Common
  */
 namespace app\filemanagement\controller;
+use app\filemanagement\model\FilebranchModel;//档案管理-分支目录管理
 use \think\Controller;
 use think\Db;
 use think\Request;
@@ -17,15 +18,6 @@ use \think\Session;
 
 class Common extends Controller
 {
-    protected $documentTypeService;
-
-    public function __construct(Request $request = null)
-    {
-        parent::__construct($request);
-        $this->documentTypeService = new DocumentTypeModel();
-    }
-
-
     /**
      * datatables单表查询搜索排序分页
      * 输入参数$table:表名 string
@@ -118,7 +110,7 @@ class Common extends Controller
             }
         }
         //实例化model类
-        $atlascate = new AtlasCateModel();
+        $model = new FilebranchModel();
         $temp = array();
         $infos = array();
         foreach ($recordsFilteredResult as $key => $value) {
@@ -127,7 +119,7 @@ class Common extends Controller
             for ($i = 0; $i < $length; $i++) {
                 array_push($temp, $value[$columns[$i]['name']]);
             }
-            $children_info = $atlascate->getAllpicture($temp['13']);
+            $children_info = $model->getAllChild($temp['13']);
 
             array_push($temp, $children_info);
 

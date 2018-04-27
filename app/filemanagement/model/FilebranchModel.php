@@ -99,34 +99,20 @@ class FilebranchModel extends Model
     {
         //定义一个空的数组
         $children = array();
-
         $data = $this
-            ->field('picture_number,picture_name,picture_papaer_num,date,paper_category,owner,completion_date,id,pid')
+            ->field('serial_number,class_name,id,pid')
             ->where('pid', $id)
             ->select();
         if(!empty($data))
         {
             foreach ($data as $k=>$v)
             {
-                $children[$k][] = '';
-                $children[$k][] = $v['picture_number'];
-                $children[$k][] = $v['picture_name'];
-                $children[$k][] = $v['picture_papaer_num'];
-                $children[$k][] = '';
-                $children[$k][] = '';
-                $children[$k][] = '';
-                $children[$k][] = '';
-                $children[$k][] = $v['completion_date'];
-                $children[$k][] = '';
-                $children[$k][] = $v['paper_category'];
-                $children[$k][] = $v['owner'];
-                $children[$k][] = $v['date'];
+                $children[$k][] = $v['serial_number'];
+                $children[$k][] = $v['class_name'];
                 $children[$k][] = $v['id'];
                 $children[$k][] = $v['pid'];
             }
         }
-
-
         return $children;
     }
 }
