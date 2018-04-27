@@ -48,7 +48,6 @@ class Rolemanagement extends Permissions
             $v['id'] = strval($v['id']);
             $res[$k] = json_encode($v);
         }
-
             return json($res);
         }
 
@@ -235,9 +234,6 @@ class Rolemanagement extends Permissions
                     }
                 }
                 return $res;//返回json数据
-            }else
-            {
-                return $this->fetch();
             }
         }
     }
