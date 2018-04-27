@@ -936,7 +936,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
-                    ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
+                    ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id,b.remark')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
@@ -947,7 +947,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('controlpoint b', 'a.control_id=b.id', 'left')
                     ->where($par)
-                    ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
+                    ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id,b.remark')
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
@@ -1250,7 +1250,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('admin u', 'a.user_id = u.id', 'left')
                     ->join('admin c', 'a.CurrentApproverId = c.id', 'left')
-                    ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time,a.CurrentApproverId')
+                    ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time,a.CurrentApproverId,a.CurrentStep')
                     ->where($whereStr)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
@@ -1262,7 +1262,7 @@ class Common extends Controller
                 $recordsFilteredResult = Db::name($table)->alias('a')
                     ->join('admin u', 'a.user_id = u.id', 'left')
                     ->join('admin c', 'a.CurrentApproverId = c.id', 'left')
-                    ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time,a.CurrentApproverId')
+                    ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time,a.CurrentApproverId,a.CurrentStep')
                     ->where($whereStr)
                     ->order($order)->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;

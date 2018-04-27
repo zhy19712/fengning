@@ -63,12 +63,12 @@ class AnchorPointModel extends Model
         if($name){
             $data = Db::name('quality_anchor_point')
                 ->where(['picture_type'=>1,'anchor_name'=>$name])
-                ->field('picture_number,anchor_name,component_name,user_name,coordinate_x,coordinate_y,coordinate_z,remark,attachment_id')
+                ->field('id as anchor_point_id,picture_number,anchor_name,component_name,user_name,coordinate_x,coordinate_y,coordinate_z,remark,attachment_id')
                 ->select();
         }else{
             $data = Db::name('quality_anchor_point')
                 ->where(['picture_type'=>1])
-                ->field('picture_number,anchor_name,component_name,user_name,coordinate_x,coordinate_y,coordinate_z,remark,attachment_id')
+                ->field('id as anchor_point_id,picture_number,anchor_name,component_name,user_name,coordinate_x,coordinate_y,coordinate_z,remark,attachment_id')
                 ->select();
         }
         return $data;
