@@ -1,0 +1,18 @@
+.ztree-title i.fa{
+    width: 18%;
+}
+.btn {
+    line-height: 0.82857;
+    border-radius: 60px;
+    margin-right: 5px;
+    float: right;
+}
+
+
+.btn i.fa:before,#branchform i.fa:before{
+    color: #ffffff;
+}
+#tableItem thead th{
+    border-right: 1px solid #ccc;
+    border-collapse: collapse;
+}
