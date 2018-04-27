@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
   <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
-  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <link rel="stylesheet" href="__COMMONCSS__/admin.css"  media="all">
 </head>
 <body style="padding:10px;">
   <div class="body-div">
@@ -89,7 +89,7 @@
     <script>
         var message;
         layui.config({
-            base: '__JS__/',
+            base: '__COMMONJS__/',
             version: '1.0.1'
         }).use(['app', 'message'], function() {
             var app = layui.app,
@@ -111,7 +111,7 @@
           form.verify({
             pass:[
               /^[a-zA-Z0-9,]+$/,
-              '输入不合法，输入英文逗号和字母数字
+              '输入不合法，输入英文逗号和字母数字'
             ]
           });
           $(window).on('load', function() {

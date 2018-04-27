@@ -1,7 +1,7 @@
 
 var message;
 layui.config({
-    base: '__COMMONJS__/',
+    base: '/static/webSite/common/js/',
     version: '1.0.1'
 }).use(['app', 'message'], function() {
     var app = layui.app,
