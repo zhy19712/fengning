@@ -3,6 +3,7 @@
 namespace app\admin\model;
 
 use \think\Model;
+use think\exception\PDOException;
 class AdminCate extends Model
 {
 	public function admin()

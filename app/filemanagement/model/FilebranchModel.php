@@ -3,48 +3,33 @@
  * Created by PhpStorm.
  * User: admin
  * Date: 2018/4/27
- * Time: 15:26
+ * Time: 17:01
  */
 /*
- * 档案管理-分支目录管理-项目分类-树节点
+ * 档案管理-分支目录管理-项目分类
  * @package app\filemanagement\model
  */
 namespace app\filemanagement\model;
 use think\exception\PDOException;
 use \think\Model;
 
-class FilebranchtypeModel extends Model
+class FilebranchModel extends Model
 {
-    protected $name='file_branch_directory_type';
+    protected $name='file_branch_directory';
 
     /**
-     * 查询项目分类表中的所有的数据
-     * @throws \think\exception\DbException
+     * 新增项目分类
+     * @param $param
+     * @return array
      */
-    public function getall()
-    {
-        return $this->select();
-    }
-
-    /**
-     * 新增节点
-     * @throws \think\exception\DbException
-     */
-    public function insertNode($param)
+    public function insertCate($param)
     {
         try{
             $result = $this->allowField(true)->save($param);
             if(false === $result){
                 return ['code' => -1,'msg' => $this->getError()];
             }else{
-                $last_id = $this->getLastInsID();
-                $data = $this->where("id",$last_id)->find();
-
-                if(!empty($data)){
-                    return ['code' => 1,'msg' => '添加成功','data'=>$data];
-                }else{
-                    return ['code' => -1,'msg' => $this->getError()];
-                }
+                return ['code' => 1,'msg' => '添加成功'];
             }
         }catch (PDOException $e){
             return ['code' => -1,'msg' => $e->getMessage()];
@@ -52,11 +37,11 @@ class FilebranchtypeModel extends Model
     }
 
     /**
-     * 编辑节点
+     * 编辑项目分类
      * @param $param
      * @return array
      */
-    public function editNode($param)
+    public function editCate($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
@@ -71,11 +56,11 @@ class FilebranchtypeModel extends Model
     }
 
     /**
-     * 删除节点
+     * 删除项目分类
      * @param $id
      * @return array
      */
-    public function delNode($id)
+    public function delCate($id)
     {
         try{
             $this->where("id",$id)->delete();
@@ -86,12 +71,48 @@ class FilebranchtypeModel extends Model
     }
 
     /**
-     * 获取一个节点的信息
+     * 判断当前节点下是否有数据
+     * @param $id
+     * @return array
+     */
+    public function judgeClassifyid($id)
+    {
+        $data = $this->where("classifyid",$id)->find();
+        return $data;
+    }
+
+    /**
+     * 获取一条项目分类的信息
+     * @param $id
      * @throws \think\exception\DbException
      */
     public function getOne($id)
     {
-        $data = $this->find($id);
+        $data = $this->where("id",$id)->find();
         return $data;
+    }
+
+    /**
+     * 查询一条图册下的所有的图片信息
+     */
+    public function getAllChild($id)
+    {
+        //定义一个空的数组
+        $children = array();
+        $data = $this
+            ->field('serial_number,class_name,id,pid')
+            ->where('pid', $id)
+            ->select();
+        if(!empty($data))
+        {
+            foreach ($data as $k=>$v)
+            {
+                $children[$k][] = $v['serial_number'];
+                $children[$k][] = $v['class_name'];
+                $children[$k][] = $v['id'];
+                $children[$k][] = $v['pid'];
+            }
+        }
+        return $children;
     }
 }

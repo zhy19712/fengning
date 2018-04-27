@@ -10,6 +10,7 @@
  * @package app\archive\model
  */
 namespace app\archive\model;
+use think\exception\PDOException;
 use \think\Model;
 
 class AtlasCateModel extends Model
