@@ -9,6 +9,7 @@
 namespace app\quality\model;
 
 
+use think\Db;
 use think\exception\PDOException;
 use think\Model;
 
@@ -22,10 +23,11 @@ class AnchorPointModel extends Model
     {
         try {
             $result = $this->allowField(true)->save($param);
+            $last_insert_id = $this->getLastInsID();
             if (false === $result) {
                 return ['code' => -1, 'msg' => $this->getError()];
             } else {
-                return ['code' => 1, 'msg' => '添加成功'];
+                return ['code' => 1,'anchor_point_id'=>$last_insert_id, 'msg' => '添加成功'];
             }
         } catch (PDOException $e) {
             return ['code' => -1, 'msg' => $e->getMessage()];
@@ -39,7 +41,7 @@ class AnchorPointModel extends Model
             if (false === $result) {
                 return ['code' => -1, 'msg' => $this->getError()];
             } else {
-                return ['code' => 1, 'msg' => '编辑成功'];
+                return ['code' => 1, 'msg' => '上传成功'];
             }
         } catch (PDOException $e) {
             return ['code' => 0, 'msg' => $e->getMessage()];
@@ -56,5 +58,20 @@ class AnchorPointModel extends Model
         }
     }
 
+    public function getAnchorTb($name='')
+    {
+        if($name){
+            $data = Db::name('quality_anchor_point')
+                ->where(['picture_type'=>1,'anchor_name'=>$name])
+                ->field('picture_number,anchor_name,component_name,user_name,coordinate_x,coordinate_y,coordinate_z,remark,attachment_id')
+                ->select();
+        }else{
+            $data = Db::name('quality_anchor_point')
+                ->where(['picture_type'=>1])
+                ->field('picture_number,anchor_name,component_name,user_name,coordinate_x,coordinate_y,coordinate_z,remark,attachment_id')
+                ->select();
+        }
+        return $data;
+    }
 
 }

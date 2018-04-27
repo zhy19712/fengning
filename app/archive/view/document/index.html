@@ -514,6 +514,7 @@
             columnDefs: [
                 {
                     "searchable": false,
+                    "orderable": false,
                     targets:[2]
                 },
                 {
@@ -537,6 +538,7 @@
                 },
                 {
                     "searchable": false,
+                    "orderable": false,
                     targets: [3],
                     render: function (data, type, row) {
                         if (data == 1) {
@@ -702,7 +704,8 @@
             upload.render({
                 elem: '#test3',
                 url: "{:url('admin/common/upload?module=document&use=archive')}",
-                exts: 'doc|docx|pdf|png|jpg|xls',
+                // exts: 'doc|docx|pdf|png|jpg|xls',
+                accept:"file",
                 before: function(obj){
                     obj.preview(function(index, file, result){
                         uploadName = file.name;

@@ -87,6 +87,12 @@ $('#toogleAttr li').click(function () {
     $('#'+ uid).show().siblings('div').hide();
 });
 
+$('#anchorFile li').click(function () {
+    var uid = $(this).attr('uid');
+    $(this).addClass('active').siblings().removeClass('active');
+    $('#'+ uid).show().siblings('div').hide();
+});
+
 $('#del').click(function () {
     $(this).parents('.swiper-wrapper').remove();
     $(this).parents('.swiper-wrapper').html();
@@ -210,32 +216,34 @@ function getRemark() {
 
 // 添加锚点
 $('#saveAnchor').click(function () {
+    var picture_id = uObjSubIdSingle;
     var anchorName = $('#anchorName').html();
+    var user_name = $('div[uid="createName"]').html();
+    var create_time = $('div[uid="createDate"]').html();
     var componentName = $('#componentName').html();
-    var createName = $('#createName').html();
-    var createDate = $('#createDate').html();
-    var remark = $('textarea[name="remark"]').text();
-    var fObjSelX = $('#fObjSelX').val(fObjSelX);
-    var fObjSelY = $('#fObjSelY').val(fObjSelY);
-    var fObjSelZ = $('#fObjSelZ').val(fObjSelZ);
-
+    var remark = $('textarea[name="anchorRemark"]').text();
+    console.log(remark);
+    var fObjSelX = $('#fObjSelX').val();
+    var fObjSelY = $('#fObjSelY').val();
+    var fObjSelZ = $('#fObjSelZ').val();
     $.ajax({
-        url: "",
-        type: "post",
-        data: {
-            anchorName:anchorName,
-            componentName:componentName,
-            createName:createName,
-            createDate:createDate,
-            remark:remark,
-            fObjSelX:fObjSelX,
-            fObjSelY:fObjSelY,
-            fObjSelZ:fObjSelZ
-        },
-        dataType: "json",
-        success: function (res) {
-            layer.msg(res.msg);
-        }
+       url: "./anchorPoint",
+       type: "post",
+       data: {
+           picture_id:picture_id,
+           anchorName:anchorName,
+           user_name:user_name,
+           create_time:create_time,
+           componentName:componentName,
+           remark:remark,
+           fObjSelX:fObjSelX,
+           fObjSelY:fObjSelY,
+           fObjSelZ:fObjSelZ
+       },
+       dataType: "json",
+       success: function (res) {
+           layer.msg(res.msg);
+       }
     });
 });
 
@@ -244,6 +252,23 @@ $('#delAnchor').click(function () {
     var anchorName = $('#anchorName').html();
     delAnchor(anchorName);
 });
+
+//点击锚点
+function getAnchorPoint(anchorName) {
+    $.ajax({
+        url: "./getAnchorPoint",
+        type: "post",
+        data: {
+            anchorName:anchorName
+        },
+        dataType: "json",
+        success: function (res) {
+            $('#anchorName').html(res[0].anchor_name);
+            $('#componentName').html(res[0].component_name);
+            $('textarea[name="anchorRemark"]').text(res[0].remark);
+        }
+    })
+}
 
 //返回
 $('#backAnchor').click(function(){
@@ -266,3 +291,13 @@ function easyUiPanelToggleSouth() {
     }
 }
 
+//新增图片
+$.upload({
+    btnId:'#addImage',
+    btnText:'新增1',
+    server: "./uploadAnchorPoint",
+});
+
+$('.panel-title').click(function () {
+    console.log(2123123);
+})

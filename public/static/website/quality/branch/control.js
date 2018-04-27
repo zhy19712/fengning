@@ -95,6 +95,8 @@ function onClick(e, treeId, node) {
     groupid = sNodes[0].pId //父节点的id
     var url = "/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+".shtml";
     tableItem.ajax.url(url).load();
+  tableSituation.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/1/list_id/"+list_id+".shtml").load();
+  tableImage.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/2/list_id/"+list_id+".shtml").load();
     $("#homeWork").css("color","#2213e9");
 }
 //点击置灰
@@ -112,8 +114,11 @@ $(".imgList").on("click","#homeWork",function () {
 //点击工序控制点名字
 function clickConName(id) {
     conThisId = id;
-    $("#tableContent .imgList").css('display','block');
-    tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
+  list_id= "";
+  $("#tableContent .imgList").css('display','block');
+  tableSituation.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/1/list_id/"+list_id+".shtml").load();
+  tableImage.ajax.url("/quality/common/datatablesPre/tableName/quality_subdivision_planning_file/type/2/list_id/"+list_id+".shtml").load();
+  tableItem.ajax.url("/quality/common/datatablespre/tableName/quality_subdivision_planning_list/selfid/"+selfid+"/procedureid/"+conThisId+".shtml").load();
 }
 //初始化表格
 var tableItem = $('#tableItem').DataTable( {

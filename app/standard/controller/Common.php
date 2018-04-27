@@ -105,8 +105,8 @@ class Common extends Controller
     public function quality_template($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
-        $_type = $this->request->has('type') ? $this->request->param('type') : "";
-        $_use = $this->request->has('use') ? $this->request->param('use') : "";
+         $_type = $this->request->has('type') ? $this->request->param('type') : "";
+         $_use = $this->request->has('use') ? $this->request->param('use') : "";
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
@@ -125,13 +125,14 @@ class Common extends Controller
                     } else {
                         $wherestr['use'] = $_use;
                     }
+                    $recordsTotal = Db::name($table)->where($wherestr)->count(0);
                     $recordsFilteredResult = Db::name($table)
                         ->where($wherestr)
                         ->where($columnString, 'like', '%' . $search . '%')
                         ->order($order)->limit(intval($start), intval($length))->select();
                     $recordsFiltered = sizeof($recordsFilteredResult);
                 }
-            }else{
+            } else {
                 $recordsFilteredResult = Db::name($table)
                     ->where($columnString, 'like', '%' . $search . '%')
                     ->order($order)->limit(intval($start), intval($length))->select();
@@ -151,13 +152,13 @@ class Common extends Controller
                         } else {
                             $wherestr['use'] = $_use;
                         }
+                        $recordsTotal = Db::name($table)->where($wherestr)->count(0);
                         $recordsFilteredResult = Db::name($table)
                             ->where($wherestr)
                             ->order($order)->limit(intval($start), intval($length))->select();
                         $recordsFiltered = $recordsTotal;
                     }
-                }else
-                {
+                } else {
                     $recordsFilteredResult = Db::name($table)
                         ->order($order)->limit(intval($start), intval($length))->select();
                     $recordsFiltered = $recordsTotal;
