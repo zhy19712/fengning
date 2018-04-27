@@ -50,7 +50,7 @@ class Main extends Permissions
             $data['attr_name'] = $param['attrKey'];
             $data['attr_value'] = $param['attrVal'];
             $custom = new CustomAttributeModel();
-            $id = $param['attrId'];
+            $id = isset($param['attrId']) ? $param['attrId'] : 0;
             if(empty($id)){
                 $flag = $custom->insertTb($data);
             }else{

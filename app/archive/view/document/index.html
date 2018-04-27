@@ -704,7 +704,8 @@
             upload.render({
                 elem: '#test3',
                 url: "{:url('admin/common/upload?module=document&use=archive')}",
-                exts: 'doc|docx|pdf|png|jpg|xls',
+                // exts: 'doc|docx|pdf|png|jpg|xls',
+                accept:"file",
                 before: function(obj){
                     obj.preview(function(index, file, result){
                         uploadName = file.name;
