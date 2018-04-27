@@ -102,7 +102,7 @@ class AtlasCateModel extends Model
             ->field('picture_number,picture_name,picture_papaer_num,date,paper_category,owner,completion_date,id,pid')
             ->where('pid', $id)
             ->select();
-        if($data)
+        if(!empty($data))
         {
             foreach ($data as $k=>$v)
             {
