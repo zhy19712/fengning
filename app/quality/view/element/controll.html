@@ -1250,7 +1250,7 @@
                          html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
                          html += "<a title='下载' onclick='downOnLine("+row[4]+")'><i class='fa fa fa-download'></i></a>";
                      }
-                     else if (row[3] === -1) {
+                     else if (row[3] === -1 && row[5] == $("#userId").val()) {
                          html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                          html += "<a title='编辑' onclick='editOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-pencil'></i></a>";
                          html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
