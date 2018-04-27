@@ -185,7 +185,7 @@ function addNodetree() {
                     }
 
                 }else{
-                  layer.msg(res.msg);
+                    layer.msg(res.msg);
                 }
             }
         });
