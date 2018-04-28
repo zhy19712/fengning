@@ -369,7 +369,12 @@ class Unitqualitymanage extends Permissions
         // 执行上传文件 获取文件编号  attachment_id
         $param = input('param.'); halt($param);
         $common = new \app\admin\controller\Common();
-        $param['attachment_id'] = $common->upload('quality','unitqualitymanage');
+        $flag = $common->upload('quality','unitqualitymanage');
+        $flag = json_decode($flag);
+        if($flag['code'] != 2){
+            return $flag;
+        }
+        $param['attachment_id'] = $flag['id'];
         // 保存上传文件记录
         $id = isset($param['id']) ? $param['id'] : 0;
         $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
