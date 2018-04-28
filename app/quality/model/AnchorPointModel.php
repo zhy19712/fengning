@@ -59,7 +59,7 @@ class AnchorPointModel extends Model
             // 关联删除锚点下的 附件
             $data = $this->getAttachmentId($id);
             $id_arr = explode(',',$data);
-            Db::name('attachment')->where(['id',['in',$id_arr]])->delete();
+            Db::name('attachment')->where(['id'=>['in',$id_arr]])->delete();
 
             $this->where('id', $id)->delete();
             return ['code' => 1, 'msg' => '删除成功'];
@@ -85,7 +85,18 @@ class AnchorPointModel extends Model
                 return $data;
             }
             $id_arr = explode(',',$data[0]['attachment_id']);
-            $data['attachment'] = Db::name('attachment')->where(['id'=>['in',$id_arr]])->field('id as attachment_id,filepath')->select();
+            $attachment = Db::name('attachment')->where(['id'=>['in',$id_arr]])->field('id as attachment_id,filepath')->select();
+            // 图片放一起,文件放一起
+            $img = ['jpg','jpeg','png','gif','bmp','pcx','emf','tga','tif','rle'];
+            $data['img_arr'] = $data['file_arr'] = '';
+            foreach ($attachment as $v){
+                $ex = get_extension($v['filepath']);
+                if(in_array($ex,$img)){
+                    $data['img_arr'][] = $v;
+                }else{
+                    $data['file_arr'][] = $v;
+                }
+            }
         }else{
             $data = Db::name('quality_anchor_point')->alias('p')
                 ->where(['p.picture_type'=>1])
@@ -98,6 +109,16 @@ class AnchorPointModel extends Model
     public function getAnchorByName($name)
     {
         return  $this->where('anchor_name',$name)->value('id');
+    }
+
+    public function delAnchorPointAttachment($id,$attachment_id)
+    {
+        $old_attachment_id = $this->getAttachmentId($id);
+        $new_attachment_id = str_repeat(','.$attachment_id,'',$old_attachment_id);
+        $data['id'] = $id;
+        $data['attachment_id'] = $new_attachment_id;
+        $this->editTb($data);
+        Db::name('attachment')->where(['id'=>['eq',$attachment_id]])->delete();
     }
 
 }

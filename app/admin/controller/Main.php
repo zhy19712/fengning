@@ -445,6 +445,78 @@ class Main extends Permissions
     }
 
     /**
+     * 删除附件
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function delAttachment()
+    {
+        // 前台需要 传递 锚点的主键 anchor_point_id  附件的主键 attachment_id
+        if($this->request->isAjax()){
+            $param = input('param.');
+            // 验证规则
+            $rule = [
+                ['anchor_point_id', 'require|number|gt:-1', '请选择附件所属的锚点|锚点的编号只能是数字|锚点的编号不能为负数'],
+                ['attachment_id', 'require|number|gt:-1', '请选择要删除的附件|附件的编号只能是数字|附件的编号不能为负数']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+            $unit = new AnchorPointModel();
+            $unit->delAnchorPointAttachment($param['anchor_point_id'],$param['attachment_id']);
+            return json(['code'=>1,'msg'=>'删除成功']);
+        }
+    }
+
+    /**
+     * 下载附件
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @author hutao
+     */
+    public function relationDownload()
+    {
+        // 前台需要 传递 附件的主键 attachment_id
+        $param = input('param.');
+        // 验证规则
+        $rule = [
+            ['attachment_id', 'require|number|gt:-1', '请选择要删除的附件|附件的编号只能是数字|附件的编号不能为负数']
+        ];
+        $validate = new \think\Validate($rule);
+        //验证部分数据合法性
+        if (!$validate->check($param)) {
+            return json(['code' => -1,'msg' => $validate->getError()]);
+        }
+        $file_obj = Db::name('attachment')->where('id',$param['attachment_id'])->field('filename,filepath')->find();
+        $filePath = '';
+        if(!empty($file_obj['filepath'])){
+            $filePath = '.' . $file_obj['filepath'];
+        }
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }else if(request()->isAjax()){
+            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+        }else{
+            $fileName = $file_obj['filename'];
+            $file = fopen($filePath, "r"); //   打开文件
+            //输入文件标签
+            $fileName = iconv("utf-8","gb2312",$fileName);
+            Header("Content-type:application/octet-stream ");
+            Header("Accept-Ranges:bytes ");
+            Header("Accept-Length:   " . filesize($filePath));
+            Header("Content-Disposition:   attachment;   filename= " . $fileName);
+            //   输出文件内容
+            echo fread($file, filesize($filePath));
+            fclose($file);
+            exit;
+        }
+    }
+
+    /**
      * 单个回显锚点
      * @return \think\response\Json
      * @author hutao
