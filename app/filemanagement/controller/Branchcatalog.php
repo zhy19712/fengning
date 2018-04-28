@@ -121,4 +121,21 @@ class Branchcatalog extends Permissions
             return json($flag);
         }
     }
+
+    /**
+     * datables表格
+     */
+    public function table()
+    {
+        //实例化模型类
+        $model = new FilebranchModel();
+        $data = $model->getAll();
+        $res = tree($data);
+
+        foreach ((array)$res as $k => $v) {
+            $v['id'] = strval($v['id']);
+            $res[$k] = json_encode($v);
+        }
+        return json($res);
+    }
 }
