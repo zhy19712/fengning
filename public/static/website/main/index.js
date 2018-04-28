@@ -250,7 +250,8 @@ $('#saveAnchor').click(function () {
 //删除锚点
 $('#delAnchor').click(function () {
     var anchorName = $('#anchorName').html();
-    delAnchor(anchorName);
+    var anchor_point_id = $(this).attr('uid');
+    delAnchor(anchorName,anchor_point_id);
 });
 
 //点击锚点
@@ -266,6 +267,7 @@ function getAnchorPoint(anchorName) {
             $('#anchorName').html(res[0].anchor_name);
             $('#componentName').html(res[0].component_name);
             $('textarea[name="anchorRemark"]').text(res[0].remark);
+            $('#delAnchor').attr('uid',res[0].anchor_point_id);
         }
     })
 }
