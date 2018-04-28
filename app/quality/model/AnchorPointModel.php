@@ -85,7 +85,17 @@ class AnchorPointModel extends Model
                 return $data;
             }
             $id_arr = explode(',',$data[0]['attachment_id']);
-            $data['attachment'] = Db::name('attachment')->where(['id'=>['in',$id_arr]])->field('id as attachment_id,filepath')->select();
+            $attachment = Db::name('attachment')->where(['id'=>['in',$id_arr]])->field('id as attachment_id,filepath')->select();
+            // 图片放一起,文件放一起
+            $img = ['jpg','jpeg','png','gif','bmp','pcx','emf','tga','tif','rle'];
+            foreach ($attachment as $v){
+                $ex = get_extension($v['filepath']);
+                if(in_array($ex,$img)){
+                    $data['img_arr'] = $v;
+                }else{
+                    $data['file_arr'] = $v;
+                }
+            }
         }else{
             $data = Db::name('quality_anchor_point')->alias('p')
                 ->where(['p.picture_type'=>1])
