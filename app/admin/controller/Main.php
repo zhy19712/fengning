@@ -305,7 +305,7 @@ class Main extends Permissions
     }
 
     /**
-     * 添加锚点
+     * 添加 或者 编辑 锚点
      * @return \think\response\Json
      * @author hutao
      */
@@ -341,7 +341,14 @@ class Main extends Permissions
             $data['coordinate_z'] = $param['fObjSelZ'];
             $data['remark'] = $param['remark'];
             $anchor = new AnchorPointModel();
-            $flag = $anchor->insertTb($data);
+            // 判断是新增 还是 编辑
+            $is_add = $anchor->getAnchorByName($data['anchor_name']);
+            if(empty($is_add)){
+                $flag = $anchor->insertTb($data);
+            }else{
+                $data['id'] = $is_add;
+                $flag = $anchor->editTb($data,2);
+            }
             return json($flag);
         }
     }
@@ -426,14 +433,14 @@ class Main extends Permissions
                 return json(['code' => -1,'msg' => $validate->getError()]);
             }
             $data['id'] = $param['anchor_point_id'];
-            $data['attachment_id'] = $res['id'];
             $unit = new AnchorPointModel();
+            $att_id = $unit->getAttachmentId($data['id']);
+            $data['attachment_id'] = $res['id'] . ',' . $att_id;
             $nodeStr = $unit->editTb($data);
             return json($nodeStr);
         } else {
             // 上传失败获取错误信息
-            $msg = $this->error('上传失败：'.$file->getError());
-            return json(['code'=>0,'msg'=>$msg]);
+            return $this->error('上传失败：'.$file->getError());
         }
     }
 
