@@ -119,7 +119,10 @@ class Common extends Controller
             for ($i = 0; $i < $length; $i++) {
                 array_push($temp, $value[$columns[$i]['name']]);
             }
-            $children_info = $model->getAllChild($temp['13']);
+
+
+            $children_info = $model->getAllChild($temp["2"]);
+            halt($children_info);
 
             array_push($temp, $children_info);
 
@@ -129,6 +132,9 @@ class Common extends Controller
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+
+
+
 
     /**
      * 图册图片文件上传
