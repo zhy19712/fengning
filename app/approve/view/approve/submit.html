@@ -92,8 +92,8 @@
             <div style="height: 200px;margin-top: 10px;">
                 <div id="approverDiv">
                     <div class="addpeople">
-                        <img alt='image' id="currentUserPhoto" class='img-circle' src='__WEBSITE__/elementimg/1.png' style='width:50px;height:50px;'>
-                        <p id="currentUserName">管理员</p>
+                        <img alt='image' id="currentUserPhoto" class='img-circle' src='' style='width:50px;height:50px;'>
+                        <p id="currentUserName"></p>
                     </div>
                     <img alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png' />
                 </div>
@@ -124,7 +124,7 @@
             </div>
         </div>
     </div>
-    <input id="referFlow" type="hidden" value="测量人@施工单位@监理单位" />
+    <input id="referFlow" type="hidden" value="" />
     <input type="hidden" name="inputId" id="dataId" value="{:$dataId}">
     <input type="hidden" name="inputId" id="hiddenValId" value="">
     <input type="hidden" name="inputName" id="hiddenValName" value="">
@@ -134,11 +134,14 @@
 {include file="../app/public/common_footer.html"}
 <script>
     $(function () {
+        $("#referFlow").val($(window.parent.document).find("#resVal").val());
         $("#btnSave").click(function () { $("#btnSave").attr("disabled", "disabled"); save(); });
         $("#btnClose").click(function () { close(); });
         $("#selPeople").click(function () { selPeople(); });
-        // $("#currentUserName").text($(top.document).find("#userName").text());
-        $("#currentUserPhoto").attr("src", $(top.document).find("#userPhoto").attr("src"));
+        $("#currentUserName").text($(top.document).find(".layui-layout-right > li:nth-of-type(2) > a").text().substring(28));
+        var desr = $(top.document).find(".layui-layout-right > li:nth-of-type(2) > a").text()
+        console.log(desr.substring(28));
+        $("#currentUserPhoto").attr("src", $(top.document).find(".layui-layout-right > li:nth-of-type(2) > a >img").attr("src"));
         initReferFlow();
         // initLastFlow();
     });
@@ -212,14 +215,14 @@
             $("#btnSave").removeAttr("disabled");
             return;
         };
-        // if ($("#referFlow").val()) {
-        //     var $referDom = $("#referDiv").find(".addpeople");
-        //     if ($dom.length !== $referDom.length - 1) {
-        //         layer.alert("请按照参考流程选择人员。");
-        //         $("#btnSave").removeAttr("disabled");
-        //         return;
-        //     }
-        // };
+        if ($("#referFlow").val()) {
+            var $referDom = $("#referDiv").find(".addpeople");
+            if ($dom.length !== $referDom.length - 1) {
+                layer.alert("请按照参考流程选择人员。");
+                $("#btnSave").removeAttr("disabled");
+                return;
+            }
+        };
 
         // var approverIds = "";
         // $.each($dom, function (i, item) {
@@ -241,7 +244,6 @@
                     // var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
                     // parentWin.contentWindow.refresh();//刷新列表数据
                     // parent.layer.closeAll();
-                    // parent.onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
                     close();
                 }
                 else {
@@ -268,7 +270,7 @@
             });
             $("#referDiv").html(html);
             // $("#referContentDiv").show();
-            $("#referContentDiv").hide();
+            $("#referContentDiv").show();
         // };
     };
 

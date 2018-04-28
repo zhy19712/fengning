@@ -79,19 +79,31 @@ class Approve extends Permissions
     {
         $info = $this->approveService->getApproveInfo($dataId, new $dataType);
         $_userlist = $this->adminService->whereIn('id', explode(',', $info->approveIds))->with('Thumb')->select();
+
         $userlist = array();
-        foreach ($_userlist as $user) {
-            $_user = array();
-            $_user = [
-                'id' => $user['id'],
-                'nickname' => $user['nickname'],
-                'thumb' => ''
+        foreach (explode(',', $info->approveIds) as $item) {
+            $u = $this->adminService->where('id', $item)->with('Thumb')->find();
+            $_u = array();
+            $_u = [
+                'id' => $u['id'],
+                'nickname' => $u['nickname']
             ];
-            if (!is_null($user['Thumb'])) {
-                $_user['thumb'] = $user['Thumb']['filepath'];
-            }
-            $userlist[] = $_user;
+            if (is_null($u['Thumb']))
+                $_u['thumb'] = $u['Thumb']['filepath'];
+            $userlist[] = $_u;
         }
+        //foreach ($_userlist as $user) {
+        //    $_user = array();
+        //    $_user = [
+        //        'id' => $user['id'],
+        //        'nickname' => $user['nickname'],
+        //        'thumb' => ''
+        //    ];
+        //    if (!is_null($user['Thumb'])) {
+        //        $_user['thumb'] = $user['Thumb']['filepath'];
+        //    }
+        //    $userlist[] = $_user;
+        //}
         $this->assign('dataId', $dataId);
         $this->assign('dataType', $dataType);
         $this->assign('users', json_encode($userlist));

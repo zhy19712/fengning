@@ -198,12 +198,18 @@
     #imageData_wrapper, #implementation_wrapper, #onlineFill_wrapper{
         height: 100% !important;
     }
-
+    #onlineFillParent table.dataTable thead .sorting_asc {
+        background-image: none !important;
+    }
 </style>
 <body  class="easyui-layout">
 <!--右边的工程划分-->
 <div id="division" data-options="region:'west',title:'工程划分',split:true" style="width:240px;">
-    <div id="openNode"><button>+</button></div>
+    <div>
+        <i title="展开所有" class="fa fa-lg fa-plus-square"  id="openNode"></i>
+        <i title="收起所有" class="fa fa-lg fa-minus-square" id="closeNode"></i>
+    </div>
+
     <ul class="ztree" id="ztree"></ul>
 </div>
 <!--左边的单元工-->
@@ -231,6 +237,7 @@
                                 <th>控制点名称</th>
                                 <th>状态</th>
                                 <th>操作</th>
+                                <th style="display: none">参考流程</th>
                             </tr>
                         </thead>
                     </table>
@@ -276,6 +283,7 @@
                                         <th>审批状态</th>
                                         <th>操作</th>
                                         <th style="display: none;">当前审批人Id</th>
+                                        <th style="display: none;">当前审批人CurrentStep</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -292,11 +300,13 @@
 <div id="form_container" style="display: none;"></div>
 <div id="form_container_from" style="display: none;"></div>
 <input type="hidden" id="userId" value='{$userId}'>
+<input type="hidden" id="resVal" value="">
+<input type="hidden" id="curStepVal" value="">
 </body>
 <script type="text/javascript">
 
     //组织结构表格
-    var  tableItem, implementation, imageData, onlineFill, type=1, gridHeight;
+    var  tableItem, implementation, imageData, onlineFill, type=1, gridHeight, resources;
 
     tableItem = $('#tableItem').DataTable({
         retrieve: true,
@@ -322,6 +332,9 @@
             },
             {
                 name: "id"
+            },
+            {
+                name: "remark"
             }
         ],
         columnDefs: [
@@ -347,13 +360,20 @@
                 "orderable": false,
                 "targets": [3],
                 "render": function (data, type, row) {
+
+                    // console.log(resources);
                     var a = data;
                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='downConFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
                     // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printConFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
                     return html;
                 }
-            }
+            },
+            {
+                "targets": [4],
+                "searchable": false,
+                "visible": false
+            },
         ],
         language: {
             // "lengthMenu": "_MENU_",
@@ -370,6 +390,10 @@
             // }
         }
     });
+
+    //测量成果报审表 初检人@复检人@终检人@报送人@监理工程师
+    //单元质量检查验收申请表 施工单位质检人员@监理人员
+    //施工单位负责人@监理工程师@地质工程师@设计代表@建设单位代表@签署人
 
     //查询提交
     var layer = layui.layer;
@@ -470,6 +494,12 @@
     $('#openNode').click(function () {
         zTreeObj.expandAll(true);
     });
+
+    //收起所有
+    $('#closeNode').click(function () {
+        zTreeObj.expandAll(false);
+    });
+
     /*==========结束初始化 工程划分树节点 =============*/
 
 
@@ -808,6 +838,7 @@
         selectData = tableItem.row(".select-color").data();//获取选中行数据
         console.log(selectData[3] +" ------控制点 clickId");
         clickId = selectData[3];
+        resources = selectData[4];
 
         if(clickId != undefined && clickId != null){
             implementation.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_upload&type=1&cpr_id="+clickId).load();
@@ -830,6 +861,8 @@
             $(".mybtnAdd").css("display", "block");
             $(".mybtn").css("display", "none");
         }
+        //向提交页面之前放置值
+        $("#resVal").val(resources);
     });
 
     //easyui点击显示选择
@@ -1102,7 +1135,7 @@
 
 
     /*============在线填报开始==============*/
-    var step = 0;
+
     var isView = false;
     var reList = true ;
 
@@ -1138,14 +1171,21 @@
              },
              {
                  name: "CurrentApproverId"
+             },
+             {
+                 name: "CurrentStep"
              }
          ],
          columnDefs: [
              {
-                 "targets":[0]
+                 "targets":[0],
+                 "searchable": false,
+                 "orderable": false
              },
              {
                  "targets": [1],
+                 "searchable": false,
+                 "orderable": false,
                  "render": function (data, type, row) {
                      if (data == null || data == undefined || data == '') return '';
                      var time = new Date(data*1000);
@@ -1154,17 +1194,19 @@
                      M = M < 10 ? '0' + M : M;
                      var d = time.getDate();
                      d = d < 10 ? ('0' + d) : d;
-                     var h = time.getHours() + ':';
+                     var h = time.getHours();
                      h = h < 10 ? '0' + h : h;
-                     var m = time.getMinutes() + ':';
+                     var m = time.getMinutes();
                      m = m < 10 ? '0' + m : m;
                      var s = time.getSeconds();
                      s = s < 10 ? '0' + s : s;
-                     return y + '-' + M + '-' + d +' '+ h + m + s;
+                     return y + '-' + M + '-' + d +' '+ h + ':' + m + ':' + s;
                  }
              },
              {
-                 "targets": [2]
+                 "targets": [2],
+                 "searchable": false,
+                 "orderable": false
              },
              {
                  "targets": [3],
@@ -1196,27 +1238,27 @@
                      var html = "";
                      html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                      if (row[3] === 0) {
-                         html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa-pencil'></i></a>";
+                         html += "<a title='编辑' onclick='editOnLine("+row[4]+","+row[6]+")'><i class='fa fa-pencil'></i></a>";
                          html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
                          html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
                      }
                      else if (row[3] === 1 && row[5] == $("#userId").val()) {
                          var str = JSON.stringify(row[2]);
-                         html += "<a title='编辑' onclick='editOnLine ("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
-                         html += "<a title='审批' onclick='approve("+row[4]+","+str+")'><i class='fa fa fa-pencil-square-o'></i></a>";
-                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
+                         html += "<a title='编辑' onclick='editOnLine ("+row[4]+","+row[6]+")'><i class='fa fa fa-pencil'></i></a>";
+                         html += "<a title='审批' onclick='approve("+row[4]+","+str+","+row[6]+")'><i class='fa fa fa-pencil-square-o'></i></a>";
+                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
                      }
                      else if (row[3] === 2) {
-                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
+                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
                          html += "<a title='下载' onclick='downOnLine("+row[4]+")'><i class='fa fa fa-download'></i></a>";
                      }
-                     else if (row[3] === -1) {
+                     else if (row[3] === -1 && row[5] == $("#userId").val()) {
                          html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
-                         html += "<a title='编辑' onclick='editOnLine("+row[4]+")'><i class='fa fa fa-pencil'></i></a>";
+                         html += "<a title='编辑' onclick='editOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-pencil'></i></a>";
                          html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
-                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
+                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
                      }
-                     else html += "<a title='审批历史' onclick='historyOnLine("+row[4]+")'><i class='fa fa fa-file-text'></i></a>";
+                     else html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
                      return html;
 
                  }
@@ -1224,13 +1266,22 @@
              {
                  "targets": [5],
                  "visible": false,
-                 "searchable": false
+                 "searchable": false,
+                 "orderable": false
+             },
+             {
+                 "targets": [6],
+                 "visible": false,
+                 "searchable": false,
+                 "orderable": false
              }
          ],
          language: {
              "zeroRecords": "没有找到记录"
          }
     });
+        dv = new DataView(dt)
+        dv.Sort = "create_time desc"
     }
 
     //在线填报-新增
@@ -1261,16 +1312,15 @@
     }
 
     //在线填报-编辑
-    function editOnLine(id) {
+    function editOnLine(id,step) {
         console.log(clickId);
         isView = true;
-        step = 1;
         layer.open({
             type: 2,
             title: '在线填报',
             shadeClose: true,
             area: ['980px', '90%'],
-            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=0',
+            content: '{:url("quality/Qualityform/edit")}?cpr_id='+ clickId + '&id='+ id +'&currentStep=' + step,
             end:function () {
                 onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
             }
@@ -1328,36 +1378,57 @@
                 alert("获取数据完整性检测异常")
             }
         });
-
-
         console.log(id)
     }
 
     //在线填报-流程审批
-    function approve(id,app) {
-        console.log(app)
-        layer.open({
-            type: 2,
-            title: '流程审批',
-            shadeClose: true,
-            area: ['980px', '90%'],
-            content: '{:url("approve/approve/Approve")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel',
-            success: function(layero, index){
-                var body = layer.getChildFrame('body', index);
-                body.find("#conCode").val(app);
-                body.find("#dataId").val(id);
-                body.find("#dataType").val('app\\quality\\model\\QualityFormInfoModel');
+    function approve(id,app,step) {
+        console.log(app);
+        $.ajax({
+            url: "{:url('approve/Approve/CheckBeforeSubmitOrApprove')}",
+            type: "post",
+            data: {
+                dataId:id,
+                dataType:"app\\quality\\model\\QualityFormInfoModel",
+                currentStep:step
             },
-            end:function () {
-                funOnLine(selfidUnit,conThisId,clickId);
-                onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+            success: function (res) {
+                console.log(res);
+                if(res == ""){
+                    layer.open({
+                        type: 2,
+                        title: '流程审批',
+                        shadeClose: true,
+                        area: ['980px', '90%'],
+                        content: '{:url("approve/approve/Approve")}?dataId='+ id + '&dataType=app\\quality\\model\\QualityFormInfoModel',
+                        success: function(layero, index){
+                            var body = layer.getChildFrame('body', index);
+                            body.find("#conCode").val(app);
+                            body.find("#dataId").val(id);
+                            body.find("#dataType").val('app\\quality\\model\\QualityFormInfoModel');
+                        },
+                        end:function () {
+                            funOnLine(selfidUnit,conThisId,clickId);
+                            onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+                        }
+                    });
+                }else if(res != ''){
+                    layer.alert(res);
+                }
+            },
+            error:function () {
+                alert("获取数据完整性检测异常")
             }
         });
         console.log(id);
     }
 
     //在线填报-审批历史
-    function historyOnLine(id) {
+    function historyOnLine(id,curStep) {
+        console.log(curStep)
+        //向提交页面之前放置值
+        $("#curStepVal").val(curStep);
+        console.log($("#curStepVal").val())
         console.log(clickId);
         layer.open({
             type: 2,
