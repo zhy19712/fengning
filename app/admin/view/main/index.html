@@ -505,14 +505,14 @@
     //锚点的操作类型
     operateType = "";
     //删除锚点
-    function delAnchor(anchorName) {
+    function delAnchor(anchorName,anchor_point_id) {
         var anchorName = $('#anchorName').html();
         //锚点的名称：anchorName
         $.ajax({
             url: "./delAnchorPoint",
             type: "post",
             data: {
-                anchor_point_id:uObjSubIdSingle
+                anchor_point_id:anchor_point_id
             },
             dataType: "json",
             success: function (res) {
