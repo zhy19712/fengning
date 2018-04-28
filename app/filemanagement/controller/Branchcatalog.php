@@ -122,20 +122,101 @@ class Branchcatalog extends Permissions
         }
     }
 
+    /*****************************右侧项目分类*************************/
     /**
      * datables表格
      */
     public function table()
     {
+        if (request()->isAjax()){
         //实例化模型类
         $model = new FilebranchModel();
-        $data = $model->getAll();
+        $classifyid = input('post.id');
+        $data = $model->getAll($classifyid);
         $res = tree($data);
 
         foreach ((array)$res as $k => $v) {
             $v['id'] = strval($v['id']);
-            $res[$k] = json_encode($v);
+            $res[$k] = $v;
         }
         return json($res);
+        }
+    }
+
+    /*
+     * 获取一条分类项目信息
+     */
+    public function getindex()
+    {
+        if(request()->isAjax()){
+            //实例化模型类
+            $model = new FilebranchModel();
+            $param = input('post.');
+            $data = $model->getOne($param['id']);
+            return json(['code'=> 1, 'data' => $data]);
+        }
+    }
+
+    /**
+     * 新增/编辑
+     * @return mixed|\think\response\Json
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function editCate()
+    {
+        if(request()->isAjax()){
+            //实例化模型类
+            $model = new FilebranchModel();
+            $param = input('post.');
+
+            //前台传过来的id
+            if(empty($param['id']))//id为空时表示新增
+            {
+                $data = [
+                    "classifyid" => $param["classifyid"],//左侧分类树id
+                    "parent_code" => $param["parent_code"],//父节点（序号）
+                    "code" => $param["code"],//序号
+                    "class_name" => $param["class_name"],//名称
+                    "pid" => $param["pid"]//父级id
+                ];
+                $flag = $model->insertCate($data);
+                return json($flag);
+            }else{
+                $data = [
+                    "id" => $param["id"],
+                    "classifyid" => $param["classifyid"],
+                    "parent_code" => $param["parent_code"],
+                    "code" => $param["code"],
+                    "class_name" => $param["class_name"],
+                    "pid" => $param["pid"]
+                ];
+                $flag = $model->editCate($data);
+                return json($flag);
+            }
+        }
+    }
+
+    /**
+     * 删除
+     * @return array
+     */
+    public function delCate()
+    {
+        if(request()->isAjax()){
+            //实例化model类型
+            $model = new FilebranchModel();
+            $param = input('post.');
+            //首先判断一下删除的是否存在下级
+            $info = $model ->judgeId($param['id']);
+            if(empty($info))//没有下级直接删除
+            {
+                $flag = $model->delCate($param['id']);
+                return $flag;
+            }else
+            {
+                return ['code' => -1, 'msg' => '请先删除下级！'];
+            }
+        }
     }
 }
