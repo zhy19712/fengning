@@ -25,4 +25,25 @@ class Awaitfile extends Permissions
     {
         return $this->fetch();
     }
+    /**
+     * 新增文件里面的选择文件-图册管理
+     */
+    public function selectfile()
+    {
+        return $this->fetch();
+    }
+    /**
+     * 新增文件里面的选择文件-文档管理
+     */
+    public function documentfile()
+    {
+        return $this->fetch();
+    }
+    /**
+     * 新增文件里面的选择文件-质量管理
+     */
+    public function qualityfile()
+    {
+        return $this->fetch();
+    }
 }
