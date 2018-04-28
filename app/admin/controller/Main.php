@@ -166,7 +166,7 @@ class Main extends Permissions
             $pic = new PictureModel();
             // 1工程划分模型 2 建筑模型 3三D模型
             $id = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('id');
-            if(empty($data['id'])){
+            if(empty($id)){
                 return json(['code'=>1,'msg'=>'不存在的模型编号']);
             }
             $remark = $pic->getRemarkTb($id);
