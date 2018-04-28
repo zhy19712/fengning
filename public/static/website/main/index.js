@@ -153,17 +153,16 @@ function getAttr() {
         success: function (res) {
             $('#attrGroup').empty();
             var attrGroup = [];
-            for(key in res.attr){
-                if(res.attr.hasOwnProperty(key)){
-                    var val = res.attr[key];
-                    attrGroup.push('<div class="layui-input-inline attrGroup">');
-                    attrGroup.push('<input type="text" name="attrKey" value='+ key +' required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
-                    attrGroup.push('<input type="text" name="attrVal" value='+ val +' required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
-                    attrGroup.push('<div class="layui-form-mid layui-word-aux">');
-                    attrGroup.push('<i class="fa fa-check saveAttr" onclick="saveAttr(this)"></i>');
-                    attrGroup.push('<i class="fa fa-close closeAttr" onclick="closeAttr(this)"></i>');
-                    attrGroup.push('</div>');
-                }
+            for(var i = 0;i<res.attr.length;i++){
+                var attrKey = res.attr[i].attrKey;
+                var attrVal = res.attr[i].attrVal;
+                attrGroup.push('<div class="layui-input-inline attrGroup">');
+                attrGroup.push('<input type="text" name="attrKey" value='+ attrKey +' required  lay-verify="required" placeholder="属性名" autocomplete="off" class="layui-input">');
+                attrGroup.push('<input type="text" name="attrVal" value='+ attrVal +' required  lay-verify="required" placeholder="属性值" autocomplete="off" class="layui-input">');
+                attrGroup.push('<div class="layui-form-mid layui-word-aux">');
+                attrGroup.push('<i class="fa fa-check saveAttr" onclick="saveAttr(this)"></i>');
+                attrGroup.push('<i class="fa fa-close closeAttr" onclick="closeAttr(this)"></i>');
+                attrGroup.push('</div>');
             }
             attrGroup.push('</div>');
             $('#attrGroup').append(attrGroup.join(' '));
