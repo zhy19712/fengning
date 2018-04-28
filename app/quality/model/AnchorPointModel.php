@@ -59,7 +59,7 @@ class AnchorPointModel extends Model
             // 关联删除锚点下的 附件
             $data = $this->getAttachmentId($id);
             $id_arr = explode(',',$data);
-            Db::name('attachment')->where(['id',['in',$id_arr]])->delete();
+            Db::name('attachment')->where(['id'=>['in',$id_arr]])->delete();
 
             $this->where('id', $id)->delete();
             return ['code' => 1, 'msg' => '删除成功'];
@@ -98,6 +98,16 @@ class AnchorPointModel extends Model
     public function getAnchorByName($name)
     {
         return  $this->where('anchor_name',$name)->value('id');
+    }
+
+    public function delAnchorPointAttachment($id,$attachment_id)
+    {
+        $old_attachment_id = $this->getAttachmentId($id);
+        $new_attachment_id = str_repeat(','.$attachment_id,'',$old_attachment_id);
+        $data['id'] = $id;
+        $data['attachment_id'] = $new_attachment_id;
+        $this->editTb($data);
+        Db::name('attachment')->where(['id'=>['eq',$attachment_id]])->delete();
     }
 
 }
