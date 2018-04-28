@@ -1252,7 +1252,7 @@ class Common extends Controller
                     ->join('admin c', 'a.CurrentApproverId = c.id', 'left')
                     ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time,a.CurrentApproverId,a.CurrentStep')
                     ->where($whereStr)
-                    ->order($order)->limit(intval($start), intval($length))->select();
+                    ->order('create_time','desc')->limit(intval($start), intval($length))->select();
                 $recordsFiltered = sizeof($recordsFilteredResult);
             }
         } else {
@@ -1264,7 +1264,7 @@ class Common extends Controller
                     ->join('admin c', 'a.CurrentApproverId = c.id', 'left')
                     ->field('a.id,u.nickname as nickname,c.nickname as currentname,a.approvestatus,a.create_time,a.CurrentApproverId,a.CurrentStep')
                     ->where($whereStr)
-                    ->order($order)->limit(intval($start), intval($length))->select();
+                    ->order('create_time','desc')->limit(intval($start), intval($length))->select();
                 $recordsFiltered = $recordsTotal;
             }
         }
