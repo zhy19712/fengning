@@ -87,12 +87,6 @@ $('#toogleAttr li').click(function () {
     $('#'+ uid).show().siblings('div').hide();
 });
 
-$('#anchorFile li').click(function () {
-    var uid = $(this).attr('uid');
-    $(this).addClass('active').siblings().removeClass('active');
-    $('#'+ uid).show().siblings('div').hide();
-});
-
 $('#del').click(function () {
     $(this).parents('.swiper-wrapper').remove();
     $(this).parents('.swiper-wrapper').html();
@@ -267,6 +261,9 @@ function getAnchorPoint(anchorName) {
             $('#componentName').html(res[0].component_name);
             $('textarea[name="anchorRemark"]').text(res[0].remark);
             $('#delAnchor').attr('uid',res[0].anchor_point_id);
+            $('#fObjSelX').val(res[0].coordinate_x);
+            $('#fObjSelY').val(res[0].coordinate_y);
+            $('#fObjSelZ').val(res[0].coordinate_z);
         }
     })
 }
@@ -293,105 +290,142 @@ function easyUiPanelToggleSouth() {
 }
 
 //新增图片
-var addImage = WebUploader.create({
-    auto: true,
-    // swf文件路径
-    swf:  '/static/public/webupload/Uploader.swf',
+function addImageFun() {
+    addImage = WebUploader.create({
+        auto: true,
+        // swf文件路径
+        swf:  '/static/public/webupload/Uploader.swf',
 
-    // 文件接收服务端。
-    server: './uploadAnchorPoint',
+        // 文件接收服务端。
+        server: './uploadAnchorPoint',
 
-    // 选择文件的按钮。可选。
-    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-    pick: {
-        multiple: false,
-        id: '#addImage',
-        innerHTML: '新增图片'
-    },
-    formData:{
-        anchor_point_id:''
-    },
-    accept: {
-        title: 'Images',
-        extensions: 'gif,jpg,jpeg,bmp,png',
-        mimeTypes: 'image/jpg,image/jpeg,image/png'
-    },
-    // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-    resize: false
-});
-
-addImage.on( 'uploadSuccess', function( file ,res) {
-    console.log(file);
-    var img = '<div class="img-item">' +
-                '<img src="" alt="">' +
-                '<a href="javascript:;">' +
-                '<i class="fa fa-close"></i>' +
-                '</a>' +
-                '</div>';
-    $('#imgList').append(img);
-});
-addImage.on( 'uploadError', function( file ,code) {
-    console.log(code);
-});
-addImage.on("uploadStart",function () {
-    var anchor_point_id = $('#delAnchor').attr('uid');
-    addImage.options.formData.anchor_point_id = anchor_point_id;
-});
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: {
+            multiple: false,
+            id: '#addImage',
+            innerHTML: '新增图片'
+        },
+        formData:{
+            anchor_point_id:''
+        },
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/jpg,image/jpeg,image/png'
+        },
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false
+    });
+    addImage.on( 'uploadSuccess', function( file ,res) {
+        console.log(file);
+        for(key in res.data){
+            if(res.data.hasOwnProperty(key)){
+                var img = '<div class="img-item">' +
+                    '<img src='+ res.data[key] +' alt="">' +
+                    '<a href="javascript:;">' +
+                    '<i class="fa fa-close"></i>' +
+                    '</a>' +
+                    '</div>';
+            }
+        }
+        $('#imgList').append(img);
+    });
+    addImage.on( 'uploadError', function( file ,code) {
+        console.log(code);
+    });
+    addImage.on("uploadStart",function () {
+        var anchor_point_id = $('#delAnchor').attr('uid');
+        addImage.options.formData.anchor_point_id = anchor_point_id;
+    });
+}
 
 //新增文档
-var addFile = WebUploader.create({
-    auto: true,
-    // swf文件路径
-    swf:  '/static/public/webupload/Uploader.swf',
+function addFileFun() {
+    var addFile = WebUploader.create({
+        auto: true,
+        // swf文件路径
+        swf:  '/static/public/webupload/Uploader.swf',
 
-    // 文件接收服务端。
-    server: './uploadAnchorPoint',
+        // 文件接收服务端。
+        server: './uploadAnchorPoint',
 
-    // 选择文件的按钮。可选。
-    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-    pick: {
-        multiple: false,
-        id: '#addFile',
-        innerHTML: '新增文档'
-    },
-    formData:{
-        attachment_id:''
-    },
-    accept: {
-        title: 'excel',
-        extensions: 'xls,xlsx',
-        mimeTypes: '.xls,.xlsx'
-    },
-    // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-    resize: false
-});
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: {
+            multiple: false,
+            id: '#addFile',
+            innerHTML: '新增文档'
+        },
+        formData:{
+            anchor_point_id:''
+        },
+        accept: {
+            title: 'excel',
+            extensions: 'xls,xlsx',
+            mimeTypes: '.xls,.xlsx'
+        },
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false
+    });
 
-addFile.on( 'uploadSuccess', function( file ,res) {
-    var file = '<div class="file-item">' +
-                    '<div class="file-list">' +
-                        '<p>'+ file.name +'</p>' +
-                        '<a href="javascript:;">' +
-                        '<i class="fa fa-download"></i>' +
-                        '</a>' +
-                        '<a href="javascript:;">' +
-                        '<i class="fa fa-close"></i>' +
-                        '</a>' +
-                    '</div>' +
-                    '<div class="file-info">' +
-                        '<span></span>' +
-                        '<span></span>' +
-                    '</div>' +
-                '</div>';
-    $('#imgList').append(file);
-});
-addFile.on( 'uploadError', function( file ,code) {
-    console.log(code);
-});
-addFile.on("uploadStart",function () {
-    var attachment_id = $('#delAnchor').attr('uid');
-    addFile.options.formData.attachment_id = attachment_id;
-});
+    addFile.on( 'uploadSuccess', function( file ,res) {
+        var file = '<div class="file-item">' +
+            '<div class="file-list">' +
+            '<p>'+ file.name +'</p>' +
+            '<a href="javascript:;">' +
+            '<i class="fa fa-download"></i>' +
+            '</a>' +
+            '<a href="javascript:;">' +
+            '<i class="fa fa-close"></i>' +
+            '</a>' +
+            '</div>' +
+            '<div class="file-info">' +
+            '<span></span>' +
+            '<span></span>' +
+            '</div>' +
+            '</div>';
+        $('#fileList').append(file);
+    });
+    addFile.on( 'uploadError', function( file ,code) {
+        console.log(code);
+    });
+    addFile.on("uploadStart",function () {
+        var anchor_point_id = $('#delAnchor').attr('uid');
+        console.log(anchor_point_id);
+        addFile.options.formData.anchor_point_id = anchor_point_id;
+    });
+}
 
-$('.panel-title').click(function () {
-    console.log(2123123);
-})
+
+function addAttachment() {
+    $('#anchorLayerTab').tabs('close','附件');
+    var attachmentHtml = '<ul class="toggle-attr" id="anchorFile">' +
+                    '        <li uid="image" class="active">图片</li>' +
+                    '        <li uid="file">文档</li>' +
+                    '    </ul>' +
+                    '    <div id="image">' +
+                    '        <div id="addImage"></div>' +
+                    '        <div id="imgList">' +
+                    '        </div>' +
+                    '    </div>' +
+                    '    <div id="file" style="display: none">' +
+                    '        <div id="addFile"></div>' +
+                    '        <div id="fileList">' +
+                    '        </div>' +
+                    '    </div>';
+    $('#anchorLayerTab').tabs('add',{
+        title: '附件',
+        selected: false,
+        content:attachmentHtml
+    });
+    addImageFun();
+    addFileFun();
+
+    $('#anchorFile li').click(function () {
+        var uid = $(this).attr('uid');
+        $(this).addClass('active').siblings().removeClass('active');
+        $('#'+ uid).show().siblings('div').hide();
+    });
+}
+
