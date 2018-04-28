@@ -88,12 +88,13 @@ class AnchorPointModel extends Model
             $attachment = Db::name('attachment')->where(['id'=>['in',$id_arr]])->field('id as attachment_id,filepath')->select();
             // 图片放一起,文件放一起
             $img = ['jpg','jpeg','png','gif','bmp','pcx','emf','tga','tif','rle'];
+            $data['img_arr'] = $data['file_arr'] = '';
             foreach ($attachment as $v){
                 $ex = get_extension($v['filepath']);
                 if(in_array($ex,$img)){
-                    $data['img_arr'] = $v;
+                    $data['img_arr'][] = $v;
                 }else{
-                    $data['file_arr'] = $v;
+                    $data['file_arr'][] = $v;
                 }
             }
         }else{
