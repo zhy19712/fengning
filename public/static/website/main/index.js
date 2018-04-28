@@ -300,7 +300,7 @@ var addImage = WebUploader.create({
     swf:  '/static/public/webupload/Uploader.swf',
 
     // 文件接收服务端。
-    server: './uploadAnchorPoin',
+    server: './uploadAnchorPoint',
 
     // 选择文件的按钮。可选。
     // 内部根据当前运行是创建，可能是input元素，也可能是flash.
@@ -310,32 +310,29 @@ var addImage = WebUploader.create({
         innerHTML: '新增1'
     },
     formData:{
-        anchor_point_id:'',
-        attachment_id:''
+        anchor_point_id:''
     },
-    /*accept: {
+    accept: {
         title: 'Images',
         extensions: 'gif,jpg,jpeg,bmp,png',
         mimeTypes: 'image/jpg,image/jpeg,image/png'
-    },*/
+    },
     // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
     resize: false
 });
 
 addImage.on( 'uploadSuccess', function( file ,res) {
-    console.log(2222);
+    console.log(file);
     /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
     $('#imgList').append(img);*/
 });
 addImage.on( 'uploadError', function( file ,code) {
     console.log(code);
-    console.log(file);
     /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
     $('#imgList').append(img);*/
 });
 addImage.on("uploadStart",function () {
-    console.log(1111);
-    //addImage.formData.anchor_point_id = anchor_point_id;
+    addImage.formData.anchor_point_id = $('#delAnchor').attr('uid');
 });
 
 //新增文档
@@ -345,7 +342,7 @@ var addFile = WebUploader.create({
     swf:  '/static/public/webupload/Uploader.swf',
 
     // 文件接收服务端。
-    server: './uploadAnchorPoin',
+    server: './uploadAnchorPoint',
 
     // 选择文件的按钮。可选。
     // 内部根据当前运行是创建，可能是input元素，也可能是flash.
@@ -354,8 +351,25 @@ var addFile = WebUploader.create({
         id: '#addFile',
         innerHTML: '新增'
     },
+    formData:{
+        attachment_id:''
+    },
     // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
     resize: false
+});
+
+addImage.on( 'uploadSuccess', function( file ,res) {
+    console.log(file);
+    /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
+    $('#imgList').append(img);*/
+});
+addImage.on( 'uploadError', function( file ,code) {
+    console.log(code);
+    /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
+    $('#imgList').append(img);*/
+});
+addImage.on("uploadStart",function () {
+    addImage.formData.anchor_point_id = $('#delAnchor').attr('uid');
 });
 
 $('.panel-title').click(function () {
