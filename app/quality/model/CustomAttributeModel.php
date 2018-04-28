@@ -9,6 +9,7 @@
 namespace app\quality\model;
 
 
+use phpDocumentor\Reflection\Types\Object_;
 use think\exception\PDOException;
 use think\Model;
 
@@ -58,7 +59,7 @@ class CustomAttributeModel extends Model
 
     public function getAttrTb($picture_id)
     {
-        $attr = $this->where(['picture_type'=>1,'picture_number'=>$picture_id])->column('id as attrId,attr_name as attrKey,attr_value as attrVal');
+        $attr = $this->where(['picture_type'=>1,'picture_number'=>$picture_id])->field('id as attrId,attr_name as attrKey,attr_value as attrVal')->select();
         return ['code'=>1,'attr'=>$attr,'msg'=>'模型图自定义属性'];
     }
 
