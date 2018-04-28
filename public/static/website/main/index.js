@@ -294,10 +294,68 @@ function easyUiPanelToggleSouth() {
 }
 
 //新增图片
-$.upload({
-    btnId:'#addImage',
-    btnText:'新增1',
-    server: "./uploadAnchorPoint",
+var addImage = WebUploader.create({
+    auto: true,
+    // swf文件路径
+    swf:  '/static/public/webupload/Uploader.swf',
+
+    // 文件接收服务端。
+    server: './uploadAnchorPoin',
+
+    // 选择文件的按钮。可选。
+    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+    pick: {
+        multiple: false,
+        id: '#addImage',
+        innerHTML: '新增1'
+    },
+    formData:{
+        anchor_point_id:'',
+        attachment_id:''
+    },
+    /*accept: {
+        title: 'Images',
+        extensions: 'gif,jpg,jpeg,bmp,png',
+        mimeTypes: 'image/jpg,image/jpeg,image/png'
+    },*/
+    // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+    resize: false
+});
+
+addImage.on( 'uploadSuccess', function( file ,res) {
+    console.log(2222);
+    /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
+    $('#imgList').append(img);*/
+});
+addImage.on( 'uploadError', function( file ,code) {
+    console.log(code);
+    console.log(file);
+    /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
+    $('#imgList').append(img);*/
+});
+addImage.on("uploadStart",function () {
+    console.log(1111);
+    //addImage.formData.anchor_point_id = anchor_point_id;
+});
+
+//新增文档
+var addFile = WebUploader.create({
+    auto: true,
+    // swf文件路径
+    swf:  '/static/public/webupload/Uploader.swf',
+
+    // 文件接收服务端。
+    server: './uploadAnchorPoin',
+
+    // 选择文件的按钮。可选。
+    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+    pick: {
+        multiple: false,
+        id: '#addFile',
+        innerHTML: '新增'
+    },
+    // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+    resize: false
 });
 
 $('.panel-title').click(function () {
