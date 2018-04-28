@@ -34,16 +34,19 @@ class AnchorPointModel extends Model
         }
     }
 
-    public function editTb($param)
+    public function editTb($param,$type=1)
     {
         try {
             $result = $this->allowField(true)->save($param, ['id' => $param['id']]);
             if (false === $result) {
                 return ['code' => -1, 'msg' => $this->getError()];
             } else {
-                // 上传成功后，返回文件主键和地址
-                $data = Db::name('attachment')->where('id',$param['attachment_id'])->column('id as attachment_id,filepath');
-                return ['code' => 1,'data'=>$data, 'msg' => '上传成功'];
+                if($type==1){
+                    // 上传成功后，返回文件主键和地址
+                    $data = Db::name('attachment')->where('id',$param['attachment_id'])->column('id as attachment_id,filepath');
+                    return ['code' => 1,'data'=>$data, 'msg' => '上传成功'];
+                }
+                return ['code' => 1,'anchor_point_id'=>$param['id'], 'msg' => '编辑成功'];
             }
         } catch (PDOException $e) {
             return ['code' => 0, 'msg' => $e->getMessage()];
@@ -53,6 +56,11 @@ class AnchorPointModel extends Model
     public function deleteTb($id)
     {
         try {
+            // 关联删除锚点下的 附件
+            $data = $this->getAttachmentId($id);
+            $id_arr = explode(',',$data);
+            Db::name('attachment')->where(['id',['in',$id_arr]])->delete();
+
             $this->where('id', $id)->delete();
             return ['code' => 1, 'msg' => '删除成功'];
         } catch (PDOException $e) {
@@ -60,22 +68,36 @@ class AnchorPointModel extends Model
         }
     }
 
+    public function getAttachmentId($id)
+    {
+        $data = $this->where('id',$id)->value('attachment_id');
+        return $data;
+    }
+
     public function getAnchorTb($name='')
     {
         if($name){
             $data = Db::name('quality_anchor_point')->alias('p')
-                ->join('attachment a','p.attachment_id = a.id')
                 ->where(['p.picture_type'=>1,'p.anchor_name'=>$name])
-                ->field('p.id as anchor_point_id,p.picture_number,p.anchor_name,p.component_name,p.user_name,p.coordinate_x,p.coordinate_y,p.coordinate_z,p.remark,p.attachment_id.a.filepath')
+                ->field('p.id as anchor_point_id,p.picture_number,p.anchor_name,p.component_name,p.user_name,p.coordinate_x,p.coordinate_y,p.coordinate_z,p.remark,p.attachment_id')
                 ->select();
+            if(sizeof($data) < 1){
+                return $data;
+            }
+            $id_arr = explode(',',$data[0]['attachment_id']);
+            $data['attachment'] = Db::name('attachment')->where(['id'=>['in',$id_arr]])->field('id as attachment_id,filepath')->select();
         }else{
             $data = Db::name('quality_anchor_point')->alias('p')
-                ->join('attachment a','p.attachment_id = a.id')
                 ->where(['p.picture_type'=>1])
-                ->field('p.id as anchor_point_id,p.picture_number,p.anchor_name,p.component_name,p.user_name,p.coordinate_x,p.coordinate_y,p.coordinate_z,p.remark,p.attachment_id,a.filepath')
+                ->field('p.id as anchor_point_id,p.picture_number,p.anchor_name,p.component_name,p.user_name,p.coordinate_x,p.coordinate_y,p.coordinate_z,p.remark')
                 ->select();
         }
         return $data;
+    }
+
+    public function getAnchorByName($name)
+    {
+        return  $this->where('anchor_name',$name)->value('id');
     }
 
 }
