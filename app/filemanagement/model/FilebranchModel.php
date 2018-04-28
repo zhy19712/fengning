@@ -82,6 +82,17 @@ class FilebranchModel extends Model
     }
 
     /**
+     * 判断当前节点下是否有数据
+     * @param $id
+     * @return array
+     */
+    public function judgeId($id)
+    {
+        $data = $this->where("pid",$id)->find();
+        return $data;
+    }
+
+    /**
      * 获取一条项目分类的信息
      * @param $id
      * @throws \think\exception\DbException
@@ -119,9 +130,9 @@ class FilebranchModel extends Model
     /**
      * 返回所有的数据
      */
-    public function getAll()
+    public function getAll($id)
     {
-        $data = $this->order("id","asc")->select();
+        $data = $this->where("classifyid",$id)->order("id","asc")->select();
         return $data;
     }
 }
