@@ -101,7 +101,7 @@ class FilebranchModel extends Model
         $children = array();
         $data = $this
             ->field('serial_number,class_name,id,pid')
-            ->where('pid', $id)
+            ->where('pid', $id)->order("id","asc")
             ->select();
         if(!empty($data))
         {
@@ -109,10 +109,19 @@ class FilebranchModel extends Model
             {
                 $children[$k][] = $v['serial_number'];
                 $children[$k][] = $v['class_name'];
-                $children[$k][] = $v['id'];
                 $children[$k][] = $v['pid'];
+                $children[$k][] = $v['id'];
             }
         }
         return $children;
+    }
+
+    /**
+     * 返回所有的数据
+     */
+    public function getAll()
+    {
+        $data = $this->order("id","asc")->select();
+        return $data;
     }
 }
