@@ -264,6 +264,17 @@ function getAnchorPoint(anchorName) {
             $('#fObjSelX').val(res[0].coordinate_x);
             $('#fObjSelY').val(res[0].coordinate_y);
             $('#fObjSelZ').val(res[0].coordinate_z);
+            console.log(res.img_arr);
+            var anchor_point_id = res[0].anchor_point_id;
+            for(var i = 0;i<res.img_arr.length;i++){
+                var attachment_id = res.img_arr[i].attachment_id;
+                uploadImage(res.img_arr[i].filepath,anchor_point_id,attachment_id);
+            }
+
+            for(var j = 0;j<res.file_arr.length;j++){
+                var attachment_id = res.file_arr[j].attachment_id;
+                uploadFile(res.file_arr[j].filepath,anchor_point_id,attachment_id);
+            }
         }
     })
 }
@@ -321,15 +332,10 @@ function addImageFun() {
         console.log(file);
         for(key in res.data){
             if(res.data.hasOwnProperty(key)){
-                var img = '<div class="img-item">' +
-                    '<img src='+ res.data[key] +' alt="">' +
-                    '<a href="javascript:;">' +
-                    '<i class="fa fa-close"></i>' +
-                    '</a>' +
-                    '</div>';
+                var imgPath = res.data[key];
+                uploadImage(imgPath);
             }
         }
-        $('#imgList').append(img);
     });
     addImage.on( 'uploadError', function( file ,code) {
         console.log(code);
@@ -370,34 +376,51 @@ function addFileFun() {
     });
 
     addFile.on( 'uploadSuccess', function( file ,res) {
-        var file = '<div class="file-item">' +
-            '<div class="file-list">' +
-            '<p>'+ file.name +'</p>' +
-            '<a href="javascript:;">' +
-            '<i class="fa fa-download"></i>' +
-            '</a>' +
-            '<a href="javascript:;">' +
-            '<i class="fa fa-close"></i>' +
-            '</a>' +
-            '</div>' +
-            '<div class="file-info">' +
-            '<span></span>' +
-            '<span></span>' +
-            '</div>' +
-            '</div>';
-        $('#fileList').append(file);
+        uploadFile(file.name);
     });
     addFile.on( 'uploadError', function( file ,code) {
         console.log(code);
     });
     addFile.on("uploadStart",function () {
         var anchor_point_id = $('#delAnchor').attr('uid');
-        console.log(anchor_point_id);
         addFile.options.formData.anchor_point_id = anchor_point_id;
     });
 }
 
+//显示图片
+function uploadImage(imgPath,anchor_point_id,attachment_id) {
+    console.log(imgPath);
+    var img = '<div class="img-item imgItem" >' +
+        '<img src='+ imgPath +' alt="">' +
+        '<a href="javascript:;">' +
+        '<i class="fa fa-close" onclick="delAttachmentImg(this)"  pointId='+ anchor_point_id +' attachmentId = '+ attachment_id +'></i>' +
+        '</a>' +
+        '<span></span>'+
+        '</div>';
+    $('#imgList').append(img);
+}
 
+//显示文档
+function uploadFile(fileName,anchor_point_id,attachment_id) {
+    var file = '<div class="file-item">' +
+        '<div class="file-list">' +
+        '<p>'+ fileName +'</p>' +
+        '<a href="javascript:;">' +
+        '<i class="fa fa-download"  onclick="relationDownload(this)" attachmentId = '+ attachment_id +'></i>' +
+        '</a>' +
+        '<a href="javascript:;">' +
+        '<i class="fa fa-close" onclick="delAttachmentImg(this)"  pointId='+ anchor_point_id +' attachmentId = '+ attachment_id +'></i>' +
+        '</a>' +
+        '</div>' +
+        '<div class="file-info">' +
+        '<span></span>' +
+        '<span></span>' +
+        '</div>' +
+        '</div>';
+    $('#fileList').append(file);
+}
+
+//添加附件标签页
 function addAttachment() {
     $('#anchorLayerTab').tabs('close','附件');
     var attachmentHtml = '<ul class="toggle-attr" id="anchorFile">' +
@@ -419,13 +442,55 @@ function addAttachment() {
         selected: false,
         content:attachmentHtml
     });
+    //加载图片上传插件
     addImageFun();
+    //加载文档上传插件
     addFileFun();
-
+    //图片文档切换
     $('#anchorFile li').click(function () {
         var uid = $(this).attr('uid');
         $(this).addClass('active').siblings().removeClass('active');
         $('#'+ uid).show().siblings('div').hide();
     });
+}
+//显示删除按钮
+$('.imgItem').bind('mouseover mouseleave',function (e) {
+    if(e.type == 'mouseover'){
+        $(this).find("a,span").show();
+    }else{
+        $(this).find('a,span').hide();
+    }
+});
+
+
+//删除附件
+function delAttachmentImg(that) {
+    var anchor_point_id = $(that).attr('pointId');
+    var attachment_id = $(that).attr('attachmentId');
+    $.ajax({
+        url: "./delAttachment",
+        type: "post",
+        data: {
+            anchor_point_id:anchor_point_id,
+            attachment_id:attachment_id
+        },
+        dataType: "json",
+        success: function (res) {
+            layer.msg(res,{
+                offset: 't'
+            });
+        }
+    })
+}
+
+//下载文档
+function relationDownload(that) {
+    var attachment_id = $(that).attr('attachmentId');
+    $.download({
+        url:'./relationDownload',
+        data:{
+            attachment_id:attachment_id
+        }
+    })
 }
 
