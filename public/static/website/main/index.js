@@ -307,7 +307,7 @@ var addImage = WebUploader.create({
     pick: {
         multiple: false,
         id: '#addImage',
-        innerHTML: '新增1'
+        innerHTML: '新增图片'
     },
     formData:{
         anchor_point_id:''
@@ -323,16 +323,20 @@ var addImage = WebUploader.create({
 
 addImage.on( 'uploadSuccess', function( file ,res) {
     console.log(file);
-    /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
-    $('#imgList').append(img);*/
+    var img = '<div class="img-item">' +
+                '<img src="" alt="">' +
+                '<a href="javascript:;">' +
+                '<i class="fa fa-close"></i>' +
+                '</a>' +
+                '</div>';
+    $('#imgList').append(img);
 });
 addImage.on( 'uploadError', function( file ,code) {
     console.log(code);
-    /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
-    $('#imgList').append(img);*/
 });
 addImage.on("uploadStart",function () {
-    addImage.formData.anchor_point_id = $('#delAnchor').attr('uid');
+    var anchor_point_id = $('#delAnchor').attr('uid');
+    addImage.options.formData.anchor_point_id = anchor_point_id;
 });
 
 //新增文档
@@ -349,27 +353,44 @@ var addFile = WebUploader.create({
     pick: {
         multiple: false,
         id: '#addFile',
-        innerHTML: '新增'
+        innerHTML: '新增文档'
     },
     formData:{
         attachment_id:''
+    },
+    accept: {
+        title: 'excel',
+        extensions: 'xls,xlsx',
+        mimeTypes: '.xls,.xlsx'
     },
     // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
     resize: false
 });
 
-addImage.on( 'uploadSuccess', function( file ,res) {
-    console.log(file);
-    /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
-    $('#imgList').append(img);*/
+addFile.on( 'uploadSuccess', function( file ,res) {
+    var file = '<div class="file-item">' +
+                    '<div class="file-list">' +
+                        '<p>'+ file.name +'</p>' +
+                        '<a href="javascript:;">' +
+                        '<i class="fa fa-download"></i>' +
+                        '</a>' +
+                        '<a href="javascript:;">' +
+                        '<i class="fa fa-close"></i>' +
+                        '</a>' +
+                    '</div>' +
+                    '<div class="file-info">' +
+                        '<span></span>' +
+                        '<span></span>' +
+                    '</div>' +
+                '</div>';
+    $('#imgList').append(file);
 });
-addImage.on( 'uploadError', function( file ,code) {
+addFile.on( 'uploadError', function( file ,code) {
     console.log(code);
-    /*var img = '<div class="img-item"><img src="" alt=""><a href="javascript:;"><i class="fa fa-close"></i></a></div>';
-    $('#imgList').append(img);*/
 });
-addImage.on("uploadStart",function () {
-    addImage.formData.anchor_point_id = $('#delAnchor').attr('uid');
+addFile.on("uploadStart",function () {
+    var attachment_id = $('#delAnchor').attr('uid');
+    addFile.options.formData.attachment_id = attachment_id;
 });
 
 $('.panel-title').click(function () {
