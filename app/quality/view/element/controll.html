@@ -198,7 +198,9 @@
     #imageData_wrapper, #implementation_wrapper, #onlineFill_wrapper{
         height: 100% !important;
     }
-
+    #onlineFillParent table.dataTable thead .sorting_asc {
+        background-image: none !important;
+    }
 </style>
 <body  class="easyui-layout">
 <!--右边的工程划分-->
@@ -1278,6 +1280,8 @@
              "zeroRecords": "没有找到记录"
          }
     });
+        dv = new DataView(dt)
+        dv.Sort = "create_time desc"
     }
 
     //在线填报-新增

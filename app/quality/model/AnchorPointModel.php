@@ -41,7 +41,9 @@ class AnchorPointModel extends Model
             if (false === $result) {
                 return ['code' => -1, 'msg' => $this->getError()];
             } else {
-                return ['code' => 1, 'msg' => '上传成功'];
+                // 上传成功后，返回文件主键和地址
+                $data = Db::name('attachment')->where('id',$param['attachment_id'])->column('id as attachment_id,filepath');
+                return ['code' => 1,'data'=>$data, 'msg' => '上传成功'];
             }
         } catch (PDOException $e) {
             return ['code' => 0, 'msg' => $e->getMessage()];
@@ -61,14 +63,16 @@ class AnchorPointModel extends Model
     public function getAnchorTb($name='')
     {
         if($name){
-            $data = Db::name('quality_anchor_point')
-                ->where(['picture_type'=>1,'anchor_name'=>$name])
-                ->field('id as anchor_point_id,picture_number,anchor_name,component_name,user_name,coordinate_x,coordinate_y,coordinate_z,remark,attachment_id')
+            $data = Db::name('quality_anchor_point')->alias('p')
+                ->join('attachment a','p.attachment_id = a.id')
+                ->where(['p.picture_type'=>1,'p.anchor_name'=>$name])
+                ->field('p.id as anchor_point_id,p.picture_number,p.anchor_name,p.component_name,p.user_name,p.coordinate_x,p.coordinate_y,p.coordinate_z,p.remark,p.attachment_id.a.filepath')
                 ->select();
         }else{
-            $data = Db::name('quality_anchor_point')
-                ->where(['picture_type'=>1])
-                ->field('id as anchor_point_id,picture_number,anchor_name,component_name,user_name,coordinate_x,coordinate_y,coordinate_z,remark,attachment_id')
+            $data = Db::name('quality_anchor_point')->alias('p')
+                ->join('attachment a','p.attachment_id = a.id')
+                ->where(['p.picture_type'=>1])
+                ->field('p.id as anchor_point_id,p.picture_number,p.anchor_name,p.component_name,p.user_name,p.coordinate_x,p.coordinate_y,p.coordinate_z,p.remark,p.attachment_id,a.filepath')
                 ->select();
         }
         return $data;

@@ -166,7 +166,7 @@ class Main extends Permissions
             $pic = new PictureModel();
             // 1工程划分模型 2 建筑模型 3三D模型
             $id = Db::name('quality_model_picture')->where(['picture_type'=>1,'picture_number'=>$param['picture_id']])->value('id');
-            if(empty($data['id'])){
+            if(empty($id)){
                 return json(['code'=>1,'msg'=>'不存在的模型编号']);
             }
             $remark = $pic->getRemarkTb($id);
@@ -339,6 +339,7 @@ class Main extends Permissions
             $data['coordinate_x'] = $param['fObjSelX'];
             $data['coordinate_y'] = $param['fObjSelY'];
             $data['coordinate_z'] = $param['fObjSelZ'];
+            $data['remark'] = $param['remark'];
             $anchor = new AnchorPointModel();
             $flag = $anchor->insertTb($data);
             return json($flag);
@@ -374,30 +375,66 @@ class Main extends Permissions
     /**
      * 上传附件
      * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * @author hutao
      */
     public function uploadAnchorPoint()
     {
         // 前台需要 传递 锚点的主键 anchor_point_id 上传的文件 file
         // 执行上传文件 获取文件编号  attachment_id
-        $common = new \app\admin\controller\Common();
-        $attachment_id = $common->upload('quality','anchor_point');
-        // 保存上传文件记录
-        $param = input('param.');
-        // 验证规则
-        $rule = [
-            ['anchor_point_id', 'require|number|gt:-1', '请选择要删除的标注或者快照|标注快照的编号只能是数字|标注快照的编号不能为负数']
-        ];
-        $validate = new \think\Validate($rule);
-        //验证部分数据合法性
-        if (!$validate->check($param)) {
-            return json(['code' => -1,'msg' => $validate->getError()]);
+        if($this->request->file('file')){
+            $file = $this->request->file('file');
+        }else{
+            return json(['code'=>0,'msg'=>'没有上传文件']);
         }
-        $data['id'] = $param['anchor_point_id'];
-        $data['attachment_id'] = $attachment_id;
-        $unit = new AnchorPointModel();
-        $nodeStr = $unit->editTb($data);
-        return json($nodeStr);
+        $web_config = Db::name('webconfig')->where('web','web')->find();
+        $info = $file->validate(['size'=>$web_config['file_size']*1024,'ext'=>$web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . 'quality' . DS . 'anchor_point');
+        if($info) {
+            //写入到附件表
+            $data = [];
+            $data['module'] = 'quality';
+            $data['filename'] = $info->getFilename();//文件名
+            $data['filepath'] = DS . 'uploads' . DS . 'quality' . DS . 'anchor_point' . DS . $info->getSaveName();//文件路径
+            $data['fileext'] = $info->getExtension();//文件后缀
+            $data['filesize'] = $info->getSize();//文件大小
+            $data['create_time'] = time();//时间
+            $data['uploadip'] = $this->request->ip();//IP
+            $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
+            if($data['module'] == 'admin') {
+                //通过后台上传的文件直接审核通过
+                $data['status'] = 1;
+                $data['admin_id'] = $data['user_id'];
+                $data['audit_time'] = time();
+            }
+            $data['use'] = $this->request->has('use') ? $this->request->param('use') : 'anchor_point';//用处
+            $res['id'] = Db::name('attachment')->insertGetId($data);
+            $res['src'] = DS . 'uploads' . DS . 'quality' . DS . 'anchor_point' . DS . $info->getSaveName();
+            $res['code'] = 2;
+            addlog($res['id']);//记录日志
+
+            // 保存上传文件记录
+            $param = input('param.');
+            // 验证规则
+            $rule = [
+                ['anchor_point_id', 'require|number|gt:-1', '请选择要上传的锚点|锚点的编号只能是数字|锚点的编号不能为负数']
+            ];
+            $validate = new \think\Validate($rule);
+            //验证部分数据合法性
+            if (!$validate->check($param)) {
+                return json(['code' => -1,'msg' => $validate->getError()]);
+            }
+            $data['id'] = $param['anchor_point_id'];
+            $data['attachment_id'] = $res['id'];
+            $unit = new AnchorPointModel();
+            $nodeStr = $unit->editTb($data);
+            return json($nodeStr);
+        } else {
+            // 上传失败获取错误信息
+            $msg = $this->error('上传失败：'.$file->getError());
+            return json(['code'=>0,'msg'=>$msg]);
+        }
     }
 
     /**

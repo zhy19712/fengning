@@ -1,6 +1,6 @@
 {include file="../app/public/common_header.html"}
 <link rel="stylesheet" href="__WEBSITE__/main/index.css">
-      <div data-options="region:'east',title:'管理信息',split:true,collapsed:true" style="width:345px;">
+      <div data-options="region:'east',title:'管理信息',split:true" style="width:345px;">
             <!-- 默认业务层 -->
             <div id="defaultAttr" class="easyui-tabs" style="width:100%;height:100%;border: 0;">
                   <div title="属性" style="padding:20px;display:none;">
@@ -116,18 +116,21 @@
                       </div>
                   </form>
               </div>
-              <!--<div title="附件" style="overflow:auto;padding:20px;display:none;">
+              <div title="附件" style="overflow:auto;padding:20px;display:none;">
                   <ul class="toggle-attr" id="anchorFile">
                       <li uid="image" class="active">图片</li>
                       <li uid="file">文档</li>
                   </ul>
                   <div id="image">
-                      <button id="addImage"></button>
+                      <div id="addImage"></div>
+                      <div id="imgList">
+
+                      </div>
                   </div>
                   <div id="file" style="display: none">
-                      <button id="addFile"></button>
+                      <div id="addFile"></div>
                   </div>
-              </div>-->
+              </div>
           </div>
             <!-- 标注业务层 -->
             <div id="addTag" class="easyui-tabs" style="width:100%;height:100%;border: 0;display: none">
@@ -505,14 +508,14 @@
     //锚点的操作类型
     operateType = "";
     //删除锚点
-    function delAnchor(anchorName) {
+    function delAnchor(anchorName,anchor_point_id) {
         var anchorName = $('#anchorName').html();
         //锚点的名称：anchorName
         $.ajax({
             url: "./delAnchorPoint",
             type: "post",
             data: {
-                anchor_point_id:uObjSubIdSingle
+                anchor_point_id:anchor_point_id
             },
             dataType: "json",
             success: function (res) {

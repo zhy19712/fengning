@@ -24,7 +24,7 @@
             <ul class="layui-nav layui-layout-right kit-nav">
                 <li class="layui-nav-item"><a href="javascript:;" id="tag" style="color:#333;"><i class="fa fa-tag" aria-hidden="true"></i></a></li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;" style="color:#333;">
+                    <a href="javascript:;" style="color:#333;" id="current_user">
                         <img src="{$cookie.thumb|geturl}" class="layui-nav-img">欢迎, {empty name="$cookie.nickname"}{$cookie.name}{else /}{$cookie.nickname}{/empty}
                         <span class="layui-nav-more"></span>
                     </a>

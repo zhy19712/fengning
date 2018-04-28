@@ -227,25 +227,12 @@ function formSaveAndApprove() {
 
 // 保存成功后处理逻辑
 function handleAfterSave(dataId) {
-    $.ajax({
-        type: "Get",
-        url: "/MaterialTracking/StandardLibrarySetting/GetReferFlowByControlPoint?id=" + $("#controlPointId").val(),
-        success: function (data) {
-            if (saveStyle === 1) {
-                if (parent.window.frames["web"].document.frames["webas"])
-                    parent.window.frames["web"].document.frames["webas"].submit(dataId, "qualityFormInfo", data.result, $("#currentStep").val());
-                else
-                    parent.window.frames["web"].submit(dataId, "qualityFormInfo", data.result, $("#currentStep").val());
-            }
-            if (saveStyle === 2) {
-                if (parent.window.frames["web"].document.frames["webas"])
-                    parent.window.frames["web"].document.frames["webas"].approve(dataId, "qualityFormInfo", $("#currentStep").val());
-                else
-                    parent.window.frames["web"].approve(dataId, "qualityFormInfo", $("#currentStep").val());
-            }
-            saveStyle = 0;
-        }
-    });
+    if (saveStyle === 1) {
+        parent.submitOnLine(dataId);
+    } else {
+        var user = parent.$("#current_user").text().trim().replace("欢迎, ", "");
+        parent.approve(dataId, user, $("#currentStep").val());
+    }
 };
 // 选择文件按钮事件
 // htmlElement参数为当前选择文件按钮dom对象
@@ -259,7 +246,6 @@ function fileSelect(htmlElement) {
 // 文件上传完成后，根据“附件上传后要更新的目标html元素Id”的类型，进行操作，如img就设置目标元素的src进行图片显示
 function fileChange() {
     $.ajaxFileUpload({
-        // url: "/Shared/Upload?folderName=Quality", // 用于文件上传的服务器端请求地址,其folderName代表附件存放的文件夹名称
         url: "/admin/common/upload?use=qualityform", // 用于文件上传的服务器端请求地址,其folderName代表附件存放的文件夹名称
         type: "post",
         secureuri: false, // 一般设置为false
@@ -299,15 +285,11 @@ function signature(htmlElement) {
 
 // 表单附件
 function formAttachments() {
-    // var divisionId = $("#divisionId").val();
-    // var procedureId = $("#procedureId").val();
-    // var controlPointId = $("#controlPointId").val();
     var cpr = $("#cpr").val();
     top.layer.open({
         type: 2,
         title: "表单附件",
         area: ['800px', '400px'],
-        // content: '/Quality/QualityForm/QalityFormAttachment?divisionId=' + divisionId + "&procedureId=" + procedureId + "&controlPointId=" + controlPointId + "&_t=" + new Date().getTime(),
         content: '/Quality/QualityForm/QalityFormAttachment?cpr_id=' + cpr,
     });
 };
