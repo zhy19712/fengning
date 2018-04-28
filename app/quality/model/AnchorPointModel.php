@@ -85,7 +85,7 @@ class AnchorPointModel extends Model
                 return $data;
             }
             $id_arr = explode(',',$data[0]['attachment_id']);
-            $data['attachment'] = Db::name('attachment')->where(['id',['in',$id_arr]])->field('id as attachment_id,filepath')->select();
+            $data['attachment'] = Db::name('attachment')->where(['id'=>['in',$id_arr]])->field('id as attachment_id,filepath')->select();
         }else{
             $data = Db::name('quality_anchor_point')->alias('p')
                 ->where(['p.picture_type'=>1])
