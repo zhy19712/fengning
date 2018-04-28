@@ -41,7 +41,9 @@ class AnchorPointModel extends Model
             if (false === $result) {
                 return ['code' => -1, 'msg' => $this->getError()];
             } else {
-                return ['code' => 1, 'msg' => '上传成功'];
+                // 上传成功后，返回文件主键和地址
+                $data = Db::name('attachment')->where('id',$param['attachment_id'])->column('id as attachment_id,filepath');
+                return ['code' => 1,'data'=>$data, 'msg' => '上传成功'];
             }
         } catch (PDOException $e) {
             return ['code' => 0, 'msg' => $e->getMessage()];
