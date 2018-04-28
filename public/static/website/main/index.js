@@ -413,8 +413,8 @@ function uploadFile(fileName,anchor_point_id,attachment_id) {
         '</a>' +
         '</div>' +
         '<div class="file-info">' +
-        '<span></span>' +
-        '<span></span>' +
+        '<span>name</span>' +
+        '<span>date</span>' +
         '</div>' +
         '</div>';
     $('#fileList').append(file);
@@ -434,8 +434,7 @@ function addAttachment() {
                     '    </div>' +
                     '    <div id="file" style="display: none">' +
                     '        <div id="addFile"></div>' +
-                    '        <div id="fileList">' +
-                    '        </div>' +
+                    '        <div id="fileList"></div>' +
                     '    </div>';
     $('#anchorLayerTab').tabs('add',{
         title: '附件',
@@ -451,6 +450,14 @@ function addAttachment() {
         var uid = $(this).attr('uid');
         $(this).addClass('active').siblings().removeClass('active');
         $('#'+ uid).show().siblings('div').hide();
+    });
+    //添加样式
+    $('#anchorFile').parent().css('padding','20px');
+    $('.webuploader-pick').next().css({
+        width:'60px',
+        height:'20px',
+        right:0,
+        left:'auto'
     });
 }
 //显示删除按钮

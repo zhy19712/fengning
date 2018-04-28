@@ -187,8 +187,9 @@
 }
 /* 锚点附件 */
 .img-item{
+    margin: 5px;
     position: relative;
-    width: 100px;
+    width: 85px;
     display: inline-block;
     vertical-align: middle;
 }
@@ -219,4 +220,21 @@
 }
 .img-item a i.fa:before{
     color: #FFF;
+}
+.file-list p{
+    display: inline-block;
+}
+.file-list a{
+    margin: 0 5px;
+}
+.file-info span{
+    margin: 0 5px;
+    color: #1ab394;
+}
+.webuploader-container{
+    text-align: right;
+}
+.webuploader-pick,.webuploader-pick:hover{
+    background:#fb9974;
+    padding: 2px 6px;
 }
