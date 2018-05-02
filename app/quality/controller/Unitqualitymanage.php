@@ -381,7 +381,7 @@ class Unitqualitymanage extends Permissions
         }
         $param['attachment_id'] = $flag['id'];
         // 保存上传文件记录
-        $id = isset($param['id']) ? $param['id'] : 0;
+        $id = isset($param['contr_relation_id']) ? $param['contr_relation_id'] : 0;
         $type = isset($param['type']) ? $param['type'] : 0; // 1执行情况 2图像资料
         $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
         if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
