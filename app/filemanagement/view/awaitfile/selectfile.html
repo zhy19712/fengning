@@ -356,10 +356,14 @@
         if(isChecked){
             idArr.push(id);
             idArr.removalArray();
+            $(that).parents("tr").addClass('selected');
+            // $('#tableItem tbody tr').addClass('selected');
         }else{
             idArr.remove(id);
             idArr.removalArray();
             $('#all_checked').prop('checked',false);
+            // $(that).parents("tr").removeClass('selected');
+            $('#tableItem tbody tr').removeClass('selected');
         }
     }
 
