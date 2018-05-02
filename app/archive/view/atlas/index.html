@@ -456,6 +456,7 @@
             elem: '#upload',
             url: "{:url('archive/common/upload?module=atlas&use=atlas_thumb')}",
             accept: 'file',//普通文件
+            size:89000,
             before: function(obj){
                 obj.preview(function(index, file, result){
                     uploadName = file.name;
