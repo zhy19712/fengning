@@ -132,6 +132,9 @@ class Branchcatalog extends Permissions
         //实例化模型类
         $model = new FilebranchModel();
         $classifyid = input('post.id');
+        $length = input('post.length');//每页条数
+        $page = input('post.page');//第几页
+
         if($classifyid == 1)
         {
             $search = [];
@@ -142,15 +145,62 @@ class Branchcatalog extends Permissions
             ];
 
         }
-
         $data = $model->getAll($search);
-        $res = tree($data);
 
-        foreach ((array)$res as $k => $v) {
-            $v['id'] = strval($v['id']);
-            $res[$k] = $v;
+                foreach ($data as $k => $v)
+                {
+                    //若pid为空时，根据所属的上级序号查询pid
+                    if(empty($v["pid"]))
+                    {
+                        if(!empty($v["parent_code"]))
+                        {
+                            $info = Db::name("file_branch_directory")->field("id")->where("code",$v["parent_code"])->find();
+                            $param = [
+                                "id" => $v["id"],
+                                "pid" => $info["id"]
+                            ];
+                        }else
+                        {
+                            $param = [
+                                "id" => $v["id"],
+                                "pid" => 0
+                            ];
+                        }
+                        $model->editCate($param);
+                    }
+                }
+
+        $result = $model->getAll($search);
+        $info = tree($result);
+
+        $cut_info = array();
+        $count = 0;
+        $num = 0;
+        foreach($info as $key=>$val)
+        {
+            if($val["pid"] == 0)
+            {
+                $count = $count + 1;
+            }
+
         }
-        return json($res);
+
+        foreach($info as $keys=>$vals)
+        {
+            if($vals["pid"] == 0)
+            {
+                $num = $num +1;
+            }
+            if($num <= ($page-1)*$length){
+                continue;
+            }
+            if($num > $page*$length)
+            {
+                break;
+            }
+            $cut_info[]= $vals;
+        }
+        return json(['code'=> 1,'count' => $count,'cut_info' =>$cut_info]);
         }
     }
 
@@ -270,6 +320,7 @@ class Branchcatalog extends Permissions
             return  json(['code' => -1,'data' => '','msg' => '请选择分组']);
         }
         $file = request()->file('file');
+
         $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads/file/branch/import');
         if($info){
             // 调用插件PHPExcel把excel文件导入数据库
@@ -299,6 +350,7 @@ class Branchcatalog extends Permissions
                 return  json(['code' => -1,'data' => '','msg' => '请选择正确的模板文件']);
             }
             $excel_array= $obj_PHPExcel->getsheet(0)->toArray();   // 转换第一页为数组格式
+
             // 验证格式 ---- 去除顶部菜单名称中的空格，并根据名称所在的位置确定对应列存储什么值
             $code_index = $class_name_index = $parent_code_index = -1;
             foreach ($excel_array[0] as $k=>$v){
@@ -307,25 +359,22 @@ class Branchcatalog extends Permissions
                     $code_index = $k;
                 }else if ($str == '名称'){
                     $class_name_index = $k;
-                }else if($str == '所属上级编号'){
+                }else if($str == '所属上级序号'){
                     $parent_code_index = $k;
                 }
             }
-
             if($code_index == -1 || $class_name_index == -1 || $parent_code_index == -1){
-                $json_data['code'] = 0;
-                $json_data['info'] = '文件内容格式不对';
+                $json_data['code'] = -1;
+                $json_data['msg'] = '文件内容格式不对';
                 return json($json_data);
             }
             $insertData = [];
             foreach($excel_array as $k=>$v){
-                if($k > 0){
-
-                    $insertData[$k]['code'] = $v[$code_index];
-                    $insertData[$k]['class_name'] = $v[$class_name_index];
-                    $insertData[$k]['parent_code'] = $v[$parent_code_index];
-                    $insertData[$k]['classifyid'] = $classifyid;
-
+                if($k > 1){
+                    $insertData[$k]['code'] = $v[$code_index];//序号
+                    $insertData[$k]['class_name'] = $v[$class_name_index];//分类名
+                    $insertData[$k]['parent_code'] = $v[$parent_code_index];//父级编号
+                    $insertData[$k]['classifyid'] = $classifyid;//项目分类树节点id
                 }
             }
             $success = Db::name('file_branch_directory')->insertAll($insertData);
