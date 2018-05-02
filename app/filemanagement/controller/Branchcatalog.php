@@ -236,28 +236,25 @@ class Branchcatalog extends Permissions
      */
     public function excelDownload()
     {
-        $newName = "分支目录管理"; // 导出的文件名
-        header("Content-type:text/html;charset=utf-8");
-        Loader::import('PHPExcel\Classes\PHPExcel', EXTEND_PATH);
-        //实例化
-        $objPHPExcel = new \PHPExcel();
-        //设置当前的表格
-        $objPHPExcel->setActiveSheetIndex(0);
-        // 设置表格第一行显示内容
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue('A1', '序号')
-            ->setCellValue('B1', '名称')
-            ->setCellValue('C1', '所属上级序号');
-        //设置当前的表格
-        $objPHPExcel->setActiveSheetIndex(0);
-        ob_end_clean();  //清除缓冲区,避免乱码
-        header('Content-Type: application/vnd.ms-excel'); //文件类型
-        header('Content-Disposition: attachment;filename="'.$newName.'.xls"'); //文件名
-        header('Cache-Control: max-age=0');
-        header('Content-Type: text/html; charset=utf-8'); //编码
-        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');  //excel 2003
-        $objWriter->save('php://output');
-        exit;
+        $filePath = "./static/branch/branch_directory.xls";
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }else if(request()->isAjax()){
+            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+        }else{
+            $fileName = '导入模板-分支目录.xls';
+            $file = fopen($filePath, "r"); //   打开文件
+            //输入文件标签
+            $fileName = iconv("utf-8","gb2312",$fileName);
+            Header("Content-type:application/octet-stream ");
+            Header("Accept-Ranges:bytes ");
+            Header("Accept-Length:   " . filesize($filePath));
+            Header("Content-Disposition:   attachment;   filename= " . $fileName);
+            //   输出文件内容
+            echo fread($file, filesize($filePath));
+            fclose($file);
+            exit;
+        }
     }
 
     /**
