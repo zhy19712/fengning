@@ -144,7 +144,7 @@
             data:{
                 id:window.rowId
             },
-            tablePath:'/standard/common/datatablesPre?tableName=norm_file&pid=',
+            tablePath:'/standard/common/datatablesPre?tableName=norm_file&pid='+ window.nodeId +'',
             others:function(){}
         };
         $.extend(option,options);
@@ -157,7 +157,7 @@
                 success: function (res) {
                     if(res.code == 1){
                         layer.msg(res.msg,{icon:1,time:1500,shade: 0.1});
-                        option.tableItem.ajax.url(option.tablePath + window.nodeId).load();
+                        option.tableItem.ajax.url(option.tablePath).load();
                     }else{
                         layer.msg(res.msg,{time:1500,shade: 0.1});
                     }

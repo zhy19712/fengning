@@ -1,35 +1,70 @@
 //layui
-layui.use(['element',"layer",'form'], function(){
+layui.use(['element',"layer",'form','upload'], function(){
   var $ = layui.jquery
     ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
 
   var form = layui.form
     ,layer = layui.layer
     ,layedit = layui.layedit
+    ,upload = layui.upload
     ,laydate = layui.laydate;
 
   //监听提交
   form.on('submit(demo1)', function(data){
     $.ajax({
       type: "post",
-      url:"./editAtlasCate",
+      url:"./editCate",
       data:data.field,
       success: function (res) {
         console.log(selfid)
         if(res.code == 1) {
-          var url = "/archive/common/datatablespre/tableName/archive_atlas_cate/selfid/"+selfid+".shtml";
-          tableItem.ajax.url(url).load();
-          parent.layer.msg('保存成功！');
+
+          getTable(selfid);
           layer.closeAll();
         }else{
           layer.msg(res.msg);
         }
-      },
-      error: function (data) {
-        debugger;
       }
     });
     return false;
+  });
+  form.on('submit(demo2)', function(data){
+    $.ajax({
+      type: "post",
+      url:"./importExcel",
+      data:data.field,
+      success: function (res) {
+        console.log(selfid)
+        if(res.code == 1) {
+          getTable(selfid);
+          layer.closeAll();
+        }else{
+          layer.msg(res.msg);
+        }
+      }
+    });
+    return false;
+  });
+  //上传
+  upload.render({
+    elem: '#upload',
+    url: "../common/upload/module/file/use/file_thumb.shtml",
+    accept: 'file',//普通文件
+    size:89000,
+    before: function(obj){
+      obj.preview(function(index, file, result){
+        uploadName = file.name;
+        $("#file_name_1").val(file.name);
+      })
+    },
+    done:function (res) {
+      if(res.code!=2){
+        layer.msg("上传失败");
+        return ;
+      }
+      $("#file_name").val(res.filename);
+      $("#attachmentId").val(res.id);
+    }
   });
 });
 //
@@ -84,8 +119,7 @@ function onClick(e, treeId, node) {
   selfid = zTreeObj.getSelectedNodes()[0].id;
   node = sNodes[0].getParentNode();//获取父节点
   groupid = sNodes[0].pid //父节点的id
-  var url = "/filemanagement/common/datatablespre/tableName/file_branch_directory/classifyid/"+selfid+".shtml";
-  tableItem.ajax.url(url).load();
+  getTable(selfid);
 }
 
 //点击添加或编辑节点
@@ -169,11 +203,12 @@ $('#closeNode').click(function(){
 
 //添加分支
 function addbranch(){
+  $("#branchform input").val('');
+  $("#branchform #classifyid").val(selfid);
   if(!selfid || selfid == 1){
     layer.msg("请先选择正确的分类！");
     return;
   };
-  $("#branchform input").val("");
   layer.open({
     type: 1,
     title: '编辑',
@@ -182,6 +217,7 @@ function addbranch(){
   });
   if(selectData!=""){
     $("#parent_code").val(selectData[1]);
+    $("#pid").val(selectData[3]);
   }
 }
 //编辑
@@ -195,48 +231,58 @@ function editbranch(id){
       selectData = "";
     }
   });
-  console.log(selectData)
   $("#parent_code").val(selectData[0]);
   $("#code").val(selectData[1]);
   $("#class_name").val(selectData[2]);
+  $("#branchform #classifyid").val(selfid);
+  $("#branchform #addId").val(id);
 }
 
-//
+//删除
 function conDel(id){
   $.ajax({
     type:"POST",
-    url:"./",
+    url:"./delCate",
     data:{id:id},
     dataType:"JSON",
     success:function (res) {
       if(res.code==1){
-
         layer.msg("删除成功");
+        getTable(selfid);
       }else{
         layer.msg(res.msg)
       }
     }
   })
 }
-$.ajax({
+
+
+// 拉取表格的数据
+function getTable(id){
+  $("#tableItem tbody").empty();
+  $.ajax({
     type:"POST",
     url:"./table",
-    data:{id:1},
+    data:{id:id},
     dataType:"JSON",
     success:function (res) {
       var html = ""
       for (var i=0;i<res.length;i++){
-          html += '<tr data-tt-id="'+res[i].id+'" data-tt-parent-id="'+res[i].pid+'" data-parent-code="'+res[i].parent_code+'">' +
-        '<td >'+res[i].code+'</td>' +
-        '<td >'+res[i].class_name+'</td>' +
-        '<td ><a type="button" class="" style="margin-left: 5px;"><i class="fa fa-pencil"></i></a><a type="button" class="" style="margin-left: 5px;" onclick="conDel('+res[i].id+')"><i class="fa fa-trash"></i></a></td>' +
-        '</tr>';
+        var parent_code = Object.is(res[i].parent_code,null)?"":res[i].parent_code;
+        html += '<tr data-tt-id="'+res[i].id+'" data-tt-parent-id="'+res[i].pid+'" data-parent-code="'+parent_code+'">' +
+          '<td >'+res[i].code+'</td>' +
+          '<td >'+res[i].class_name+'</td>' +
+          '<td ><a type="button" class="" style="margin-left: 5px;"><i class="fa fa-pencil"></i></a><a type="button" class="" style="margin-left: 5px;" onclick="conDel('+res[i].id+')"><i class="fa fa-trash"></i></a></td>' +
+          '</tr>';
       }
       $("#tableItem tbody").append($(html));
 
-      $("#tableItem").treetable({ expandable: true, initialState :"expanded" }).show();
+      $("#tableItem").treetable({ expandable: true, initialState :"expanded" },true);
     }
-})
+  })
+}
+
+$("#tableItem").treetable({ expandable: true, initialState :"expanded" }).show();
 
 //获取点击行
 $("#tableItem").delegate("tbody tr","click",function (e) {
@@ -244,9 +290,46 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
     return;
   }
   $(this).addClass("select-color").siblings().removeClass("select-color");
-  selectData = [$(this).attr("data-parent-code"),$(this).find("td:first-child").text().trim(),$(this).find("td:nth-child(2)").html().trim()];
+  selectData = [$(this).attr("data-parent-code"),$(this).find("td:first-child").text().trim(),$(this).find("td:nth-child(2)").html().trim(),$(this).attr("data-tt-id")];
 
-  if($(e.target).hasClass("fa")){
-    editbranch($(this).attr("data-tt-id"))
+  if($(e.target).hasClass("fa-pencil")){
+    editbranch($(this).attr("data-tt-id"));
   }
 });
+
+//导入
+function importExcel() {
+  $("#excel input").val('');
+  $("#excel #classifyid_2").val(selfid);
+  layer.open({
+    type: 1,
+    title: '编辑',
+    area: ['690px', '340px'],
+    content:$("#excel")
+  });
+}
+//下载模板
+function download() {
+  $.ajax({
+    url: "./excelDownload",
+    type:"GET",
+    dataType: "json",
+    success: function (res) {
+      if(res.code != 1){
+        layer.msg(res.msg);
+      }else {
+        $("#form_container").empty();
+        var str = "";
+        str += ""
+          + "<iframe name=downloadFrame style='display:none;'></iframe>"
+          + "<form name=download action='./excelDownload' method='get' target=downloadFrame>"
+          + "<span class='file_name' style='color: #000;'>"+str+"</span>"
+          + "<input class='file_url' style='display: none;' name='id'>"
+          + "<button type='submit' class=btn></button>"
+          + "</form>"
+        $("#form_container").append(str);
+        $("#form_container").find(".btn").click();
+      }
+    }
+  })
+}
