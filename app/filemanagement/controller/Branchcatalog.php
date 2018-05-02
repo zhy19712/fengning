@@ -144,29 +144,36 @@ class Branchcatalog extends Permissions
         }
 
         $data = $model->getAll($search);
-        $res = tree($data);
-        foreach ((array)$res as $k => $v) {
-            $v['id'] = strval($v['id']);
-            //若pid为空时，根据所属的上级序号查询pid
-            if(empty($v["pid"]))
+
+            foreach ($data as $key => $val)
             {
-                if(!empty($v["parent_code"]))
+                foreach ($val as $k => $v)
                 {
-                    $info = Db::name("file_branch_directory")->field("id")->where("code",$v["parent_code"])->find();
-                    $param = [
-                        "id" => $v["id"],
-                        "pid" => $info["id"]
-                    ];
-                }else
-                {
-                    $param = [
-                        "id" => $v["id"],
-                        "pid" => 0
-                    ];
+                    //若pid为空时，根据所属的上级序号查询pid
+                    if(empty($v["pid"]))
+                    {
+                        if(!empty($v["parent_code"]))
+                        {
+                            $info = Db::name("file_branch_directory")->field("id")->where("code",$v["parent_code"])->find();
+                            $param = [
+                                "id" => $v["id"],
+                                "pid" => $info["id"]
+                            ];
+                        }else
+                        {
+                            $param = [
+                                "id" => $v["id"],
+                                "pid" => 0
+                            ];
+                        }
+                        $model->editCate($param);
+                    }
                 }
-                $model->editCate($param);
+
             }
-        }
+
+        $res = tree($data);
+
         return json($res);
         }
     }
