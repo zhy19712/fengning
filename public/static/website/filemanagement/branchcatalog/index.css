@@ -40,3 +40,13 @@ table.treetable thead{
 .select-color{
     background-color: #FDD5B5!important;
 }
+.layui-box{
+    width: 100%;
+}
+.layui-laypage-count{
+    float: right;
+
+}
+.layui-laypage>:last-child{
+    margin-right: 10px!important;
+}

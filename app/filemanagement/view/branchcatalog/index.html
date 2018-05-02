@@ -36,29 +36,7 @@
                 </tbody>
             </table>
 
-            <div class="tbcontainer" style="display: block;">
-                <div class="dataTables_length" id="tableItem_length">
-                    <label>
-                        <select name="tableItem_length" aria-controls="tableItem" class="form-control input-sm">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                    </label>
-                </div>
-                <div class="dataTables_info" id="tableItem_info" role="status" aria-live="polite">无记录</div>
-                <div class="dataTables_paginate paging_full_numbers" id="tableItem_paginate">
-                    <ul class="pagination">
-                        <li class="paginate_button first disabled" aria-controls="tableItem" tabindex="0" id="tableItem_first">
-                            <a href="#">&lt;&lt;</a>
-                        </li>
-                        <li class="paginate_button previous disabled" aria-controls="tableItem" tabindex="0" id="tableItem_previous"><a href="#">&lt;</a></li>
-                        <li class="paginate_button " aria-controls="tableItem" tabindex="0"><a href="#">1</a></li>
-                        <li class="paginate_button next disabled" aria-controls="tableItem" tabindex="0" id="tableItem_next"><a href="#">&gt;</a></li>
-                        <li class="paginate_button last disabled" aria-controls="tableItem" tabindex="0" id="tableItem_last"><a href="#">&gt;&gt;</a></li>
-                    </ul>
-                </div>
+            <div class="tbcontainer" id="tbcontainer" style="display: block;">
             </div>
         </div>
     </div>
@@ -125,7 +103,7 @@
     </div>
     <div class="layui-form-item">
         <div style="text-align: center;">
-            <button class="layui-btn" lay-submit="" lay-filter="demo2"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;
+            <button class="layui-btn sub2" lay-submit="" lay-filter="demo2" ><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;
             <button type="reset" class="layui-btn layui-btn-danger layui-layer-close"><i class="fa fa-close"></i> 返回</button>
         </div>
     </div>

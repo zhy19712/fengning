@@ -373,15 +373,14 @@ class Unitqualitymanage extends Permissions
         }else{
             return json(['code'=>0,'msg'=>'没有上传文件']);
         }
-
         $web_config = Db::name('webconfig')->where('web','web')->find();
-        $info = $file->validate(['size'=>$web_config['file_size']*1024,'ext'=>$web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . 'quality' . DS . 'anchor_point');
-        if($info){
+        $info = $file->validate(['size'=>$web_config['file_size']*1024,'ext'=>$web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . 'quality' . DS . 'Unitqualitymanage');
+        if($info) {
             //写入到附件表
             $data = [];
             $data['module'] = 'quality';
             $data['filename'] = $info->getFilename();//文件名
-            $data['filepath'] = DS . 'uploads' . DS . 'quality' . DS . 'anchor_point' . DS . $info->getSaveName();//文件路径
+            $data['filepath'] = DS . 'uploads' . DS . 'quality' . DS . 'Unitqualitymanage' . DS . $info->getSaveName();//文件路径
             $data['fileext'] = $info->getExtension();//文件后缀
             $data['filesize'] = $info->getSize();//文件大小
             $data['create_time'] = time();//时间
@@ -393,9 +392,9 @@ class Unitqualitymanage extends Permissions
                 $data['admin_id'] = $data['user_id'];
                 $data['audit_time'] = time();
             }
-            $data['use'] = $this->request->has('use') ? $this->request->param('use') : 'anchor_point';//用处
+            $data['use'] = $this->request->has('use') ? $this->request->param('use') : 'Unitqualitymanage';//用处
             $res['id'] = Db::name('attachment')->insertGetId($data);
-            $res['src'] = DS . 'uploads' . DS . 'quality' . DS . 'anchor_point' . DS . $info->getSaveName();
+            $res['src'] = DS . 'uploads' . DS . 'quality' . DS . 'Unitqualitymanage' . DS . $info->getSaveName();
             $res['code'] = 2;
             addlog($res['id']);//记录日志
 
@@ -419,7 +418,7 @@ class Unitqualitymanage extends Permissions
         }else {
             // 上传失败获取错误信息
             $msg = '上传失败：'.$file->getError();
-            return json(['code' => '-1','msg' => $msg]);
+            return json(['code'=>'-1','msg'=>$msg]);
         }
     }
 
