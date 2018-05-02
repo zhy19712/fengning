@@ -201,7 +201,7 @@ class Branchcatalog extends Permissions
             $cut_info[$keys] = $vals;
         }
 
-        return json(['code'=> 1, 'info' => $info,'count' => $count,'cut_info' =>$cut_info]);
+        return json(['code'=> 1,'count' => $count,'cut_info' =>$cut_info]);
         }
     }
 
