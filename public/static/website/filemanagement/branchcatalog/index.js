@@ -173,92 +173,80 @@ function addbranch(){
     layer.msg("请先选择正确的分类！");
     return;
   };
-
+  $("#branchform input").val("");
   layer.open({
     type: 1,
     title: '编辑',
     area: ['690px', '340px'],
     content:$("#branchform")
   });
+  if(selectData!=""){
+    $("#parent_code").val(selectData[1]);
+  }
+}
+//编辑
+function editbranch(id){
+  layer.open({
+    type: 1,
+    title: '编辑',
+    area: ['690px', '340px'],
+    content:$("#branchform"),
+    end:function () {
+      selectData = "";
+    }
+  });
+  console.log(selectData)
+  $("#parent_code").val(selectData[0]);
+  $("#code").val(selectData[1]);
+  $("#class_name").val(selectData[2]);
 }
 
-//组织结构表格
-var tableItem = $('#tableItem').DataTable( {
-  pagingType: "full_numbers",
-  processing: true,
-  serverSide: true,
-  ordering: false, // 禁止排序
-  ajax: {
-    "url":"/filemanagement/common/datatablespre/tableName/file_branch_directory/classifyid/.shtml"
-},
-  dom: 'rtlip',
-  columns:[
-    {
-      name: "serial_number" // 序号
-    },
-    {
-      name: "class_name"  //名称
-    },
-    {
-      name: "id"  //id
-    }
+//
+function conDel(id){
+  $.ajax({
+    type:"POST",
+    url:"./",
+    data:{id:id},
+    dataType:"JSON",
+    success:function (res) {
+      if(res.code==1){
 
-  ],
-  columnDefs: [
-    {
-      "searchable": false,
-      "orderable": false,
-      "targets": [2],
-      "render" :  function(data,type,row) {
-        var a = data;
-        var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+row[2]+")'><i class='fa fa-pencil'></i></a>" ;
-        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+row[2]+")'><i class='fa fa-trash'></i></a>" ;
-        return html;
+        layer.msg("删除成功");
+      }else{
+        layer.msg(res.msg)
       }
-    },
-    // {
-    //   "orderable": false,
-    //   "targets": [0],
-    //   "render": function (data,type,row) {
-    //     var a= data;
-    //     if(row[14].length<=0){
-    //       var html = data;
-    //     }else{
-    //       var html = '<i class="showclick fa fa-caret-down" style="float: left;"></i>'+data;
-    //     }
-    //     return html;
-    //   }
-    // }
-  ],
-  language: {
-    "lengthMenu": "_MENU_",
-    "zeroRecords": "没有找到记录",
-    "info": "第 _PAGE_ 页 ( 共 _PAGES_ 页, _TOTAL_ 项 )",
-    "infoEmpty": "无记录",
-    "search": "搜索：",
-    "infoFiltered": "(从 _MAX_ 条记录过滤)",
-    "paginate": {
-      "sFirst": "<<",
-      "sPrevious": "<",
-      "sNext": ">",
-      "sLast": ">>"
     }
-  },
-  "fnInitComplete": function (oSettings, json) {
-    $('#tableItem_length').insertBefore(".mark");
-    $('#tableItem_info').insertBefore(".mark");
-    $('#tableItem_paginate').insertBefore(".mark");
-    $('.dataTables_wrapper,.tbcontainer').css("display","block");
+  })
+}
+$.ajax({
+    type:"POST",
+    url:"./table",
+    data:{id:1},
+    dataType:"JSON",
+    success:function (res) {
+      var html = ""
+      for (var i=0;i<res.length;i++){
+          html += '<tr data-tt-id="'+res[i].id+'" data-tt-parent-id="'+res[i].pid+'" data-parent-code="'+res[i].parent_code+'">' +
+        '<td >'+res[i].code+'</td>' +
+        '<td >'+res[i].class_name+'</td>' +
+        '<td ><a type="button" class="" style="margin-left: 5px;"><i class="fa fa-pencil"></i></a><a type="button" class="" style="margin-left: 5px;" onclick="conDel('+res[i].id+')"><i class="fa fa-trash"></i></a></td>' +
+        '</tr>';
+      }
+      $("#tableItem tbody").append($(html));
 
-  },
-  // "fnDrawCallback":function () {
-  //   var that = this.api();
-  //   $("#tableItem tbody tr").each(function (idx,item) {
-  //     var data =  that.row($(item)).data();//数据
-  //     if(!data){
-  //       return;
-  //     }
-  //     showDrawing($(item),data[14]);
-  //   })
-  // }
+      $("#tableItem").treetable({ expandable: true, initialState :"expanded" }).show();
+    }
+})
+
+//获取点击行
+$("#tableItem").delegate("tbody tr","click",function (e) {
+  if($(e.target).hasClass("dataTables_empty")){
+    return;
+  }
+  $(this).addClass("select-color").siblings().removeClass("select-color");
+  selectData = [$(this).attr("data-parent-code"),$(this).find("td:first-child").text().trim(),$(this).find("td:nth-child(2)").html().trim()];
+
+  if($(e.target).hasClass("fa")){
+    editbranch($(this).attr("data-tt-id"))
+  }
 });

@@ -1,0 +1,297 @@
+{include file="../../public/common_header"}
+<script src="__PUBLIC__/jquery/jquery.min.js"></script>
+<style>
+    .layui-tab {
+        margin: 3px 0px;
+    }
+    .layui-tab-title .layui-this {
+        color: white;
+        background: #00c0ef;
+        border-radius: 3px;
+    }
+    table.dataTable thead .sorting_asc {
+        background-image: none !important;
+    }
+    #ecSonFile .saveCon{
+        position: absolute;
+        right: .7%;
+        top: 14.3%;
+    }
+    #ecSonFile .saveCon button{
+        background: #00c0ef;
+    }
+</style>
+<div id="ecSonFile"  data-options="region:'north',title:'',split:true" style="height: 50px;">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li id="A1" class="layui-this">图册管理</li>
+            <li id="A2"><a href="./documentfile.shtml">文档管理</a></li>
+            <li id="A3"><a href="./qualityfile.shtml">质量管理</a></li>
+        </ul>
+    </div>
+    <div class="saveCon">
+        <button onclick="save();" class="layui-btn layui-btn-sm" type="button"><span class="bold">保存</span></button>
+    </div>
+</div>
+<div data-options="region:'west',title:'图册文件树',split:true" style="width:240px;">
+    <ul class="ztree" id="ztree"></ul>
+</div>
+<div data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#fff;">
+    <table id="tableItem" class="table table-striped table-bordered" cellspacing="0"  width="100%">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>图号</th>
+            <th>图名</th>
+            <th>图纸张数</th>
+            <th>折合A1图纸</th>
+            <th>设计</th>
+            <th>校核</th>
+            <th>审查</th>
+            <th>完成日期</th>
+            <th>标段</th>
+            <th>图纸类别</th>
+            <th>上传人</th>
+            <th>上传日期</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+    </table>
+    <div class="tbcontainer">
+        <div class="mark"></div>
+    </div>
+</div>
+
+{include file="../../public/common_footer"}
+
+<script src="__WEBSITE__/archive/atlas/index.js"></script>
+<script type="text/javascript">
+
+    //组织结构表格
+    var tableItem = $('#tableItem').DataTable({
+        pagingType: "full_numbers",
+        retrieve: true,
+        processing: true,
+        serverSide: true,
+        // "sScrollY":"100px",
+        ajax: {
+            "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
+        },
+        dom: 'l' +
+        '<"mybtn layui-btn layui-btn-sm">rtip'+
+        '<"nav">rtip',
+        columns: [
+            {
+                name: "id"
+            },
+            {
+                name: "docname"
+            },
+            {
+                name: "nickname"
+            },
+            {
+                name: "create_time"
+            },
+            {
+                name: "status"
+            }
+
+        ],
+        columnDefs: [
+            {
+                "targets":[0],
+                "searchable": false,
+                "orderable": false
+            },
+            {
+                "targets":[1],
+                "searchable": false,
+                "orderable": false
+            },
+            {
+                "targets":[2],
+                "searchable": false,
+                "orderable": false
+            },
+            {
+                "targets":[3],
+                "searchable": false,
+                "orderable": false,
+                render: function (data, type, row) {
+                    if (data == 1) {
+                        return "已归档";
+                    }
+                    return "待归档";
+                }
+            },
+            {
+                "targets": [4],
+                "searchable": false,
+                "orderable": false,
+                "render": function (data, type, row) {
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='AssFile(this)'><i title='关联文件' class='fa fa-chain'></i></a>";
+                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='reviewHistory(this)'><i title='审阅历史' class='fa fa-file-text'></i></a>";
+                    return html;
+                }
+            }
+        ],
+        language: {
+            "lengthMenu": "_MENU_",
+            "zeroRecords": "没有找到记录",
+            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+            "infoEmpty": "无记录",
+            "search": "搜索：",
+            "infoFiltered": "(从 _MAX_ 条记录过滤)",
+            "paginate": {
+                "sFirst": "<<",
+                "sPrevious": "<",
+                "sNext": ">",
+                "sLast": ">>"
+            }
+        },
+        "fnInitComplete": function (oSettings, json) {
+            $('#tableItem_length').insertBefore(".mark");
+            $('#tableItem_info').insertBefore(".mark");
+            $('#tableItem_paginate').insertBefore(".mark");
+        }
+    });
+
+    //点击上传文件
+    $(".mybtn").html("<div id='test3'><i class='fa fa-check'></i>选择文件</div>");
+    $(".nav").html("<div id='fileLeft'><i class='fa fa-file-text-o'></i> &nbsp;电子文件挂接</div>");
+
+
+    //添加
+    $("#tableContent").on("click",".mybtn #test3",function () {
+        layer.open({
+            type: 2,
+            title:"电子文件",
+            shadeClose: true,
+            area: ['980px', '80%'],
+            content: '{:url("filemanagement/awaitfile/selectfile")}',
+            // end:function () {
+            //     onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+            // }
+        });
+    });
+
+    var tableItem = $('#tableItem').DataTable( {
+        pagingType: "full_numbers",
+        processing: true,
+        serverSide: true,
+        ordering: false, // 禁止排序
+        ajax: {
+            "url":"{:url('archive/common/datatablesPre?tableName=archive_atlas_cate&selfid=-1')}"
+        },
+        dom: 'frtlip',
+        columns:[
+            {
+                name: "cate_number"
+            },
+            {
+                name: "picture_number"
+            },
+            {
+                name: "picture_name"
+            },
+            {
+                name: "picture_papaer_num"
+            },
+            {
+                name: "a1_picture"
+            },
+            {
+                name: "design_name"
+            },
+            {
+                name: "check_name"
+            },
+            {
+                name: "examination_name"
+            },
+            {
+                name: "completion_date"
+            },
+            {
+                name: "section"
+            },
+            {
+                name: "paper_category"
+            },
+            {
+                name: "owner"
+            },
+            {
+                name: "date"
+            },
+            {
+                name: "id"
+            }
+
+        ],
+        columnDefs: [
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": [13],
+                "render" :  function(data,type,row) {
+                    var a = data;
+                    var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+row[13]+")'><i class='fa fa-pencil'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDownAll("+row[13]+")'><i class='fa fa-download'></i></a>" ;
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+row[13]+")'><i class='fa fa-trash'></i></a>" ;
+                    return html;
+                }
+            },
+            {
+                "orderable": false,
+                "targets": [2],
+                "render": function (data,type,row) {
+                    var a= data;
+                    if(row[14].length<=0){
+                        var html = data;
+                    }else{
+                        var html = '<i class="showclick fa fa-caret-down" style="float: left;"></i>'+data;
+                    }
+                    return html;
+                }
+            }
+        ],
+        language: {
+            "lengthMenu": "_MENU_",
+            "zeroRecords": "没有找到记录",
+            "info": "第 _PAGE_ 页 ( 共 _PAGES_ 页, _TOTAL_ 项 )",
+            "infoEmpty": "无记录",
+            "search": "搜索：",
+            "infoFiltered": "(从 _MAX_ 条记录过滤)",
+            "paginate": {
+                "sFirst": "<<",
+                "sPrevious": "<",
+                "sNext": ">",
+                "sLast": ">>"
+            }
+        },
+        "fnInitComplete": function (oSettings, json) {
+            $('#tableItem_length').insertBefore(".mark");
+            $('#tableItem_info').insertBefore(".mark");
+            $('#tableItem_paginate').insertBefore(".mark");
+            $('.dataTables_wrapper,.tbcontainer').css("display","block");
+
+        },
+        "fnDrawCallback":function () {
+            var that = this.api();
+            $("#tableItem tbody tr").each(function (idx,item) {
+                var data =  that.row($(item)).data();//数据
+                if(!data){
+                    return;
+                }
+                showDrawing($(item),data[14]);
+            })
+        }
+    });
+
+
+</script>
+</html>
