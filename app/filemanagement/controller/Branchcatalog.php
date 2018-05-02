@@ -236,25 +236,28 @@ class Branchcatalog extends Permissions
      */
     public function excelDownload()
     {
-        $filePath = "./static/branch/branch_directory.xls";
-        if(!file_exists($filePath)){
-            return json(['code' => '-1','msg' => '文件不存在']);
-        }else if(request()->isAjax()){
-            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
-        }else{
-            $fileName = '导入模板-分支目录.xls';
-            $file = fopen($filePath, "r"); //   打开文件
-            //输入文件标签
-            $fileName = iconv("utf-8","gb2312",$fileName);
-            Header("Content-type:application/octet-stream ");
-            Header("Accept-Ranges:bytes ");
-            Header("Accept-Length:   " . filesize($filePath));
-            Header("Content-Disposition:   attachment;   filename= " . $fileName);
-            //   输出文件内容
-            echo fread($file, filesize($filePath));
-            fclose($file);
-            exit;
-        }
+        $newName = "分支目录管理"; // 导出的文件名
+        header("Content-type:text/html;charset=utf-8");
+        Loader::import('PHPExcel\Classes\PHPExcel', EXTEND_PATH);
+        //实例化
+        $objPHPExcel = new \PHPExcel();
+        //设置当前的表格
+        $objPHPExcel->setActiveSheetIndex(0);
+        // 设置表格第一行显示内容
+        $objPHPExcel->getActiveSheet()
+            ->setCellValue('A1', '序号')
+            ->setCellValue('B1', '名称')
+            ->setCellValue('C1', '所属上级序号');
+        //设置当前的表格
+        $objPHPExcel->setActiveSheetIndex(0);
+        ob_end_clean();  //清除缓冲区,避免乱码
+        header('Content-Type: application/vnd.ms-excel'); //文件类型
+        header('Content-Disposition: attachment;filename="'.$newName.'.xls"'); //文件名
+        header('Cache-Control: max-age=0');
+        header('Content-Type: text/html; charset=utf-8'); //编码
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');  //excel 2003
+        $objWriter->save('php://output');
+        exit;
     }
 
     /**
@@ -270,6 +273,7 @@ class Branchcatalog extends Permissions
             return  json(['code' => -1,'data' => '','msg' => '请选择分组']);
         }
         $file = request()->file('file');
+
         $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads/file/branch/import');
         if($info){
             // 调用插件PHPExcel把excel文件导入数据库
@@ -299,6 +303,7 @@ class Branchcatalog extends Permissions
                 return  json(['code' => -1,'data' => '','msg' => '请选择正确的模板文件']);
             }
             $excel_array= $obj_PHPExcel->getsheet(0)->toArray();   // 转换第一页为数组格式
+
             // 验证格式 ---- 去除顶部菜单名称中的空格，并根据名称所在的位置确定对应列存储什么值
             $code_index = $class_name_index = $parent_code_index = -1;
             foreach ($excel_array[0] as $k=>$v){
@@ -307,11 +312,10 @@ class Branchcatalog extends Permissions
                     $code_index = $k;
                 }else if ($str == '名称'){
                     $class_name_index = $k;
-                }else if($str == '所属上级编号'){
+                }else if($str == '所属上级序号'){
                     $parent_code_index = $k;
                 }
             }
-
             if($code_index == -1 || $class_name_index == -1 || $parent_code_index == -1){
                 $json_data['code'] = -1;
                 $json_data['msg'] = '文件内容格式不对';
