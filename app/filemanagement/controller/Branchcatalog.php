@@ -315,7 +315,7 @@ class Branchcatalog extends Permissions
 
             if($code_index == -1 || $class_name_index == -1 || $parent_code_index == -1){
                 $json_data['code'] = -1;
-                $json_data['info'] = '文件内容格式不对';
+                $json_data['msg'] = '文件内容格式不对';
                 return json($json_data);
             }
             $insertData = [];
