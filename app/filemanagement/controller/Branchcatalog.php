@@ -132,6 +132,9 @@ class Branchcatalog extends Permissions
         //实例化模型类
         $model = new FilebranchModel();
         $classifyid = input('post.id');
+        $length = input('post.length');//每页条数
+        $page = input('post.page');//第几页
+
         if($classifyid == 1)
         {
             $search = [];
@@ -142,7 +145,6 @@ class Branchcatalog extends Permissions
             ];
 
         }
-
         $data = $model->getAll($search);
 
                 foreach ($data as $k => $v)
@@ -169,10 +171,37 @@ class Branchcatalog extends Permissions
                 }
 
         $result = $model->getAll($search);
-
         $info = tree($result);
 
-        return json($info);
+        $cut_info = array();
+        $count = 0;
+        $num = 0;
+        foreach($info as $key=>$val)
+        {
+            if($val["pid"] == 0)
+            {
+                $count = $count + 1;
+            }
+
+        }
+
+        foreach($info as $keys=>$vals)
+        {
+            if($vals["pid"] == 0)
+            {
+                $num = $num +1;
+            }
+            if($num <= ($page-1)*$length){
+                continue;
+            }
+            if($num > $page*$length)
+            {
+                break;
+            }
+            $cut_info[$keys] = $vals;
+        }
+
+        return json(['code'=> 1, 'info' => $info,'count' => $count,'cut_info' =>$cut_info]);
         }
     }
 
