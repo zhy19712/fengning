@@ -132,7 +132,18 @@ class Branchcatalog extends Permissions
         //实例化模型类
         $model = new FilebranchModel();
         $classifyid = input('post.id');
-        $data = $model->getAll($classifyid);
+        if($classifyid == 1)
+        {
+            $search = [];
+        }else
+        {
+            $search = [
+                "classifyid" => $classifyid
+            ];
+
+        }
+
+        $data = $model->getAll($search);
         $res = tree($data);
 
         foreach ((array)$res as $k => $v) {
