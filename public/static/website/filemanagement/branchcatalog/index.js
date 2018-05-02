@@ -48,10 +48,13 @@ layui.use(['element',"layer",'form','upload'], function(){
   //上传
   upload.render({
     elem: '#upload',
-    url: "../common/upload/module/file/use/file_thumb.shtml",
+    // url: "../common/upload/module/file/use/file_thumb.shtml",
+    url:"./importExcel",
     accept: 'file',//普通文件
+    data:{classifyid:2},
     size:89000,
     before: function(obj){
+      console.log(selfid)
       obj.preview(function(index, file, result){
         uploadName = file.name;
         $("#file_name_1").val(file.name);
@@ -59,7 +62,7 @@ layui.use(['element',"layer",'form','upload'], function(){
     },
     done:function (res) {
       if(res.code!=2){
-        layer.msg("上传失败");
+        layer.msg(res.msg);
         return ;
       }
       $("#file_name").val(res.filename);
@@ -119,6 +122,7 @@ function onClick(e, treeId, node) {
   selfid = zTreeObj.getSelectedNodes()[0].id;
   node = sNodes[0].getParentNode();//获取父节点
   groupid = sNodes[0].pid //父节点的id
+  selectData='';
   getTable(selfid);
 }
 
@@ -203,25 +207,35 @@ $('#closeNode').click(function(){
 
 //添加分支
 function addbranch(){
-  $("#branchform input").val('');
-  $("#branchform #classifyid").val(selfid);
   if(!selfid || selfid == 1){
     layer.msg("请先选择正确的分类！");
     return;
   };
-  layer.open({
-    type: 1,
-    title: '编辑',
-    area: ['690px', '340px'],
-    content:$("#branchform")
-  });
+  $("#branchform input").val('');
+  $("#branchform #classifyid").val(selfid);
   if(selectData!=""){
     $("#parent_code").val(selectData[1]);
     $("#pid").val(selectData[3]);
   }
+  layer.open({
+    type: 1,
+    title: '编辑',
+    area: ['690px', '340px'],
+    content:$("#branchform"),
+    end:function () {
+
+      $("#branchform input").val('');
+    }
+  });
+
 }
 //编辑
 function editbranch(id){
+  $("#parent_code").val(selectData[0]);
+  $("#code").val(selectData[1]);
+  $("#class_name").val(selectData[2]);
+  $("#branchform #classifyid").val(selfid);
+  $("#branchform #addId").val(id);
   layer.open({
     type: 1,
     title: '编辑',
@@ -229,13 +243,10 @@ function editbranch(id){
     content:$("#branchform"),
     end:function () {
       selectData = "";
+      $("#branchform input").val('');
     }
   });
-  $("#parent_code").val(selectData[0]);
-  $("#code").val(selectData[1]);
-  $("#class_name").val(selectData[2]);
-  $("#branchform #classifyid").val(selfid);
-  $("#branchform #addId").val(id);
+
 }
 
 //删除
