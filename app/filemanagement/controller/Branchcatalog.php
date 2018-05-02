@@ -320,13 +320,11 @@ class Branchcatalog extends Permissions
             }
             $insertData = [];
             foreach($excel_array as $k=>$v){
-                if($k > 0){
-
-                    $insertData[$k]['code'] = $v[$code_index];
-                    $insertData[$k]['class_name'] = $v[$class_name_index];
-                    $insertData[$k]['parent_code'] = $v[$parent_code_index];
-                    $insertData[$k]['classifyid'] = $classifyid;
-
+                if($k > 1){
+                    $insertData[$k]['code'] = $v[$code_index];//序号
+                    $insertData[$k]['class_name'] = $v[$class_name_index];//分类名
+                    $insertData[$k]['parent_code'] = $v[$parent_code_index];//父级编号
+                    $insertData[$k]['classifyid'] = $classifyid;//项目分类树节点id
                 }
             }
             $success = Db::name('file_branch_directory')->insertAll($insertData);
