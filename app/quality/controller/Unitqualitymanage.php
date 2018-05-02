@@ -357,10 +357,12 @@ class Unitqualitymanage extends Permissions
         }
     }
 
-
     /**
      * 单位管控 控制点执行情况文件 或者 图像资料文件 上传保存
      * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * @author hutao
      */
     public function editRelation()
@@ -371,29 +373,53 @@ class Unitqualitymanage extends Permissions
         }else{
             return json(['code'=>0,'msg'=>'没有上传文件']);
         }
-        // 执行上传文件 获取文件编号  attachment_id
-        $param = input('param.');
-        $common = new \app\admin\controller\Common();
-        $flag = $common->upload('quality','unitqualitymanage');
-        $flag = json_decode($flag);
-        if($flag['code'] != 2){
-            return $flag;
-        }
-        $param['attachment_id'] = $flag['id'];
-        // 保存上传文件记录
-        $id = isset($param['contr_relation_id']) ? $param['contr_relation_id'] : 0;
-        $type = isset($param['file_type']) ? $param['file_type'] : 0; // 1执行情况 2图像资料
-        $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
-        if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
-            return json(['code' => '-1','msg' => '参数有误']);
-        }
-        if($this->request->isAjax()){
+
+        $web_config = Db::name('webconfig')->where('web','web')->find();
+        $info = $file->validate(['size'=>$web_config['file_size']*1024,'ext'=>$web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . 'quality' . DS . 'anchor_point');
+        if($info){
+            //写入到附件表
+            $data = [];
+            $data['module'] = 'quality';
+            $data['filename'] = $info->getFilename();//文件名
+            $data['filepath'] = DS . 'uploads' . DS . 'quality' . DS . 'anchor_point' . DS . $info->getSaveName();//文件路径
+            $data['fileext'] = $info->getExtension();//文件后缀
+            $data['filesize'] = $info->getSize();//文件大小
+            $data['create_time'] = time();//时间
+            $data['uploadip'] = $this->request->ip();//IP
+            $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
+            if($data['module'] == 'admin') {
+                //通过后台上传的文件直接审核通过
+                $data['status'] = 1;
+                $data['admin_id'] = $data['user_id'];
+                $data['audit_time'] = time();
+            }
+            $data['use'] = $this->request->has('use') ? $this->request->param('use') : 'anchor_point';//用处
+            $res['id'] = Db::name('attachment')->insertGetId($data);
+            $res['src'] = DS . 'uploads' . DS . 'quality' . DS . 'anchor_point' . DS . $info->getSaveName();
+            $res['code'] = 2;
+            addlog($res['id']);//记录日志
+
+
+            // 执行上传文件 获取文件编号  attachment_id
+            $param = input('param.');
+            $param['attachment_id'] = $res['id'];
+            // 保存上传文件记录
+            $id = isset($param['contr_relation_id']) ? $param['contr_relation_id'] : 0;
+            $type = isset($param['file_type']) ? $param['file_type'] : 0; // 1执行情况 2图像资料
+            $attachment_id = isset($param['attachment_id']) ? $param['attachment_id'] : 0; // 文件编号
+            if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
+                return json(['code' => '-1','msg' => '参数有误']);
+            }
             $data['contr_relation_id'] = $id;
             $data['attachment_id'] = $attachment_id;
             $data['type'] = $type;
             $unit = new UnitqualitymanageModel();
             $nodeStr = $unit->saveTb($data);
             return json($nodeStr);
+        }else {
+            // 上传失败获取错误信息
+            $msg = '上传失败：'.$file->getError();
+            return json(['code' => '-1','msg' => $msg]);
         }
     }
 
