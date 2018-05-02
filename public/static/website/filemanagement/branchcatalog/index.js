@@ -1,5 +1,6 @@
+var length = 10, page = 1;
 //layui
-layui.use(['element',"layer",'form','upload'], function(){
+layui.use(['element',"layer",'form','upload','laypage'], function(){
   var $ = layui.jquery
     ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
 
@@ -7,6 +8,7 @@ layui.use(['element',"layer",'form','upload'], function(){
     ,layer = layui.layer
     ,layedit = layui.layedit
     ,upload = layui.upload
+    ,laypage = layui.laypage
     ,laydate = layui.laydate;
 
   //监听提交
@@ -19,24 +21,7 @@ layui.use(['element',"layer",'form','upload'], function(){
         console.log(selfid)
         if(res.code == 1) {
 
-          getTable(selfid);
-          layer.closeAll();
-        }else{
-          layer.msg(res.msg);
-        }
-      }
-    });
-    return false;
-  });
-  form.on('submit(demo2)', function(data){
-    $.ajax({
-      type: "post",
-      url:"./importExcel",
-      data:data.field,
-      success: function (res) {
-        console.log(selfid)
-        if(res.code == 1) {
-          getTable(selfid);
+          getTable(selfid,length,page);
           layer.closeAll();
         }else{
           layer.msg(res.msg);
@@ -48,27 +33,58 @@ layui.use(['element',"layer",'form','upload'], function(){
   //上传
   upload.render({
     elem: '#upload',
-    // url: "../common/upload/module/file/use/file_thumb.shtml",
     url:"./importExcel",
+    auto:false,
+    bindAction:'.sub2',
     accept: 'file',//普通文件
-    data:{classifyid:2},
     size:89000,
-    before: function(obj){
-      console.log(selfid)
-      obj.preview(function(index, file, result){
-        uploadName = file.name;
+    choose:function (obj) {
+      obj.preview(function (index,file) {
         $("#file_name_1").val(file.name);
+        $("#file_name").val(file.name);
       })
     },
-    done:function (res) {
-      if(res.code!=2){
+    before:function (input) {
+      // console.log(input)
+      // var value = $("#classifyid_2").val();
+      // var item = '<input type="hidden" name="classifyid" value="'+value+'">';
+      // $(input).after(item);
+    this.data = {classifyid:$("#classifyid_2").val()}
+  },
+    done :function (res) {
+      if(res.code == 1){
+        layer.msg("导入成功");
+        getTable(selfid,length,page);
+        layer.closeAll();
+      }else{
         layer.msg(res.msg);
-        return ;
       }
-      $("#file_name").val(res.filename);
-      $("#attachmentId").val(res.id);
     }
   });
+  //分页
+  // laypage.render({
+  //   elem: 'tbcontainer'
+  //   ,count: 70, //数据总数，从服务端得到
+  //   limit : 10,
+  //   limits:[10,20,30,50],
+  //   layout: ['limit','first', 'prev', 'page', 'next','last'],
+  //   first:"<<",
+  //   prev:"<",
+  //   next:">",
+  //   last:">>"
+  //   ,jump: function(obj, first){
+  //     //obj包含了当前分页的所有参数，比如：
+  //     console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+  //     console.log(obj.limit); //得到每页显示的条数
+  //     length = obj.limit;
+  //     page = obj.curr;
+  //     getTable(selfid,length,page);
+  //     //首次不执行
+  //     if(!first){
+  //       //do something
+  //     }
+  //   }
+  // });
 });
 //
 //字符解码
@@ -123,7 +139,7 @@ function onClick(e, treeId, node) {
   node = sNodes[0].getParentNode();//获取父节点
   groupid = sNodes[0].pid //父节点的id
   selectData='';
-  getTable(selfid);
+  getTable(selfid,length,page);
 }
 
 //点击添加或编辑节点
@@ -259,7 +275,7 @@ function conDel(id){
     success:function (res) {
       if(res.code==1){
         layer.msg("删除成功");
-        getTable(selfid);
+        getTable(selfid,length,page);
       }else{
         layer.msg(res.msg)
       }
@@ -269,15 +285,45 @@ function conDel(id){
 
 
 // 拉取表格的数据
-function getTable(id){
+function getTable(id,length,page){
   $("#tableItem tbody").empty();
   $.ajax({
     type:"POST",
     url:"./table",
-    data:{id:id},
+    data:{id:id,length:length,page:page},
     dataType:"JSON",
     success:function (res) {
-      var html = ""
+      $("#info").html("共"+res.count+"条");
+      //分页
+      if(page==1&&length==10){
+        layui.laypage.render({
+          elem: 'tbcontainer'
+          ,count: res.count, //数据总数，从服务端得到
+          limit : 10,
+          limits:[10,20,30,50],
+          layout: ['limit','first', 'prev', 'page', 'next','last','count'],
+          first:"<<",
+          prev:"<",
+          next:">",
+          last:">>"
+          ,jump: function(obj, first){
+            //obj包含了当前分页的所有参数，比如：
+
+
+            //首次不执行
+            if(!first){
+              console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+              console.log(obj.limit); //得到每页显示的条数
+              length = obj.limit;
+              page = obj.curr;
+              getTable(selfid,length,page);
+            }
+          }
+        });
+      }
+
+      var res = res.cut_info;
+      var html = "";
       for (var i=0;i<res.length;i++){
         var parent_code = Object.is(res[i].parent_code,null)?"":res[i].parent_code;
         html += '<tr data-tt-id="'+res[i].id+'" data-tt-parent-id="'+res[i].pid+'" data-parent-code="'+parent_code+'">' +
@@ -287,7 +333,6 @@ function getTable(id){
           '</tr>';
       }
       $("#tableItem tbody").append($(html));
-
       $("#tableItem").treetable({ expandable: true, initialState :"expanded" },true);
     }
   })
@@ -310,7 +355,12 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
 
 //导入
 function importExcel() {
+  if(!selfid || selfid == 1){
+    layer.msg("请先选择正确的分类！");
+    return;
+  };
   $("#excel input").val('');
+  console.log(selfid)
   $("#excel #classifyid_2").val(selfid);
   layer.open({
     type: 1,
