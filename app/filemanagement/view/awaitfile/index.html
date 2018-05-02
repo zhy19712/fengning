@@ -203,10 +203,9 @@
                 "searchable": false,
                 "orderable": false,
                 "render": function (data, type, row) {
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='AssFile(this)'><i title='关联文件' class='fa fa-chain'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='reviewHistory(this)'><i title='审阅历史' class='fa fa-file-text'></i></a>";
+                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='seaFile("+row[4]+")'><i title='查看' class='fa fa fa-search'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='editFile("+row[4]+")'><i title='编辑' class='fa fa fa-pencil'></i></a>";
+                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='bfa fa fa-remove'></i></a>";
                     return html;
                 }
             }
@@ -233,12 +232,12 @@
     });
 
     //点击上传文件
-    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>添加</div>");
-    $(".assModel").html("<div id='model'><i class='fa fa-plus'></i>组卷</div>");
-    $(".move").html("<div id='moveClick'><i class='fa fa-plus'></i>转不归档</div>");
-    $(".addFile").html("<div id='addFileClick'><i class='fa fa-plus'></i>加入案卷</div>");
-    $(".import").html("<div id='importClick'><i class='fa fa-plus'></i>导入</div>");
-    $(".export").html("<div id='exportClick'><i class='fa fa-plus'></i>导出</div>");
+    $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>&nbsp;添加</div>");
+    $(".assModel").html("<div id='model'><i class='fa fa-puzzle-piece'></i>&nbsp;组卷</div>");
+    $(".move").html("<div id='moveClick'><i class='fa fa-ban'></i>&nbsp;转不归档</div>");
+    $(".addFile").html("<div id='addFileClick'><i class='fa fa-plus-circle'></i>&nbsp;加入案卷</div>");
+    $(".import").html("<div id='importClick'><i class='fa fa-sign-in'></i>&nbsp;导入</div>");
+    $(".export").html("<div id='exportClick'><i class='fa fa-sign-out'></i>&nbsp;导出</div>");
 
     var clickId ;
     var clickTreeId ;//一键归档选树的id
