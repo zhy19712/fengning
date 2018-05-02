@@ -379,6 +379,7 @@
                             getLabelSnapshot();    //新增之后回显
                             // TODO 需要重构
                             var snapshotImgPathArr = [];
+                            console.log(base64RenData);
                             $.ajax({
                                 url: "./labelSnapshot",
                                 type: "post",
@@ -580,6 +581,7 @@
                 var snapshotImgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
                     var base64RenData = res.data[i].label_snapshot;
+                    console.log(base64RenData);
                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
                     snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
                     snapshotImgPathArr.push('<div class="mask">');

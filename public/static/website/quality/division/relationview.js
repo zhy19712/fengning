@@ -137,12 +137,26 @@ $('#close').click(function () {
 $('#search').click(function () {
     var inputModelName = $('#modelName').val();
     var modelName = $.trim(inputModelName);
-    var treeObj = $.fn.zTree.getZTreeObj("ztree");
-    var nodes = treeObj.getNodes();
-    for(var i = 0;i<nodes.length;i++){
-        var nodeName = nodes[i].name;
-        if(nodeName.indexOf(modelName)){
-            treeObj.selectNode(nodes[i]);
+    $.ajax({
+        url: "",
+        type: "post",
+        data: {
+            modelName:modelName
+        },
+        dataType: "json",
+        success: function (res) {
+
         }
+    })
+   /* var treeObj = $.fn.zTree.getZTreeObj("ztree");
+    var nodes = treeObj.getNodes();
+    console.log(nodes);
+    var nodeArr = [];
+    for(var i = 0;i<nodes.length;i++){
+        nodeArr.push(nodes[i].name);
     }
+    var nodesName = nodeArr.join();
+    if(nodesName.indexOf(modelName)){
+        treeObj.selectNode(nodes[i]);
+    }*/
 });

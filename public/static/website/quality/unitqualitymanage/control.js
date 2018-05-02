@@ -192,7 +192,7 @@ function implementUpload(){
     var controlId = $('#controlId').val();
     $.upload({
         btnId:'#implementBtn',
-        server:'./editRelation',
+        server:'../../editRelation',
         formData:{
             contr_relation_id:'',
             file_type:''
@@ -211,7 +211,7 @@ function implementUpload(){
 function imageDataUpload(){
     $.upload({
         btnId:'#imageDataBtn',
-        server:'./editRelation',
+        server:'../../editRelation',
         data:{
             contr_relation_id:'',
             file_type:''
