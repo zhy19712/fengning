@@ -79,10 +79,20 @@
         background-image: none !important;
     }
     .layui-layer-content {
-         padding-top: 0px;
+         padding: 0px 5px;
     }
     .selected{
         background-color: #FDD5B5 !important;
+    }
+    .layui-layer-btn {
+        position: absolute;
+        text-align: right;
+        padding: 0 15px 12px;
+        pointer-events: auto;
+        user-select: none;
+        -webkit-user-select: none;
+        right: 31px;
+        top: -8px;
     }
 </style>
 
@@ -299,24 +309,55 @@
         layer.open({
             type: 2,
             title:'基本信息',
+            btn:['保存','保存并新建','继承设置'],
             shadeClose: true,
             area: ['100%', '100%'],
             content: '{:url("filemanagement/awaitfile/addoredit")}',
+            success:function () {
+                console.log($(".layui-layer-resize").html())
+                $(".layui-layer-resize").remove();
+            },
             // end:function () {
             //     onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
             // }
+            btn1: function(index, layero){
+                alert(22)
+                // return false ;
+            },
+            btn2: function(index, layero){
+                alert(44)
+                //return false 开启该代码可禁止点击该按钮关闭
+            },
+            btn3: function(index, layero){
+                alert(66)
+                //return false 开启该代码可禁止点击该按钮关闭
+            },
         });
     });
 
     //组卷
     $("#tableContent").on("click",".assModel #model",function () {
-        if (!clickId) {
-            layer.msg("请先选择一条数据！", {time: 1500, shade: 0.1});
-            return;
-        }else {
-            document.cookie="unitId="+clickId;
-            window.open('./association');
-        }
+        // if (!clickId) {
+        //     layer.msg("请先选择一条数据！", {time: 1500, shade: 0.1});
+        //     return;
+        // }else {
+            layer.open({
+                type: 2,
+                title: '添加',
+                shadeClose: true,
+                area: ['70%', '80%'],
+                content: '{:url("filemanagement/awaitfile/testass")}',
+                success: function(layero, index){
+                    var body = layer.getChildFrame('body', index);
+                    // console.log(body.html())
+                    // body.find("#moveZtreeId").val(clickId);
+                },
+                end: function () {
+                    // var url = "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id=" + selfid;
+                    // tableItem.ajax.url(url).load();
+                }
+            });
+        // }
     });
 
     //转不归档
@@ -660,40 +701,78 @@
             return;
         }
         $(".path").html("");
-        $(this).addClass("select-color").siblings().removeClass("select-color");
-        selectData = tableItem.row(".select-color").data();//获取选中行数据
-        console.log(selectData);
-        uploadPle = selectData[1];
-        clickId = selectData[4];
-        fileStatus = selectData[3];
-        console.log(clickId);
-        getAttrList(selectData[4]);
-        record(clickId);//加载下载记录
-        getAdminname(clickId);//加载共享人员名单
+        // console.log($(this))
+        // var isChecked = $(this).prop('checked');
+        // var id = $(this).attr('idv');
+        // var checkedLen = $('input[type="checkbox"][name="checkList"]:checked').length;
+        // var checkboxLen = $('input[type="checkbox"][name="checkList"]').length;
+        // console.log(checkedLen)
+        // console.log(checkboxLen)
+        // if(checkedLen===checkboxLen){
+        //     $('#all_checked').prop('checked',true);
+        // }else{
+        //     $('#all_checked').prop('checked',false);
+        // }
+
+
+        $(this).addClass('selected');
+
+        // console.log($(this).children("td:nth-of-type(1)").children('input').attr("checked"));
+        var isChecked = $(this).children("td:nth-of-type(1)").children('input').prop("checked","checked");
+        var id = $(this).children("td:nth-of-type(1)").children('input').attr('idv');
+        if(isChecked){
+            console.log(444444444444+"选中")
+            idArr.push(id);
+            idArr.removal(id);
+            idArr.removalArray();
+            console.log(idArr)
+            $(this).children("td:nth-of-type(1)").children('input').prop("checked",true);
+        }else{
+            console.log(444444444444+"没选中")
+            idArr.remove(id);
+            idArr.removal(id);
+            idArr.removalArray();
+            $('#all_checked').prop('checked',false);
+            $(this).children("td:nth-of-type(1)").children('input').prop("checked",false);
+            $(that).parents("tr").removeClass('selected');
+            console.log(idArr)
+        }
+
+
+        // $(this).addClass("select-color").siblings().removeClass("select-color");
+        // $(this).addClass("select-color");
+        // selectData = tableItem.row(".select-color").data();//获取选中行数据
+        // console.log(selectData);
+        // uploadPle = selectData[1];
+        // clickId = selectData[4];
+        // fileStatus = selectData[3];
+        // console.log(clickId);
+        // getAttrList(selectData[4]);
     });
 
+
     //掉后台接口
-    function getAttrList(id){
-        $.ajax({
-            type:"post",
-            url:"{:url('document/getOne')}",
-            data:{id:id},
-            success: function (res) {
-                console.log(res);
-                if(res.code == 0){
-                    layer.msg('获取一条数据' + res.msg);
-                }
-                $("#fileName").text(res.name);
-                $("#fileCategory").text(treefileCategory);
-                $("#uploadPerson").text(uploadPle);
-                $("#uploadTime").text(res.attachment_info.create_time);
-                $("#fileSize").text((res.attachment_info.filesize)/1000+' KB');
-            },
-            error: function (data) {
-                debugger;
-            }
-        })
-    }
+    // function getAttrList(id){
+    //     $.ajax({
+    //         type:"post",
+    //         url:"{:url('document/getOne')}",
+    //         data:{id:id},
+    //         success: function (res) {
+    //             console.log(res);
+    //             if(res.code == 0){
+    //                 layer.msg('获取一条数据' + res.msg);
+    //             }
+    //             $("#fileName").text(res.name);
+    //             $("#fileCategory").text(treefileCategory);
+    //             $("#uploadPerson").text(uploadPle);
+    //             $("#uploadTime").text(res.attachment_info.create_time);
+    //             $("#fileSize").text((res.attachment_info.filesize)/1000+' KB');
+    //         },
+    //         error: function (data) {
+    //             debugger;
+    //         }
+    //     })
+    // }
 
     //属性拼接的方法
     function getPathText(node) {
@@ -719,6 +798,26 @@
         idArr.length=0;
     });
 
+    //驱虫
+    Array.prototype.removal = function(){
+        var newArr = [];
+        for (var i = 0; i < this.length; i++) {
+            if(newArr.indexOf(this[i]) == -1){  //判断在newArr数组中是否存在，不存在则push到newArr数组中 indexOf 不兼容IE8及以下
+                newArr.push(this[i]);
+            }
+        }
+        return newArr;
+    }
+    //删除数组中的指定元素
+    Array.prototype.remove = function(val){
+        for (var i = 0; i < this.length; i++) {
+            if(this[i] === val){
+                this.splice(i,1);
+                break;
+            }
+        }
+        return this;
+    }
     //获取选中行ID
     var idArr = [];
     function getId(that) {
@@ -732,12 +831,19 @@
             $('#all_checked').prop('checked',false);
         }
         if(isChecked){
+
             idArr.push(id);
             idArr.removalArray();
+            $(that).parents("tr").addClass('selected');
         }else{
             idArr.remove(id);
             idArr.removalArray();
+            console.log(666666666666666666)
+            // $("#tableItem").undelegate("tbody tr","click");
             $('#all_checked').prop('checked',false);
+            $("input[name='checkList']").prop('checked',false);
+            $(that).parents("tr").removeClass('selected');
+            // $("#tableItem").delegate("tbody tr","click");
         }
     }
 
