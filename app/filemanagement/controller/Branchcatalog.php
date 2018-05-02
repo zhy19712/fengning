@@ -270,6 +270,7 @@ class Branchcatalog extends Permissions
             return  json(['code' => -1,'data' => '','msg' => '请选择分组']);
         }
         $file = request()->file('file');
+        halt($file);
         $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads/file/branch/import');
         if($info){
             // 调用插件PHPExcel把excel文件导入数据库
@@ -313,7 +314,7 @@ class Branchcatalog extends Permissions
             }
 
             if($code_index == -1 || $class_name_index == -1 || $parent_code_index == -1){
-                $json_data['code'] = 0;
+                $json_data['code'] = -1;
                 $json_data['info'] = '文件内容格式不对';
                 return json($json_data);
             }
