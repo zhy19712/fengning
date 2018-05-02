@@ -119,6 +119,7 @@ function exportQcode(addId) {
 $('#addBtn').click(function () {
     controlPointStandard();
     addControl();
+    idArr.length = 0;
     //取消全选的事件绑定
     $("thead tr th:first-child").unbind();
     $('#tableItem_wrapper,#easyuiLayout').find('.tbcontainer').remove();
@@ -248,7 +249,7 @@ function delMethod(id) {
             ma_division_id:ma_division_id,
             id:id
         },
-        tablePath:'/quality/common/datatablesPre?tableName=unit_quality_control&pid='
+        tablePath:'/quality/common/datatablesPre?tableName=unit_quality_control&add_id='+ add_id +'&workId='+ ma_division_id +''
     });
 }
 

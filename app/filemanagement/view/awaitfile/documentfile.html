@@ -23,6 +23,15 @@
     #ecSonFile .saveCon button{
         background: #00c0ef;
     }
+    #tableContent .even {
+        background-color: #ffffff;
+    }
+    #tableContent .odd {
+        background-color: #f9f9f9;
+    }
+    .selected{
+        background-color: #FDD5B5 !important;
+    }
 </style>
 <div id="ecSonFile"  data-options="region:'north',title:'',split:true" style="height: 50px;">
     <div class="layui-tab">
@@ -36,7 +45,7 @@
         <button onclick="save();" class="layui-btn layui-btn-sm" type="button"><span class="bold">保存</span></button>
     </div>
 </div>
-<div id="nodeZtree" data-options="region:'west',title:'文档目录树',split:true" style="width:240px;">
+<div id="nodeZtree" data-options="region:'west',title:'文档目录树',split:true" style="width:220px;">
     <ul class="ztree" id="ztree"></ul>
 </div>
 <div id="tableContent" data-options="region:'center',title:'当前路径：'" style="padding:5px;background:#ffffff;">
@@ -54,8 +63,6 @@
         </tr>
         </thead>
     </table>
-    <div class="info"></div>
-    <div id="form_container"></div>
     <div class="tbcontainer">
         <div class="mark"></div>
     </div>
@@ -92,28 +99,29 @@
         ],
         columnDefs: [
             {
-                targets: [0],
+                "targets":[0],
                 "searchable": false,
                 "orderable": false,
-                render: function (data, type, row) {
-                    return  '<a title="' + data + '" href="javascript:void(0);">'+data+'</a>';
-                }
+                "render": function(data, type, full, meta) {
+                    var html = "<input type='checkbox' name='checkList' idv='"+data+"' onclick='getSelectId(this)'>";
+                    return html;
+                },
             },
             {
-                targets:[1],
+                "targets":[1],
                 "searchable": false,
                 "orderable": false
 
             },
             {
-                targets:[2],
+                "targets":[2],
                 "searchable": false,
                 "orderable": false
             },
             {
                 "searchable": false,
                 "orderable": false,
-                targets: [3],
+                "targets": [3],
                 render: function (data, type, row) {
                     if (data == 1) {
                         return "已归档";
@@ -122,9 +130,9 @@
                 }
             },
             {
+                "targets": [4],
                 "searchable": false,
-                "orderable": false,
-                "targets": [4]
+                "orderable": false
             }
 
         ],
@@ -209,7 +217,62 @@
         $("#tableContent .dataTables_wrapper").css('display','block');
         $("#tableContent .tbcontainer").css('display','block');
         $(".layout-panel-center .panel-title").text("当前路径:" + path)
-
     }
+
+
+    //翻页事件
+    tableItem.on('draw',function () {
+        $('input[type="checkbox"][name="checkList"]').prop("checked",false);
+        $('#all_checked').prop('checked',false);
+        idArr.length=0;
+    });
+
+    //获取选中行ID
+    var idArr = [];
+    function getId(that) {
+        var isChecked = $(that).prop('checked');
+        var id = $(that).attr('idv');
+        var checkedLen = $('input[type="checkbox"][name="checkList"]:checked').length;
+        var checkboxLen = $('input[type="checkbox"][name="checkList"]').length;
+        if(checkedLen===checkboxLen){
+            $('#all_checked').prop('checked',true);
+        }else{
+            $('#all_checked').prop('checked',false);
+        }
+        if(isChecked){
+            idArr.push(id);
+            idArr.removalArray();
+        }else{
+            idArr.remove(id);
+            idArr.removalArray();
+            $('#all_checked').prop('checked',false);
+        }
+    }
+
+    //单选
+    function getSelectId(that) {
+        getId(that);
+        console.log(idArr);
+    }
+
+    //checkbox全选
+    $("#all_checked").on("click", function () {
+        var that = $(this);
+        if (that.prop("checked") === true) {
+            $("input[name='checkList']").prop("checked", that.prop("checked"));
+            $('#tableItem tbody tr').addClass('selected');
+            $('input[name="checkList"]').each(function(){
+                getId(this);
+            });
+        } else {
+            $("input[name='checkList']").prop("checked", false);
+            $('#tableItem tbody tr').removeClass('selected');
+            $('input[name="checkList"]').each(function(){
+                getId(this);
+            });
+        }
+        console.log(idArr);
+    });
+
 </script>
 </html>

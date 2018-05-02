@@ -29,9 +29,19 @@
     #ecSonFile .saveCon button{
         background: #00c0ef;
     }
+    #unitWorkRight .even {
+        background-color: #ffffff;
+    }
+    #unitWorkRight .odd {
+        background-color: #f9f9f9;
+    }
+    .selected{
+        background-color: #FDD5B5 !important;
+    }
 
 </style>
-<div id="ecSonFile"  data-options="region:'north',title:'',split:true" style="height: 50px;">
+
+    <div id="ecSonFile"  data-options="region:'north',title:'',split:true" style="height: 50px;">
     <div class="layui-tab">
         <ul class="layui-tab-title">
             <li id="A1"><a href="./selectfile.shtml">图册管理</a></li>
@@ -43,14 +53,13 @@
         <button onclick="save();" class="layui-btn layui-btn-sm" type="button"><span class="bold">保存</span></button>
     </div>
 </div>
-
-    <div id="division" data-options="region:'west',title:'工程划分',split:true" style="width:200px;">
+    <div id="division" data-options="region:'west',title:'工程划分',split:true" style="width:220px;">
         <i title="展开所有" class="fa fa-lg fa-plus-square" id="openNode"></i>
         <ul class="ztree" id="ztree"></ul>
     </div>
     <div id="unitWork" data-options="region:'center'" style="background:#fff;">
         <div class="easyui-layout" data-options="fit:true">
-            <div id="unitWorkOut" data-options="region:'west',title:'单元工',split:true" style="width:180px;">
+            <div id="unitWorkOut" data-options="region:'west',title:'单元工',split:true" style="width:200px;">
                 <ul class="ztree" id="ztreeUnit"></ul>
             </div>
             <div id="unitWorkRight" data-options="region:'center'" style="background:#fff;">

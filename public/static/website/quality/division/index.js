@@ -498,7 +498,7 @@ function del(that) {
         tableItem:tableItem,
         that:that,
         ajaxUrl:'./delUnit',
-        tablePath:'/quality/common/datatablesPre?tableName=quality_unit&edit_id='
+        tablePath:'/quality/common/datatablesPre?tableName=quality_unit&edit_id='+ window.nodeId +''
     });
 }
 

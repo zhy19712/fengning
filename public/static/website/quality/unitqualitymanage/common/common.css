@@ -77,3 +77,9 @@
 .tabs li.tabs-selected a.tabs-inner{
     border-bottom: 1px solid #FFF;
 }
+.table th{
+    text-align: center;
+}
+.webuploader-container{
+    float: right;
+}
