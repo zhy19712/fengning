@@ -132,7 +132,18 @@ class Branchcatalog extends Permissions
         //实例化模型类
         $model = new FilebranchModel();
         $classifyid = input('post.id');
-        $data = $model->getAll($classifyid);
+        if($classifyid == 1)
+        {
+            $search = [];
+        }else
+        {
+            $search = [
+                "classifyid" => $classifyid
+            ];
+
+        }
+
+        $data = $model->getAll($search);
         $res = tree($data);
 
         foreach ((array)$res as $k => $v) {
@@ -188,8 +199,7 @@ class Branchcatalog extends Permissions
                     "classifyid" => $param["classifyid"],
                     "parent_code" => $param["parent_code"],
                     "code" => $param["code"],
-                    "class_name" => $param["class_name"],
-                    "pid" => $param["pid"]
+                    "class_name" => $param["class_name"]
                 ];
                 $flag = $model->editCate($data);
                 return json($flag);
@@ -216,6 +226,113 @@ class Branchcatalog extends Permissions
             }else
             {
                 return ['code' => -1, 'msg' => '请先删除下级！'];
+            }
+        }
+    }
+
+    /**
+     * 模板下载
+     * @return \think\response\Json
+     */
+    public function excelDownload()
+    {
+        $filePath = "./static/branch/branch_directory.xls";
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }else if(request()->isAjax()){
+            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+        }else{
+            $fileName = '导入模板-分支目录.xls';
+            $file = fopen($filePath, "r"); //   打开文件
+            //输入文件标签
+            $fileName = iconv("utf-8","gb2312",$fileName);
+            Header("Content-type:application/octet-stream ");
+            Header("Accept-Ranges:bytes ");
+            Header("Accept-Length:   " . filesize($filePath));
+            Header("Content-Disposition:   attachment;   filename= " . $fileName);
+            //   输出文件内容
+            echo fread($file, filesize($filePath));
+            fclose($file);
+            exit;
+        }
+    }
+
+    /**
+     * 分支目录excel表格导入
+     * @return array|\think\response\Json
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     */
+    public function importExcel()
+    {
+        $classifyid = input('post.classifyid');
+        if(empty($classifyid)){
+            return  json(['code' => 1,'data' => '','msg' => '请选择分组']);
+        }
+        $file = request()->file('file');
+        $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads/file/branch/import');
+        if($info){
+            // 调用插件PHPExcel把excel文件导入数据库
+            Loader::import('PHPExcel\Classes\PHPExcel', EXTEND_PATH);
+            $exclePath = $info->getSaveName();  //获取文件名
+            $file_name = ROOT_PATH . 'public' . DS . 'uploads/file/branch/import' . DS . $exclePath;   //上传文件的地址
+            // 当文件后缀是xlsx 或者 csv 就会报：the filename xxx is not recognised as an OLE file错误
+            $extension = get_extension($file_name);
+            if ($extension =='xlsx') {
+                $objReader = new \PHPExcel_Reader_Excel2007();
+                $obj_PHPExcel = $objReader->load($file_name);
+            } else if ($extension =='xls') {
+                $objReader = new \PHPExcel_Reader_Excel5();
+                $obj_PHPExcel = $objReader->load($file_name);
+            } else if ($extension=='csv') {
+                $PHPReader = new \PHPExcel_Reader_CSV();
+                //默认输入字符集
+                $PHPReader->setInputEncoding('GBK');
+                //默认的分隔符
+                $PHPReader->setDelimiter(',');
+                //载入文件
+                $obj_PHPExcel = $PHPReader->load($file_name);
+            }else{
+                return  json(['code' => 0,'data' => '','msg' => '请选择正确的模板文件']);
+            }
+            if(!is_object($obj_PHPExcel)){
+                return  json(['code' => 0,'data' => '','msg' => '请选择正确的模板文件']);
+            }
+            $excel_array= $obj_PHPExcel->getsheet(0)->toArray();   // 转换第一页为数组格式
+            // 验证格式 ---- 去除顶部菜单名称中的空格，并根据名称所在的位置确定对应列存储什么值
+            $code_index = $class_name_index = $parent_code_index = -1;
+            foreach ($excel_array[0] as $k=>$v){
+                $str = preg_replace('/[ ]/', '', $v);
+                if ($str == '序号'){
+                    $code_index = $k;
+                }else if ($str == '名称'){
+                    $class_name_index = $k;
+                }else if($str == '所属上级编号'){
+                    $parent_code_index = $k;
+                }
+            }
+
+            if($code_index == -1 || $class_name_index == -1 || $parent_code_index == -1){
+                $json_data['code'] = 0;
+                $json_data['info'] = '文件内容格式不对';
+                return json($json_data);
+            }
+            $insertData = [];
+            foreach($excel_array as $k=>$v){
+                if($k > 0){
+
+                    $insertData[$k]['code'] = $v[$code_index];
+                    $insertData[$k]['class_name'] = $v[$class_name_index];
+                    $insertData[$k]['parent_code'] = $v[$parent_code_index];
+                    $insertData[$k]['classifyid'] = $classifyid;
+
+                }
+            }
+            $success = Db::name('file_branch_directory')->insertAll($insertData);
+            if($success !== false){
+                return  json(['code' => 1,'data' => '','msg' => '导入成功']);
+            }else{
+                return json(['code' => -1,'data' => '','msg' => '导入失败']);
             }
         }
     }
