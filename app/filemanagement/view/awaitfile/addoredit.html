@@ -6,18 +6,15 @@
         background: #00c0ef;
         color: #ffffff;
     }
-
     #tableContent .mybtn{
         float: right;
         background-color: #00c0ef;
     }
-
     #tableContent .mybtn{
         margin-right: 0%;
         margin-left: 10px;
         margin-bottom: 5px;
     }
-
     #tableContent table.dataTable.no-footer {
         border-top: 1px dotted;
     }
@@ -47,7 +44,7 @@
         margin-right: 10px;
     }
     #memberAdd .layui-form-item {
-        margin-bottom: 10px;
+        margin-bottom: 6px;
     }
     #memberAdd #txtArea {
         width: 89.5%;
@@ -56,6 +53,12 @@
     }
     #memberAdd .layui-input[readonly]{
         background: #FFFFFF !important;
+    }
+    #tableSelect .even {
+        background-color: #ffffff;
+    }
+    #tableSelect .odd {
+        background-color: #f9f9f9;
     }
     .nav{
         float: left;
@@ -66,27 +69,27 @@
     .nav>div{
         font-weight: 700;
     }
-    #tableItem_wrapper{
-        height: 100% !important;
-    }
-    #tableSelect .dataTables_scroll{
-        height: 100%;
-    }
-    #tableSelect .dataTables_scrollBody{
-        max-height: none!important;
-        width: 100%;
-        height: calc(100% - 60px)!important;
-        border-bottom: none!important;
-    }
     .layui-layer-content {
         padding: 0px 5px;
     }
+    /*#tableItem_wrapper{*/
+        /*height: 90% !important;*/
+    /*}*/
+    /*#tableSelect .dataTables_scroll{*/
+        /*height: 90%;*/
+    /*}*/
+    /*#tableSelect .dataTables_scrollBody{*/
+        /*max-height: none!important;*/
+        /*width: 100%;*/
+        /*height: calc(100% - 34px)!important;*/
+        /*border-bottom: none!important;*/
+    /*}*/
 
 </style>
 
 <div id="tableContent" data-options="region:'center',title:''" style="padding:5px;background:#ffffff;">
     <div class="easyui-layout" data-options="fit:true">
-        <div id="tableTop" data-options="region:'north',split:true" style="width:100%;height: 62%; position: relative;">
+        <div id="tableTop" data-options="region:'north',split:true" style="width:100%;height: 56%; position: relative;">
             <!--新增用户信息开始-->
             <form class="layui-form" name="memberAdd" id="memberAdd" method="post"  action="#" onsubmit="return false">
                 <input type="hidden" name="id" id="addId" style="display: none;">
@@ -282,7 +285,7 @@
                 <tr>
                     <th>电子文件名</th>
                     <th>文件部位</th>
-                    <th>文件大小</th>
+                    <!--<th>文件大小</th>-->
                     <th>类型代码</th>
                     <th>创建时间</th>
                     <th>操作</th>
@@ -304,7 +307,8 @@
         retrieve: true,
         processing: true,
         serverSide: true,
-        // "sScrollY":"100px",
+        // "scrollY": "200px",
+        // "scrollCollapse": "true",
         ajax: {
             "url": "{:url('/archive/common/datatablesPre')}?tableName=archive_document&id="
         },

@@ -114,7 +114,7 @@ class AnchorPointModel extends Model
     public function delAnchorPointAttachment($id,$attachment_id)
     {
         $old_attachment_id = $this->getAttachmentId($id);
-        $new_attachment_id = str_repeat(','.$attachment_id,'',$old_attachment_id);
+        $new_attachment_id = str_replace(','.$attachment_id,'',$old_attachment_id);
         $data['id'] = $id;
         $data['attachment_id'] = $new_attachment_id;
         $this->editTb($data);

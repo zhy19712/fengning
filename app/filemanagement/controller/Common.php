@@ -137,7 +137,7 @@ class Common extends Controller
 
 
     /**
-     * 图册图片文件上传
+     * 文件上传
      * @param string $module
      * @param string $use
      * @return \think\response\Json|void
@@ -145,12 +145,12 @@ class Common extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function upload($module = 'atlas', $use = 'atlas_thumb')
+    public function upload($module = 'file', $use = 'file_thumb')
     {
-        if ($this->request->file('file')) {
+        if ($this->request->file('file')){
             $file = $this->request->file('file');
         } else {
-            $res['code'] = 1;
+            $res['code'] = -1;
             $res['msg'] = '没有上传文件';
             return json($res);
         }
@@ -186,6 +186,4 @@ class Common extends Controller
             return $this->error('上传失败：' . $file->getError());
         }
     }
-
-
 }

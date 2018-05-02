@@ -366,8 +366,13 @@ class Unitqualitymanage extends Permissions
     public function editRelation()
     {
         // 前台需要 传递 控制点编号 id 上传类型 type 1执行情况 2图像资料 上传的文件 file
+        if($this->request->file('file')){
+            $file = $this->request->file('file');
+        }else{
+            return json(['code'=>0,'msg'=>'没有上传文件']);
+        }
         // 执行上传文件 获取文件编号  attachment_id
-        $param = input('param.'); halt($param);
+        $param = input('param.');
         $common = new \app\admin\controller\Common();
         $flag = $common->upload('quality','unitqualitymanage');
         $flag = json_decode($flag);

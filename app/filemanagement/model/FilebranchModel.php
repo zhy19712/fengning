@@ -130,9 +130,9 @@ class FilebranchModel extends Model
     /**
      * 返回所有的数据
      */
-    public function getAll($id)
+    public function getAll($search)
     {
-        $data = $this->where("classifyid",$id)->order("id","asc")->select();
+        $data = $this->where($search)->order("id","asc")->select();
         return $data;
     }
 }
