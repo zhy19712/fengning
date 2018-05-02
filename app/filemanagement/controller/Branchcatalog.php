@@ -265,17 +265,17 @@ class Branchcatalog extends Permissions
      */
     public function importExcel()
     {
-        $selfid = input('param.selfid');
-        if(empty($selfid)){
+        $classifyid = input('post.classifyid');
+        if(empty($classifyid)){
             return  json(['code' => 1,'data' => '','msg' => '请选择分组']);
         }
         $file = request()->file('file');
-        $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads/safety/import/specialequipmentmanage');
+        $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads/file/branch/import');
         if($info){
             // 调用插件PHPExcel把excel文件导入数据库
             Loader::import('PHPExcel\Classes\PHPExcel', EXTEND_PATH);
             $exclePath = $info->getSaveName();  //获取文件名
-            $file_name = ROOT_PATH . 'public' . DS . 'uploads/safety/import/specialequipmentmanage' . DS . $exclePath;   //上传文件的地址
+            $file_name = ROOT_PATH . 'public' . DS . 'uploads/file/branch/import' . DS . $exclePath;   //上传文件的地址
             // 当文件后缀是xlsx 或者 csv 就会报：the filename xxx is not recognised as an OLE file错误
             $extension = get_extension($file_name);
             if ($extension =='xlsx') {
@@ -292,39 +292,27 @@ class Branchcatalog extends Permissions
                 $PHPReader->setDelimiter(',');
                 //载入文件
                 $obj_PHPExcel = $PHPReader->load($file_name);
+            }else{
+                return  json(['code' => 0,'data' => '','msg' => '请选择正确的模板文件']);
+            }
+            if(!is_object($obj_PHPExcel)){
+                return  json(['code' => 0,'data' => '','msg' => '请选择正确的模板文件']);
             }
             $excel_array= $obj_PHPExcel->getsheet(0)->toArray();   // 转换第一页为数组格式
             // 验证格式 ---- 去除顶部菜单名称中的空格，并根据名称所在的位置确定对应列存储什么值
-            $equip_name_index = $model_index = $equip_num_index = $manufactur_unit_index = $date_production_index = $current_state_index = $safety_inspection_num_index = $inspection_unit_index = $entry_time_index = $equip_state_index = $remark_index = -1;
+            $code_index = $class_name_index = $parent_code_index = -1;
             foreach ($excel_array[0] as $k=>$v){
                 $str = preg_replace('/[ ]/', '', $v);
-                if ($str == '设备名称'){
-                    $equip_name_index = $k;
-                }else if ($str == '型号'){
-                    $model_index = $k;
-                }else if($str == '设备编号'){
-                    $equip_num_index = $k;
-                }else if($str == '制造单位'){
-                    $manufactur_unit_index = $k;
-                }else if($str == '出厂日期'){
-                    $date_production_index = $k;
-                }else if($str == '当前状态'){
-                    $current_state_index = $k;
-                }else if($str == '安全检验合格证书编号'){
-                    $safety_inspection_num_index = $k;
-                }else if($str == '检验单位'){
-                    $inspection_unit_index = $k;
-                }else if($str == '进场时间'){
-                    $entry_time_index = $k;
-                }else if($str == '设备状态'){
-                    $equip_state_index = $k;
-                }else if($str == '备注'){
-                    $remark_index = $k;
+                if ($str == '序号'){
+                    $code_index = $k;
+                }else if ($str == '名称'){
+                    $class_name_index = $k;
+                }else if($str == '所属上级编号'){
+                    $parent_code_index = $k;
                 }
             }
-//            return json(['1'=> $number_index, '2' => $equip_name_index,'3' =>$model_index,'4' => $equip_num_index,'5' => $manufactur_unit_index,'6' => $date_production_index,'7' => $current_state_index,'8' => $safety_inspection_num_index,'9' => $inspection_unit_index,'10' => $entry_time_index,'11' => $equip_state_index,'12' => $remark_index]);
 
-            if($equip_name_index == -1 || $model_index == -1 || $equip_num_index == -1 || $manufactur_unit_index == -1 || $date_production_index == -1 || $current_state_index == -1 || $safety_inspection_num_index == -1 || $inspection_unit_index == -1 || $entry_time_index == -1 || $equip_state_index == -1 || $remark_index == -1){
+            if($code_index == -1 || $class_name_index == -1 || $parent_code_index == -1){
                 $json_data['code'] = 0;
                 $json_data['info'] = '文件内容格式不对';
                 return json($json_data);
@@ -333,24 +321,14 @@ class Branchcatalog extends Permissions
             foreach($excel_array as $k=>$v){
                 if($k > 0){
 
-                    $insertData[$k]['equip_name'] = $v[$equip_name_index];
-                    $insertData[$k]['model'] = $v[$model_index];
-                    $insertData[$k]['equip_num'] = $v[$equip_num_index];
-                    $insertData[$k]['manufactur_unit'] = $v[$manufactur_unit_index];
-                    $insertData[$k]['date_production'] = $v[$date_production_index];
-                    $insertData[$k]['current_state'] = $v[$current_state_index];
-                    $insertData[$k]['safety_inspection_num'] = $v[$safety_inspection_num_index];
-                    $insertData[$k]['inspection_unit'] = $v[$inspection_unit_index];
-                    $insertData[$k]['entry_time'] = $v[$entry_time_index];
-                    $insertData[$k]['equip_state'] = $v[$equip_state_index];
-                    $insertData[$k]['remark'] = $v[$remark_index];
-                    $insertData[$k]['input_time'] = date('Y-m-d H:i:s');
-                    $insertData[$k]['owner'] = session('username');
-                    $insertData[$k]['selfid'] = $selfid;
+                    $insertData[$k]['code'] = $v[$code_index];
+                    $insertData[$k]['class_name'] = $v[$class_name_index];
+                    $insertData[$k]['parent_code'] = $v[$parent_code_index];
+                    $insertData[$k]['classifyid'] = $classifyid;
 
                 }
             }
-            $success = Db::name('safety_special_equipment_management')->insertAll($insertData);
+            $success = Db::name('file_branch_directory')->insertAll($insertData);
             if($success !== false){
                 return  json(['code' => 1,'data' => '','msg' => '导入成功']);
             }else{
