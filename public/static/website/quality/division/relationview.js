@@ -132,3 +132,17 @@ $('#save').click(function () {
 $('#close').click(function () {
     window.close();
 });
+
+//搜索模型
+$('#search').click(function () {
+    var inputModelName = $('#modelName').val();
+    var modelName = $.trim(inputModelName);
+    var treeObj = $.fn.zTree.getZTreeObj("ztree");
+    var nodes = treeObj.getNodes();
+    for(var i = 0;i<nodes.length;i++){
+        var nodeName = nodes[i].name;
+        if(nodeName.indexOf(modelName)){
+            treeObj.selectNode(nodes[i]);
+        }
+    }
+});
