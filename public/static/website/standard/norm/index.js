@@ -118,6 +118,6 @@ function download(that) {
 function del(that) {
     $.deleteData({
         that:that,
-        tablePath:'/standard/common/datatablesPre?tableName=norm_file&pid='
+        tablePath:'/standard/common/datatablesPre?tableName=norm_file&id='+ window.nodeId +''
     });
 }
