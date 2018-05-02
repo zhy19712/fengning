@@ -144,6 +144,7 @@ class Branchcatalog extends Permissions
         }
 
         $data = $model->getAll($search);
+
                 foreach ($data as $k => $v)
                 {
                     //若pid为空时，根据所属的上级序号查询pid
@@ -167,8 +168,11 @@ class Branchcatalog extends Permissions
                     }
                 }
 
-        $res = tree($data);
-        return json($res);
+        $result = $model->getAll($search);
+
+        $info = tree($result);
+
+        return json($info);
         }
     }
 
