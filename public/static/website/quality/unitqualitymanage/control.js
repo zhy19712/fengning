@@ -143,6 +143,7 @@ $('#imageDataBtn').html('上传');
 //加载控制点执行情况及图像资料
 $("#tableItem").on("click","tr",function(){//给tr或者td添加click事件
     var data=window.tableItem.row(this).data();//获取值的对象数据
+    console.log(data);
     var controlId = data[3];
     var index = $('#index').val();
     $('#controlId').val(controlId);
@@ -182,21 +183,46 @@ $('#tabs').tabs({
 });
 
 
-//上传
+/**
+ * 上传
+ */
+
+//控制点执行情况
 function implementUpload(){
+    var controlId = $('#controlId').val();
     $.upload({
         btnId:'#implementBtn',
         server:'./editRelation',
+        formData:{
+            contr_relation_id:'',
+            file_type:''
+        },
         uploadSuccess:function (res) {
             console.log(res);
+        },
+        uploadStart:function (uploader){
+            uploader.options.formData.contr_relation_id = controlId;
+            uploader.options.formData.file_type = 1;
         }
     });
 }
 
+//图像资料
 function imageDataUpload(){
     $.upload({
         btnId:'#imageDataBtn',
-        server:'./editRelation'
+        server:'./editRelation',
+        data:{
+            contr_relation_id:'',
+            file_type:''
+        },
+        uploadSuccess:function (res) {
+            console.log(res);
+        },
+        uploadStart:function (uploader){
+            uploader.options.formData.contr_relation_id = controlId;
+            uploader.options.formData.file_type = 2;
+        }
     });
 }
 
