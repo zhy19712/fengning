@@ -128,8 +128,21 @@ function setcog() {
   layer.open({
     type: 1,
     title: '配置',
-    area: ['660px', '388px'],
+    area: ['660px', '488px'],
     content:$("#config"),
+    end:function () {
+      selectData = "";
+      $("#branchform input").val('');
+    }
+  });
+}
+
+function addbranch() {
+  layer.open({
+    type: 1,
+    title: '配置',
+    area: ['100%', '100%'],
+    content:$("#memberAdd"),
     end:function () {
       selectData = "";
       $("#branchform input").val('');
