@@ -267,7 +267,7 @@ class Branchcatalog extends Permissions
     {
         $classifyid = input('post.classifyid');
         if(empty($classifyid)){
-            return  json(['code' => 1,'data' => '','msg' => '请选择分组']);
+            return  json(['code' => -1,'data' => '','msg' => '请选择分组']);
         }
         $file = request()->file('file');
         $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads/file/branch/import');
@@ -293,10 +293,10 @@ class Branchcatalog extends Permissions
                 //载入文件
                 $obj_PHPExcel = $PHPReader->load($file_name);
             }else{
-                return  json(['code' => 0,'data' => '','msg' => '请选择正确的模板文件']);
+                return  json(['code' => -1,'data' => '','msg' => '请选择正确的模板文件']);
             }
             if(!is_object($obj_PHPExcel)){
-                return  json(['code' => 0,'data' => '','msg' => '请选择正确的模板文件']);
+                return  json(['code' => -1,'data' => '','msg' => '请选择正确的模板文件']);
             }
             $excel_array= $obj_PHPExcel->getsheet(0)->toArray();   // 转换第一页为数组格式
             // 验证格式 ---- 去除顶部菜单名称中的空格，并根据名称所在的位置确定对应列存储什么值

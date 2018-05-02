@@ -150,7 +150,7 @@ class Common extends Controller
         if ($this->request->file('file')){
             $file = $this->request->file('file');
         } else {
-            $res['code'] = 1;
+            $res['code'] = -1;
             $res['msg'] = '没有上传文件';
             return json($res);
         }
