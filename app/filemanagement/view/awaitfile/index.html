@@ -58,6 +58,12 @@
         font-size: 16px;
         display: inline-block;
     }
+    #tableContent .even {
+        background-color: #ffffff;
+    }
+    #tableContent .odd {
+        background-color: #f9f9f9;
+    }
     #tableContent .dataTables_wrapper .dataTables_scroll {
         position: relative;
         top: 15px;
@@ -74,6 +80,9 @@
     }
     .layui-layer-content {
          padding-top: 0px;
+    }
+    .selected{
+        background-color: #FDD5B5 !important;
     }
 </style>
 
@@ -702,6 +711,60 @@
         $(this).attr('title',$(this).text());
     }).on( 'mouseleave', 'td', function () {
         $(this).removeAttr("title");
+    });
+
+    //翻页事件
+    tableItem.on('draw',function () {
+        $('input[type="checkbox"][name="checkList"]').prop("checked",false);
+        $('#all_checked').prop('checked',false);
+        idArr.length=0;
+    });
+
+    //获取选中行ID
+    var idArr = [];
+    function getId(that) {
+        var isChecked = $(that).prop('checked');
+        var id = $(that).attr('idv');
+        var checkedLen = $('input[type="checkbox"][name="checkList"]:checked').length;
+        var checkboxLen = $('input[type="checkbox"][name="checkList"]').length;
+        if(checkedLen===checkboxLen){
+            $('#all_checked').prop('checked',true);
+        }else{
+            $('#all_checked').prop('checked',false);
+        }
+        if(isChecked){
+            idArr.push(id);
+            idArr.removalArray();
+        }else{
+            idArr.remove(id);
+            idArr.removalArray();
+            $('#all_checked').prop('checked',false);
+        }
+    }
+
+    //单选
+    function getSelectId(that) {
+        getId(that);
+        console.log(idArr);
+    }
+
+    //checkbox全选
+    $("#all_checked").on("click", function () {
+        var that = $(this);
+        if (that.prop("checked") === true) {
+            $("input[name='checkList']").prop("checked", that.prop("checked"));
+            $('#tableItem tbody tr').addClass('selected');
+            $('input[name="checkList"]').each(function(){
+                getId(this);
+            });
+        } else {
+            $("input[name='checkList']").prop("checked", false);
+            $('#tableItem tbody tr').removeClass('selected');
+            $('input[name="checkList"]').each(function(){
+                getId(this);
+            });
+        }
+        console.log(idArr);
     });
 
 
