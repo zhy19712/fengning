@@ -199,8 +199,7 @@ class Branchcatalog extends Permissions
                     "classifyid" => $param["classifyid"],
                     "parent_code" => $param["parent_code"],
                     "code" => $param["code"],
-                    "class_name" => $param["class_name"],
-                    "pid" => $param["pid"]
+                    "class_name" => $param["class_name"]
                 ];
                 $flag = $model->editCate($data);
                 return json($flag);
@@ -227,6 +226,135 @@ class Branchcatalog extends Permissions
             }else
             {
                 return ['code' => -1, 'msg' => '请先删除下级！'];
+            }
+        }
+    }
+
+    /**
+     * 模板下载
+     * @return \think\response\Json
+     */
+    public function excelDownload()
+    {
+        $filePath = "./static/branch/branch_directory.xls";
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }else if(request()->isAjax()){
+            return json(['code' => 1]); // 文件存在，告诉前台可以执行下载
+        }else{
+            $fileName = '导入模板-分支目录.xls';
+            $file = fopen($filePath, "r"); //   打开文件
+            //输入文件标签
+            $fileName = iconv("utf-8","gb2312",$fileName);
+            Header("Content-type:application/octet-stream ");
+            Header("Accept-Ranges:bytes ");
+            Header("Accept-Length:   " . filesize($filePath));
+            Header("Content-Disposition:   attachment;   filename= " . $fileName);
+            //   输出文件内容
+            echo fread($file, filesize($filePath));
+            fclose($file);
+            exit;
+        }
+    }
+
+    /**
+     * 分支目录excel表格导入
+     * @return array|\think\response\Json
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     */
+    public function importExcel()
+    {
+        $selfid = input('param.selfid');
+        if(empty($selfid)){
+            return  json(['code' => 1,'data' => '','msg' => '请选择分组']);
+        }
+        $file = request()->file('file');
+        $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads/safety/import/specialequipmentmanage');
+        if($info){
+            // 调用插件PHPExcel把excel文件导入数据库
+            Loader::import('PHPExcel\Classes\PHPExcel', EXTEND_PATH);
+            $exclePath = $info->getSaveName();  //获取文件名
+            $file_name = ROOT_PATH . 'public' . DS . 'uploads/safety/import/specialequipmentmanage' . DS . $exclePath;   //上传文件的地址
+            // 当文件后缀是xlsx 或者 csv 就会报：the filename xxx is not recognised as an OLE file错误
+            $extension = get_extension($file_name);
+            if ($extension =='xlsx') {
+                $objReader = new \PHPExcel_Reader_Excel2007();
+                $obj_PHPExcel = $objReader->load($file_name);
+            } else if ($extension =='xls') {
+                $objReader = new \PHPExcel_Reader_Excel5();
+                $obj_PHPExcel = $objReader->load($file_name);
+            } else if ($extension=='csv') {
+                $PHPReader = new \PHPExcel_Reader_CSV();
+                //默认输入字符集
+                $PHPReader->setInputEncoding('GBK');
+                //默认的分隔符
+                $PHPReader->setDelimiter(',');
+                //载入文件
+                $obj_PHPExcel = $PHPReader->load($file_name);
+            }
+            $excel_array= $obj_PHPExcel->getsheet(0)->toArray();   // 转换第一页为数组格式
+            // 验证格式 ---- 去除顶部菜单名称中的空格，并根据名称所在的位置确定对应列存储什么值
+            $equip_name_index = $model_index = $equip_num_index = $manufactur_unit_index = $date_production_index = $current_state_index = $safety_inspection_num_index = $inspection_unit_index = $entry_time_index = $equip_state_index = $remark_index = -1;
+            foreach ($excel_array[0] as $k=>$v){
+                $str = preg_replace('/[ ]/', '', $v);
+                if ($str == '设备名称'){
+                    $equip_name_index = $k;
+                }else if ($str == '型号'){
+                    $model_index = $k;
+                }else if($str == '设备编号'){
+                    $equip_num_index = $k;
+                }else if($str == '制造单位'){
+                    $manufactur_unit_index = $k;
+                }else if($str == '出厂日期'){
+                    $date_production_index = $k;
+                }else if($str == '当前状态'){
+                    $current_state_index = $k;
+                }else if($str == '安全检验合格证书编号'){
+                    $safety_inspection_num_index = $k;
+                }else if($str == '检验单位'){
+                    $inspection_unit_index = $k;
+                }else if($str == '进场时间'){
+                    $entry_time_index = $k;
+                }else if($str == '设备状态'){
+                    $equip_state_index = $k;
+                }else if($str == '备注'){
+                    $remark_index = $k;
+                }
+            }
+//            return json(['1'=> $number_index, '2' => $equip_name_index,'3' =>$model_index,'4' => $equip_num_index,'5' => $manufactur_unit_index,'6' => $date_production_index,'7' => $current_state_index,'8' => $safety_inspection_num_index,'9' => $inspection_unit_index,'10' => $entry_time_index,'11' => $equip_state_index,'12' => $remark_index]);
+
+            if($equip_name_index == -1 || $model_index == -1 || $equip_num_index == -1 || $manufactur_unit_index == -1 || $date_production_index == -1 || $current_state_index == -1 || $safety_inspection_num_index == -1 || $inspection_unit_index == -1 || $entry_time_index == -1 || $equip_state_index == -1 || $remark_index == -1){
+                $json_data['code'] = 0;
+                $json_data['info'] = '文件内容格式不对';
+                return json($json_data);
+            }
+            $insertData = [];
+            foreach($excel_array as $k=>$v){
+                if($k > 0){
+
+                    $insertData[$k]['equip_name'] = $v[$equip_name_index];
+                    $insertData[$k]['model'] = $v[$model_index];
+                    $insertData[$k]['equip_num'] = $v[$equip_num_index];
+                    $insertData[$k]['manufactur_unit'] = $v[$manufactur_unit_index];
+                    $insertData[$k]['date_production'] = $v[$date_production_index];
+                    $insertData[$k]['current_state'] = $v[$current_state_index];
+                    $insertData[$k]['safety_inspection_num'] = $v[$safety_inspection_num_index];
+                    $insertData[$k]['inspection_unit'] = $v[$inspection_unit_index];
+                    $insertData[$k]['entry_time'] = $v[$entry_time_index];
+                    $insertData[$k]['equip_state'] = $v[$equip_state_index];
+                    $insertData[$k]['remark'] = $v[$remark_index];
+                    $insertData[$k]['input_time'] = date('Y-m-d H:i:s');
+                    $insertData[$k]['owner'] = session('username');
+                    $insertData[$k]['selfid'] = $selfid;
+
+                }
+            }
+            $success = Db::name('safety_special_equipment_management')->insertAll($insertData);
+            if($success !== false){
+                return  json(['code' => 1,'data' => '','msg' => '导入成功']);
+            }else{
+                return json(['code' => -1,'data' => '','msg' => '导入失败']);
             }
         }
     }
