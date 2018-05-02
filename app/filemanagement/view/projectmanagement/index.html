@@ -39,7 +39,7 @@
                     <h4 style="margin-left: 3px; width: 70px;margin-top: 4px;">配置目录</h4>
                 </div>
             </div>
-            <div class="hr-line-dashed" style="margin:10px;margin-bottom: 0px"></div>
+            <div class="hr-line-dashed" style=" margin:10px; margin-bottom:0px"></div>
             <div class="ligtop" style="text-align: left;">
                 <ul id="ztree" class="ztree" style="overflow: auto; height: 100%; width: 100%;"></ul>
             </div>
@@ -47,10 +47,175 @@
     </div>
     <div style="text-align: right;margin-top: 5px;margin-right:10px;">
         <button type="button" class="layui-btn" onclick="save();" style="margin-right: 5px;">确定</button>
-        <button id="closeIframe" type="button" class="layui-btn layui-btn-danger" style="margin-right: 5px;">关闭</button>
+        <button id="closeIframe" type="button" class="layui-btn layui-btn-danger layui-layer-close" style="margin-right: 5px;">关闭</button>
     </div>
 
 </div>
+
+<form class="
+
+
+
+
+" name="memberAdd" id="memberAdd" method="post"  action="#" onsubmit="return false" style="display: none;">
+    <input type="hidden" name="id" id="addId" style="display: none;">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">目录代号*</label>
+            <div class="layui-input-inline">
+                <input type="text" name="contractCode" placeholder="目录代号" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">项目代号*</label>
+            <div class="layui-input-inline">
+                <input type="text" name="contractName" placeholder="项目代号" disabled lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">改扩建目录代号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="firstParty"  placeholder="改扩建目录代号" disabled lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">项目名称*</label>
+            <div class="layui-input-inline">
+                <input type="text" name="secondParty" placeholder="项目名称" disabled lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">建设单位*</label>
+            <div class="layui-input-inline">
+                <select name="term" id="term" lay-filter="term">
+                    <option value="">-请选择-</option>
+                    <option value="1">永久</option>
+                    <option value="2">30年</option>
+                    <option value="2">10年</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">项目类别*</label>
+            <div class="layui-input-inline">
+                <select name="term" id="term" lay-filter="term">
+                    <option value="">-请选择-</option>
+                    <option value="1">永久</option>
+                    <option value="2">30年</option>
+                    <option value="2">10年</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">运营使用单位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="firstPartyCorporation" placeholder="运营使用单位"  lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">电压等级</label>
+            <div class="layui-input-inline">
+                <input type="text" name="signingDate" id="date1" lay-verify="date" placeholder="电压等级" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">主营单位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="signingDate" id="date1" lay-verify="date" placeholder="主营单位" autocomplete="off" class="layui-input">
+
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">立项时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="signingDate" id="date1" lay-verify="date" placeholder="立项时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">招标单位</label>
+            <div class="layui-input-inline">
+                <input type="number" name="contractDay" placeholder="招标单位"  lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">开工时间</label>
+            <div class="layui-input-inline">
+                <input type="number" name="contractDay" placeholder="开工时间" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">中标单位</label>
+            <div class="layui-input-inline">
+                <input type="number" name="contractDay" placeholder="中标单位"  lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">竣工时间</label>
+            <div class="layui-input-inline">
+                <input type="number" name="contractDay" placeholder="竣工时间" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">施工单位</label>
+            <div class="layui-input-inline">
+                <select name="term" id="term" lay-filter="term">
+                    <option value="">-请选择-</option>
+                    <option value="1">永久</option>
+                    <option value="2">30年</option>
+                    <option value="2">10年</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">设计单位</label>
+            <div class="layui-input-inline">
+                <select name="term" id="term" lay-filter="term">
+                    <option value="">-请选择-</option>
+                    <option value="1">永久</option>
+                    <option value="2">30年</option>
+                    <option value="2">10年</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">监理单位</label>
+            <div class="layui-input-inline">
+                <select name="term" id="term" lay-filter="term">
+                    <option value="">-请选择-</option>
+                    <option value="1">永久</option>
+                    <option value="2">30年</option>
+                    <option value="2">10年</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <textarea name="remark" id="txtArea" placeholder="备注"></textarea>
+    </div>
+    <!--<div class="layui-form-item">-->
+    <!--<div class="col-xs-12" style="text-align: center;">-->
+    <!--<button class="layui-btn" lay-submit="" lay-filter="demo1"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;-->
+    <!--<button type="reset" class="layui-btn layui-btn-danger"><i class="fa fa-close"></i> 返回</button>-->
+    <!--</div>-->
+    <!--</div>-->
+</form>
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/filemanagement/projectmanagement/index.js"></script>
 </body>
