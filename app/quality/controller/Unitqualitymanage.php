@@ -379,6 +379,7 @@ class Unitqualitymanage extends Permissions
             //写入到附件表
             $data = [];
             $data['module'] = 'quality';
+            $data['name'] = $info->getInfo('name');//文件名
             $data['filename'] = $info->getFilename();//文件名
             $data['filepath'] = DS . 'uploads' . DS . 'quality' . DS . 'Unitqualitymanage' . DS . $info->getSaveName();//文件路径
             $data['fileext'] = $info->getExtension();//文件后缀
@@ -409,11 +410,11 @@ class Unitqualitymanage extends Permissions
             if(($id == 0) || ($type == 0) || ($attachment_id == 0)){
                 return json(['code' => '-1','msg' => '参数有误']);
             }
-            $data['contr_relation_id'] = $id;
-            $data['attachment_id'] = $attachment_id;
-            $data['type'] = $type;
+            $new_data['contr_relation_id'] = $id;
+            $new_data['attachment_id'] = $attachment_id;
+            $new_data['type'] = $type;
             $unit = new UnitqualitymanageModel();
-            $nodeStr = $unit->saveTb($data);
+            $nodeStr = $unit->saveTb($new_data);
             return json($nodeStr);
         }else {
             // 上传失败获取错误信息
