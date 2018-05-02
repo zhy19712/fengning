@@ -9,7 +9,7 @@
 }
 
 
-.btn i.fa:before,#branchform i.fa:before{
+.btn i.fa:before,#branchform i.fa:before,#excel i.fa:before{
     color: #ffffff;
 }
 #tableItem{
