@@ -4,37 +4,48 @@
     .main{
         float: left;
         margin-top: 20px;
-        margin-left: 30px;
+        /*margin-left: 30px;*/
     }
     #tableItem{
         margin-left: 30px;
     }
 </style>
 <div style="display: block;overflow: auto;">
-    <div id="mainBar" style="width: 40%;height:400px;" class="main"></div>
-    <div id="mainLine" style="width: 40%;height:400px; margin-left: 10%;" class="main"></div>
+    <div style="width: 50%;float: left;">
+        <span style="font-size: 16px; font-weight: bold;">历史记录：</span>
+        <select name="" id="historic">
+        </select>
+        <div id="mainBar" style="width: 90%;height:400px;" class="main"></div>
+        <div style="clear: both;overflow: auto;margin-top: 20px;display: none;" class="tableBox">
+            <table id="tableItem" style="width: 90%;" border="1" class="layui-table">
+                <caption style="font-weight: bold;font-size: 16px;color: #000;"><span>2018年4月份单元工程质量验收情况统计</span><span style="display: block">（2018.03.26-2018-04.25）</span></caption>
+                <thead>
+                <tr>
+                    <th>类型</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>合格单元工程</th>
+                </tr>
+                <tr>
+                    <th>优良单元工程</th>
+                </tr>
+                <tr>
+                    <th>验收总数量</th>
+                </tr>
+                <tr>
+                    <th>优良率</th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="width: 50%;float: left;">
+        <div id="mainLine" style="width: 96%;height:700px; margin-left:4%;" class="main"></div>
+    </div>
 </div>
-<div style="clear: both;overflow: auto;margin-top: 20px;display: none;" class="tableBox">
-    <table id="tableItem" style="width: 90%;" border="1" class="layui-table">
-        <caption style="font-weight: bold;font-size: 16px;color: #000;">优良率合格率的统计表</caption>
-        <thead>
-            <tr>
-                <th>类型</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>优良</th>
-            </tr>
-            <tr>
-                <th>合格</th>
-            </tr>
-            <tr>
-                <th>总计</th>
-            </tr>
-        </tbody>
-    </table>
-</div>
+
 {include file="../app/public/common_footer.html"}
 <script>
     //
@@ -43,7 +54,10 @@
     // 指定图表的配置项和数据
     optionBar = {
         title: {
-            text: '单元工程验评统计'
+            text: '2018年4月份单元工程质量验收情况统计',
+            subtext:'（2018.03.26-2018-04.25）',
+            x:'center', //居中
+            y:'top'
         },
         color:['#EED5B7','#FFC125', '#1E90FF'],
         tooltip: {
@@ -53,7 +67,9 @@
             }
         },
         legend: {
-            data: ['总计', '合格' , '优良']
+            data: ['总计', '合格' , '优良'],
+            x:"right",
+            top:30
         },
         grid: {
             left: '3%',
@@ -242,6 +258,10 @@
         $('#tableItem tbody tr:nth-child(3)').append(totalHtml);
         $('.tableBox').show();
         myChartBar.setOption({
+          title: {
+            text: $("#historic option:selected").html(),
+            subtext:month222[0],
+          },
             yAxis: {
                 data: section
             },
@@ -306,6 +326,7 @@
               //折线图
                 form_result = res.data.form_result;
                 timeline = res.data.timeline; //月
+              // createOption(timeline.reverse())
                 for(var k = 0; k<form_result.length;k++){
                     dataMonthNumber[k]=[];
                      dataMonthNumber[k][0]={};
@@ -319,6 +340,29 @@
                 getInit()//初始化
             }
         }
+    });
+    //生成option
+    function createOption(data) {
+      var html  = "";
+      for(var i = 0;i<data.length ;i++){
+        var timer = data[i].split('-');
+        html += '<option value="'+data[i]+'">'+timer[0]+'年'+timer[1]+'月份单元工程质量验收情况统计</option>'
+      }
+      $("#historic").append(html);
+
+    }
+    
+    $.ajax({
+      url:"./getAllMonth",
+      type:"GET",
+      dataType:"JSON",
+      success:function (res) {
+        if(res.code==1){
+          createOption(res.data.reverse());
+          month222 = res.month.reverse()
+          getInit()//初始化
+        }
+      }
     })
 </script>
 </body>
