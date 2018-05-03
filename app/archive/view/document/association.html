@@ -242,13 +242,15 @@
 
     //回显已关联节点
     function echoRelation() {
+        //初始化后的调用就不用全局获取
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
+        // console.log(!treeObj)
         if(!treeObj){
             return false;
         }
         var checkedNode = treeObj.getNodeByParam('picture_id',primaryId);
-        console.log(checkedNode);
         treeObj.checkNode(checkedNode,true,false);
+        // console.log(checkedNode);
     }
     echoRelation();
 
