@@ -150,22 +150,26 @@ class Projectmanagement extends Permissions
      */
     public function getBranchTree()
     {
+        if(request()->isAjax()){
             //实例化模型类
             $model = new FilebranchModel();
+            $project = new ProjectmanagementModel();
+            //当前一条数据的id
+            $id = input('post.id');
+            //获取项目类别
             //获取项目分类表中的所有的数据
             $data = $model->getDateAll();
-            if(!empty($data))
-            {
+            if (!empty($data)) {
                 //调取tree函数处理数据
                 $res = tree($data);
                 foreach ((array)$res as $k => $v) {
                     $v['id'] = strval($v['id']);
                 }
-            }else
-            {
+            } else {
                 $res = [];
             }
             return json($res);
+        }
     }
 
     /**

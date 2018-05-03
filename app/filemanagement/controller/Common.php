@@ -203,7 +203,7 @@ class Common extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function file_project_management($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function file_project_management($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
         //条件过滤后记录数 必要
