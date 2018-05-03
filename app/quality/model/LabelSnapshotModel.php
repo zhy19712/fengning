@@ -29,7 +29,7 @@ class LabelSnapshotModel extends Model
             } else {
                 // 返回添加的日期
                 $time = $this->where('')->value('create_time');
-                return ['code' => 1,'label_snapshot_id'=>$last_insert_id,'label_snapshot'=>$param['label_snapshot'],'create_time'=>date('Y-m-d H:i:s',$time), 'msg' => '添加成功'];
+                return ['code' => 1,'label_snapshot_id'=>$last_insert_id,'label_snapshot'=>$param['label_snapshot'],'compress_base64'=>$param['base64_val'],'create_time'=>date('Y-m-d H:i:s',$time), 'msg' => '添加成功'];
             }
         } catch (PDOException $e) {
             return ['code' => -1, 'msg' => $e->getMessage()];
@@ -64,7 +64,7 @@ class LabelSnapshotModel extends Model
     {
         $data = Db::name('quality_label_snapshot')
             ->where(['picture_type'=>1,'type'=>$type,'picture_number'=>$picture_number])
-            ->field('id as label_snapshot_id,label_snapshot,FROM_UNIXTIME(create_time) as create_time')->select();
+            ->field('id as label_snapshot_id,label_snapshot,base64_val as compress_base64,FROM_UNIXTIME(create_time) as create_time')->select();
         return ['code'=>1,'data'=>$data,'msg'=>'图片的base64值'];
     }
 
