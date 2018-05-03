@@ -270,7 +270,7 @@ class Main extends Permissions
 
             $flag = $pic->getLabelSnapshotTb($param['type'],$param['picture_id']);
 
-            $file = '.'. DS . 'uploads' . DS . 'quality' . DS . 'snapshot' . DS;//文件路径
+            $file = DS . 'uploads' . DS . 'quality' . DS . 'snapshot' . DS;//文件路径
 
             if(!file_exists($file))
             {
