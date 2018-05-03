@@ -22,6 +22,26 @@
     .btn-wrap{
         float: right;
     }
+    .west-ztree{
+        margin: 7px 24px 0;
+    }
+    .west-ztree .layui-input-inline{
+        margin-right: 0;
+        width: 150px;
+    }
+    .west-ztree .layui-word-aux{
+        padding: 5px 0 !important;
+        width: 38px;
+        text-align: center;
+        background: #00a0e9;
+    }
+    .west-ztree i.fa:before{
+        color: #FFF;
+    }
+    .west-ztree .layui-input{
+        height: 30px;
+        line-height:30px\9;
+    }
 </style>
 <div data-options="region:'west',title:'已选择构件',split:true" style="width:260px;">
     <ul id="selectZtree" class="ztree"></ul>
@@ -29,12 +49,21 @@
 <div data-options="region:'center',title:''" class="center">
     <div class="easyui-layout" id="relationview" data-options="fit:true">
         <div data-options="region:'west',title:'构件树',split:true,collapsed:false" style="width:260px">
+            <div class="layui-form-item west-ztree">
+                <div class="layui-input-inline">
+                    <input type="text" name="modelName" id="modelName" required lay-verify="required" placeholder="请输入模型名称" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux" id="search">
+                    <i class="fa fa-check"></i>
+                </div>
+            </div>
             <ul id="ztree" class="ztree"></ul>
         </div>
         <div data-options="region:'center'">
-            <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID, fObjSelX, fObjSelY, fObjSelZ, fObjBVMinX,fObjBVMinY,fObjBVMinZ, fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
+
+            <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
                 console.log(uObjSubID);
-                var node = [];
+                /*var node = [];
                 var treeObj = $.fn.zTree.getZTreeObj("ztree");
                 var nodes = treeObj.transformToArray(treeObj.getNodes());
                 for(var i = 0;i<nodes.length;i++){
@@ -42,7 +71,7 @@
                         node.push(nodes[i]);
                         treeObj.checkNode(nodes[i],true);
                     }
-                }
+                }*/
                 creatSelectedZtree(node,uObjSubID);
 
                 RealBimOcx.ExitSubObjFlicker();
@@ -99,12 +128,14 @@
 
 
             </script>
+
             <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
 
             <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
+                // RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.58:8008/default.aspx?dir=url_res02&path=","res_fengning_kw_03");
 
                 //设置服务url
-                // RealBimOcx.SwitchBIMSceneSimple("F:\\","res_fengning_kw_03");
+                //RealBimOcx.SwitchBIMSceneSimple("F:\\","res_fengning_kw_03");
                 RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
                 RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
 
@@ -118,49 +149,43 @@
                     //RealBimOcx.SetSceHugeObjVisible(false);
                 }
 
+                RealBimOcx.SetSuitableCam();//放在初始化设置里面就行了
+
                 var unitId = document.cookie.split(';')[0].split('=')[1];
                 //保存关联模型
-                window.saveModel = function (add_id) {
+                window.saveModel = function (picture_id) {
+                    if(!picture_id){
+                        return false;
+                    }
                     $.ajax({
                         url: "{:url('quality/Division/addModelPicture')}",
                         type: "post",
                         data: {
                             id:unitId,
-                            picture_id:add_id
+                            picture_id:picture_id
                         },
                         dataType: "json",
                         success: function (res) {
-                            console.log(res);
                             layer.msg(res.msg);
+                            alert(res.msg);
                         }
                     })
                 }
                 //加载模型试图
-                window.loadModel = function (add_id) {
-                    $.ajax({
-                        url: "{:url('quality/Division/relevanceModelPicturePreview')}",
-                        type: "post",
-                        data: {
-                            add_id:add_id
-                        },
-                        dataType: "json",
-                        success: function (res) {
-                            console.log(res);
-                            if(res.numberArr==''){
-                                RealBimOcx.SetAllHugeObjSubValidState(0);
-                            }else{
-                                RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
-                                RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
-                                RealBimOcx.SetHugeObjSubValidStateInfo(res.number, 1); //设置单个模型可见
-                                RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
-                                RealBimOcx.FocusCameraToComponent(res.number,1); //3：视角距离
-                                //模型视图闪烁
-                                RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
-                                RealBimOcx.AddFlickerSubObjects(res.number);
-                                RealBimOcx.SetSubObjFlickerEnd();
-                            }
-                        }
-                    })
+                window.loadModel = function (number) {
+                    if(number==''){
+                        RealBimOcx.SetAllHugeObjSubValidState(0);
+                    }else{
+                        RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
+                        RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
+                        RealBimOcx.SetHugeObjSubValidStateInfo(number, 1); //设置单个模型可见
+                        RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
+                        RealBimOcx.FocusCameraToComponent(number,1); //3：视角距离
+                        //模型视图闪烁
+                        RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
+                        RealBimOcx.AddFlickerSubObjects(number);
+                        RealBimOcx.SetSubObjFlickerEnd();
+                    }
                 };
 
                 //取消模型闪烁
@@ -185,10 +210,10 @@
     </div>
 </div>
 {include file="../app/public/common_footer.html"}
-<!--<script src="__WEBSITE__/quality/division/relationview.js"></script>-->
+
 <script>
-    var unitId = document.cookie.split(';')[0].split('=')[1];
-    console.log(unitId);
+    var unitId = document.cookie.split(';')[0].split('=')[1];    //单元工程段号编号
+    var primaryId; //模型主键
     //加载构件树
     var modelId = [];
     $.ajax({
@@ -199,18 +224,10 @@
             id:window.unitId
         },
         success: function (res) {
-            console.log(res);
-            if(res.code ==1){
-                var nodeStr = res.data;
-                // var nodeStr = res.nodeStrTwo;
-                var nodes =  JSON.parse(nodeStr);
-                // var nodes =  nodeStr;
-                console.log(nodes);
-                for(var i = 0;i<nodes.length;i++){
-                    modelId.push(nodes[i].name);
-                }
-                setZtree(nodes);
-            }
+            primaryId = res.primaryId;
+            //转换节点数据
+            var nodes = JSON.parse(res.data)
+            setZtree(nodes);
         }
     });
 
@@ -240,12 +257,43 @@
         };
 
         zTreeObj = $.fn.zTree.init($("#ztree"), setting, nodes);
+        echoRelation();
     }
+
+    //回显已关联节点
+    function echoRelation() {
+        //初始化后的调用就不用全局获取
+        var treeObj = $.fn.zTree.getZTreeObj("ztree");
+        // console.log(!treeObj)
+        if(!treeObj){
+            return false;
+        }
+        var checkedNode = treeObj.getNodeByParam('picture_id',primaryId);
+        treeObj.checkNode(checkedNode,true,false);
+        // console.log(checkedNode);
+    }
+    echoRelation();
 
     //加载模型视图
     function zTreeOnCheck(event, treeId, treeNode) {
         console.log(treeNode);
         picture_id = treeNode.picture_id;
+        //勾选定位模型
+        /*if(treeNode.checked){
+            loadModel(treeNode.add_id);
+        }*/
+        // TODO:一对多
+        /*var node = [];
+        var treeObj = $.fn.zTree.getZTreeObj("ztree");
+        var nodes = treeObj.getCheckedNodes(true);
+        for(var i = 0;i<nodes.length;i++){
+            if(nodes[i].isParent==undefined||nodes[i].isParent==false){
+                node.push(nodes[i]);
+            }
+        }
+        creatSelectedZtree(node);*/
+
+        // TODO:一对一
         var node = [];
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var checkedNodes = treeObj.getCheckedNodes(true);
@@ -255,20 +303,6 @@
         node.push(treeNode);
         treeObj.checkNode(treeNode,true,false);
         creatSelectedZtree(node);
-
-        // if(treeNode.checked){
-        //     loadModel(treeNode.add_id);
-        // }
-        // var node = [];
-        // var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        // var nodes = treeObj.getCheckedNodes(true);
-        // for(var i = 0;i<nodes.length;i++){
-        //     if(nodes[i].isParent==undefined||nodes[i].isParent==false){
-        //         node.push(nodes[i]);
-        //         console.log(node)
-        //     }
-        // }
-        // creatSelectedZtree(node);
     }
 
     //构建已选构件树
@@ -304,8 +338,7 @@
         var treeObj = $.fn.zTree.getZTreeObj("ztree");
         var nodes = treeObj.getNodesByParam("id",treeNode.id);
         treeObj.selectNode(nodes[0],true);
-        console.log(treeObj)
-        window.loadModel(number);
+        loadModel(number);
     }
 
     $('#save').click(function () {
@@ -316,5 +349,21 @@
         window.close();
     });
 
+    //搜索模型
+    $('#search').click(function () {
+        var inputModelName = $('#modelName').val();
+        var modelName = $.trim(inputModelName);
+        $.ajax({
+            url: "",
+            type: "post",
+            data: {
+                modelName:modelName
+            },
+            dataType: "json",
+            success: function (res) {
+
+            }
+        })
+    });
 </script>
 </html>
