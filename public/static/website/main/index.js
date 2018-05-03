@@ -23,6 +23,7 @@ window.tagSwiper = new Swiper ('#tag', {
     centeredSlides: false,
     paginationClickable: true,
     spaceBetween: 30,
+    mousewheelControl : true,
 });
 
 //快照图片滚动
@@ -33,6 +34,7 @@ window.snapshotSwiper = new Swiper ('#snapshot', {
     centeredSlides: false,
     paginationClickable: true,
     spaceBetween: 30,
+    mousewheelControl : true,
 });
 
 //添加快照
@@ -283,7 +285,11 @@ $('#backAnchor').click(function(){
     $('#anchorLayer').hide();
 });
 
-//easyui面板显隐
+/**
+ * easyui面板显隐
+ */
+
+//管理信息
 function easyUiPanelToggle() {
     var number = $("#easyuiLayout").layout("panel", "east")[0].clientWidth;
     if(number<=0){
@@ -291,6 +297,7 @@ function easyUiPanelToggle() {
     }
 }
 
+//协同信息
 function easyUiPanelToggleSouth() {
     var number = $("#centent").layout("panel", "south")[0].clientWidth;
     if(number<=0){
