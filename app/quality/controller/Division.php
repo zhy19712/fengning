@@ -810,4 +810,29 @@ class Division extends Permissions{
     }
 
 
+    /**
+     * 搜索模型
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function searchModel()
+    {
+        // 前台 传递  选中的 单元工程段号的 id编号  和  搜索框里的值 search_name
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $id = isset($param['id']) ? $param['id'] : -1;
+            $search_name = isset($param['search_name']) ? $param['search_name'] : -1;
+            if($id == -1){
+                return json(['code' => 0,'msg' => '请传递选中的单元工程段号的编号']);
+            }if($id == -1 || $search_name == -1){
+                return json(['code' => 0,'msg' => '请写入需要搜索的值']);
+            }
+            // 获取搜索的模型图主键,编号,名称
+            $picture = new PictureModel();
+            $data = $picture->getAllName($id,$search_name);
+            return json(['code'=>1,'one_picture_id'=>$data['one_picture_id'],'data'=>$data['str'],'msg'=>'模型图列表']);
+        }
+    }
+
+
 }

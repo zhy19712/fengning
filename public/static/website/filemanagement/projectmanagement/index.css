@@ -28,3 +28,32 @@
     background-color: #ffffff;
     height: 1px;
     margin: 0;
+}
+.layui-layer-close {
+ position: relative;
+}
+
+
+#memberAdd{
+    margin-top: 10px;
+}
+#memberAdd .layui-form-item .layui-input-inline {
+    float: left;
+    width:620px;
+    margin-right: 10px;
+}
+#memberAdd .layui-form-item {
+    margin-bottom: 6px;
+}
+#memberAdd #txtArea {
+    width: 83.5%;
+    height: 25px;
+    padding: 8px;
+}
+#memberAdd .layui-input[readonly]{
+    background: #FFFFFF !important;
+}
+
+#memberAdd .layui-form-label {
+    width: 140px;
+}

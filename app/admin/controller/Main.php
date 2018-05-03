@@ -189,7 +189,8 @@ class Main extends Permissions
             $rule = [
                 ['picture_id', 'require|number|gt:-1', '请选择模型图|模型图编号只能是数字|模型图编号不能为负数'],
                 ['type', 'require|number|between:1,2', '类型值不能为空|类型值只能是数字|类型值是1或者2'],
-                ['label_snapshot', 'require', '图片值不能为空']
+                ['label_snapshot', 'require', '图片压缩值不能为空'],
+                ['compress_base64', 'require', '图片值不能为空']
             ];
             // 类型 type 1标注2快照
             if(!empty($param['type']) && $param['type'] == 1){
@@ -205,6 +206,7 @@ class Main extends Permissions
             $data['type'] = $param['type'];
             $data['picture_number'] = $param['picture_id'];
             $data['label_snapshot'] = $param['label_snapshot'];
+            $data['base64_val'] = $param['compress_base64'];
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
             // 类型 type 1标注2快照
@@ -402,6 +404,7 @@ class Main extends Permissions
             //写入到附件表
             $data = [];
             $data['module'] = 'quality';
+            $data['name'] = $info->getInfo('name');//文件名
             $data['filename'] = $info->getFilename();//文件名
             $data['filepath'] = DS . 'uploads' . DS . 'quality' . DS . 'anchor_point' . DS . $info->getSaveName();//文件路径
             $data['fileext'] = $info->getExtension();//文件后缀

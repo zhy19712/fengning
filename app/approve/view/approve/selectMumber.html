@@ -136,7 +136,6 @@
         };
         $(window.parent.document).find("#hiddenValId").val($("#selectedUserId").val());
         $(window.parent.document).find("#hiddenValName").val($("#selectedUserName").text());
-        // console.log($("#selectedUserId").val());
         close();
         var user = {
             "id": $("#selectedUserId").val(),
@@ -146,7 +145,6 @@
             "mobile": $("#selectMobile").val(),
             "organizationName": $("#selectOrganizationName").val()
         };
-
         $(window.parent.document).find("#hiddenValUser").val(user);
         parent.addPeople(user);
         //   if ($("#referFlow").val()) {
@@ -207,13 +205,11 @@
                     var initObj = {
                         id:'',
                         name:''
-                    }
+                    };
                     initObj.id = res[i].id;
                     initObj.name = res[i].nickname;
                     initArr.push(initObj)
                 }
-                // console.log(initArr)
-
                 // $.fn.zTree.init($("#treeFrequentlyUsed"), setting, [{"name":"王建伟",id:123},{"name":"丁志超",id:456}]);
                 $.fn.zTree.init($("#treeFrequentlyUsed"), setting, initArr);
             }
@@ -336,7 +332,6 @@
     };
     // 设置选中的人员信息
     function setSelectedInfo(treeNode) {
-        // console.log(treeNode);
         $("#selectedUserId").val(treeNode.id);
         $("#selectedUserName").html(treeNode.name);
         $("#selectedUserImage").val(treeNode.data);

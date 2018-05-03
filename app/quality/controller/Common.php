@@ -1192,7 +1192,7 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('u')
-                    ->field('t.filename,a.nickname,c.role_name,t.create_time,u.id')
+                    ->field('t.name as filename,a.nickname,c.role_name,t.create_time,u.id')
                     ->join('attachment t', 'u.attachment_id = t.id', 'left')
                     ->join('admin a', 't.user_id = a.id', 'left')
                     ->join('admin_cate c', 'a.admin_cate_id = c.id', 'left')
@@ -1206,7 +1206,7 @@ class Common extends Controller
             if ($limitFlag) {
                 //*****多表查询join改这里******
                 $recordsFilteredResult = Db::name($table)->alias('u')
-                    ->field('t.filename,a.nickname,c.role_name,t.create_time,u.id')
+                    ->field('t.name as filename,a.nickname,c.role_name,t.create_time,u.id')
                     ->join('attachment t', 'u.attachment_id = t.id', 'left')
                     ->join('admin a', 't.user_id = a.id', 'left')
                     ->join('admin_cate c', 'a.admin_cate_id = c.id', 'left')
