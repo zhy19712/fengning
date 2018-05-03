@@ -1109,146 +1109,144 @@
     //在线填报结构表格
     function funOnLine(selfidUnit,conThisId,clickId){
         onlineFill = $('#onlineFill').DataTable({
-         retrieve: true,
-         processing: true,
-         serverSide: true,
-         iDisplayLength:1000,
-         "scrollY": "200px",
-         "scrollCollapse": "true",
-         "paging": "false",
-         ajax: {
-             "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId
-         },
-         dom: 'tr',
-         columns: [
-             {
-                 name: "nickname"
+             retrieve: true,
+             processing: true,
+             serverSide: true,
+             iDisplayLength:1000,
+             "scrollY": "200px",
+             "scrollCollapse": "true",
+             "paging": "false",
+             ajax: {
+                 "url": "{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId
              },
-             {
-                 name: "create_time"
-             },
-             {
-                 name: "currentname"
-             },
-             {
-                 name: "approvestatus"
-             },
-             {
-                 name: "id"
-             },
-             {
-                 name: "CurrentApproverId"
-             },
-             {
-                 name: "CurrentStep"
-             }
-         ],
-         columnDefs: [
-             {
-                 "targets":[0],
-                 "searchable": false,
-                 "orderable": false
-             },
-             {
-                 "targets": [1],
-                 "searchable": false,
-                 "orderable": false,
-                 "render": function (data, type, row) {
-                     if (data == null || data == undefined || data == '') return '';
-                     var time = new Date(data*1000);
-                     var y = time.getFullYear();
-                     var M = time.getMonth() + 1;
-                     M = M < 10 ? '0' + M : M;
-                     var d = time.getDate();
-                     d = d < 10 ? ('0' + d) : d;
-                     var h = time.getHours();
-                     h = h < 10 ? '0' + h : h;
-                     var m = time.getMinutes();
-                     m = m < 10 ? '0' + m : m;
-                     var s = time.getSeconds();
-                     s = s < 10 ? '0' + s : s;
-                     return y + '-' + M + '-' + d +' '+ h + ':' + m + ':' + s;
+             dom: 'tr',
+             columns: [
+                 {
+                     name: "nickname"
+                 },
+                 {
+                     name: "create_time"
+                 },
+                 {
+                     name: "currentname"
+                 },
+                 {
+                     name: "approvestatus"
+                 },
+                 {
+                     name: "id"
+                 },
+                 {
+                     name: "CurrentApproverId"
+                 },
+                 {
+                     name: "CurrentStep"
                  }
-             },
-             {
-                 "targets": [2],
-                 "searchable": false,
-                 "orderable": false
-             },
-             {
-                 "targets": [3],
-                 "searchable": false,
-                 "orderable": false,
-                 "render": function (data, type, row) {
-                     if (data === 0) {
-                         return "待提交"
+             ],
+             columnDefs: [
+                 {
+                     "targets":[0],
+                     "searchable": false,
+                     "orderable": false
+                 },
+                 {
+                     "targets": [1],
+                     "searchable": false,
+                     "orderable": false,
+                     "render": function (data, type, row) {
+                         if (data == null || data == undefined || data == '') return '';
+                         var time = new Date(data*1000);
+                         var y = time.getFullYear();
+                         var M = time.getMonth() + 1;
+                         M = M < 10 ? '0' + M : M;
+                         var d = time.getDate();
+                         d = d < 10 ? ('0' + d) : d;
+                         var h = time.getHours();
+                         h = h < 10 ? '0' + h : h;
+                         var m = time.getMinutes();
+                         m = m < 10 ? '0' + m : m;
+                         var s = time.getSeconds();
+                         s = s < 10 ? '0' + s : s;
+                         return y + '-' + M + '-' + d +' '+ h + ':' + m + ':' + s;
                      }
-                     if (data === 1) {
-                         return "待审批"
+                 },
+                 {
+                     "targets": [2],
+                     "searchable": false,
+                     "orderable": false
+                 },
+                 {
+                     "targets": [3],
+                     "searchable": false,
+                     "orderable": false,
+                     "render": function (data, type, row) {
+                         if (data === 0) {
+                             return "待提交"
+                         }
+                         if (data === 1) {
+                             return "待审批"
+                         }
+                         if (data === 2) {
+                             return "已审批"
+                         }
+                         if (data === -1) {
+                             return "被退回"
+                         }
                      }
-                     if (data === 2) {
-                         return "已审批"
-                     }
-                     if (data === -1) {
-                         return "被退回"
-                     }
-                 }
-             },
-             {
-                 "searchable": false,
-                 "orderable": false,
-                 "targets": [4],
-                 "render": function (data, type, row) {
-                     // console.log(row);
-                     console.log(row[5]+"当前审批人Id");
-                     console.log($("#userId").val() + "当前登录人Id");
-                     var html = "";
-                     html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
-                     if (row[3] === 0) {
-                         html += "<a title='编辑' onclick='editOnLine("+row[4]+","+row[6]+")'><i class='fa fa-pencil'></i></a>";
-                         html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
-                         html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
-                     }
-                     else if (row[3] === 1 && row[5] == $("#userId").val()) {
-                         var str = JSON.stringify(row[2]);
-                         html += "<a title='编辑' onclick='editOnLine ("+row[4]+","+row[6]+")'><i class='fa fa fa-pencil'></i></a>";
-                         html += "<a title='审批' onclick='approve("+row[4]+","+str+","+row[6]+")'><i class='fa fa fa-pencil-square-o'></i></a>";
-                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
-                     }
-                     else if (row[3] === 2) {
-                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
-                         html += "<a title='下载' onclick='downOnLine("+row[4]+")'><i class='fa fa fa-download'></i></a>";
-                     }
-                     else if (row[3] === -1 && row[5] == $("#userId").val()) {
-                         html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
-                         html += "<a title='编辑' onclick='editOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-pencil'></i></a>";
-                         html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
-                         html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
-                     }
-                     else html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
-                     return html;
+                 },
+                 {
+                     "searchable": false,
+                     "orderable": false,
+                     "targets": [4],
+                     "render": function (data, type, row) {
+                         // console.log(row);
+                         console.log(row[5]+"当前审批人Id");
+                         console.log($("#userId").val() + "当前登录人Id");
+                         var html = "";
+                         html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
+                         if (row[3] === 0) {
+                             html += "<a title='编辑' onclick='editOnLine("+row[4]+","+row[6]+")'><i class='fa fa-pencil'></i></a>";
+                             html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
+                             html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
+                         }
+                         else if (row[3] === 1 && row[5] == $("#userId").val()) {
+                             var str = JSON.stringify(row[2]);
+                             html += "<a title='编辑' onclick='editOnLine ("+row[4]+","+row[6]+")'><i class='fa fa fa-pencil'></i></a>";
+                             html += "<a title='审批' onclick='approve("+row[4]+","+str+","+row[6]+")'><i class='fa fa fa-pencil-square-o'></i></a>";
+                             html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
+                         }
+                         else if (row[3] === 2) {
+                             html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
+                             html += "<a title='下载' onclick='downOnLine("+row[4]+")'><i class='fa fa fa-download'></i></a>";
+                         }
+                         else if (row[3] === -1 && row[5] == $("#userId").val()) {
+                             html += "<a title='提交' onclick='submitOnLine("+row[4]+")'><i class='fa fa fa-check-square-o'></i></a>";
+                             html += "<a title='编辑' onclick='editOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-pencil'></i></a>";
+                             html += "<a title='删除' onclick='delOnLine("+row[4]+")'><i class='fa fa fa-trash'></i></a>";
+                             html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
+                         }
+                         else html += "<a title='审批历史' onclick='historyOnLine("+row[4]+","+row[6]+")'><i class='fa fa fa-file-text'></i></a>";
+                         return html;
 
+                     }
+                 },
+                 {
+                     "targets": [5],
+                     "visible": false,
+                     "searchable": false,
+                     "orderable": false
+                 },
+                 {
+                     "targets": [6],
+                     "visible": false,
+                     "searchable": false,
+                     "orderable": false
                  }
-             },
-             {
-                 "targets": [5],
-                 "visible": false,
-                 "searchable": false,
-                 "orderable": false
-             },
-             {
-                 "targets": [6],
-                 "visible": false,
-                 "searchable": false,
-                 "orderable": false
+             ],
+             language: {
+                 "zeroRecords": "没有找到记录"
              }
-         ],
-         language: {
-             "zeroRecords": "没有找到记录"
-         }
-    });
-        dv = new DataView(dt)
-        dv.Sort = "create_time desc"
+        });
     }
 
     //在线填报-新增
@@ -1431,7 +1429,6 @@
                     $("#form_container_from").append(str);
                     $("#form_container_from").find(".btn" + id).click();
                 }
-
             }
         })
     }

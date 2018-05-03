@@ -45,6 +45,10 @@ class Document extends Permissions
     {
         return $this->fetch();
     }
+    public function association()
+    {
+        return $this->fetch();
+    }
 
     public function add()
     {
