@@ -10,7 +10,6 @@
                               <li uid="manageAttr">管理属性</li>
                           </ul>
                           <div class="baseAttrWrap" id="baseAttr">
-                              <div id="img"></div>
                               <div class="layui-collapse" id="baseAttrCon" style="display: none">
                                   <div class="layui-colla-item">
                                       <h2 class="layui-colla-title">常规属性</h2>
@@ -379,6 +378,7 @@
                             getLabelSnapshot();    //新增之后回显
                             // TODO 需要重构
                             var snapshotImgPathArr = [];
+                            console.log(base64RenData);
                             $.ajax({
                                 url: "./labelSnapshot",
                                 type: "post",
@@ -390,7 +390,7 @@
                                 dataType: "json",
                                 success: function (res) {
                                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
+                                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
                                     snapshotImgPathArr.push('<div class="mask">');
                                     snapshotImgPathArr.push('<div class="right">');
                                     snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="快照另存为">');
@@ -537,7 +537,6 @@
                 var imgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
                     var base64RenData = res.data[i].label_snapshot;
-                    $('#img').append(img);
                     imgPathArr.push('<div class="swiper-slide swiperSlide">');
                     imgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
                     imgPathArr.push('<div class="mask">');
@@ -580,6 +579,7 @@
                 var snapshotImgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
                     var base64RenData = res.data[i].label_snapshot;
+                    console.log(base64RenData);
                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
                     snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
                     snapshotImgPathArr.push('<div class="mask">');

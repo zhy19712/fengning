@@ -132,3 +132,31 @@ $('#save').click(function () {
 $('#close').click(function () {
     window.close();
 });
+
+//搜索模型
+$('#search').click(function () {
+    var inputModelName = $('#modelName').val();
+    var modelName = $.trim(inputModelName);
+    $.ajax({
+        url: "",
+        type: "post",
+        data: {
+            modelName:modelName
+        },
+        dataType: "json",
+        success: function (res) {
+
+        }
+    })
+   /* var treeObj = $.fn.zTree.getZTreeObj("ztree");
+    var nodes = treeObj.getNodes();
+    console.log(nodes);
+    var nodeArr = [];
+    for(var i = 0;i<nodes.length;i++){
+        nodeArr.push(nodes[i].name);
+    }
+    var nodesName = nodeArr.join();
+    if(nodesName.indexOf(modelName)){
+        treeObj.selectNode(nodes[i]);
+    }*/
+});

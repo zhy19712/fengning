@@ -402,6 +402,7 @@ class Main extends Permissions
             //写入到附件表
             $data = [];
             $data['module'] = 'quality';
+            $data['name'] = $info->getInfo('name');//文件名
             $data['filename'] = $info->getFilename();//文件名
             $data['filepath'] = DS . 'uploads' . DS . 'quality' . DS . 'anchor_point' . DS . $info->getSaveName();//文件路径
             $data['fileext'] = $info->getExtension();//文件后缀

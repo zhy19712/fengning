@@ -27,7 +27,9 @@ class LabelSnapshotModel extends Model
             if (false === $result) {
                 return ['code' => -1, 'msg' => $this->getError()];
             } else {
-                return ['code' => 1,'label_snapshot_id'=>$last_insert_id,'label_snapshot'=>$param['label_snapshot'], 'msg' => '添加成功'];
+                // 返回添加的日期
+                $time = $this->where('')->value('create_time');
+                return ['code' => 1,'label_snapshot_id'=>$last_insert_id,'label_snapshot'=>$param['label_snapshot'],'create_time'=>date('Y-m-d H:i:s',$time), 'msg' => '添加成功'];
             }
         } catch (PDOException $e) {
             return ['code' => -1, 'msg' => $e->getMessage()];

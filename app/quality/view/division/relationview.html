@@ -22,6 +22,26 @@
     .btn-wrap{
         float: right;
     }
+    .west-ztree{
+        margin: 7px 24px 0;
+    }
+    .west-ztree .layui-input-inline{
+        margin-right: 0;
+        width: 150px;
+    }
+    .west-ztree .layui-word-aux{
+        padding: 5px 0 !important;
+        width: 38px;
+        text-align: center;
+        background: #00a0e9;
+    }
+    .west-ztree i.fa:before{
+        color: #FFF;
+    }
+    .west-ztree .layui-input{
+        height: 30px;
+        line-height:30px\9;
+    }
 </style>
 <div data-options="region:'west',title:'已选择构件',split:true" style="width:260px;">
     <ul id="selectZtree" class="ztree"></ul>
@@ -29,7 +49,14 @@
 <div data-options="region:'center',title:''" class="center">
     <div class="easyui-layout" id="relationview" data-options="fit:true">
         <div data-options="region:'west',title:'构件树',split:true,collapsed:false" style="width:260px">
-
+            <div class="layui-form-item west-ztree">
+                <div class="layui-input-inline">
+                    <input type="text" name="modelName" id="modelName" required lay-verify="required" placeholder="请输入模型名称" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux" id="search">
+                    <i class="fa fa-check"></i>
+                </div>
+            </div>
             <ul id="ztree" class="ztree"></ul>
         </div>
         <div data-options="region:'center'">

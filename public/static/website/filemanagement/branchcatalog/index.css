@@ -16,6 +16,7 @@
     text-align: center;
     font-size: 12px;
     border-color:#ccc;
+    overflow: auto;
 }
 #tableItem tr{
     height: 28px;
