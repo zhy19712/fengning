@@ -438,7 +438,6 @@
 
     //点击获取路径
     function nodeClick(e, treeId, node) {
-        // console.log(node);
         selectData = "";
         sNodes = zTreeObj.getSelectedNodes()[0];//选中节点
         console.log(sNodes);
@@ -801,9 +800,7 @@
     $("#tableContent").on("click",".saveCheck",function () {
         if($("#date").val() != '' && resultId != undefined){
             var data = tableItem.data();
-            // console.log(data)
             for(var i=0;i<data.length;i++){
-                // console.log(data[i][2])
                 if(data[i][2] == 0 || data[i][2] == 1){
                     layer.confirm("有未执行的控制点，要继续验评吗？", function (index) {
                         saveInspectionLotEvaluate();
