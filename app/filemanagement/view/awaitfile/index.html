@@ -84,16 +84,7 @@
     .selected{
         background-color: #FDD5B5 !important;
     }
-    .layui-layer-btn {
-        position: absolute;
-        text-align: right;
-        padding: 0 15px 12px;
-        pointer-events: auto;
-        user-select: none;
-        -webkit-user-select: none;
-        right: 31px;
-        top: -8px;
-    }
+
 </style>
 
 <div id="nodeZtree" data-options="region:'west',title:'目录树',split:true" style="width:260px;">
@@ -309,30 +300,42 @@
         layer.open({
             type: 2,
             title:'基本信息',
-            btn:['保存','保存并新建','继承设置'],
+            // btn:['保存','保存并新建','继承设置'],
             shadeClose: true,
             area: ['100%', '100%'],
             content: '{:url("filemanagement/awaitfile/addoredit")}',
             success:function () {
-                console.log($(".layui-layer-resize").html())
-                $(".layui-layer-resize").remove();
+                // console.log($(".layui-layer-resize").html())
+                // $(".layui-layer-resize").remove();
             },
             // end:function () {
             //     onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
             // }
-            btn1: function(index, layero){
-                alert(22)
-                // return false ;
-            },
-            btn2: function(index, layero){
-                alert(44)
-                //return false 开启该代码可禁止点击该按钮关闭
-            },
-            btn3: function(index, layero){
-                alert(66)
-                //return false 开启该代码可禁止点击该按钮关闭
-            },
+            // btn1: function(index, layero){
+            //     alert(22)
+            //     // return false ;
+            // },
+            // btn2: function(index, layero){
+            //     alert(44)
+            //     //return false 开启该代码可禁止点击该按钮关闭
+            // },
+            // btn3: function(index, layero){
+            //     alert(66)
+            //     //return false 开启该代码可禁止点击该按钮关闭
+            // },
         });
+        // layer.open({
+        //     type: 1,
+        //     title:'基本信息',
+        //     shadeClose: true,
+        //     area: ['100%', '100%'],
+        //     content: $('#addoredit'),
+        //     success:function () {
+        //     },
+        //     // end:function () {
+        //     //     onlineFill.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_form_info&DivisionId="+selfidUnit+"&ProcedureId="+conThisId+"&cpr_id="+clickId).load();
+        //     // }
+        // });
     });
 
     //组卷
