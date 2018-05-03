@@ -153,9 +153,9 @@
             type: 2,
             title: "选择审批人",
             area: ['450px', '550px'],
-            content: '{:url("approve/approve/selectMumber")}',
+            content: '{:url("approve/approve/selectMumber")}'
         });
-    };
+    }
 
     var dataArr = [];
     var subId ;
@@ -169,10 +169,6 @@
             dataArr.push(dataId)
         }
         subId = dataArr.join(",");
-        // console.log(dataArr);
-        console.log(subId);
-
-        // console.log(user);
         var $dom = $(".people");
         //var haveAddPeoples = [];
         //$.each($dom, function (i, item) {
@@ -192,29 +188,28 @@
         html += "</div>";
         html += "<img id='img" + user.id + "' alt='image' class='arrow' src='__WEBSITE__/elementimg/right.png'/>";
         $("#approverDiv").append(html);
-    };
+    }
 
     // 移除审批人
     function removeApprover(id) {
         $("#div" + id).remove();
         $("#img" + id).remove();
-    };
+    }
 
     // 关闭窗体
     function close() {
         var index = parent.layer.getFrameIndex(window.name);
         parent.layer.close(index)
-    };
+    }
 
     // 保存审批人信息
     function save() {
         var $dom = $(".people"); // 获取class为people的div，该div的id属性记录的是审批人id
-        // console.log($dom)
         if ($dom.length === 0) {
             layer.alert("请选择审批人。");
             $("#btnSave").removeAttr("disabled");
             return;
-        };
+        }
         if ($("#referFlow").val()) {
             var $referDom = $("#referDiv").find(".addpeople");
             if ($dom.length !== $referDom.length - 1) {
@@ -222,28 +217,17 @@
                 $("#btnSave").removeAttr("disabled");
                 return;
             }
-        };
-
-        // var approverIds = "";
-        // $.each($dom, function (i, item) {
-        //     approverIds += item.id.substring(3, item.id.length) + ","; //去除前面的div字符串
-        // });
-        // approverIds = approverIds.substring(0, approverIds.length - 1);
-
+        }
         $.ajax({
             type: "post",
             url: "{:url('/approve/Approve/Submit')}",
             data: {
                 dataId:$("#dataId").val(),
                 approveids:subId ,
-                dataType:'app\\quality\\model\\QualityFormInfoModel' ,
+                dataType:'app\\quality\\model\\QualityFormInfoModel'
             },
             success: function (res){
-                // console.log(res);
                 if (res.code === 1 ) {
-                    // var parentWin = window.parent.window.document.getElementById("web");//取到列表页面对象
-                    // parentWin.contentWindow.refresh();//刷新列表数据
-                    // parent.layer.closeAll();
                     close();
                 }
                 else {
