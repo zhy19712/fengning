@@ -231,7 +231,7 @@ class Main extends Permissions
             }
             $pic = new LabelSnapshotModel();
             $flag = $pic->insertTb($data);
-            return json($flag);
+            return json(["flag"=>$flag,"base64_val_url"=>$new_file]);
         }
     }
 
