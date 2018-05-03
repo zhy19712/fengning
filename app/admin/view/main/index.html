@@ -462,7 +462,7 @@
                         </script>
                   </div>
                   <div data-options="region:'south',title:'协同信息',split:true,collapsed:true" style="height:250px;">
-                        <div id="tt" class="easyui-tabs" style="width:100%;height:200px;border: 0">
+                        <div id="tt" class="easyui-tabs" style="width:100%;height:220px;border: 0">
                               <div title="标注" style="display:none;">
                                     <input type="hidden" id="base64RenData">
                                     <div class="swiper-container" id="tag">
@@ -556,7 +556,6 @@
                     imgPathArr.push('</div>');
                 }
                 tagSwiper.prependSlide(imgPathArr.join(' '));
-                tagSwiper.updateSlidesSize();
             }
         })
     }
@@ -599,7 +598,6 @@
                     snapshotImgPathArr.push('</div>');
                 }
                 snapshotSwiper.prependSlide(snapshotImgPathArr.join(' '));
-                snapshotSwiper.updateSlidesSize();
             }
         })
     }
@@ -623,6 +621,8 @@
             dataType: "json",
             success: function (res) {
                 $(that).parents('.swiperSlide').remove();
+                tagSwiper.update();
+                snapshotSwiper.update();
                 layer.msg(res.msg);
             }
         });

@@ -20,10 +20,11 @@ window.tagSwiper = new Swiper ('#tag', {
     nextButton: '.tag-button-next',
     prevButton: '.tag-button-prev',
     slidesPerView : 4,
+    spaceBetween: 30,
     centeredSlides: false,
     paginationClickable: true,
-    spaceBetween: 30,
     mousewheelControl : true,
+    keyboardControl : true
 });
 
 //快照图片滚动
@@ -31,10 +32,19 @@ window.snapshotSwiper = new Swiper ('#snapshot', {
     nextButton: '.snapshot-button-next',
     prevButton: '.snapshot-button-prev',
     slidesPerView : 4,
+    spaceBetween: 30,
     centeredSlides: false,
     paginationClickable: true,
-    spaceBetween: 30,
     mousewheelControl : true,
+    keyboardControl : true
+});
+
+//初始化标注/快照滚动
+$('#tt').tabs({
+    onSelect: function(title,index){
+        tagSwiper.update();
+        snapshotSwiper.update();
+    }
 });
 
 //添加快照

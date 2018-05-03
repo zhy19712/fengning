@@ -21,8 +21,9 @@
 }
 /* 标注/快照滚动 */
 .swiper-container {
+    padding: 10px 0;
     width: 100%;
-    height: 150px;
+    height: 165px;
 }
 .swiper-container img{
     width: 100%;
@@ -68,6 +69,15 @@
 }
 .mask .fa-search{
     font-size: 30px;
+}
+.tabs,.tabs-panels,.tabs-header{
+    border: none;
+}
+.tabs{
+    border-bottom: 1px solid #cecece;
+}
+.tabs-header{
+    background: none;
 }
 /* 管理信息 */
 .toggle-attr li{
@@ -234,6 +244,7 @@
     margin: 0 5px;
     color: #1ab394;
 }
+/* 上传按钮 */
 .webuploader-container{
     text-align: right;
 }
