@@ -28,6 +28,7 @@ class Qualityanalysis extends Permissions
 
     /**
      * 查询数据库中的所有的年份月份
+     * @return \think\response\Json
      */
     public function getAllMonth()
     {
@@ -38,7 +39,7 @@ class Qualityanalysis extends Permissions
 
         //定义一个空的数组
         $timeline = array();
-        $info = array();
+        $month = array();
         $StartMonth = date("Y-m-d",$min_time); //开始日期
         $EndMonth = date("Y-m-d",$max_time); //结束日期
         $ToStartMonth = strtotime( $StartMonth ); //转换一下
@@ -51,8 +52,24 @@ class Qualityanalysis extends Permissions
             $timeline[] = $NewMonth;//时间
 
         }
+
         array_pop($timeline);//去除掉多余的月份
-        return json(["code"=>1,"data"=>$timeline]);
+
+        foreach ($timeline as $key=>$val)
+        {
+            //设定时间点查询，时间点为每个月的26号的0:0:0到下个月的25号的23:59:59
+            //结束日期,这个月的25号23:59:59
+            $end = mktime(23,59,59,date("m",strtotime($val)),25,date("Y",strtotime($val)));
+            $end = date("Y.m.d",$end);
+
+            //开始日期,上个月的26号0:0:0
+            $start = mktime(0,0,0,date('m',strtotime("-1 month",strtotime($val))),26,date('Y',strtotime("-1 month",strtotime($val))));
+            $start = date("Y.m.d",$start);
+            $month[] = $start."-".$end;
+
+        }
+
+        return json(["code"=>1,"data"=>$timeline,"month"=>$month]);
     }
     /**
      * 统计数据的柱状图、表格、折线图
@@ -181,8 +198,18 @@ class Qualityanalysis extends Permissions
             $section_name[]=$aa;
         }
 
-        //设定时间点查询，时间点为每个月的26号的23:59:59到下个月的25号的23:59:59
-//        $design_month =
+        //设定时间点查询，时间点为每个月的26号的0:0:0到下个月的25号的23:59:59
+        $design_month = input('post.design_month');
+
+        $design_month = "2017-12";
+
+        //开始日期,这个月的26号0:0:0
+        $start = mktime(0,0,0,date("m",strtotime($design_month)),26,date("Y",strtotime($design_month)));
+
+        //结束日期,下个月的25号23:59:59
+        $end = mktime(23,59,59,date('m',strtotime("+1 month",strtotime($design_month))),25,date('Y',strtotime("+1 month",strtotime($design_month))));
+
+        halt($end);
 
         foreach($section as $cc =>$dd)
         {
