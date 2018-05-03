@@ -1,4 +1,3 @@
-<!--{include file="../app/public/common_header.html"}-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -105,7 +104,6 @@
     #tableContent .imgList a{
         cursor: pointer;
         font-style: inherit;
-        /*color: #2213e9;*/
         color: #CDCDCD;
         font-size: 13px;
         font-weight: 600;
@@ -169,12 +167,10 @@
 </div>
 
 </body>
-<!--{include file="../app/public/common_footer.html"}-->
 <script type="text/javascript">
 
 
     //组织结构表格
-    // function tableFun(selfidUnit,conThisId) {
         var urlPlan;
         urlPlan = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
         tableItem = $('#tableItem').DataTable({
@@ -245,7 +241,7 @@
         // $(".bitCodes").html("<div id='bitCodes'><i class='fa fa-download' style='padding-right: 3px;'></i>导出二维码</div>");
         $(".mybtn").html("<div id='test3'><i class='fa fa-plus'></i>新增控制点</div>");
         // $(".alldel").html("<div id='delAll'><i class='fa fa-close'></i>全部删除</div>");
-    // }
+
 
     var layer = layui.layer;
     //查询提交
@@ -336,7 +332,6 @@
     function ajaxDataFilter(treeId, parentNode, responseData) {
         if (responseData) {
             for(var i =0; i < responseData.length; i++) {
-                // console.log(responseData[i]);
                 responseData[i].name = responseData[i].el_start + responseData[i].el_cease + responseData[i].pile_number + responseData[i].site;
                 eTypeId = responseData[i].en_type;
             }
@@ -346,7 +341,6 @@
 
     //初始化数据的方法
     function initData(selfid){
-        // console.log(selfid + '555');
         var settingUnit = {
             view: {
                 showLine: true, //设置 zTree 是否显示节点之间的连线。
@@ -411,9 +405,6 @@
         $(".alldel").css("display","none");//全部删除
         $(".bitCodes").css("display","block");
         $(".listName").css("display","block");
-        // $("#tableContent .dataTables_wrapper").css('display','block');
-        // $("#tableContent .tbcontainer").css('display','block');
-        // $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -472,9 +463,6 @@
         $(".bitCodes").css("display","none");
         $(".mybtn").css("display","block");
         $(".alldel").css("display","block");
-        // $("#tableContent .dataTables_wrapper").css('display','block');
-        // $("#tableContent .tbcontainer").css('display','block');
-        // $("#tableContent #tableItem").css('display','block');
         $("#tableContent .imgList").css('display','block');
         tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit+"&ma_division_id="+conThisId).load();
         console.log(id);
@@ -529,7 +517,6 @@
                         + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
                         + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                         + "<input class='file_url' style='display: none;' name='cpr_id' value="+ id +">"
-                        // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                         + "<button type='submit' class=btn" + id +"></button>"
                         + "</form>"
                     $("#form_container").append(str);
