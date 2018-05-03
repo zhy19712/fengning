@@ -387,15 +387,18 @@
                                 },
                                 dataType: "json",
                                 success: function (res) {
+                                    console.log(res);
+                                    var imgPathSplit = res.base64_val_url.split('.');
+                                    addSnapshotImgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                                    snapshotImgPathArr.push('<img src='+ addSnapshotImgPath +' alt="">');
                                     snapshotImgPathArr.push('<div class="mask">');
                                     snapshotImgPathArr.push('<div class="right">');
-                                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="快照另存为">');
+                                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(addSnapshotImgPath)" title="快照另存为">');
                                     snapshotImgPathArr.push('<i class="fa fa-save"></i>');
                                     snapshotImgPathArr.push('</a>');
                                     snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
-                                    snapshotImgPathArr.push('<i class="fa fa-close" uid='+ res.label_snapshot_id +' onclick="del(this)"></i>');
+                                    snapshotImgPathArr.push('<i class="fa fa-close" uid='+ res.flag.label_snapshot_id +' onclick="del(this)"></i>');
                                     snapshotImgPathArr.push('</a>');
                                     snapshotImgPathArr.push('</div>');
                                     snapshotImgPathArr.push('<div class="scenter">');
@@ -435,15 +438,18 @@
                                   },
                                   dataType: "json",
                                   success: function (res) {
+                                      console.log(res);
+                                      var imgPathSplit = res.base64_val_url.split('.');
+                                      addImgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                                       tagImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                                      tagImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                                      tagImgPathArr.push('<img src='+ addImgPath +' alt="">');
                                       tagImgPathArr.push('<div class="mask">');
                                       tagImgPathArr.push('<div class="right">');
-                                      tagImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="标注另存为">');
+                                      tagImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(addImgPath)" title="标注另存为">');
                                       tagImgPathArr.push('<i class="fa fa-save"></i>');
                                       tagImgPathArr.push('</a>');
                                       tagImgPathArr.push('<a href="javascript:;" title="删除标注">');
-                                      tagImgPathArr.push('<i class="fa fa-close" uid='+ res.label_snapshot_id +' onclick="del(this)"></i>');
+                                      tagImgPathArr.push('<i class="fa fa-close" uid='+ res.flag.label_snapshot_id +' onclick="del(this)"></i>');
                                       tagImgPathArr.push('</a>');
                                       tagImgPathArr.push('</div>');
                                       tagImgPathArr.push('<div class="scenter">');
@@ -540,7 +546,7 @@
                 for(var i = 0;i<res.data.length;i++){
                     var base64PicData = res.data[i].compress_base64;
                     var base64RenData = res.data[i].label_snapshot;
-                    var imgPathSplit = res.data[i].url.split('.');
+                    var imgPathSplit = res.data[i].base64_val_url.split('.');
                     imgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                     imgPathArr.push('<div class="swiper-slide swiperSlide">');
                     imgPathArr.push('<img src='+ imgPath +' alt="">');
@@ -584,7 +590,8 @@
                 for(var i = 0;i<res.data.length;i++){
                     var base64PicData = res.data[i].compress_base64;
                     var base64RenData = res.data[i].label_snapshot;
-                    var imgPathSplit = res.data[i].url.split('.');
+                    console.log(res.data[i].base64_val_url);
+                    var imgPathSplit = res.data[i].base64_val_url.split('.');
                     snapshotImgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
                     snapshotImgPathArr.push('<img src='+ snapshotImgPath +' alt="">');
