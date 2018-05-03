@@ -27,6 +27,34 @@ class Qualityanalysis extends Permissions
     }
 
     /**
+     * 查询数据库中的所有的年份月份
+     */
+    public function getAllMonth()
+    {
+        //查询数据库中的最小时间
+        $min_time = Db::name("quality_form_info")->where("create_time > 0")->min("create_time");
+        //查询数据库中的最大的时间
+        $max_time = Db::name("quality_form_info")->where("create_time > 0")->max("create_time");
+
+        //定义一个空的数组
+        $timeline = array();
+        $info = array();
+        $StartMonth = date("Y-m-d",$min_time); //开始日期
+        $EndMonth = date("Y-m-d",$max_time); //结束日期
+        $ToStartMonth = strtotime( $StartMonth ); //转换一下
+        $ToEndMonth   = strtotime( $EndMonth ); //一样转换一下
+        $i            = false; //开始标示
+        while( $ToStartMonth < $ToEndMonth ){
+            $NewMonth = !$i ? date('Y-m', strtotime('+0 Month', $ToStartMonth)) : date('Y-m', strtotime('+1 Month', $ToStartMonth));
+            $ToStartMonth = strtotime( $NewMonth );
+            $i = true;
+            $timeline[] = $NewMonth;//时间
+
+        }
+        array_pop($timeline);//去除掉多余的月份
+        return json(["code"=>1,"data"=>$timeline]);
+    }
+    /**
      * 统计数据的柱状图、表格、折线图
      * @return \think\response\Json
      */
@@ -153,6 +181,9 @@ class Qualityanalysis extends Permissions
             $section_name[]=$aa;
         }
 
+        //设定时间点查询，时间点为每个月的26号的23:59:59到下个月的25号的23:59:59
+//        $design_month =
+
         foreach($section as $cc =>$dd)
         {
 
@@ -263,8 +294,8 @@ class Qualityanalysis extends Permissions
                 $form_result_result[$qq]['total_rate'] = $form_result_result[$qq]['excellent'] + $form_result_result[$qq]['qualified'];
             }
         }
-        $result = ["section"=>$section_name,"form_result_result"=>$form_result_result];
-        $data = ["timeline"=>$timeline,"form_result"=>$form_result];
+        $result = ["section"=>$section_name,"form_result_result"=>$form_result_result];//柱状图表格
+        $data = ["timeline"=>$timeline,"form_result"=>$form_result];//折线
         return json(["code"=>1,"data"=>$data,"result"=>$result]);
     }
 }

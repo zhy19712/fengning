@@ -207,6 +207,21 @@ class Main extends Permissions
             $data['picture_number'] = $param['picture_id'];
             $data['label_snapshot'] = $param['label_snapshot'];
             $data['base64_val'] = $param['compress_base64'];
+
+            $file = '.'. DS . 'uploads' . DS . 'quality' . DS . 'snapshot' . DS;//文件路径
+
+            if(!file_exists($file))
+            {
+                //检查是否有该文件夹，如果没有就创建，并给予最高权限
+                mkdir($file, 0700);
+            }
+
+            $new_file = $file.md5(rand(1,9999)).".jpg";
+
+            file_put_contents($new_file, base64_decode($param['compress_base64']));
+
+            $data['base64_val_url'] = $new_file;
+
             $user_id = Session::get('admin');
             $data['user_name'] = Db::name('admin')->where('id',$user_id)->value('name');
             // 类型 type 1标注2快照
@@ -241,6 +256,16 @@ class Main extends Permissions
             }
             $id = $param['label_snapshot_id'];
             $pic = new LabelSnapshotModel();
+
+            $info = $pic->getOne($id);
+            if($info["base64_val_url"])
+            {
+                $path = $info["base64_val_url"];
+
+                if(file_exists($path)){
+                    unlink($path); //删除文件图片
+                }
+            }
             $flag = $pic->deleteTb($id);
             return json($flag);
         }
@@ -270,22 +295,6 @@ class Main extends Permissions
 
             $flag = $pic->getLabelSnapshotTb($param['type'],$param['picture_id']);
 
-            $file = '.'. DS . 'uploads' . DS . 'quality' . DS . 'snapshot' . DS;//文件路径
-
-            if(!file_exists($file))
-            {
-                //检查是否有该文件夹，如果没有就创建，并给予最高权限
-                mkdir($file, 0700);
-            }
-
-           foreach ($flag as $key=>$val)
-           {
-               $new_file = $file.md5(rand(1,9999)).".jpg";
-
-               file_put_contents($new_file, base64_decode($val["compress_base64"]));
-
-               $flag[$key]["url"] = $new_file;
-           }
            return json(['code'=>1,"data"=>$flag,"msg"=>"图片的base64值"]);
         }
     }

@@ -69,4 +69,14 @@ class LabelSnapshotModel extends Model
 //        return ['code'=>1,'data'=>$data,'msg'=>'图片的base64值'];
     }
 
+    /**
+     * 获取一条信息
+     * @param $id
+     * @throws \think\exception\DbException
+     */
+    public function getOne($id)
+    {
+        $data = $this->where("id",$id)->find();
+        return $data;
+    }
 }
