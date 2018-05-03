@@ -35,7 +35,15 @@
 .layui-layer-content{
     padding-top:0;
 }
-
+table.dataTable tbody tr.odd{
+    background-color: #fff;
+}
+table.dataTable tbody tr:hover, table.dataTable tbody tr.active {
+    background: #Fdd5b5;
+}
+.select-color{
+    background-color: #Fdd5b5!important;
+}
 #memberAdd .layui-form-item .layui-inline{
     width: 48%;
     margin-left: 20px;

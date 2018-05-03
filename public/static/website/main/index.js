@@ -167,8 +167,8 @@ function getAttr() {
                 attrGroup.push('<i class="fa fa-check saveAttr" onclick="saveAttr(this)"></i>');
                 attrGroup.push('<i class="fa fa-close closeAttr" onclick="closeAttr(this)"></i>');
                 attrGroup.push('</div>');
+                attrGroup.push('</div>');
             }
-            attrGroup.push('</div>');
             $('#attrGroup').append(attrGroup.join(' '));
         }
     });
@@ -290,7 +290,7 @@ function getAnchorPoint(anchorName) {
 }
 
 //返回
-$('#backAnchor').click(function(){
+$('#backAnchor,#back').click(function(){
     $('#defaultAttr').show();
     $('#anchorLayer').hide();
 });
@@ -319,14 +319,8 @@ function easyUiPanelToggleSouth() {
 function addImageFun() {
     addImage = WebUploader.create({
         auto: true,
-        // swf文件路径
         swf:  '/static/public/webupload/Uploader.swf',
-
-        // 文件接收服务端。
         server: './uploadAnchorPoint',
-
-        // 选择文件的按钮。可选。
-        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
         pick: {
             multiple: false,
             id: '#addImage',
@@ -340,11 +334,9 @@ function addImageFun() {
             extensions: 'gif,jpg,jpeg,bmp,png',
             mimeTypes: 'image/jpg,image/jpeg,image/png'
         },
-        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
         resize: false
     });
     addImage.on( 'uploadSuccess', function( file ,res) {
-        console.log(file);
         for(key in res.data){
             if(res.data.hasOwnProperty(key)){
                 var imgPath = res.data[key];
@@ -365,14 +357,8 @@ function addImageFun() {
 function addFileFun() {
     var addFile = WebUploader.create({
         auto: true,
-        // swf文件路径
         swf:  '/static/public/webupload/Uploader.swf',
-
-        // 文件接收服务端。
         server: './uploadAnchorPoint',
-
-        // 选择文件的按钮。可选。
-        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
         pick: {
             multiple: false,
             id: '#addFile',
@@ -386,7 +372,6 @@ function addFileFun() {
             extensions: 'xls,xlsx',
             mimeTypes: '.xls,.xlsx'
         },
-        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
         resize: false
     });
 
@@ -498,9 +483,7 @@ function delAttachmentImg(that) {
         },
         dataType: "json",
         success: function (res) {
-            layer.msg(res,{
-                offset: 't'
-            });
+            $(that).parents('.imgItem').remove();
         }
     })
 }

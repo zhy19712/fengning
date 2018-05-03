@@ -65,7 +65,18 @@ class LabelSnapshotModel extends Model
         $data = Db::name('quality_label_snapshot')
             ->where(['picture_type'=>1,'type'=>$type,'picture_number'=>$picture_number])
             ->field('id as label_snapshot_id,label_snapshot,base64_val as compress_base64,FROM_UNIXTIME(create_time) as create_time')->select();
-        return ['code'=>1,'data'=>$data,'msg'=>'图片的base64值'];
+        return $data;
+//        return ['code'=>1,'data'=>$data,'msg'=>'图片的base64值'];
     }
 
+    /**
+     * 获取一条信息
+     * @param $id
+     * @throws \think\exception\DbException
+     */
+    public function getOne($id)
+    {
+        $data = $this->where("id",$id)->find();
+        return $data;
+    }
 }
