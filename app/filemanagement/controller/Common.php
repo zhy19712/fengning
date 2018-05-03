@@ -83,7 +83,6 @@ class Common extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-
     public function file_branch_directory($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
@@ -185,5 +184,63 @@ class Common extends Controller
             // 上传失败获取错误信息
             return $this->error('上传失败：' . $file->getError());
         }
+    }
+
+    /**
+     * 档案管理-工程项目管理
+     * @param $id
+     * @param $draw
+     * @param $table
+     * @param $search
+     * @param $start
+     * @param $length
+     * @param $limitFlag
+     * @param $order
+     * @param $columns
+     * @param $columnString
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function file_engineering_project($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //获取筛选条件
+        //表的总记录数 必要
+        //表的总记录数 必要
+        $recordsTotal = 0;
+        $recordsTotal = Db::name($table)->count(0);
+        $recordsFilteredResult = array();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            //计算列长度
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 }

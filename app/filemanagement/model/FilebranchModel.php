@@ -135,4 +135,13 @@ class FilebranchModel extends Model
         $data = $this->where($search)->order("id","asc")->select();
         return $data;
     }
+
+    /**
+     * 返回所有的数据
+     */
+    public function getDateAll()
+    {
+        $data = $this->order("id","asc")->select();
+        return $data;
+    }
 }
