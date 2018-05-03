@@ -17,8 +17,6 @@ layui.use(['element',"layer",'form','laypage','laydate','layedit'], function(){
       success: function (res) {
         console.log(selfid)
         if(res.code == 1) {
-
-          getTable(selfid);
           layer.closeAll();
         }else{
           layer.msg(res.msg);
@@ -40,7 +38,7 @@ layui.use(['element',"layer",'form','laypage','laydate','layedit'], function(){
 });
 
 //选中的节点，选中的表格的信息
-var sNodes,selectData=""
+var sNodes,selectData="";
 //初始化表格
 var tableItem = $('#tableItem').DataTable( {
   pagingType: "full_numbers",
@@ -62,13 +60,13 @@ var tableItem = $('#tableItem').DataTable( {
       name: "construction_unit"
     },
     {
-      name: "qq"
+      name: "id"
     },
     {
-      name: "vv"
+      name: "id"
     },
     {
-      name: "ww"
+      name: "id"
     },
     {
       name: "id"
@@ -81,11 +79,9 @@ var tableItem = $('#tableItem').DataTable( {
       "targets": [6],
       "render" :  function(data,type,row) {
         var a = data;
-        var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conEdit("+data+")'><i class='fa fa-pencil'></i></a>" ;
-        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
+        var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conShow("+data+")'><i class='fa fa-search'></i></a>" ;
+        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conEdit("+data+")'><i class='fa fa-pencil'></i></a>" ;
         html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
-        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-search'></i></a>" ;
-        html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPosition("+data+")'><i class='fa fa-gears'></i></a>" ;
         return html;
       }
     }
@@ -125,23 +121,12 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
   }
 });
 
-//配置
-function setcog() {
-  layer.open({
-    type: 1,
-    title: '配置',
-    area: ['660px', '488px'],
-    content:$("#config"),
-    end:function () {
-
-    }
-  });
-}
 //新增
-function addbranch() {
+function addproject() {
   layer.open({
     type: 1,
-    title: '配置',
+    title: '',
+    closeBtn:0,
     area: ['100%', '100%'],
     content:$("#memberAdd"),
     success:function (){
@@ -153,6 +138,14 @@ function addbranch() {
   });
 }
 
+//添加option 的代码
+function addoption(data){
+  var html = '';
+  for (var i = 0 ; i<data.length;i++){
+    html += '<option value="'+data[i]+'">'+data[i]+'</option>';
+  }
+  return html;
+}
 //拉取项目类别
 function getBranchType() {
   $.ajax({
@@ -160,17 +153,12 @@ function getBranchType() {
     type:"GET",
     dataType:"json",
     success:function (res) {
-      console.log(res);
-      var html = '';
-      for (var i = 0 ; i<res.data.length;i++){
-        html += '<option value="'+res.data[i]+'">'+res.data[i]+'</option>';
-      }
-      $("#project_category").append(html);
+      $("#project_category").append(addoption(res.data));
       layui.form.render('select');
     } 
   })
 }
-//拉取建设单位
+//拉取建设单位,施工单位,设计单位,监理单位
 function getGroup() {
   $.ajax({
     url:"./getGroup",
@@ -178,22 +166,43 @@ function getGroup() {
     data:{type:1},
     dataType:"json",
     success:function (res) {
-      console.log(res);
-      var html = '';
-      for (var i = 0 ; i<res.data.length;i++){
-        html += '<option value="'+res.data[i]+'">'+res.data[i]+'</option>';
+      if(res.code==1){
+        $("#construction_unit").append(addoption(res.data['建设单位']));
+        $("#builder_unit").append(addoption(res.data['施工单位']));
+        $("#design_unit").append(addoption(res.data['设计单位']));
+        $("#construction_control_unit").append(addoption(res.data['监理单位']));
+        layui.form.render('select');
+      }else{
+        layer.msg(res.msg);
       }
-      $("#construction_unit").append(html);
-      layui.form.render('select');
+
     }
   })
 }
-
 getBranchType();
 getGroup();
 
+//配置
+function setcog() {
+  if(selectData==""){
+    layer.msg("请先选择项目");
+    return ;
+  }
+  $("#conid").val(selectData[6]);
+  zTreeObj.reAsyncChildNodes(null, "refresh");
+  layer.open({
+    type: 1,
+    title: '配置',
+    area: ['660px', '488px'],
+    content:$("#config"),
+    end:function () {
+
+    }
+  });
+}
 //获取配置树
 function getBranchTree() {
+
   $.ajax({
     url:'./getBranchTree',
     data:{type:1},
@@ -222,6 +231,9 @@ var setting = {
     autoParam: ["pid","id"],
     type : "post",
     url : "./getBranchTree",
+    otherParam: {"id":function () {
+        return $("#conid").val();
+      }},
     dataType :"json"
   },
   data:{
@@ -241,3 +253,79 @@ var setting = {
 };
 //初始化树
 zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
+
+//配置保存
+function savecog() {
+  var idArr = [];
+  var Snodes = zTreeObj.getCheckedNodes(true);
+  $.each(Snodes, function (i, item) {
+    idArr.push(item.id);
+  });
+  // $.ajax({
+  //   url:'./',
+  //   type:"POST",
+  //   data:{idArr:idArr},
+  //   dataType:"JSON",
+  //   success:function (res) {
+  //     if(res.code==1){
+  //       layer.msg("保存成功");
+  //       layer.closeAll();
+  //     }else{
+  //       layer.msg(res.msg);
+  //     }
+  //   }
+  // })
+  layer.closeAll();
+}
+
+//获取点击行
+$("#tableItem").delegate("tbody tr","click",function (e) {
+  if($(e.target).hasClass("dataTables_empty")){
+    return;
+  }
+  $(this).addClass("select-color").siblings().removeClass("select-color");
+  selectData = tableItem.row(".select-color").data()
+  console.log(selectData)
+});
+
+//
+function conShow(id) {
+  $.ajax({
+    url:"./getindex",
+    type:"POST",
+    data:{id:id},
+    dataType:"JSON",
+    success:function (res) {
+      if(res.code == 1){
+          $("#directory_code").val(res.data.directory_code);
+          $("#project_code").val(res.data.project_code);
+          $("#revision_code").val(res.data.revision_code);
+          $("#entry_name").val(res.data.entry_name);
+          $("#construction_unit").val(res.data.construction_unit);
+          $("#project_category").val(res.data.project_category);
+          $("#operation_use_unit").val(res.data.operation_use_unit);
+          $("#voltage_level").val(res.data.voltage_level);
+          $("#main_unit").val(res.data.main_unit);
+          $("#standing_time").val(res.data.standing_time);
+          $("#tendering_unit").val(res.data.tendering_unit);
+          $("#start_time").val(res.data.start_time);
+          $("#winning_bid_unit").val(res.data.winning_bid_unit);
+          $("#completion_time").val(res.data.completion_time);
+          $("#builder_unit").val(res.data.builder_unit);
+          $("#design_unit").val(res.data.design_unit);
+          $("#construction_control_unit").val(res.data.construction_control_unit);
+          $("#remark").val(res.data.remark);
+          layui.form.render('select');
+          layer.open({
+            type: 1,
+            title: '',
+            closeBtn:0,
+            area: ['100%', '100%'],
+            content:$("#memberAdd")
+        });
+      } else{
+        layer.msg(res.msg);
+      }
+    }
+  })
+}
