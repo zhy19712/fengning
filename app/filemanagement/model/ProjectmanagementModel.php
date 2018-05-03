@@ -15,7 +15,7 @@ use \think\Model;
 
 class ProjectmanagementModel extends Model
 {
-    protected $name='file_engineering_project';
+    protected $name='file_project_management';
 
     /**
      * 获取一条项目的信息

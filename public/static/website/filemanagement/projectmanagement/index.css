@@ -6,7 +6,7 @@
     margin-left: 10px;
 }
 
-.btn i.fa:before{
+.btn i.fa:before ,#memberAdd button i.fa:before{
     color: #ffffff;
 }
 .col-md-5 {
@@ -32,22 +32,25 @@
 .layui-layer-close {
  position: relative;
 }
+.layui-layer-content{
+    padding-top:0;
+}
 
-
-#memberAdd{
-    margin-top: 10px;
+#memberAdd .layui-form-item .layui-inline{
+    width: 48%;
+    margin-left: 20px;
 }
 #memberAdd .layui-form-item .layui-input-inline {
     float: left;
-    width:620px;
+    width:75%;
     margin-right: 10px;
 }
 #memberAdd .layui-form-item {
     margin-bottom: 6px;
 }
-#memberAdd #txtArea {
-    width: 83.5%;
-    height: 25px;
+#memberAdd #remark {
+    width: 236%;
+    height: 20px;
     padding: 8px;
 }
 #memberAdd .layui-input[readonly]{
@@ -55,5 +58,5 @@
 }
 
 #memberAdd .layui-form-label {
-    width: 140px;
+    width: 20%;
 }

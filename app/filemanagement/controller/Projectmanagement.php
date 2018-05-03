@@ -93,35 +93,30 @@ class Projectmanagement extends Permissions
      */
     public function getGroup()
     {
-        if(request()->isAjax()){
-            $type = input('post.type');
-            //type = 1,建设单位，type = 2,施工单位，type = 3,监理单位,type = 4,设计单位
-            switch($type)
-            {
-                case 1:
-                    $name = "建设单位";
-                    break;
-                case 2:
-                    $name = "施工单位";
-                    break;
-                case 3:
-                    $name = "监理单位";
-                    break;
-                case 4:
-                    $name = "设计单位";
-                    break;
-            }
-            $group_data = Db::name('admin_group_type')->alias('gt')
-                ->join('admin_group g', 'g.type = gt.id', 'left')
-                ->where("gt.name",$name)
-                ->field("g.name")->order("g.id asc")->select();
-            $result = array();
-            foreach ((array)$group_data as $key=>$val)
-            {
-                $result[] = $val["name"];
-            }
+        //定义一个查询的数组
+        $name = array(1=>"建设单位",2=>"施工单位",3=>"监理单位",4=>"设计单位");
+        //定义两个空数组
+        $res = array();
+        $result = array();
+        foreach($name as $k=>$v)
+        {
+            $group_data = Db::name('admin_group')->alias('g')
+                ->join('admin_group_type gt', 'g.type = gt.id', 'left')
+                ->where("gt.name",$v)
+                ->field("g.name")
+                ->order("g.id asc")
+                ->select();
+
+            $result[$v] = $group_data;
         }
-        return (json(["data"=>$result]));
+            foreach ((array)$result as $key=>$val)
+            {
+               foreach ($val as $a=>$b)
+               {
+                   $res[$key][$a] = $b["name"];
+               }
+            }
+        return (json(["code"=>1,"data"=>$res]));
     }
 
     /**
@@ -155,24 +150,36 @@ class Projectmanagement extends Permissions
      */
     public function getBranchTree()
     {
+        if(request()->isAjax()){
             //实例化模型类
             $model = new FilebranchModel();
+            $project = new ProjectmanagementModel();
+            //当前一条数据的id
+            $id = input('post.id');
+            //获取项目类别
             //获取项目分类表中的所有的数据
             $data = $model->getDateAll();
-            if(!empty($data))
-            {
+            if (!empty($data)) {
                 //调取tree函数处理数据
                 $res = tree($data);
                 foreach ((array)$res as $k => $v) {
                     $v['id'] = strval($v['id']);
-                    $res[$k] = json_encode($v);
                 }
-            }else
-            {
+            } else {
                 $res = [];
             }
             return json($res);
+        }
     }
 
+    /**
+     * 工程项目管理添加配置项
+     * @return \think\response\Json
+     */
+    public function addConfig()
+    {
+        if(request()->isAjax()){
 
+        }
+    }
 }
