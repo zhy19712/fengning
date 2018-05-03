@@ -20,9 +20,11 @@ window.tagSwiper = new Swiper ('#tag', {
     nextButton: '.tag-button-next',
     prevButton: '.tag-button-prev',
     slidesPerView : 4,
+    spaceBetween: 30,
     centeredSlides: false,
     paginationClickable: true,
-    spaceBetween: 30,
+    mousewheelControl : true,
+    keyboardControl : true
 });
 
 //快照图片滚动
@@ -30,9 +32,19 @@ window.snapshotSwiper = new Swiper ('#snapshot', {
     nextButton: '.snapshot-button-next',
     prevButton: '.snapshot-button-prev',
     slidesPerView : 4,
+    spaceBetween: 30,
     centeredSlides: false,
     paginationClickable: true,
-    spaceBetween: 30,
+    mousewheelControl : true,
+    keyboardControl : true
+});
+
+//初始化标注/快照滚动
+$('#tt').tabs({
+    onSelect: function(title,index){
+        tagSwiper.update();
+        snapshotSwiper.update();
+    }
 });
 
 //添加快照
@@ -59,6 +71,7 @@ window.addSnapshot = function (base64RenData) {
         '</div>';
     return img;
 }
+//标注/快照操作蒙版
 $('.swiper-wrapper').on('mouseover mouseleave','div',function (e) {
     if(e.type == 'mouseover'){
         $(this).find('div.mask').stop(true,true).fadeIn(500);
@@ -66,7 +79,7 @@ $('.swiper-wrapper').on('mouseover mouseleave','div',function (e) {
         $(this).find('div.mask').stop(true,true).fadeOut(500);
     }
 });
-
+//标注/快照保存成图片
 function imageSaveAs(imgURL) {
     var pagePop = window.open(imgURL, "", "width=1, height=1, top=5000, left=5000");
     for (; pagePop.document.readyState !== "complete";) {
@@ -80,22 +93,19 @@ function imageSaveAs(imgURL) {
 layui.use('element', function(){
     var element = layui.element;
 });
-
+//属性切换
 $('#toogleAttr li').click(function () {
     var uid = $(this).attr('uid');
     $(this).addClass('active').siblings().removeClass('active');
     $('#'+ uid).show().siblings('div').hide();
 });
 
-$('#del').click(function () {
-    $(this).parents('.swiper-wrapper').remove();
-    $(this).parents('.swiper-wrapper').html();
-});
-
+//上传附件
 $.upload({
     btnText:''
 });
 
+//评论@人员选择
 $('#at').click(function () {
     window.open("./selectperson", "人员选择", "height=560, width=1000, top=200,left=400, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no,status=no");
 });
@@ -285,7 +295,11 @@ $('#backAnchor').click(function(){
     $('#anchorLayer').hide();
 });
 
-//easyui面板显隐
+/**
+ * easyui面板显隐
+ */
+
+//管理信息
 function easyUiPanelToggle() {
     var number = $("#easyuiLayout").layout("panel", "east")[0].clientWidth;
     if(number<=0){
@@ -293,6 +307,7 @@ function easyUiPanelToggle() {
     }
 }
 
+//协同信息
 function easyUiPanelToggleSouth() {
     var number = $("#centent").layout("panel", "south")[0].clientWidth;
     if(number<=0){
