@@ -47,7 +47,7 @@
         margin-bottom: 6px;
     }
     #memberAdd #txtArea {
-        width: 89.5%;
+        width: 90.3%;
         height: 25px;
         padding: 8px;
     }
@@ -84,12 +84,31 @@
         /*height: calc(100% - 34px)!important;*/
         /*border-bottom: none!important;*/
     /*}*/
+    #tableContent .colorRed i.fa:before {
+        background: #00c0ef;
+        color: #ffffff;
+    }
+    #tableContent .colorRed{
+        float: right;
+        background-color: #00c0ef;
+    }
+    #tableContent .colorRed{
+        margin-right: .5%;
+        margin-left: 10px;
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
 
 </style>
 
 <div id="tableContent" data-options="region:'center',title:''" style="padding:5px;background:#ffffff;">
     <div class="easyui-layout" data-options="fit:true">
-        <div id="tableTop" data-options="region:'north',split:true" style="width:100%;height: 57.5%; position: relative;">
+        <div id="tableTop" data-options="region:'north',split:true" style="width:100%;height: 61.5%; position: relative;">
+            <div id="config">
+                <button class="layui-btn layui-btn-sm colorRed" onclick="inheritSet()"><i class="fa fa-plus-circle"></i>&nbsp;继承设置</button>
+                <button class="layui-btn layui-btn-sm colorRed" onclick="saveBuild()"><i class="fa fa-mercury"></i>&nbsp;保存并新建</button>
+                <button class="layui-btn layui-btn-sm colorRed" onclick="saveFile()"><i class="fa fa-save"></i>&nbsp;保存</button>
+            </div>
             <!--新增用户信息开始-->
             <form class="layui-form" name="memberAdd" id="memberAdd" method="post"  action="#" onsubmit="return false">
                 <input type="hidden" name="id" id="addId" style="display: none;">
@@ -215,7 +234,7 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">互见号</label>
                         <div class="layui-input-inline">
-                            <input type="number" name="contractDay" placeholder="互见号" lay-verify="required" autocomplete="off" class="layui-input">
+                            <input type="number" name="mutualNum" placeholder="互见号" lay-verify="required" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -297,6 +316,7 @@
             </div>
         </div>
     </div>
+
 </div>
 {include file="../../public/common_footer"}
 <script type="text/javascript">
@@ -398,7 +418,6 @@
     $(".mybtn").html("<div id='test3'><i class='fa fa-check'></i>选择文件</div>");
     $(".nav").html("<div id='fileLeft'><i class='fa fa-file-text-o'></i> &nbsp;电子文件挂接</div>");
 
-
     //添加
     $("#tableContent").on("click",".mybtn #test3",function () {
         layer.open({
@@ -414,7 +433,26 @@
     });
 
 
+    //查询提交
+    layui.use(['form', 'layedit', 'laydate', 'element', 'layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer;
+    });
 
+    //继承设置
+    function inheritSet() {
+        layer.msg("继承设置")
+    }
+
+    //保存并新建
+    function saveBuild() {
+        layer.msg("保存并新建")
+    }
+
+    //保存
+    function saveFile() {
+        layui.layer.msg("保存")
+    }
 
 </script>
 </html>
