@@ -374,18 +374,16 @@
                         <script language="javascript" for="RealBimOcx" EVENT="SnapShootData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                             base64PicData = strPicData;
                             base64RenData = strRenData;
-
-                            getLabelSnapshot();    //新增之后回显
                             // TODO 需要重构
                             var snapshotImgPathArr = [];
-                            console.log(base64RenData);
                             $.ajax({
                                 url: "./labelSnapshot",
                                 type: "post",
                                 data: {
                                     picture_id:uObjSubIdSingle,
                                     type:2,
-                                    label_snapshot:base64RenData
+                                    label_snapshot:base64RenData,
+                                    compress_base64:base64PicData
                                 },
                                 dataType: "json",
                                 success: function (res) {
@@ -418,8 +416,6 @@
                         <script language="javascript" for="RealBimOcx" EVENT="MarkerData(strPicData,picWidth,picHeight,strRenData)" type="text/javascript">
                               base64PicData = strPicData;
                               base64RenData = strRenData;
-                              getLabelTag();    //新增之后回显
-                                console.log(base64RenData);
                               // TODO 需要重构
                               var user_name = $('div[uid="createNameTag"]').html()
                               var create_time = $('div[uid="createDateTag"]').html()
@@ -432,6 +428,7 @@
                                       picture_id:uObjSubIdSingle,
                                       type:1,
                                       label_snapshot:base64RenData,
+                                      compress_base64:base64PicData,
                                       user_name:user_name,
                                       create_time:create_time,
                                       remark:remark
@@ -439,7 +436,7 @@
                                   dataType: "json",
                                   success: function (res) {
                                       tagImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                                      tagImgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
+                                      tagImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
                                       tagImgPathArr.push('<div class="mask">');
                                       tagImgPathArr.push('<div class="right">');
                                       tagImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="标注另存为">');
@@ -536,9 +533,10 @@
             success: function (res) {
                 var imgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
+                    var base64PicData = res.data[i].compress_base64;
                     var base64RenData = res.data[i].label_snapshot;
                     imgPathArr.push('<div class="swiper-slide swiperSlide">');
-                    imgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
+                    imgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
                     imgPathArr.push('<div class="mask">');
                     imgPathArr.push('<div class="right">');
                     imgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="标注另存为">');
@@ -578,10 +576,11 @@
             success: function (res) {
                 var snapshotImgPathArr = [];
                 for(var i = 0;i<res.data.length;i++){
+                    console.log();
+                    var base64PicData = res.data[i].compress_base64;
                     var base64RenData = res.data[i].label_snapshot;
-                    console.log(base64RenData);
                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64RenData +'" alt="">');
+                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
                     snapshotImgPathArr.push('<div class="mask">');
                     snapshotImgPathArr.push('<div class="right">');
                     snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="快照另存为">');
