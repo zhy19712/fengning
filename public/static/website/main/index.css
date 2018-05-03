@@ -94,6 +94,64 @@
 .toggle-attr li.active,.toggle-attr li:hover{
     color: #0c91e5;
 }
+/* 模型基本属性 */
+.layui-collapse{
+    margin-top: 20px;
+}
+.layui-colla-item,.layui-collapse,.layui-show{
+    border: none;
+}
+.layui-colla-item{
+    margin-bottom: 20px;
+}
+.layui-colla-title{
+    padding: 0 15px 0 20px;
+    height: auto;
+    line-height: 1;
+    background: none;
+    font-size: 12px;
+}
+.layui-colla-icon{
+    left: 0;
+}
+/* 模型管理属性 */
+.custom-attr{
+    margin-top: 5px;
+}
+.custom-attr .layui-form-item{
+    margin: 0;
+}
+.custom-attr .layui-form-label{
+    padding: 9px 0;
+    width: auto;
+    color: #333;
+}
+.custom-attr .layui-form-mid{
+    float: right;
+}
+.custom-attr .layui-input-block{
+    margin: 0;
+}
+.attr-group,.attr-group .layui-input-inline{
+    width: 100%;
+}
+.attr-group .layui-input-inline{
+    margin-bottom: 10px;
+}
+.attr-group .layui-input{
+    width: 40%;
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+.attr-group i.fa{
+    display: block;
+    margin: 3px 0;
+    font-size: 14px;
+}
+.attr-group .layui-form-mid{
+    padding: 0 !important;
+}
 /* 标注基本属性 */
 .add-tag{
     padding-bottom: 10px;
@@ -136,40 +194,6 @@
 }
 .tag i.fa{
     margin-left: 5px;
-}
-
-/* 管理属性 */
-.custom-attr .layui-form-label{
-    padding: 9px 0;
-    width: auto;
-    font-weight: bold;
-    color: #0c91e5;
-}
-.custom-attr .layui-form-mid{
-    float: right;
-}
-.custom-attr .layui-input-block{
-    margin: 0;
-}
-.attr-group,.attr-group .layui-input-inline{
-    width: 100%;
-}
-.attr-group .layui-input-inline{
-    margin-bottom: 10px;
-}
-.attr-group .layui-input{
-    width: 40%;
-    display: inline-block;
-    vertical-align: middle;
-    float: none;
-}
-.attr-group i.fa{
-    display: block;
-    margin: 3px 0;
-    font-size: 14px;
-}
-.attr-group .layui-form-mid{
-    padding: 0 !important;
 }
 
 /* 锚点 */

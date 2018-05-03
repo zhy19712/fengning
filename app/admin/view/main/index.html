@@ -517,6 +517,11 @@
     };
     //保存标注
     $('#save').click(function () {
+        var remarkTag = $('#remarkTag').text();
+        if(remarkTag=='请输入内容'||remarkTag==''){
+            $('#remarkTag').focus();
+            return false;
+        }
         RealBimOcx.CreateMarkerEndInMem(true, 0, 0, true, true);  //保存标注
     });
     //回显标注
@@ -535,11 +540,13 @@
                 for(var i = 0;i<res.data.length;i++){
                     var base64PicData = res.data[i].compress_base64;
                     var base64RenData = res.data[i].label_snapshot;
+                    var imgPathSplit = res.data[i].url.split('.');
+                    imgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                     imgPathArr.push('<div class="swiper-slide swiperSlide">');
-                    imgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                    imgPathArr.push('<img src='+ imgPath +' alt="">');
                     imgPathArr.push('<div class="mask">');
                     imgPathArr.push('<div class="right">');
-                    imgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="标注另存为">');
+                    imgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(imgPath)" title="标注另存为">');
                     imgPathArr.push('<i class="fa fa-save"></i>');
                     imgPathArr.push('</a>');
                     imgPathArr.push('<a href="javascript:;" title="删除标注">');
@@ -577,11 +584,13 @@
                 for(var i = 0;i<res.data.length;i++){
                     var base64PicData = res.data[i].compress_base64;
                     var base64RenData = res.data[i].label_snapshot;
+                    var imgPathSplit = res.data[i].url.split('.');
+                    snapshotImgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
-                    snapshotImgPathArr.push('<img src="data:image/png;base64,'+ base64PicData +'" alt="">');
+                    snapshotImgPathArr.push('<img src='+ snapshotImgPath +' alt="">');
                     snapshotImgPathArr.push('<div class="mask">');
                     snapshotImgPathArr.push('<div class="right">');
-                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(base64RenData)" title="快照另存为">');
+                    snapshotImgPathArr.push('<a href="javascript:;" onclick="imageSaveAs(snapshotImgPath)" title="快照另存为">');
                     snapshotImgPathArr.push('<i class="fa fa-save"></i>');
                     snapshotImgPathArr.push('</a>');
                     snapshotImgPathArr.push('<a href="javascript:;" title="删除快照">');
