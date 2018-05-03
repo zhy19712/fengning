@@ -192,7 +192,6 @@
 <body  class="easyui-layout">
 <!--右边的工程划分-->
 <div id="division" data-options="region:'west',title:'工程划分',split:true" style="width:240px;">
-    <!--<div id="openNode"><button>+</button></div>-->
     <ul class="ztree" id="ztree"></ul>
 </div>
 <!--左边的单元工-->
@@ -291,9 +290,7 @@
 <script type="text/javascript">
 
     //组织结构表格
-    var  tableItem, implementation, imageData, urlUnit, resultId;
-
-    // urlUnit = "{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id=";
+    var  tableItem, implementation, imageData, resultId;
 
     tableItem = $('#tableItem').DataTable({
         retrieve: true,
@@ -375,7 +372,6 @@
                         + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
                         + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                         + "<input class='file_url' style='display: none;' name='cpr_id' value="+ id +">"
-                        // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                         + "<button type='submit' class=btn" + id +"></button>"
                         + "</form>"
                     $("#form_container").append(str);
@@ -496,7 +492,6 @@
     function ajaxDataFilter(treeId, parentNode, responseData) {
         if (responseData) {
             for(var i =0; i < responseData.length; i++) {
-                // console.log(responseData[i]);
                 responseData[i].name = responseData[i].el_start + responseData[i].el_cease + responseData[i].pile_number + responseData[i].site;
                 eTypeId = responseData[i].en_type;
             }
@@ -506,7 +501,6 @@
 
     //初始化数据的方法
     function initData(selfid){
-        // console.log(selfid + '555');
         var settingUnit = {
             view: {
                 showLine: true, //设置 zTree 是否显示节点之间的连线。
@@ -537,7 +531,6 @@
 
     //点击获取路径
     function nodeClickUnit(e, treeId, node) {
-        // console.log(node);
         selectData = "";
         sNodesUnit = zTreeObjUnit.getSelectedNodes()[0];//选中节点
         console.log(sNodesUnit);
@@ -565,9 +558,6 @@
         if(selfidUnit != undefined || selfidUnit != null){
             tableItem.ajax.url("{:url('/quality/common/datatablesPre')}?tableName=quality_division_controlpoint_relation&division_id="+selfidUnit).load();
         }
-        // $(".mybtn").css("display","none");//新增
-        // $(".alldel").css("display","none");//全部删除
-        // $(".bitCodes").css("display","block");
         $("#tableContent .imgList").css('display','block');
         $("#homeWork").css("color","#2213e9");
     }
@@ -596,8 +586,6 @@
                 if($(".imgNone").attr("id") == 'img0'){
                     $("#img0").css("display","none");
                 }
-                // alert($(".listName").height());
-                // alert($(".result").height());
                 $("#tableItem_wrapper").css("height","calc(100% - "+$(".imgList").outerHeight()+"px - "+$(".result").outerHeight()+"px - 85px)");
                 // }else if(res.code==0){
                 //     layer.msg(res.msg);
@@ -871,7 +859,6 @@
                         + "<form name=download"+id +" action="+ url +" method='get' target=downloadFrame"+ id + ">"
                         + "<span class='file_name' style='color: #000;'>"+str+"</span>"
                         + "<input class='file_url' style='display: none;' name='id' value="+ id +">"
-                        // + "<input class='file_type' style='display: none;' name='type_model' value="+ type_model +">"
                         + "<button type='submit' class=btn" + id +"></button>"
                         + "</form>"
                     $("#form_container").append(str);
