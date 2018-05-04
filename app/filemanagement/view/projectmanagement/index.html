@@ -56,10 +56,10 @@
 <form class="layui-form layui-form-pane" name="memberAdd" id="memberAdd" method="post"  action="#" onsubmit="return false" style="display: none;">
     <input type="hidden" name="id" id="addId" style="display: none;">
 
-    <div class="layui-form-item" style="float:right;margin-right: 4%; margin-top: 3px; margin-bottom: 3px; ">
+    <div id="btnBox" class="layui-form-item" style="float:right;margin-right: 4%; margin-top: 3px; margin-bottom: 3px; ">
         <button  class="layui-btn layui-btn-radius layui-btn-sm layui-btn-normal" lay-submit="" lay-filter="demo1" ><i class="fa fa-save"></i>&nbsp;&nbsp;保存</button>
-        <button onclick="save(1)" class="layui-btn layui-btn-sm layui-btn-radius" ><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;保存并新建</button>
-        <button  class="layui-btn layui-btn-radius layui-btn-sm layui-btn-warm" ><i class="fa fa-mercury"></i>&nbsp;&nbsp;继承设置</button>
+        <button  class="layui-btn layui-btn-sm layui-btn-radius" lay-submit=""  lay-filter="demo2"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;保存并新建</button>
+        <button onclick="setInherit()" class="layui-btn layui-btn-radius layui-btn-sm layui-btn-warm" ><i class="fa fa-mercury"></i>&nbsp;&nbsp;继承设置</button>
         <button  class="layui-btn layui-btn-radius layui-btn-sm layui-btn-danger layui-layer-close" ><i class="fa fa-mail-forward"></i>&nbsp;&nbsp;返回</button>
     </div>
     <hr>
@@ -204,6 +204,131 @@
         </div>
     </div>
 </form>
+
+<div id="inherit" style="display: none;">
+    <div class="col-md-5">
+    <div class="hr-line-dashed" style="margin:5px;"></div>
+    <div  style="text-align: center;">
+        <label>
+            <span class="cBoxT">是否全选</span>
+            <input type="checkbox" class="checkAll" value="all" >
+        </label>
+    </div>
+    <table clclass="full-width" style="width:100%">
+        <tr>
+            <td style="width:33%">
+                <label>
+                    <input type="checkbox" value="CatCode" class="checkChild" >目录代号
+                </label>
+            </td>
+            <td style="width:33%">
+                <label>
+                    <input type="checkbox" value="ProjectCode" class="checkChild" >项目代号
+                </label>
+            </td>
+            <td style="width:33%">
+                <label>
+                    <input type="checkbox" value="CatExtensionCode" class="checkChild" >改扩建目录代号
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    <input type="checkbox" value="ProjectName" class="checkChild" >项目名称
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="BuilderId" class="checkChild" >建设单位
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="ProjcetType" class="checkChild" >项目类别
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    <input type="checkbox" value="OperatorUnit" class="checkChild" >运营使用单位
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="ElectricLevel" class="checkChild" >电压等级
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="MajorUnit" class="checkChild" >主营单位
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    <input type="checkbox" value="ApprovalTime" class="checkChild" >立项时间
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="BidsUnit" class="checkChild" >招标单位
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="StartTime" class="checkChild" >开工时间
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    <input type="checkbox" value="BidUnit" class="checkChild" >中标单位
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="EndTime" class="checkChild" >竣工时间
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="WorkerId" class="checkChild" >施工单位
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    <input type="checkbox" value="DesignerId" class="checkChild" >设计单位
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="SupervisionId" class="checkChild" >监理单位
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" value="Comment" class="checkChild" >备注
+                </label>
+            </td>
+        </tr>
+    </table>
+    <div class="hr-line-dashed" style="margin:20px 0 0;"></div>
+    <div style="text-align: right;margin-top: 5px;">
+
+        <button type="button" style="margin-right: 5px;" class="layui-btn layui-btn-sm layui-btn-normal" onclick="SaveOpt();">保存</button>
+
+        <button  type="button" style="margin-right: 5px;" class="layui-btn layui-btn-sm layui-btn-danger layui-layer-close">关闭</button>
+    </div>
+
+</div>
+
+</div>
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/filemanagement/projectmanagement/index.js"></script>
 </body>
