@@ -103,9 +103,12 @@ i.fa:hover:before{
     position: absolute;
     bottom: 0;
     left: 0;
+    padding-bottom: 5px;
     width: 100%;
     line-height: 34px;
     background: #FFF;
+    border: 1px solid #cecece;
+    border-top: none;
 }
 .pagination li{
     display: inline;
@@ -142,6 +145,19 @@ select.form-control {
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    padding: 0;
+}
+.dataTables_wrapper .dataTables_paginate{
+    padding: 0;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+    border: 1px solid transparent;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:active{
+    background: none;
+    box-shadow: none;
 }
 /* 表格 */
 .dataTables_wrapper,.tbcontainer{

@@ -82,6 +82,9 @@
 .content,.tab-content{
     border: none;
 }
+.tabs-wrap{
+    height: 27px;
+}
 .tabs-header{
     background-color: #FFF;
 }
@@ -103,14 +106,22 @@
 .table th{
     text-align: center;
 }
+div.dataTables_wrapper.no-footer{
+    height: 100%;
+}
+div.dataTables_wrapper.no-footer .dataTables_info,div.dataTables_wrapper.no-footer .paging_full_numbers{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 36px;
+    line-height: 36px;
+}
+div.dataTables_wrapper.no-footer .paging_full_numbers{
+    padding-right: 10px;
+    right: 0;
+}
 .webuploader-container{
     float: right;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
-    border: 1px solid transparent;
-    padding: 0.5em 1em;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button:active{
-    background: none;
-    box-shadow: none;
+    margin-right: 5px;
+    height: 33px;
 }

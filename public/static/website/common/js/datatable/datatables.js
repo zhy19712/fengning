@@ -11,15 +11,20 @@
             dom:'lftipr',
             serverSide:true,
             processing:true,
-            tableId:'tableItem'
+            tableId:'tableItem',
+            tbcontainer:'tbcontainer',
+            isPage:true
         }
 
         $.extend(option,options);
 
-        var  tbcontainer = '<div class="tbcontainer">' +
-                            '<div class="mark"></div>' +
-                            '</div>';
-        $('table.table').after(tbcontainer);
+        if(option.isPage){
+            var  tbcontainer = '<div class='+ option.tbcontainer +'>' +
+                                '<div class="mark"></div>' +
+                                '</div>';
+            $('#'+option.tableId).after(tbcontainer);
+        }
+
 
        window.tableItem = $('#'+option.tableId).DataTable( {
             retrieve: true,
