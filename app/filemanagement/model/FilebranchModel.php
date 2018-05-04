@@ -139,9 +139,9 @@ class FilebranchModel extends Model
     /**
      * 返回所有的数据
      */
-    public function getDateAll()
+    public function getDateAll($id)
     {
-        $data = $this->order("id","asc")->select();
+        $data = $this->where("classifyid",$id)->order("id","asc")->select();
         return $data;
     }
 }

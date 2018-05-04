@@ -153,12 +153,16 @@ class Projectmanagement extends Permissions
         if(request()->isAjax()){
             //实例化模型类
             $model = new FilebranchModel();
-            $project = new ProjectmanagementModel();
             //当前一条数据的id
             $id = input('post.id');
-            //获取项目类别
+            //获取项目类别,获取项目分类树节点id
+            $classifyid = Db::name('file_project_management')->alias('p')
+                ->join('file_branch_directory b', 'b.class_name = p.project_category', 'left')
+                ->where("p.id",$id)
+                ->field("b.classifyid")
+                ->find();
             //获取项目分类表中的所有的数据
-            $data = $model->getDateAll();
+            $data = $model->getDateAll($classifyid["classifyid"]);
             if (!empty($data)) {
                 //调取tree函数处理数据
                 $res = tree($data);
