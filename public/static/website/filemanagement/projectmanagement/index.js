@@ -15,9 +15,10 @@ layui.use(['element',"layer",'form','laypage','laydate','layedit'], function(){
       url:"./editCate",
       data:data.field,
       success: function (res) {
-        console.log(selfid)
         if(res.code == 1) {
+          tableItem.ajax.url("/filemanagement/common/datatablespre/tableName/file_project_management.shtml").load();
           layer.closeAll();
+          layer.msg("保存成功");
         }else{
           layer.msg(res.msg);
         }
@@ -25,7 +26,28 @@ layui.use(['element',"layer",'form','laypage','laydate','layedit'], function(){
     });
     return false;
   });
-
+  form.on('submit(demo2)', function(data){
+    $.ajax({
+      type: "post",
+      url:"./editCate",
+      data:data.field,
+      success: function (res) {
+        if(res.code == 1) {
+          tableItem.ajax.url("/filemanagement/common/datatablespre/tableName/file_project_management.shtml").load();
+          $("#memberAdd input ,#memberAdd select,#memberAdd textarea").val("");
+          $(".datepickers").each(function (index,that) {
+            laydate.render({
+              elem: that
+              ,value: new Date() //参数即为：2018-08-20 20:08:08 的时间戳
+            });
+          });
+        }else{
+          layer.msg(res.msg);
+        }
+      }
+    });
+    return false;
+  });
   //日期选择器
   $(".datepickers").each(function (index,that) {
     laydate.render({
@@ -117,7 +139,6 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
   selectData = tableItem.row(".select-color").data();//获取选中行数据
 
   if($(e.target).hasClass("fa-pencil")){
-    editbranch($(this).attr("data-tt-id"));
   }
 });
 
@@ -130,10 +151,15 @@ function addproject() {
     area: ['100%', '100%'],
     content:$("#memberAdd"),
     success:function (){
-
+      $(".datepickers").each(function (index,that) {
+        layui.laydate.render({
+          elem: that
+          ,value: new Date() //参数即为：2018-08-20 20:08:08 的时间戳
+        });
+      });
     },
     end:function () {
-
+      $("#memberAdd input ,#memberAdd select,#memberAdd textarea").val("");
     }
   });
 }
@@ -178,7 +204,7 @@ function getGroup() {
 
     }
   })
-}
+};
 getBranchType();
 getGroup();
 
@@ -187,38 +213,60 @@ function setcog() {
   if(selectData==""){
     layer.msg("请先选择项目");
     return ;
-  }
+  };
   $("#conid").val(selectData[6]);
-  zTreeObj.reAsyncChildNodes(null, "refresh");
+  zTreeObj.reAsyncChildNodes(null, "refresh",true,function f() {
+    $.ajax({
+      url:"./getindex",
+      type:"POST",
+      data:{id:selectData[6]},
+      dataType:"JSON",
+      success:function (res) {
+        if(res.data.branch_id.length>0){
+          $.each(res.data.branch_id, function (i, item) {
+            var node = zTreeObj.getNodeByParam("id", item);
+            zTreeObj.checkNode(node, true, false);
+          });
+        }
+      }
+    });
+  });
+
   layer.open({
     type: 1,
     title: '配置',
     area: ['660px', '488px'],
-    content:$("#config"),
-    end:function () {
-
-    }
+    content:$("#config")
   });
 }
 //获取配置树
-function getBranchTree() {
+// function getBranchTree() {
+//
+//   $.ajax({
+//     url:'./getBranchTree',
+//     data:{type:1},
+//     type:"POST",
+//     dataType:"JSON",
+//     success:function (res) {
+//       console.log(res)
+//       if(res.code==1){
+//           console.log(res)
+//       }else{
+//         layer.msg(res.msg);
+//       }
+//     }
+//   })
+// }
+//数据处理
+function DataFilter(treeId, parentNode, data) {
+  if (data) {
+    $.each(data, function (i, item) {
+      item.class_name = item.code + "("+item.class_name+")";
+    });
+  }
+  return data;
 
-  $.ajax({
-    url:'./getBranchTree',
-    data:{type:1},
-    type:"POST",
-    dataType:"JSON",
-    success:function (res) {
-      console.log(res)
-      if(res.code==1){
-          console.log(res)
-      }else{
-        layer.msg(res.msg);
-      }
-    }
-  })
 }
-
 //初始化配置树
 var setting = {
   view: {
@@ -234,7 +282,9 @@ var setting = {
     otherParam: {"id":function () {
         return $("#conid").val();
       }},
-    dataType :"json"
+    dataType :"json",
+    dataFilter:DataFilter
+
   },
   data:{
     simpleData : {
@@ -261,20 +311,20 @@ function savecog() {
   $.each(Snodes, function (i, item) {
     idArr.push(item.id);
   });
-  // $.ajax({
-  //   url:'./',
-  //   type:"POST",
-  //   data:{idArr:idArr},
-  //   dataType:"JSON",
-  //   success:function (res) {
-  //     if(res.code==1){
-  //       layer.msg("保存成功");
-  //       layer.closeAll();
-  //     }else{
-  //       layer.msg(res.msg);
-  //     }
-  //   }
-  // })
+  $.ajax({
+    url:'./addConfig',
+    type:"POST",
+    data:{idArr:idArr,id:$("#conid").val()},
+    dataType:"JSON",
+    success:function (res) {
+      if(res.code==1){
+        layer.msg("保存成功");
+        layer.closeAll();
+      }else{
+        layer.msg(res.msg);
+      }
+    }
+  })
   layer.closeAll();
 }
 
@@ -288,8 +338,10 @@ $("#tableItem").delegate("tbody tr","click",function (e) {
   console.log(selectData)
 });
 
-//
+//展示
 function conShow(id) {
+  $("#memberAdd input ,#memberAdd select,#memberAdd textarea").attr("disabled",true);
+  $("#btnBox").hide();
   $.ajax({
     url:"./getindex",
     type:"POST",
@@ -318,14 +370,99 @@ function conShow(id) {
           layui.form.render('select');
           layer.open({
             type: 1,
-            title: '',
-            closeBtn:0,
+            title: '查看',
             area: ['100%', '100%'],
-            content:$("#memberAdd")
+            content:$("#memberAdd"),
+            end:function () {
+              $("#memberAdd input ,#memberAdd select,#memberAdd textarea").attr("disabled",false);
+              $("#btnBox").show();
+              $("#memberAdd input ,#memberAdd select,#memberAdd textarea").val("");
+            }
         });
       } else{
         layer.msg(res.msg);
       }
     }
+  });
+}
+
+//编辑
+function conEdit(id) {
+  $.ajax({
+    url:"./getindex",
+    type:"POST",
+    data:{id:id},
+    dataType:"JSON",
+    success:function (res) {
+      if(res.code == 1){
+        $("#addId").val(res.data.id);
+        $("#directory_code").val(res.data.directory_code);
+        $("#project_code").val(res.data.project_code);
+        $("#revision_code").val(res.data.revision_code);
+        $("#entry_name").val(res.data.entry_name);
+        $("#construction_unit").val(res.data.construction_unit);
+        $("#project_category").val(res.data.project_category);
+        $("#operation_use_unit").val(res.data.operation_use_unit);
+        $("#voltage_level").val(res.data.voltage_level);
+        $("#main_unit").val(res.data.main_unit);
+        $("#standing_time").val(res.data.standing_time);
+        $("#tendering_unit").val(res.data.tendering_unit);
+        $("#start_time").val(res.data.start_time);
+        $("#winning_bid_unit").val(res.data.winning_bid_unit);
+        $("#completion_time").val(res.data.completion_time);
+        $("#builder_unit").val(res.data.builder_unit);
+        $("#design_unit").val(res.data.design_unit);
+        $("#construction_control_unit").val(res.data.construction_control_unit);
+        $("#remark").val(res.data.remark);
+        layui.form.render('select');
+        layer.open({
+          type: 1,
+          title: '查看',
+          area: ['100%', '100%'],
+          closeBtn:0,
+          content:$("#memberAdd"),
+          end:function () {
+            $("#memberAdd input ,#memberAdd select,#memberAdd textarea").val("");
+          }
+        });
+      } else{
+        layer.msg(res.msg);
+      }
+    }
+  });
+}
+
+//删除
+function conDel(id) {
+  $.ajax({
+    url:"./delCate",
+    type:"POST",
+    data:{id:id},
+    dataType:"JSON",
+    success:function (res) {
+      if(res.code==1){
+        layer.msg("删除成功");
+        tableItem.ajax.url("/filemanagement/common/datatablespre/tableName/file_project_management.shtml").load()
+      }else{
+        layer.msg(res.msg);
+      }
+    }
   })
 }
+
+//继承设置
+function setInherit() {
+  layer.open({
+    type:1,
+    title:'继承设置',
+    area:['700px','500px'],
+    content:$("#inherit")
+  })
+}
+//全选
+$(".checkAll").click(function() {
+  $('input[type="checkbox"]').prop("checked", this.checked);
+});
+$('.checkChild').click(function() {
+  $(".checkAll").prop("checked", $('.checkChild').length == $(".checkChild:checked").length ? true : false);
+});

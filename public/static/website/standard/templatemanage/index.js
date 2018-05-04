@@ -1,5 +1,6 @@
 //组织结构表格
 var tableItem = $('#tableItem').DataTable({
+    pagingType: "full_numbers",
     retrieve: true,
     processing: true,
     serverSide: true,
