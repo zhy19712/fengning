@@ -15,5 +15,16 @@
     cursor: no-drop;
     background: #ccc;
 }
-.dataTables_wrapper .dataTables_paginate .paginate_button{}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover{}
+.layui-form-item .department .layui-input-inline{
+    margin: 0;
+}
+.layui-form-item .department .layui-form-mid{
+    padding: 9px 12px !important;
+    background: #1E9FFF;
+}
+.layui-form-item .department .layui-form-mid i.fa:before{
+    color: #FFF;
+}
+.layui-textarea{
+    width: 94.5%;
+}
