@@ -1,5 +1,6 @@
 {include file="../../public/common_header"}
 <link rel="stylesheet" href="__WEBSITE__/progress/monthplan/index.css">
+
 <div id="content">
     <div class="layui-row page-head">
         <div class="layui-col-xs2">
@@ -329,9 +330,9 @@
                 "orderable": false,
                 "render": function (data, type, row) {
                     var html = "<a class='styleColor' type='button' href='javasrcipt:;' style='margin-left: 5px;' href='../Yearplan/index'><i title='查看' class='fa fa fa-search'></i></a>";
-                    html += "<a class='styleColor' type='button' style='margin-left: 5px;' href='../Yearplan/index'><i title='编辑' class='fa fa fa-pencil'></i></a>";
-                    html += "<a class='styleColor' type='button' style='margin-left: 5px;' href='javascript:;'><i title='删除' class='fa fa fa-remove'></i></a>";
-                    html += "<a class='styleColor' href='../Yearplan/index' style='margin-left: 7px;'><i title='关联视图' class='fa fa-chain'></i></a>";
+                    html += "<a class='styleColor' type='button' href='../Yearplan/index' style='margin-left: 5px;'><i title='编辑' class='fa fa fa-pencil'></i></a>";
+                    html += "<a class='styleColor' type='button' href='javascript:;' style='margin-left: 5px;'><i title='删除' class='fa fa fa-remove'></i></a>";
+                    html += "<a class='styleColor' href='javascript:;' style='margin-left: 7px;' onclick='viewFile("+data.extn+")'><i title='关联视图' class='fa fa-chain'></i></a>";
                     return html;
                 }
             }
@@ -355,13 +356,14 @@
             $('#versonPro_info').insertBefore(".mark");
             $('#versonPro_paginate').insertBefore(".mark");
         }
-
     } );
 
-    layui.use('form', function(){
-
-
-    });
+    //关联视图
+    function viewFile(id) {
+        document.cookie="monthId="+id;
+        window.open('./assview.shtml');
+        console.log(id)
+    }
 
     //添加计划
     layui.use('layer', function(){
@@ -421,5 +423,6 @@
             }
         });
     }
+
 </script>
 </html>
