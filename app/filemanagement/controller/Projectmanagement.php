@@ -187,9 +187,7 @@ class Projectmanagement extends Permissions
             //实例化模型类
             $model = new ProjectmanagementModel();
             $id = input("post.id");//id
-            $id = 1;
-            $idArr = input("post.idArr");//项目类别的数组
-            $idArr = [1,2,3,4,5];
+            $idArr = input("post.idArr/a");//项目类别的数组
             if(!empty($idArr))
             {
                 $idarr = implode(",",$idArr);
