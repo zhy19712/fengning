@@ -141,26 +141,32 @@ $('#implementBtn').html('上传');
 $('#imageDataBtn').html('上传');
 
 //加载控制点执行情况及图像资料
+// TODO 需要重构
 $("#tableItem").on("click","tr",function(){//给tr或者td添加click事件
     var data=window.tableItem.row(this).data();//获取值的对象数据
-    console.log(data);
+    if(!data){
+        return false;
+    }
     var controlId = data[3];
     var index = $('#index').val();
     $('#controlId').val(controlId);
-    var tableItem = $('#implement').DataTable();
     if(index==0){
+        var tableItem = $('#implement').DataTable();
         tableItem.ajax.url('/quality/common/datatablesPre?tableName=unit_quality_manage_file&controlId='+ controlId +'&type=1').load();
     }
     if(index==1){
+        var tableItem = $('#imageData').DataTable();
         tableItem.ajax.url('/quality/common/datatablesPre?tableName=unit_quality_manage_file&controlId='+ controlId +'&type=2').load();
     }
     $('#implement_wrapper,#imageData_wrapper,.tbcontainer,#subList').show();
     $('#implement_wrapper,#imageData_wrapper').find('.tbcontainer').remove();
     implementUpload();
+    imageDataUpload();
 });
 
 
 //tab切换
+// TODO 需要重构
 $('#tabs').tabs({
     onUpdate:function(title,index){
         $('#index').val(index);
@@ -186,7 +192,7 @@ $('#tabs').tabs({
 /**
  * 上传
  */
-
+// TODO 需要重构
 //控制点执行情况
 function implementUpload(){
     var controlId = $('#controlId').val();
@@ -198,7 +204,9 @@ function implementUpload(){
             file_type:''
         },
         uploadSuccess:function (res) {
-            console.log(res);
+            layer.msg(res.msg);
+            var tableItem = $('#implement').DataTable();
+            tableItem.ajax.url('/quality/common/datatablesPre?tableName=unit_quality_manage_file&controlId='+ controlId +'&type=1').load();
         },
         uploadStart:function (uploader){
             uploader.options.formData.contr_relation_id = controlId;
@@ -209,15 +217,18 @@ function implementUpload(){
 
 //图像资料
 function imageDataUpload(){
+    var controlId = $('#controlId').val();
     $.upload({
         btnId:'#imageDataBtn',
         server:'../../editRelation',
-        data:{
+        formData:{
             contr_relation_id:'',
             file_type:''
         },
         uploadSuccess:function (res) {
-            console.log(res);
+            layer.msg(res.msg);
+            var tableItem = $('#imageData').DataTable();
+            tableItem.ajax.url('/quality/common/datatablesPre?tableName=unit_quality_manage_file&controlId='+ controlId +'&type=2').load();
         },
         uploadStart:function (uploader){
             uploader.options.formData.contr_relation_id = controlId;

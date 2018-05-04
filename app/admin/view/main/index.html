@@ -387,7 +387,6 @@
                                 },
                                 dataType: "json",
                                 success: function (res) {
-                                    console.log(res);
                                     var imgPathSplit = res.base64_val_url.split('.');
                                     addSnapshotImgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
@@ -438,7 +437,6 @@
                                   },
                                   dataType: "json",
                                   success: function (res) {
-                                      console.log(res);
                                       var imgPathSplit = res.base64_val_url.split('.');
                                       addImgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                                       tagImgPathArr.push('<div class="swiper-slide swiperSlide">');
@@ -590,7 +588,6 @@
                 for(var i = 0;i<res.data.length;i++){
                     var base64PicData = res.data[i].compress_base64;
                     var base64RenData = res.data[i].label_snapshot;
-                    console.log(res.data[i].base64_val_url);
                     var imgPathSplit = res.data[i].base64_val_url.split('.');
                     snapshotImgPath = imgPathSplit[1]+ '.'+imgPathSplit[2];
                     snapshotImgPathArr.push('<div class="swiper-slide swiperSlide">');
