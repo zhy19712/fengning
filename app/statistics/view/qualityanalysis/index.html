@@ -18,7 +18,10 @@
         <div id="mainBar" style="width: 90%;height:400px;" class="main"></div>
         <div style="clear: both;overflow: auto;margin-top: 20px;display: none;" class="tableBox">
             <table id="tableItem" style="width: 90%;" border="1" class="layui-table">
-                <caption style="font-weight: bold;font-size: 16px;color: #000;"><span>2018年4月份单元工程质量验收情况统计</span><span style="display: block">（2018.03.26-2018-04.25）</span></caption>
+                <caption style="font-weight: bold;font-size: 16px;color: #000;">
+                    <span id="historic_table"></span>
+                    <span id="historic_table_slot" style="display: block;"></span>
+                </caption>
                 <thead>
                 <tr>
                     <th>类型</th>
@@ -42,328 +45,24 @@
         </div>
     </div>
     <div style="width: 50%;float: left;">
+        <div>
+            <h3 style="display: inline-block;">年度查询:</h3>
+            <select id="year">
+                <option value="2018">2018年</option>
+            </select>
+            <h3 style="display: inline-block;">显示选择：</h3>
+            <select name="" id="showSelect">
+                <option value="yes全部">全部</option>
+                <option value="优良率">优良率</option>
+                <option value="优cc率">优cc率</option>
+            </select>
+        </div>
         <div id="mainLine" style="width: 96%;height:700px; margin-left:4%;" class="main"></div>
     </div>
 </div>
 
 {include file="../app/public/common_footer.html"}
-<script>
-    //
-    // 基于准备好的dom，初始化echarts实例
-    var myChartBar = echarts.init(document.getElementById('mainBar'));
-    // 指定图表的配置项和数据
-    optionBar = {
-        title: {
-            text: '2018年4月份单元工程质量验收情况统计',
-            subtext:'（2018.03.26-2018-04.25）',
-            x:'center', //居中
-            y:'top'
-        },
-        color:['#EED5B7','#FFC125', '#1E90FF'],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        legend: {
-            data: ['总计', '合格' , '优良'],
-            x:"right",
-            top:30
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis: {
-            type: 'value',
-            boundaryGap: [0, 0.01]
-        },
-        yAxis: {
-            type: 'category',
-            data: ['标段1','标段2','标段3']
-        },
 
-        series: [
-            {
-                name: '总计',
-                type: 'bar', //柱状图
-                data: [18203, 23489, 29034]
-            },
-            {
-                name: '合格',
-                type: 'bar',
-                data: [19325, 23438, 31000]
-            },
-            {
-                name: '优良',
-                type: 'bar',
-                data: [19325, 23438, 31000]
-            }
-        ]
-    };
-    // 使用刚指定的配置项和数据显示图表。
-    myChartBar.setOption(optionBar);
-        //折线图
-    var myChartLine = echarts.init(document.getElementById('mainLine'));
-    var dataMonthNumber = [
-        [
-            {
-                name:"优良单元数量",
-                value:'22'
-
-            },
-            {
-                name:"合格单元数量",
-                value:"33"
-            }
-        ],
-        [
-            {
-                name:"优良单元数量",
-                value:'23'
-
-            },
-            {
-                name:"合格单元数量",
-                value:"44"
-            }
-        ],
-        [
-            {
-                name:"优良单元数量",
-                value:'23'
-
-            },
-            {
-                name:"合格单元数量",
-                value:"44"
-            }
-        ],
-        [
-            {
-                name:"优良单元数量",
-                value:'23'
-
-            },
-            {
-                name:"合格单元数量",
-                value:"44"
-            }
-        ],
-        [
-            {
-                name:"优良单元数量",
-                value:'23'
-
-            },
-            {
-                name:"合格单元数量",
-                value:"44"
-            }
-        ],
-        [
-            {
-                name:"优良单元数量",
-                value:'23'
-
-            },
-            {
-                name:"合格单元数量",
-                value:"44"
-            }
-        ],
-        [
-            {
-                name:"优良单元数量",
-                value:'23'
-
-            },
-            {
-                name:"合格单元数量",
-                value:"44"
-            }
-        ]
-    ];
-    optionLine = {
-        title:{
-            text:'质量验评趋势图'
-        },
-        tooltip: {
-            trigger: 'axis',
-        },
-        legend:{
-            data:['优良率（%）'],
-        },
-        xAxis: {
-            type: 'category',
-            axisLabel:{ //坐标轴刻度标签的相关设置。
-                interval:0,// 强制显示所有标签
-                rotate:30 //刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠。
-            },
-            data: ['2018年1月', '2018年2月', '2018年3月', '2018年4月', '2018年5月', '2018年6月', '2018年7月']
-        },
-        yAxis: {
-            type: 'value',
-            axisLabel: {
-                show: true,
-                interval: 'auto',
-                formatter: '{value} %'//刻度标签的内容格式器，支持字符串模板和回调函数两种形式。
-            },
-            show: true
-        },
-        series: [
-            {
-                name:'优良率',
-                data: [20, 30, 50, 60, 20, 100, 70],
-                type: 'line',
-                itemStyle: {
-                    normal: {
-                        label: {
-                            show: true,
-                            position: 'top',
-                            formatter: '{c}%'
-                        }
-                    }
-                }
-            }
-        ]
-    };
-    myChartLine.setOption(optionLine);
-    var timeline = ['2018年1月', '2018年2月', '2018年3月', '2018年4月', '2018年5月', '2018年6月', '2018年7月']; //折线图月
-    var excellentMonth = [];  //折线图月优良率
-
-    //表格
-    var section = ['标段1','标段2','标段3'];//标段
-    var excellent = [1,2,3]; //优良率
-    var qualified = [1,2,3]; //合格率
-    var excellentNumber = [1,2,3]; //优良数
-    var qualifiedNumber = [1,2,3]; //合格数
-    var total = [2,4,6];  //合计率
-    var totalNumber = [2,4,6];  //合计数
-    var sectionHtml ='',excellentHtml='',qualifiedHtml='',totalHtml = '';//html
-    //初始化图表
-    function getInit(){
-        for (var j = 0;j<section.length;j++){
-            sectionHtml += '<th>'+section[j]+'</th>';
-            excellentHtml += '<td>'+excellent[j]+'</td>';
-            qualifiedHtml += '<td>'+qualified[j]+'</td>';
-            totalHtml += '<td>'+total[j]+'</td>';
-        }
-        $('#tableItem thead tr').append(sectionHtml);
-        $('#tableItem tbody tr:first-child').append(excellentHtml);
-        $('#tableItem tbody tr:nth-child(2)').append(qualifiedHtml);
-        $('#tableItem tbody tr:nth-child(3)').append(totalHtml);
-        $('.tableBox').show();
-        myChartBar.setOption({
-          title: {
-            text: $("#historic option:selected").html(),
-            subtext:month222[0],
-          },
-            yAxis: {
-                data: section
-            },
-            series: [
-                {
-                    name: '总计',
-                    data: totalNumber
-                },
-                {
-                    name: '合格',
-                    data: excellentNumber
-                },
-                {
-                    name: '优良',
-                    data: qualifiedNumber
-                }
-            ]
-        });
-        myChartLine.setOption({
-            tooltip: {
-                formatter : function (parmas) {
-                    var relVal = parmas[0].name;  //x轴名称
-                    var index = parmas[0].dataIndex; //第几个
-                    var dataVal = dataMonthNumber[index]; //选中数据
-                    for(var i = 0;i<dataVal.length;i++){
-                        relVal += '<br/>' + dataVal[i].name + ' : ' + dataVal[i].value;
-                    }
-                    return relVal;
-                }
-            },
-            xAxis: {
-                data: timeline
-            },
-            series: [
-                {
-                    name:'优良率',
-                    data: excellentMonth,
-                }
-            ]});
-    }
-    //初始化拉数据
-    $.ajax({
-        url:"./getIndex",
-        type:"GET",
-        dataType:"JSON",
-        success:function (res) {
-            if(res.code===1){
-              ////标段
-                section = res.result.section;
-                form_result_result = res.result.form_result_result
-                total =[];
-                totalNumber = [];
-                for(var m = 0; m<section.length;m++){
-                    excellent[m] = form_result_result[m].excellent;//优良率
-                    qualified[m] = form_result_result[m].qualified;//合格率
-                    excellentNumber[m] = form_result_result[m].section_rate_number.excellent_number;//合格数
-                    qualifiedNumber[m] = form_result_result[m].section_rate_number.qualified_number;//合格数
-                    total.push(form_result_result[m].total_rate);//合计率
-                    totalNumber.push(form_result_result[m].section_rate_number.total); //合计数
-                }
-
-              //折线图
-                form_result = res.data.form_result;
-                timeline = res.data.timeline; //月
-              // createOption(timeline.reverse())
-                for(var k = 0; k<form_result.length;k++){
-                    dataMonthNumber[k]=[];
-                     dataMonthNumber[k][0]={};
-                     dataMonthNumber[k][1]={};
-                     dataMonthNumber[k][0].value = form_result[k].count.excellent_number;
-                     dataMonthNumber[k][1].value = form_result[k].count.qualified_number;
-                     dataMonthNumber[k][0].name = '优良单元数量';
-                     dataMonthNumber[k][1].name = '合格单元数量';
-                     excellentMonth.push(form_result[k].excellent); //月优良率
-                 }
-                getInit()//初始化
-            }
-        }
-    });
-    //生成option
-    function createOption(data) {
-      var html  = "";
-      for(var i = 0;i<data.length ;i++){
-        var timer = data[i].split('-');
-        html += '<option value="'+data[i]+'">'+timer[0]+'年'+timer[1]+'月份单元工程质量验收情况统计</option>'
-      }
-      $("#historic").append(html);
-
-    }
-    
-    $.ajax({
-      url:"./getAllMonth",
-      type:"GET",
-      dataType:"JSON",
-      success:function (res) {
-        if(res.code==1){
-          createOption(res.data.reverse());
-          month222 = res.month.reverse()
-          getInit()//初始化
-        }
-      }
-    })
-</script>
+<script src="__WEBSITE__/statistics/qualityanalysis/index.js"></script>
 </body>
 </html>
