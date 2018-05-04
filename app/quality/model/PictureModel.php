@@ -56,7 +56,7 @@ class PictureModel extends Model
         if(empty($search_name)){
             $data = $this->where('picture_type',1)->column('id as picture_id,picture_number,picture_name');
         }else{
-            $data = $this->where(['picture_type'=>1,'picture_name'=>['like',$search_name.'%']])->column('id as picture_id,picture_number,picture_name');
+            $data = $this->where(['picture_type'=>1,'picture_name'=>['like','%'.$search_name.'%']])->column('id as picture_id,picture_number,picture_name');
         }
         $str = '';
         foreach ($data as $v) {
