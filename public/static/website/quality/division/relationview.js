@@ -146,6 +146,8 @@ $('#search').click(function () {
         },
         dataType: "json",
         success: function (res) {
+            var treeObj = $.fn.zTree.getZTreeObj("ztree");
+            treeObj.reAsyncChildNodes(null, "refresh");
             console.log(res);
         }
     })

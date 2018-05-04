@@ -205,6 +205,52 @@ class Qualityanalysis extends Permissions
             return json(["code" => 1, "data" => $result]);
         }
     }
+
+    /**
+     * 查询数据库中的所有的年份
+     * @return \think\response\Json
+     */
+    public function getAllYear()
+    {
+        //查询数据库中的最小时间
+        $min_time = Db::name("quality_form_info")->where("create_time > 0")->min("create_time");
+        //查询数据库中的最大的时间
+        $max_time = Db::name("quality_form_info")->where("create_time > 0")->max("create_time");
+
+        //定义一个空的数组
+        $timeline = array();
+        $month = array();
+        $StartMonth = date("Y-m-d",$min_time); //开始日期
+        $EndMonth = date("Y-m-d",$max_time); //结束日期
+        $ToStartMonth = strtotime( $StartMonth ); //转换一下
+        $ToEndMonth   = strtotime( $EndMonth ); //一样转换一下
+        $i            = false; //开始标示
+        while( $ToStartMonth < $ToEndMonth ){
+            $NewMonth = !$i ? date('Y-m', strtotime('+0 Month', $ToStartMonth)) : date('Y-m', strtotime('+1 Month', $ToStartMonth));
+            $ToStartMonth = strtotime( $NewMonth );
+            $i = true;
+            $timeline[] = $NewMonth;//时间
+
+        }
+
+        array_pop($timeline);//去除掉多余的月份
+
+        foreach ($timeline as $key=>$val)
+        {
+            $year[] = substr($val,0,4);
+        }
+
+        //定义一个空数组
+        $newyear=array();
+
+        foreach($year as $v){
+            if(!in_array($v,$newyear)){
+                $newyear[]=$v;
+            }
+        }
+
+        return json(["code"=>1,"data"=>$newyear]);
+    }
     /**
      * 右边的折线图
      * @return \think\response\Json
