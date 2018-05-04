@@ -658,6 +658,7 @@
     $('#add').click(function () {
         $.add({
             formId:'org',
+            area:['660px','650px'],
             success:function(){
                 $('input[name="admin_group_id"]').val(admin_group_name);
                 $('.webuploader-pick').next('div').css({
@@ -760,7 +761,7 @@
         layer.open({
             id:'2',
             type:'1',
-            area:['700px','600px'],
+            area:['660px','600px'],
             title:'查看',
             btn:['关闭'],
             content:$('#orgStatic'),
@@ -785,11 +786,15 @@
         layer.open({
             id:'1',
             type:'1',
-            area:['660px','700px'],
+            area:['660px','640px'],
             title:'编辑',
             content:$('#editOrg'),
             success:function(){
                 viewForm(id);
+                $('.webuploader-pick').next('div').css({
+                    width:'100%',
+                    height:'100%'
+                });
             },
             cancel: function(index, layero){
                 $('#org')[0].reset();

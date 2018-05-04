@@ -61,11 +61,8 @@ i.fa:hover:before{
 }
 /* 当前路径 */
 .current-path{
-    margin-bottom: 10px;
-    padding-bottom: 5px;
     height: 30px;
     line-height: 30px;
-    border-bottom: 1px solid #cecece;
 }
 .current-path h3{
     float: left;
@@ -122,12 +119,12 @@ i.fa:hover:before{
     color: #337ab7;
     text-decoration: none;
     background-color: #fff;
-    border: 1px solid #ddd;;
+    border: 1px solid #ddd;
 }
 .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover{
     z-index: 3;
     color: #fff;
-    cursor: default;
+    /*cursor: default;*/
     background-color: #337ab7;
     border-color: #337ab7;
 }
@@ -136,10 +133,9 @@ i.fa:hover:before{
 }
 select.form-control {
     display: inline-block;
-    height: 34px;
     margin: 0 5px;
-    padding: 6px 12px;
-    font-size: 14px;
+    padding: 5px 12px;
+    font-size: 12px;
     line-height: 1.42857143;
     color: #555;
     background-color: #fff;
@@ -151,7 +147,21 @@ select.form-control {
 .dataTables_wrapper,.tbcontainer{
     display: none;
 }
+table.dataTable.no-footer{
+    float: left;
+    margin-top: 5px;
+    border-top: 1px solid #cecece;
+}
 /* 弹层 */
 .layui-layer-content{
     padding-top: 15px;
+}
+.layui-layer-content .layui-btn{
+    height: 30px;
+    line-height: 30px;
+}
+.layui-layer-content .layui-form-item:last-child .layui-input-block{
+    margin-right: 30px;
+    min-height: 30px;
+    text-align: right;
 }
