@@ -5,7 +5,7 @@ table.table i.fa{
     margin-left: 10px;
 }
 table.dataTable tbody tr.odd{
-    background: #ddd;
+    background: #ececec;
 }
 table.dataTable tbody tr:hover,table.dataTable tbody tr.active{
     background: #Fdd5b5;
