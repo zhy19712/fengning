@@ -27,4 +27,12 @@ class Monthplan extends Permissions
     {
         return $this->fetch();
     }
+    /**
+     * 进度版本管理模板-月度计划-关联模型
+     * @return mixed
+     */
+    public function assview()
+    {
+        return $this->fetch();
+    }
 }

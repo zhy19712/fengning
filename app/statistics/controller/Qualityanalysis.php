@@ -287,7 +287,6 @@ class Qualityanalysis extends Permissions
 
         array_pop($timeline);//去除掉多余的月份
 
-        halt($timeline);
 
         //定义空数组
         $section_form_data = array();
