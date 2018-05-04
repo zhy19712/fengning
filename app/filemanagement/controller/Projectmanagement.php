@@ -183,7 +183,26 @@ class Projectmanagement extends Permissions
     public function addConfig()
     {
         if(request()->isAjax()){
+            //实例化模型类
+            $model = new ProjectmanagementModel();
+            $id = input("post.id");//id
+            $id = 1;
+            $idArr = input("post.idArr");//项目类别的数组
+            $idArr = [1,2,3,4,5];
+            if(!empty($idArr))
+            {
+                $idarr = implode(",",$idArr);
 
+            }else
+            {
+                $idarr = "";
+            }
+            //要更新的数组
+            $data =["id"=>$id,"branch_id"=>$idarr];
+
+            $flag = $model->editPro($data);
+
+            return json($flag);
         }
     }
 }
