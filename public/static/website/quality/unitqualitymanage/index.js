@@ -153,18 +153,27 @@ function addControl() {
                     if(!res.msg){
                         res.msg = '添加失败';
                     }
+                    if(res.code==-1){
+                        layer.msg(res.msg);
+                        return false;
+                    }
                     layer.close(index);
                     layer.msg(res.msg);
                     $('#pointLayer').css('visibility','hidden');
                     var workId = $('#workId').val();
                     $('a[uid='+ workId +']').click();   //刷新表
+                    $('#all_checked').prop('checked',false);
                     $("input[name='checkList']").prop("checked", false);  //清空表格已选
                 }
             })
         },
         cancel: function(index, layero){
+            idArr.length = 0;
+            $('#all_checked').prop('checked',false);
+            $('input[type="checkbox"][name="checkList"]').prop('checked',false);
             $('#pointLayer').css('visibility','hidden');
             layer.close(index);
+            console.log(idArr);
         }
     });
 }
@@ -219,13 +228,11 @@ $("#all_checked").on("click", function () {
     var that = $(this);
     if (that.prop("checked") === true) {
         $("input[name='checkList']").prop("checked", that.prop("checked"));
-        $('#tableItem tbody tr').addClass('selected');
         $('input[name="checkList"]').each(function(){
             getId(this);
         });
     } else {
         $("input[name='checkList']").prop("checked", false);
-        $('#tableItem tbody tr').removeClass('selected');
         $('input[name="checkList"]').each(function(){
             getId(this);
         });

@@ -1,3 +1,8 @@
+.current-path{
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #cecece;
+}
 .ztree-title i.fa{
     width: 11%;
 }
