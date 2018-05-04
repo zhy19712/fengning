@@ -250,7 +250,7 @@ function tableInfo() {
                     var html = "<i class='fa fa-pencil' uid="+ data +" title='编辑' onclick='edit(this)'></i>" ;
                     html += "<i class='fa fa-trash' uid="+ data +" title='删除' onclick='del(this)'></i>" ;
                     html += "<i class='fa fa-qrcode' uid="+ data +" title='二维码' onclick='qrcode(this)'></i>" ;
-                    html += "<i class='fa fa-chain' uid="+ data +" title='关联试图' onclick='relation(this)'></i>" ;
+                    html += "<i class='fa fa-chain' uid="+ data +" title='关联视图' onclick='relation(this)'></i>" ;
                     return html;
                 }
             }
@@ -514,6 +514,10 @@ function qrcode(that) {
         dataType: "json",
         success: function (res) {
             $('#qrCode').html('<img src="./qrCode/'+id+'">');
+            var number = $("#easyuiLayout").layout("panel", "east")[0].clientWidth;
+            if(number<=0){
+                $('#easyuiLayout').layout('expand','east');
+            }
         }
     })
 }
@@ -582,6 +586,7 @@ $('#exceldownloadBtn').click(function () {
     })
 });
 
+//关联视图新开页
 function relation(that) {
     var uid = $(that).attr('uid');
     document.cookie="unitEnginNoId="+uid;

@@ -1,3 +1,9 @@
+.current-path{
+    padding: 5px;
+}
+.dataTables_wrapper .dataTables_filter{
+    padding: 5px 0 0 5px;
+}
 .layui-form-label{
     width: 85px;
 }
