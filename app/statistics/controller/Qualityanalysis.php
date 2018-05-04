@@ -68,7 +68,6 @@ class Qualityanalysis extends Permissions
             $month[] = $start."-".$end;
 
         }
-
         return json(["code"=>1,"data"=>$timeline,"month"=>$month]);
     }
 
@@ -142,7 +141,6 @@ class Qualityanalysis extends Permissions
                         unset($section_form_data[$mm][$oo]);
                     }
                 }
-
             }
 
             //定义一个空的数组
@@ -251,6 +249,7 @@ class Qualityanalysis extends Permissions
 
         return json(["code"=>1,"data"=>$newyear]);
     }
+
     /**
      * 右边的折线图
      * @return \think\response\Json
@@ -340,8 +339,6 @@ class Qualityanalysis extends Permissions
             }
         }
 
-
-
         foreach ($section_form_data as $ii => $jj) {
 
             foreach ($jj as $kk => $ll) {
@@ -350,7 +347,6 @@ class Qualityanalysis extends Permissions
             }
 
         }
-
 
         foreach ($section_form_data as $mm => $nn) {
             foreach ($nn as $oo => $pp) {
@@ -418,7 +414,6 @@ class Qualityanalysis extends Permissions
 //                    $form_result_result[$qq]['total_rate'] = $form_result_result[$qq]['excellent'] + $form_result_result[$qq]['qualified'];
 
             }
-
 
         }
         $result = ["section" => $section_name, "form_result_result" => $form_result_result];//柱状图表格

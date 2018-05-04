@@ -41,8 +41,15 @@ class Projectmanagement extends Permissions
         if(request()->isAjax()){
             //实例化模型类
             $model = new ProjectmanagementModel();
-            $param = input('post.');
-            $data = $model->getOne($param['id']);
+            $id = input('post.id');
+            $data = $model->getOne($id);
+            if(!empty($data["branch_id"]))
+            {
+                $data["branch_id"] = explode(",",$data["branch_id"]);
+            }else
+            {
+                $data["branch_id"] =[];
+            }
             return json(['code'=> 1, 'data' => $data]);
         }
     }
@@ -157,7 +164,8 @@ class Projectmanagement extends Permissions
             $id = input('post.id');
             //获取项目类别,获取项目分类树节点id
             $classifyid = Db::name('file_project_management')->alias('p')
-                ->join('file_branch_directory b', 'b.class_name = p.project_category', 'left')
+                ->join('file_branch_directory_type t', 't.name = p.project_category', 'left')
+                ->join('file_branch_directory b', 'b.classifyid = t.id', 'left')
                 ->where("p.id",$id)
                 ->field("b.classifyid")
                 ->find();
@@ -183,7 +191,24 @@ class Projectmanagement extends Permissions
     public function addConfig()
     {
         if(request()->isAjax()){
+            //实例化模型类
+            $model = new ProjectmanagementModel();
+            $id = input("post.id");//id
+            $idArr = input("post.idArr/a");//项目类别的数组
+            if(!empty($idArr))
+            {
+                $idarr = implode(",",$idArr);
 
+            }else
+            {
+                $idarr = "";
+            }
+            //要更新的数组
+            $data =["id"=>$id,"branch_id"=>$idarr];
+
+            $flag = $model->editPro($data);
+
+            return json($flag);
         }
     }
 }
