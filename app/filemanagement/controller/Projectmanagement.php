@@ -41,8 +41,15 @@ class Projectmanagement extends Permissions
         if(request()->isAjax()){
             //实例化模型类
             $model = new ProjectmanagementModel();
-            $param = input('post.');
-            $data = $model->getOne($param['id']);
+            $id = input('post.id');
+            $data = $model->getOne($id);
+            if(!empty($data["branch_id"]))
+            {
+                $data["branch_id"] = explode(",",$data["branch_id"]);
+            }else
+            {
+                $data["branch_id"] =[];
+            }
             return json(['code'=> 1, 'data' => $data]);
         }
     }
