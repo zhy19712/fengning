@@ -157,7 +157,8 @@ class Projectmanagement extends Permissions
             $id = input('post.id');
             //获取项目类别,获取项目分类树节点id
             $classifyid = Db::name('file_project_management')->alias('p')
-                ->join('file_branch_directory b', 'b.class_name = p.project_category', 'left')
+                ->join('file_branch_directory_type t', 't.name = p.project_category', 'left')
+                ->join('file_branch_directory b', 'b.classifyid = t.id', 'left')
                 ->where("p.id",$id)
                 ->field("b.classifyid")
                 ->find();
