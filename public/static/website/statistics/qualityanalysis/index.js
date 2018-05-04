@@ -12,8 +12,8 @@ var myChartBar = echarts.init(document.getElementById('mainBar'));
 // 指定图表的配置项和数据
 optionBar = {
   title: {
-    text: '2018年4月份单元工程质量验收情况统计', //标题
-    subtext:'（2018.03.26-2018-04.25）', //副标题
+    text: '', //标题
+    subtext:'', //副标题
     x:'center', //居中
     y:'top' //顶部
   },
@@ -46,114 +46,20 @@ optionBar = {
   },
 
   series: [
-    {
-      name: '总计',
-      type: 'bar', //柱状图
-      data: [18203, 23489, 29034]
-    },
-    {
-      name: '合格',
-      type: 'bar',
-      data: [19325, 23438, 31000]
-    },
-    {
-      name: '优良',
-      type: 'bar',
-      data: [19325, 23438, 31000]
-    }
   ]
 };
 // 使用刚指定的配置项和数据显示图表。
 myChartBar.setOption(optionBar);
 //折线图
 var myChartLine = echarts.init(document.getElementById('mainLine'));
-var dataMonthNumber = [
-  [
-    {
-      name:"优良单元数量",
-      value:'22'
-
-    },
-    {
-      name:"合格单元数量",
-      value:"33"
-    }
-  ],
-  [
-    {
-      name:"优良单元数量",
-      value:'23'
-
-    },
-    {
-      name:"合格单元数量",
-      value:"44"
-    }
-  ],
-  [
-    {
-      name:"优良单元数量",
-      value:'23'
-
-    },
-    {
-      name:"合格单元数量",
-      value:"44"
-    }
-  ],
-  [
-    {
-      name:"优良单元数量",
-      value:'23'
-
-    },
-    {
-      name:"合格单元数量",
-      value:"44"
-    }
-  ],
-  [
-    {
-      name:"优良单元数量",
-      value:'23'
-
-    },
-    {
-      name:"合格单元数量",
-      value:"44"
-    }
-  ],
-  [
-    {
-      name:"优良单元数量",
-      value:'23'
-
-    },
-    {
-      name:"合格单元数量",
-      value:"44"
-    }
-  ],
-  [
-    {
-      name:"优良单元数量",
-      value:'23'
-
-    },
-    {
-      name:"合格单元数量",
-      value:"44"
-    }
-  ]
-];
 optionLine = {
   title:{
-    text:'2018年度质量验评趋势分布图',
+    text:'',
     x:'center', //居中
     y:'top' //顶部
   },
   legend: {
-    data: ['优良率', '优cc率' ],
+    data: [],
     x:"right",
     top:30
   },
@@ -189,60 +95,24 @@ optionLine = {
     show: true
   },
   series: [
-    {
-      name:'优良率',
-      data: [20, 30, 50, 60, 20, 100, 70,12,13,1,13,23],
-      smooth:false,
-      type: 'line',
-      itemStyle: {
-        normal: {
-          label: {
-            show: true,
-            position: 'top',
-            formatter: '{c}%'
-          },
-          lineStyle:{
-            width:2,
-            type:'dotted'  //'dotted'虚线 'solid'实线
-          }
-        }
-      }
-    },
-    {
-      name:'优cc率',
-      data: [20, 30, 50, 60, 20, 100, 10,12,13,1,13,12],
-      type: 'line',
-      itemStyle: {
-        normal: {
-          label: {
-            show: true,
-            position: 'top',
-            formatter: '{c}%'
-          },
-          lineStyle:{
-            width:2,
-            type:'dotted'  //'dotted'虚线 'solid'实线
-          }
-        }
-      }
-    },
   ]
 };
 myChartLine.setOption(optionLine);
-var excellentMonth = [];  //折线图月优良率
 
 //初始化图表
 //重载
 function getIndexRight(section,data){
+  //标段
+  $("#showSelect").html("");
   //截取数据
-  var series = [];
+  var series = [],html = '<option value="yes全部">全部</option>';
   for(var i = 0; i<section.length;i++){
+    html += '<option value="'+section[i]+'">'+section[i]+'</option>'
     var arr = data.slice(i*12,(i+1)*12);
-      series.push({name:section[i],data:arr});
+      series.push({name:section[i],data:arr,type: 'line'});
   }
-
+$("#showSelect").append(html);
   //折线图
-
   myChartLine.setOption({
     title:{
       text:$("#year").val()+"年度质量验评趋势分布图"
@@ -278,15 +148,18 @@ function getInitLeft(section,data){
     series: [
       {
         name: '总计',
-        data: totalNumber
+        data: totalNumber,
+        type: 'bar'
       },
       {
         name: '合格',
         data: excellentNumber
+        ,type: 'bar'
       },
       {
         name: '优良',
-        data: qualifiedNumber
+        data: qualifiedNumber,
+        type: 'bar'
       }
     ]
   });
@@ -348,7 +221,6 @@ function getDefault() {
     dataType:"JSON",
     success:function (res) {
       if(res.code==1){
-        console.log(res.data)
         getInitLeft(res.data.section,res.data.form_result_result);
       }else{
         layer.msg(res.msg);
@@ -383,16 +255,16 @@ $("#year").on("change",function () {
   getDefaultLine();
 });
 //默认显示的折线图
+
 function getDefaultLine(){
   //发请求拉图表数据
   $.ajax({
     url:"./getIndexRight",
     type:"POST",
-    data:{time_slot:$("#year").val()},
+    data:{year:$("#year").val()},
     dataType:"JSON",
     success:function (res) {
       if(res.code==1){
-        console.log(res.data)
         getIndexRight(res.data.section,res.data.form_result_result);
       }else{
         layer.msg(res.msg);
