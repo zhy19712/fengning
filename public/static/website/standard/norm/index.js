@@ -56,7 +56,13 @@ $('#add').html('新增');
 //新增弹层
 $('#add').click(function () {
     $.add({
-        area:['660px','400px']
+        area:['660px','410px'],
+        success:function () {
+            $('.webuploader-pick').next('div').css({
+                width:'100%',
+                height:'100%'
+            });
+        }
     });
 });
 //关闭弹层
@@ -92,7 +98,7 @@ function edit(that) {
     $.edit({
         formId:'formLayer',
         ajaxUrl:'./editNode',
-        area:['660px','400px'],
+        area:['660px','410px'],
         that:that,
         others:function(res){
             var data = res.data;
@@ -102,6 +108,10 @@ function edit(that) {
             $('input[name="alternate_standard"]').val(data.alternate_standard);
             $('input[name="file_name"]').val(res.filename[0]);
             $('textarea[name="remark"]').val(data.remark);
+            $('.webuploader-pick').next('div').css({
+                width:'100%',
+                height:'100%'
+            });
         }
     });
 }

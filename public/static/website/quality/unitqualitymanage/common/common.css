@@ -1,6 +1,27 @@
 .ztree{
     margin-top: 0;
 }
+#controlZtree .level0 a .button{
+    background:url('/static/public/ztree/css/ztreestandard/img/1_open.png') 0 0 no-repeat;
+}
+#controlZtree .level0 a .button.ico_close{
+    background:url('/static/public/ztree/css/ztreestandard/img/1_close.png') 0 0 no-repeat;
+}
+#controlZtree .level1 a .button, #controlZtree .level1 a .button.ico_close{
+    background:url('/static/public/ztree/css/ztreestandard/img/8.png') 0 0 no-repeat;
+}
+#controlZtree .level2 a .button, #controlZtree .level2 a .button.ico_close{
+    background:url('/static/public/ztree/css/ztreestandard/img/9.png') 0 0 no-repeat;
+}
+#controlZtree .level3 a .button, #controlZtree .level3 a .button.ico_close{
+    background:url('/static/public/ztree/css/ztreestandard/img/10.png') 0 0 no-repeat;
+}
+#controlZtree .level4 a .button, #controlZtree .level4 a .button.ico_close{
+    background:url('/static/public/ztree/css/ztreestandard/img/12.png') 0 0 no-repeat;
+}
+#controlZtree .level5 a .button, #controlZtree .level5 a .button.ico_close{
+    background:url('/static/public/ztree/css/ztreestandard/img/13.png') 0 0 no-repeat;
+}
 .current-path i.fa:before{
     color: #0E2D5F;
 }
@@ -10,13 +31,15 @@
     border: 0;
 }
 .control-point{
-    margin-bottom: 20px;
+    margin: 10px 20px;
 }
 .control-point i{
     margin-right: 5px;
+    vertical-align: middle;
 }
 .control-point i.fa:before{
     color: #333;
+    font-size: 24px;
 }
 .control-point a{
     margin-right: 10px;
@@ -82,4 +105,12 @@
 }
 .webuploader-container{
     float: right;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+    border: 1px solid transparent;
+    padding: 0.5em 1em;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:active{
+    background: none;
+    box-shadow: none;
 }

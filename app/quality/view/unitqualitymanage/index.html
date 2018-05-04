@@ -1,29 +1,6 @@
 {include file="../app/public/common_header.html"}
 <link rel="stylesheet" href="__WEBSITE__/quality/unitqualitymanage/common/common.css">
 <link rel="stylesheet" href="__PUBLIC__/ztree/css/ztreequality/css/engineering.css">
-<style>
-    #controlZtree .level0 a .button{
-        background:url('/static/public/ztree/css/ztreestandard/img/1_open.png') 0 0 no-repeat;
-    }
-    #controlZtree .level0 a .button.ico_close{
-        background:url('/static/public/ztree/css/ztreestandard/img/1_close.png') 0 0 no-repeat;
-    }
-    #controlZtree .level1 a .button, #controlZtree .level1 a .button.ico_close{
-        background:url('/static/public/ztree/css/ztreestandard/img/8.png') 0 0 no-repeat;
-    }
-    #controlZtree .level2 a .button, #controlZtree .level2 a .button.ico_close{
-        background:url('/static/public/ztree/css/ztreestandard/img/9.png') 0 0 no-repeat;
-    }
-    #controlZtree .level3 a .button, #controlZtree .level3 a .button.ico_close{
-        background:url('/static/public/ztree/css/ztreestandard/img/10.png') 0 0 no-repeat;
-    }
-    #controlZtree .level4 a .button, #controlZtree .level4 a .button.ico_close{
-        background:url('/static/public/ztree/css/ztreestandard/img/12.png') 0 0 no-repeat;
-    }
-    #controlZtree .level5 a .button, #controlZtree .level5 a .button.ico_close{
-        background:url('/static/public/ztree/css/ztreestandard/img/13.png') 0 0 no-repeat;
-    }
-</style>
 <div data-options="region:'west',title:'工程划分',split:true" style="width:260px;">
     <ul id="ztree" class="ztree"></ul>
 </div>
@@ -60,7 +37,7 @@
             <ul id="controlZtree" class="ztree"></ul>
         </div>
         <div data-options="region:'center',title:'控制点标准'" style="padding:5px;">
-            <table id="controlItem" class="table table-striped table-bordered" cellspacing="0" style="width: 100%">
+            <table id="controlItem" class="table table-striped table-bordered layui-clear" cellspacing="0" style="width: 100%">
                 <thead>
                     <th>
                         <label for="all_checked" onselectstart="return false;" style="-moz-user-select:none;">全选</label>
