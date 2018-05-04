@@ -12,7 +12,7 @@ $.ajax({
     success: function (res) {
         one_picture_id = res.one_picture_id;
         //转换节点数据
-        var nodes = JSON.parse(res.data)
+        var nodes = JSON.parse(res.data);
         setZtree(nodes);
     }
 });
@@ -53,6 +53,9 @@ function echoRelation() {
         return false;
     }
     var checkedNode = treeObj.getNodeByParam('picture_id',one_picture_id);
+    if(!checkedNode){
+        return false;
+    }
     console.log(checkedNode);
     treeObj.checkNode(checkedNode,true,false);
 }
@@ -146,9 +149,8 @@ $('#search').click(function () {
         },
         dataType: "json",
         success: function (res) {
-            var treeObj = $.fn.zTree.getZTreeObj("ztree");
-            treeObj.reAsyncChildNodes(null, "refresh");
-            console.log(res);
+            var nodes = JSON.parse(res.data);
+            setZtree(nodes);
         }
     })
    /* var treeObj = $.fn.zTree.getZTreeObj("ztree");

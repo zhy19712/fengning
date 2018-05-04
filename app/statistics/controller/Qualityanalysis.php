@@ -263,14 +263,15 @@ class Qualityanalysis extends Permissions
       if (request()->isAjax()){
         //查询的年份
         $search_year = input('post.year');
+
         //开始时间为每一年的1月1号0点0时0分
-        $start_time = mktime(0,0,0,1,1,date('Y',strtotime($search_year)));
+        $start_time = mktime(0,0,0,1,1,$search_year);
         //结束时间为每一年的12月31号23点59分59秒
-        $end_time = mktime(23,59,59,12,31,date("Y",strtotime($search_year)));
+        $end_time = mktime(23,59,59,12,31,$search_year);
 
         //定义一个空的数组
         $timeline = array();
-        $month = array();
+
         $StartMonth = date("Y-m-d",$start_time); //开始日期
         $EndMonth = date("Y-m-d",$end_time); //结束日期
         $ToStartMonth = strtotime( $StartMonth ); //转换一下
@@ -285,6 +286,7 @@ class Qualityanalysis extends Permissions
         }
 
         array_pop($timeline);//去除掉多余的月份
+
 
         //定义空数组
         $section_form_data = array();
