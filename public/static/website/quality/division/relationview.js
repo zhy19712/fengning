@@ -136,16 +136,17 @@ $('#close').click(function () {
 //搜索模型
 $('#search').click(function () {
     var inputModelName = $('#modelName').val();
-    var modelName = $.trim(inputModelName);
+    var search_name = $.trim(inputModelName);
     $.ajax({
-        url: "",
+        url: "./searchModel",
         type: "post",
         data: {
-            modelName:modelName
+            id:unitEnginNoId,
+            search_name:search_name
         },
         dataType: "json",
         success: function (res) {
-
+            console.log(res);
         }
     })
    /* var treeObj = $.fn.zTree.getZTreeObj("ztree");

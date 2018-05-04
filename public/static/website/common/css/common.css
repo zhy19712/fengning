@@ -49,7 +49,7 @@ i.fa:hover:before{
     }
 }
 .ztree li a.curSelectedNode{
-    background-color: #cecece;
+    background-color: #ececec;
 }
 .ztree{
     margin-top: 30px;
