@@ -144,6 +144,9 @@ $('#imageDataBtn').html('上传');
 // TODO 需要重构
 $("#tableItem").on("click","tr",function(){//给tr或者td添加click事件
     var data=window.tableItem.row(this).data();//获取值的对象数据
+    if(!data){
+        return false;
+    }
     var controlId = data[3];
     var index = $('#index').val();
     $('#controlId').val(controlId);
@@ -215,7 +218,6 @@ function implementUpload(){
 //图像资料
 function imageDataUpload(){
     var controlId = $('#controlId').val();
-    console.log(controlId);
     $.upload({
         btnId:'#imageDataBtn',
         server:'../../editRelation',
