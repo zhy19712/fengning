@@ -608,7 +608,7 @@ class Main extends Permissions
             ->where('r.type = 1')
             ->where("p.picture_type = 1")
             ->field("p.picture_number,p.picture_name,u.EvaluateResult")->order("u.id asc")->select();
-//        halt($unit_data);
+
         //定义一个空的数组
         $data = array();
         if(!empty($unit_data))
@@ -618,7 +618,6 @@ class Main extends Permissions
             $count = array_count_values(array_column($unit_data,"EvaluateResult"));
 
             //0、未验评，1、优良，2、合格'
-
             $data["excellent_number"] = $count["1"] ? $count["1"] : 0;
             $data["qualified_number"] = empty($count["2"]) ? 0 : $count["2"];
             $data["unchecked_number"] = $count["0"] ? $count["0"] : 0;
