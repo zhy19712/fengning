@@ -62,6 +62,7 @@ function unitPlanList() {
 //控制点执行情况
 $.datatable({
     tableId:'implement',
+    isPage:false,
     ajax:{
         'url':'/quality/common/datatablesPre?tableName=unit_quality_manage_file'
     },
@@ -101,6 +102,7 @@ $.datatable({
 //图像资料
 $.datatable({
     tableId:'imageData',
+    isPage:false,
     ajax:{
         'url':'/quality/common/datatablesPre?tableName=unit_quality_manage_file'
     },
