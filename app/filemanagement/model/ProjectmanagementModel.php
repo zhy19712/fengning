@@ -80,4 +80,14 @@ class ProjectmanagementModel extends Model
             return ['code' => -1,'msg' => $e->getMessage()];
         }
     }
+
+    /**
+     * 获取所有的项目类别
+     * @return array
+     */
+    public function getAllCategory()
+    {
+        $data = $this->field("id,project_category")->order("id asc")->select();//项目类别
+        return $data;
+    }
 }

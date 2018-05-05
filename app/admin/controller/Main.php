@@ -587,8 +587,73 @@ class Main extends Permissions
         }
     }
 
-    public function manage(){
+    /**
+     * 管理3D模板首页
+     * @return mixed
+     */
+    public function manage()
+    {
         return $this->fetch('manage');
     }
 
+    /**
+     * 管理3D-统计未验评、优良、合格
+     * @return mixed
+     */
+    public function countUnit()
+    {
+        $unit_data = Db::name('quality_unit')->alias('u')
+            ->join('quality_model_picture_relation r', 'r.relevance_id = u.id', 'left')
+            ->join('quality_model_picture p', 'p.id = r.picture_id', 'left')
+            ->where('r.type = 1')
+            ->where("p.picture_type = 1")
+            ->field("p.picture_number,p.picture_name,u.EvaluateResult")->order("u.id asc")->select();
+//        halt($unit_data);
+        //定义一个空的数组
+        $data = array();
+        if(!empty($unit_data))
+        {
+            $total = count($unit_data);//总数，未验评+优良+合格
+
+            $count = array_count_values(array_column($unit_data,"EvaluateResult"));
+
+            //0、未验评，1、优良，2、合格'
+
+            $data["excellent_number"] = $count["1"] ? $count["1"] : 0;
+            $data["qualified_number"] = empty($count["2"]) ? 0 : $count["2"];
+            $data["unchecked_number"] = $count["0"] ? $count["0"] : 0;
+
+            $data["excellent_rate"] = round($data["excellent_number"] / $total * 100);
+            $data["qualified_rate"] = round($data["qualified_number"] / $total * 100);
+            $data["unchecked_rate"] = round($data["unchecked_number"] / $total * 100);
+
+            //定义三个空数组表示优良、合格、未验评
+            $excellent = array();
+            $qualified = array();
+            $unchecked = array();
+
+            foreach ($unit_data as $key => $val)
+            {
+                switch($val["EvaluateResult"])
+                {
+                    case 1:
+                        $excellent[] = $val;
+                        break;
+                    case 2:
+                        $qualified[] = $val;
+                        break;
+                    case 0:
+                        $unchecked[] = $val;
+                        break;
+                }
+            }
+        }else
+        {
+            $excellent = array();
+            $qualified = array();
+            $unchecked = array();
+            $data = array();
+        }
+        return json(["code"=>1,"excellent"=>$excellent,"qualified"=>$qualified,"unchecked"=>$unchecked,"data"=>$data]);
+    }
 }
