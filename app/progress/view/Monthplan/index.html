@@ -37,7 +37,7 @@
         position: absolute;
         top: -25px;
         left: -48px;
-        border: 1px solid red;
+        /*border: 1px solid red;*/
     }
     #rightTips{
         position: absolute;
@@ -95,7 +95,8 @@
     <!--</div>-->
 
     <div id="fu">
-        <div id="zi"><div id="bai"></div>
+        <div id="zi">
+            <div id="bai"></div>
             <div id="leftTips" class="tipStyle">2017-5-1</div>
         </div>
 
@@ -227,7 +228,7 @@
     //     });
     // });
 
-    var stime, stimeBackward, stimeForward, repeat=0;
+    var stime, stimeBackward, stimeForward, times = 1200, backTime = 1200;
 
     //清除叠加
     function cleanSupTime() {
@@ -254,7 +255,6 @@
             var ob = oleft/$("#fu")[0].offsetWidth;
             $("#zi").css("width",oleft+"px");
             $("#leftTips").css("left",tipsLeft+"px");
-            // console.log($("#fu")[0].offsetWidth)
             if($("#zi")[0].offsetWidth -12 == $("#fu")[0].offsetWidth){
                 cleanSupElement();
             }
@@ -275,35 +275,24 @@
         console.log($("#start").css("display"))
         if($("#start").css("display") == 'none'){
             cleanSupTime();
-            var times = 1200;
-            times = parseInt(times/1.5);
-            if(times == 237){
-                times =120
-                alert("亲，不能再快了！")
+            backTime /= 1.5;
+            if(parseInt(backTime) == 237){
+                backTime =237
+                alert("亲，不能再退这么快了！")
             }
-            // stimeBackward = setInterval(function () {
-            //     $("#fu").css("display","block");
-            //     var oleft = $("#zi")[0].offsetWidth - 10;
-            //     var ob = oleft/$("#fu")[0].offsetWidth;
-            //     $("#bai").html(Math.round(ob*100)+'%');
-            //     $("#zi").css("width",oleft+"px");
-            //     if(oleft == 2){
-            //         cleanSupElement()
-            //     }
-            // },100)
             stime = setInterval(function (){
                 $("#fu").css("display","block");
-                var oleft = $("#zi")[0].offsetWidth + 96;
-                var tipsLeft = Math.round($("#leftTips").offset().left+10);
+                var oleft = $("#zi")[0].offsetWidth - 96;
+                var tipsLeft = Math.round($("#leftTips").offset().left);
+                console.log(tipsLeft + "left ")
                 var ob = oleft/$("#fu")[0].offsetWidth;
                 $("#zi").css("width",oleft+"px");
+                tipsLeft -= 181;
                 $("#leftTips").css("left",tipsLeft+"px");
-                // console.log($("#fu")[0].offsetWidth)
-                if($("#zi")[0].offsetWidth -12 == $("#fu")[0].offsetWidth){
-                    cleanSupElement();
+                if(oleft == 2){
+                    cleanSupElement()
                 }
-            },times)
-
+            },backTime)
         }
     });
 
@@ -312,63 +301,57 @@
         console.log($("#start").css("display"))
         if($("#start").css("display") == 'none'){
             cleanSupTime();
-            stimeForward = setInterval(function () {
+            times /= 1.5;
+            if(parseInt(times) == 237){
+                times =237
+                layer.msg("亲，不能再快了！")
+            }
+            stime = setInterval(function (){
                 $("#fu").css("display","block");
-                var oleft = $("#zi")[0].offsetWidth + 15;
-                var tipsLeft = Math.round($("#leftTips").offset().left-70);
+                var oleft = $("#zi")[0].offsetWidth + 96;
+                var tipsLeft = Math.round($("#leftTips").offset().left+10);
                 var ob = oleft/$("#fu")[0].offsetWidth;
-                $("#bai").html(Math.round(ob*100)+'%');
                 $("#zi").css("width",oleft+"px");
                 $("#leftTips").css("left",tipsLeft+"px");
-                // console.log($("#zi")[0].offsetWidth-6)
-                console.log($("#zi")[0].offsetWidth-6)
-                console.log($("#fu")[0].offsetWidth)
-
-                if($("#zi")[0].offsetWidth -6 == $("#fu")[0].offsetWidth){
+                if($("#zi")[0].offsetWidth -12 == $("#fu")[0].offsetWidth){
                     cleanSupElement();
                 }
-            },100)
+            },times)
+
         }
 
     });
 
     // 初始化
     var versonPro = $('#versonPro').dataTable( {
-
+        pagingType: "full_numbers",
+        processing: true,
         retrieve: true,
         serverSide: true,
         ajax: {
-            "url": "/progress/monthplan/getalldata"
+            "url": "{:url('/progress/monthplan/datatablesPre')}?tableName=progress_monthplan"
         },
-        pagingType: "full_numbers",
         "scrollY": "200px",
         "scrollCollapse": "true",
-        processing: true,
         dom: 'lrtip',
         columns: [
             {
-                "name": "month",
-                "orderable": false
+                "name": "month"
             },
             {
-                "name": "planName",
-                "orderable": false
+                "name": "planname"
             },
             {
-                "name": "position",
-                "orderable": false
+                "name": "position"
             },
             {
-                "name": 'maker',
-                "orderable": false
+                "name": 'maker'
             },
             {
-                "data": "createDate",
-                "orderable": false
+                "name": "createdate"
             },
             {
-                "name": null,
-                "orderable": false,
+                "name": "id"
             }
 
         ],
@@ -378,12 +361,11 @@
                 "searchable": false,
                 "orderable": false,
                 "render": function (data, type, row) {
-                    console.log(data)
-                    console.log(row)
                     var html = "<a class='styleColor' type='button' style='margin-left: 5px;' href='../Yearplan/index'><i title='查看' class='fa fa fa-search'></i></a>";
                     html += "<a class='styleColor' type='button' href='../Yearplan/index' style='margin-left: 5px;'><i title='编辑' class='fa fa fa-pencil'></i></a>";
                     html += "<a class='styleColor' type='button' href='javascript:;' style='margin-left: 5px;'><i title='删除' class='fa fa fa-remove'></i></a>";
-                    html += "<a class='styleColor' href='javascript:;' style='margin-left: 7px;' onclick='viewFile("+data.extn+")'><i title='关联视图' class='fa fa-chain'></i></a>";
+                    html += "<a class='styleColor' href='javascript:;' style='margin-left: 7px;' onclick='viewFile("+row[5]+")'><i title='关联视图' class='fa fa-chain'></i></a>";
+                    html += "<a class='styleColor' href='javascript:;' style='margin-left: 7px;' onclick='monthFile("+row[5]+")'><i title='月度计划' class='fa fa-list-ol'></i></a>";
                     return html;
                 }
             }
@@ -414,6 +396,10 @@
         document.cookie="monthId="+id;
         window.open('./assview.shtml');
         console.log(id)
+    }
+    //关联视图
+    function monthFile(id) {
+        layer.msg("敬请期待")
     }
 
     //添加计划
