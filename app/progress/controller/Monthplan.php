@@ -77,7 +77,7 @@ class Monthplan extends Permissions
     public function getalldata()
     {
 
-        if($this->request->isAjax()){
+        if(request()->isAjax()){
 
             return $this->datatablesPre();
 
