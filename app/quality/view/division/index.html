@@ -143,6 +143,7 @@
                         },
                         dataType: "json",
                         success: function (res) {
+                            console.log(res.number);
                             if(res.number==''){
                                 RealBimOcx.SetAllHugeObjSubValidState(0);
                             }else{

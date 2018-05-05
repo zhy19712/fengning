@@ -1,12 +1,23 @@
 {include file="../app/public/common_header.html"}
 
-<div data-options="region:'west',title:'树标题',split:true" style="width:260px;">
+<div data-options="region:'west',title:'管理试图',split:true" style="width:260px;">
     <ul id="ztree" class="ztree"></ul>
 </div>
-<div data-options="region:'center',title:'当前路径：'" style="padding:5px;">
+<div data-options="region:'center',title:''" style="border: 0">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north'" style="height:180px">
+            <ul>
+                <li>优良</li>
+                <li>合格</li>
+                <li>未验评</li>
+            </ul>
+        </div>
+        <div data-options="region:'center'"></div>
+    </div>
+</div>
+<div data-options="region:'east',title:'管理信息',split:true" style="width:350px;padding:5px;">
 
 </div>
-
 {include file="../app/public/common_footer.html"}
 <script></script>
 </body>
