@@ -1,6 +1,46 @@
 {include file="../../public/common_header"}
 <link rel="stylesheet" href="__WEBSITE__/progress/monthplan/index.css">
+<style>
+    #fu{
+        width:90%;
+        height: 15px;
+        /*border:1px solid darkcyan;*/
+        margin: 20px auto;
+        display: block;
+        background-color: #e2e2e2;
+        position: relative;
+    }
+    #zi{
+        width:2px;
+        height: 15px;
+        background:lightseagreen;
+    }
 
+    #bai{
+        text-align: center;
+        line-height: 15px;
+        color: white;
+    }
+    #ad i{
+        margin: 0 15px;
+    }
+    .tipStyle{
+        width: 96px;
+        height: 20px;
+        border: 1px solid darkseagreen;
+        color: white;
+    }
+    #left{
+        position: absolute;
+        top: -25px;
+        left: -47px;
+    }
+    #right{
+        position: absolute;
+        top: -25px;
+        right: -47px;
+    }
+</style>
 <div id="content">
     <div class="layui-row page-head">
         <div class="layui-col-xs2">
@@ -24,6 +64,21 @@
             </button>
         </div>
     </div>
+    <div id="ad" style="margin-bottom: 40px">
+        <i id="backward" class="fa fa-fast-backward"></i>
+        <i id="start" class="fa fa-play"></i>
+        <i id="suspend" class="fa fa-pause" style="display: none"></i>
+        <i id="forward" class="fa fa-fast-forward"></i>
+    </div>
+    <div id="tip">
+
+    </div>
+    <div id="fu">
+        <div id="zi"><div id="bai"></div></div>
+        <div id="left" class="tipStyle"></div>
+        <div id="right" class="tipStyle"></div>
+    </div>
+
     <div id="layuiRow" style="width: 100%;height: 100%">
         <table id="versonPro" class="table table-striped table-bordered" cellspacing="0"  width="100%">
             <thead>
@@ -103,6 +158,89 @@
 
 {include file="../../public/common_footer"}
 <script type="text/javascript">
+
+
+    var stime, stimeBackward, stimeForward;
+
+    //清除叠加
+    function cleanSupTime() {
+        window.clearInterval(stime);
+        window.clearInterval(stimeBackward);
+        window.clearInterval(stimeForward);
+    }
+
+    //暂停样式
+    function cleanSupElement() {
+        cleanSupTime();
+        $("#start").css("display","inline-block").siblings("#suspend").css("display","none");
+    }
+
+    //开始
+    $("#start").click(function () {
+        //开始
+        $("#start").css("display","none").siblings("#suspend").css("display","inline-block");
+         cleanSupTime();
+        stime = setInterval(function (){
+            $("#fu").css("display","block");
+            var oleft = $("#zi")[0].offsetWidth + 10;
+            var tipsLeft = $("#left").offsetWidth + 10;
+            console.log(tipsLeft)
+            var ob = oleft/$("#fu")[0].offsetWidth;
+            // oimg.style.opacity = parseFloat(ob);
+            $("#bai").html(Math.round(ob*100)+'%');
+            $("#zi").css("width",oleft+"px");
+            $("#left").css("left",tipsLeft+"px");
+            if(oleft == $("#fu")[0].offsetWidth){
+                cleanSupElement();
+            }
+        },100)
+        if($("#zi")[0].offsetWidth == $("#fu")[0].offsetWidth){
+            cleanSupElement();
+        }
+    });
+
+    //暂停
+    $("#suspend").click(function () {
+        $("#start").css("display","inline-block").siblings("#suspend").css("display","none");
+        cleanSupTime();
+    });
+
+    //快退
+    $("#backward").click(function () {
+        console.log($("#start").css("display"))
+        if($("#start").css("display") == 'none'){
+            cleanSupTime();
+            stimeBackward = setInterval(function () {
+                $("#fu").css("display","block");
+                var oleft = $("#zi")[0].offsetWidth - 10;
+                var ob = oleft/$("#fu")[0].offsetWidth;
+                $("#bai").html(Math.round(ob*100)+'%');
+                $("#zi").css("width",oleft+"px");
+                if(oleft == 2){
+                    cleanSupElement()
+                }
+            },100)
+        }
+    });
+
+    //快进
+    $("#forward").click(function () {
+        console.log($("#start").css("display"))
+        if($("#start").css("display") == 'none'){
+            cleanSupTime();
+            stimeForward = setInterval(function () {
+                $("#fu").css("display","block");
+                var oleft = $("#zi")[0].offsetWidth+20;
+                var ob = oleft/$("#fu")[0].offsetWidth;
+                $("#bai").html(Math.round(ob*100)+'%');
+                $("#zi").css("width",oleft+"px");
+                if($("#zi")[0].offsetWidth == $("#fu")[0].offsetWidth){
+                    cleanSupElement()
+                }
+            },100)
+        }
+
+    });
 
     //初始化
     var versonPro = $('#versonPro').dataTable( {
@@ -484,6 +622,7 @@
             }
         });
     }
+
 
 </script>
 </html>
