@@ -653,6 +653,18 @@ class Main extends Permissions
             $unchecked = array();
             $data = array();
         }
-        return json(["code"=>1,"excellent"=>$excellent,"qualified"=>$qualified,"unchecked"=>$unchecked,"data"=>$data]);
+
+        //查询全部的模型文件
+        //实例化模型类
+        $pic = new PictureModel();
+
+        $model_picture = $pic->getAllModelPic();
+
+        if(empty($model_picture))
+        {
+           $model_picture = "";
+        }
+
+        return json(["code"=>1,"excellent"=>$excellent,"qualified"=>$qualified,"unchecked"=>$unchecked,"data"=>$data,"model_picture"=>$model_picture]);
     }
 }
