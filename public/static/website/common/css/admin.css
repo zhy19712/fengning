@@ -131,11 +131,7 @@ body .layui-table thead tr{
 .layui-model{
 	right:310px;
 }
-.layui-model .layui-nav-item{
-	padding: 0 10px;
-}
 .layui-model .layui-nav-item a{
-	padding: 0;
 	width: 33px;
 	height: 50px;
 	background-size: 33px;

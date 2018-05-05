@@ -587,4 +587,8 @@ class Main extends Permissions
         }
     }
 
+    public function manage(){
+        return $this->fetch('manage');
+    }
+
 }
