@@ -109,7 +109,7 @@ function getIndexRight(section,data){
   for(var i = 0; i<section.length;i++){
     html += '<option value="'+section[i]+'">'+section[i]+'</option>'
     var arr = data.slice(i*12,(i+1)*12);
-      series.push({name:section[i],data:arr,type: 'line'});
+      series.push({name:section[i],data:arr,type: 'line',label : {normal:{show: true,formatter:'{c}%'}},showAllSymbol: true});
   }
 $("#showSelect").append(html);
   //折线图
