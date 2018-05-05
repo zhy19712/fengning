@@ -98,6 +98,8 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
                     '<ul id="menudiv">',
                     '<li class="kit-item"><a class="kit-item" data-target="closeOther">关闭其他标签页</a></li>',
                     '<li class="kit-item"><a class="kit-item" data-target="closeAll">关闭全部标签页</a></li>',
+                    '<iframe id="iframebar" src="about:blank" frameBorder=0 marginHeight=0 marginWidth=0 style="position:absolute; top:0px;left:0px;width:100%;height: 100%; z-Index:-1;background: transparent;">',
+                    '</iframe>',
                     '</ul>',
                     '</div>',
                     '<div class="layui-tab-content">',

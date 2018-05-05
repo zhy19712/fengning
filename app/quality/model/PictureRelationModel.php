@@ -54,7 +54,7 @@ class PictureRelationModel extends Model
         // type 1工程划分模型 2 建筑模型 3三D模型
         $data = Db::name('quality_model_picture_relation')->alias('r')
             ->join('quality_model_picture p','r.picture_id = p.id','left')
-            ->where(['type'=>1,'r.relevance_id'=>['in',$id]])->column('r.id,r.picture_id,p.picture_number,p.picture_name');
+            ->where(['r.type'=>1,'r.relevance_id'=>['in',$id]])->column('r.id,r.picture_id,p.picture_number,p.picture_name');
         $newData = ['id_arr'=>[],'picture_id'=>[],'picture_number_arr'=>[],'picture_name_arr'=>[]];
         foreach ($data as $v){
             $newData['id_arr'][] = $v['id']; // 关联表主键
