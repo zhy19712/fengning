@@ -126,3 +126,35 @@ body #copyrights a{
 body .layui-table thead tr{
 	background:0;
 }
+
+/* 模板视图切换按钮 */
+.layui-model{
+	right:310px;
+}
+.layui-model .layui-nav-item{
+	padding: 0 10px;
+}
+.layui-model .layui-nav-item a{
+	padding: 0;
+	width: 33px;
+	height: 50px;
+	background-size: 33px;
+}
+.panorama{
+	background: url("../images/panorama.png") center center no-repeat;
+}
+.panorama:hover{
+	background: url("../images/panorama1.png") center center no-repeat;
+}
+.three-dimension{
+	background: url("../images/3D1.png") center center no-repeat;
+}
+.three-dimension:hover{
+	background: url("../images/3D2.png") center center no-repeat;
+}
+.manage-three-dimension{
+	background: url("../images/zhiliang3D.png") center center no-repeat;
+}
+.manage-three-dimension:hover{
+	background: url("../images/zhiliang3D1.png") center center no-repeat;
+}
