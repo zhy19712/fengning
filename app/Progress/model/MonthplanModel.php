@@ -1,42 +1,47 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 2018/5/2
- * Time: 17:32
- */
-/*
- * 档案管理-工程项目管理
- * @package app\filemanagement\model
- */
-namespace app\filemanagement\model;
-use think\exception\PDOException;
-use \think\Model;
 
-class ProjectmanagementModel extends Model
+namespace app\progress\model;
+
+use think\Model;
+use think\exception\PDOException;
+
+class MonthplanModel extends Model
 {
-    protected $name='file_project_management';
+    protected $name='progress_monthplan';
 
     /**
-     * 获取一条项目的信息
-     * @param $id
-     * @throws \think\exception\DbException
+     * 查询监理日志表中的所有的数据
+     */
+    public function getall()
+    {
+        return $this->group('id')->order("month","asc")->order("year","asc")->order("day","asc")->Distinct(true)->field("*")->select();
+    }
+
+    /**
+     * 获取一条现场图片信息
      */
     public function getOne($id)
     {
-        $data = $this->where("id",$id)->find();
+        $data = $this->where('id', $id)->find();
         return $data;
     }
 
     /**
-     * 新增项目
-     * @param $param
-     * @return array
+     * 查询表中的年、月、日是否存在
      */
-    public function insertPro($param)
+    public function getid($search_info)
+    {
+        $data = $this->field("id,pid")->where($search_info)->find();
+        return $data;
+    }
+
+    /**
+     * 新增一条监理日志表中的信息
+     */
+    public function insertLog($param)
     {
         try{
-            $result = $this->allowField(true)->save($param);
+            $result = $this->allowField(true)->insert($param);
             if(false === $result){
                 return ['code' => -1,'msg' => $this->getError()];
             }else{
@@ -48,11 +53,9 @@ class ProjectmanagementModel extends Model
     }
 
     /**
-     * 编辑项目
-     * @param $param
-     * @return array
+     * 编辑一条监理日志记录
      */
-    public function editPro($param)
+    public function editLog($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
@@ -67,11 +70,9 @@ class ProjectmanagementModel extends Model
     }
 
     /**
-     * 删除项目
-     * @param $id
-     * @return array
+     * 删除一条监理日志信息
      */
-    public function delPro($id)
+    public function delLog($id)
     {
         try{
             $this->where("id",$id)->delete();
@@ -82,12 +83,10 @@ class ProjectmanagementModel extends Model
     }
 
     /**
-     * 获取所有的项目类别
-     * @return array
+     * 获取所属同一个pid下的监理日志的数量
      */
-    public function getAllCategory()
+    public function getcount($pid)
     {
-        $data = $this->field("id,project_category")->order("id asc")->select();//项目类别
-        return $data;
+        return $this->field("pid")->where("pid",$pid)->count();
     }
 }
