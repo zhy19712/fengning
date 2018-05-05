@@ -74,4 +74,17 @@ class PictureModel extends Model
         return $remark;
     }
 
+    /**
+     * 获取全部的模型
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getAllModelPic()
+    {
+        $data = $this->where("picture_type = 1")->group("picture_number,picture_name")->field("picture_number,picture_name")->select();
+        return $data;
+    }
+
 }
