@@ -1,0 +1,48 @@
+.layer-review{
+    float: left;
+    padding: 9px 10px;
+}
+.layer-review li{
+    display: inline-block;
+    font-size: 14px;
+}
+.layer-review span,.layer-review i{
+    display: inline-block;
+    vertical-align: middle;
+}
+.layer-review i{
+    margin-right: 15px;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+}
+.layer-review i.blue{
+    background: #529df8;
+}
+.layer-review i.yellow{
+    background: #efb336;
+}
+.layer-review i.green{
+    background: #2aa515;
+}
+.layer-model-nav{
+    float: right;
+}
+.layer-model-nav li{
+    padding: 4px 10px;
+}
+.layer-model-nav i.fa:before{
+    color: #FFF;
+}
+.layer-model-nav i,.layer-model-nav span{
+    display: inline-block;
+    vertical-align: middle;
+}
+ .layer-model-nav .layui-btn{
+    padding: 6px 12px;
+    height: auto;
+    line-height: 1.02857;
+}
+ .layer-center{
+     padding-top: 3px;
+ }
