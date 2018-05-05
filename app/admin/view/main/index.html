@@ -201,7 +201,9 @@
                                 }
                             }
                         </script>
-                        <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
+                        <div style="width: 100%;height: 100%;position: relative;z-index: 0">
+                            <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="90%"></object>
+                        </div>
                         <!-- 初始化 -->
                         <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
                             // RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.58:8008/default.aspx?dir=url_res02&path=","res_fengning_kw_03");
@@ -410,7 +412,7 @@
                                     snapshotImgPathArr.push('</div>');
                                     snapshotSwiper.prependSlide(snapshotImgPathArr.join(' '));
                                     snapshotSwiper.updateSlidesSize();
-                                    layer.msg(res.msg);
+                                    layer.msg('快照成功');
                                 }
                             });
                       </script>
@@ -460,7 +462,7 @@
                                       tagImgPathArr.push('</div>');
                                       tagSwiper.prependSlide(tagImgPathArr.join(' '));
                                       tagSwiper.updateSlidesSize();
-                                      layer.msg(res.msg);
+                                      layer.msg('标注成功');
                                   }
                               });
                         </script>

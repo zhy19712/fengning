@@ -100,7 +100,7 @@
 
             <script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
                 if(CompleteEvent == "LoadMainScene" && retError==0 ){
-                    RealBimOcx.SetAllHugeObjSubValidState(0);
+                    RealBimOcx.SetAllHugeObjSubValidState(1);
                     //RealBimOcx.SetSceHugeObjVisible(false);
                 }
 
@@ -143,7 +143,6 @@
                         },
                         dataType: "json",
                         success: function (res) {
-                            console.log(res.number);
                             if(res.number==''){
                                 RealBimOcx.SetAllHugeObjSubValidState(0);
                             }else{
