@@ -455,7 +455,7 @@ function setInherit() {
   layer.open({
     type:1,
     title:'继承设置',
-    area:['700px','500px'],
+    area:['800px','260px'],
     content:$("#inherit")
   })
 }
