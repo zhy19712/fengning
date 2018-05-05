@@ -130,8 +130,8 @@ class Monthplan extends Permissions
     public function progress_monthplan($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
-        $_type = $this->request->has('type') ? $this->request->param('type') : "";
-        $_use = $this->request->has('use') ? $this->request->param('use') : "";
+        //$_type = $this->request->has('type') ? $this->request->param('type') : "";
+        //$_use = $this->request->has('use') ? $this->request->param('use') : "";
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
@@ -195,7 +195,7 @@ class Monthplan extends Permissions
         foreach ($recordsFilteredResult as $key => $value) {
             $length = sizeof($columns);
             for ($i = 0; $i < $length; $i++) {
-                array_push($temp, $value[$columns[$i]['name']]);
+                array_push($temp, $value[$columns[$i]['id']]);
             }
             $infos[] = $temp;
             $temp = [];
