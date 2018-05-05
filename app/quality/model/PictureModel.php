@@ -83,7 +83,7 @@ class PictureModel extends Model
      */
     public function getAllModelPic()
     {
-        $data = $this->where("picture_type = 1")->group("picture_number,picture_name")->field("picture_number,picture_name")->select();
+        $data = $this->where("picture_type = 1")->group("picture_number,picture_name")->order("id asc")->field("picture_number,picture_name")->select();
         return $data;
     }
 
