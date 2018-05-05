@@ -34,13 +34,18 @@ class Monthplan extends Permissions
         return $this->fetch();
     }
 
+    public function assview()
+    {
+        return $this->fetch();
+    }
+
 
     public function tree()
     {
         if ($this->request->isAjax()){
             //实例化模型
             $model = new MonthplanModel();
-            //查询监理日志表
+            //查询日志表
             $data = $model->getall();
             $res = tree($data);
 
@@ -51,7 +56,7 @@ class Monthplan extends Permissions
             return json($res);
         }
     }
-    /**********************************监理日志************************/
+    /**********************************月度计划************************/
     /**
      * 获取一条信息
      */
@@ -72,19 +77,12 @@ class Monthplan extends Permissions
     public function getalldata()
     {
 
-
-        if(request()->isAjax()){
+        if($this->request->isAjax()){
 
             return $this->datatablesPre();
 
 
         }
-
-
-
-
-
-
 
     }
 
@@ -195,7 +193,7 @@ class Monthplan extends Permissions
         foreach ($recordsFilteredResult as $key => $value) {
             $length = sizeof($columns);
             for ($i = 0; $i < $length; $i++) {
-                array_push($temp, $value[$columns[$i]['id']]);
+                array_push($temp, $value[$columns[$i]['name']]);
             }
             $infos[] = $temp;
             $temp = [];
