@@ -71,13 +71,143 @@ class Monthplan extends Permissions
 
     public function getalldata()
     {
-        $model = new MonthplanModel();
-        $data=$model->getall();
-        return json(['code'=> 1, 'data' => $data]);
+
+
+        if(request()->isAjax()){
+
+            return $this->datatablesPre();
+
+
+        }
+
+
+
+
 
 
 
     }
+
+    function datatablesPre()
+    {
+        //接收表名，列名数组 必要
+        $columns = $this->request->param('columns/a');
+        //获取查询条件
+        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+        $table = $this->request->param('tableName');
+        //接收查询条件，可以为空
+        $columnNum = sizeof($columns);
+        $columnString = '';
+        for ($i = 0; $i < $columnNum; $i++) {
+            if ($columns[$i]['searchable'] == 'true') {
+                $columnString = $columns[$i]['name'] . '|' . $columnString;
+            }
+        }
+        $columnString = substr($columnString, 0, strlen($columnString) - 1);
+        //获取Datatables发送的参数 必要
+        $draw = $this->request->has('draw') ? $this->request->param('draw', 0, 'intval') : 0;
+        //排序列
+        $order_column = $this->request->param('order/a')['0']['column'];
+        //ase desc 升序或者降序
+        $order_dir = $this->request->param('order/a')['0']['dir'];
+
+        $order = "";
+        if (isset($order_column)) {
+            $i = intval($order_column);
+            $order = $columns[$i]['name'] . ' ' . $order_dir;
+        }
+        //搜索
+        //获取前台传过来的过滤条件
+        $search = $this->request->param('search/a')['value'];
+        //分页
+        $start = $this->request->has('start') ? $this->request->param('start', 0, 'intval') : 0;
+        $length = $this->request->has('length') ? $this->request->param('length', 0, 'intval') : 0;
+        $limitFlag = isset($start) && $length != -1;
+        //新建的方法名与数据库表名保持一致
+        return $this->$table($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString);
+    }
+
+    public function progress_monthplan($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        $_type = $this->request->has('type') ? $this->request->param('type') : "";
+        $_use = $this->request->has('use') ? $this->request->param('use') : "";
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->count(0);
+        if (strlen($search) > 0) {
+
+            if ((!empty($_type)) || (!empty($_use))) {
+                if ($limitFlag) {
+                    if ((!empty($_type)) && (!empty($_use))) {
+                        $wherestr['type'] = $_type;
+                        $wherestr['use'] = $_use;
+                    } else if (!empty($_type)) {
+                        $wherestr['type'] = $_type;
+
+                    } else {
+                        $wherestr['use'] = $_use;
+                    }
+                    $recordsTotal = Db::name($table)->where($wherestr)->count(0);
+                    $recordsFilteredResult = Db::name($table)
+                        ->where($wherestr)
+                        ->where($columnString, 'like', '%' . $search . '%')
+                        ->order($order)->limit(intval($start), intval($length))->select();
+                    $recordsFiltered = sizeof($recordsFilteredResult);
+                }
+            } else {
+                $recordsFilteredResult = Db::name($table)
+                    ->where($columnString, 'like', '%' . $search . '%')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                if ((!empty($_type)) || (!empty($_use))) {
+                    if ($limitFlag) {
+                        if ((!empty($_type)) && (!empty($_use))) {
+                            $wherestr['type'] = $_type;
+                            $wherestr['use'] = $_use;
+                        } else if (!empty($_type)) {
+                            $wherestr['type'] = $_type;
+
+                        } else {
+                            $wherestr['use'] = $_use;
+                        }
+                        $recordsTotal = Db::name($table)->where($wherestr)->count(0);
+                        $recordsFilteredResult = Db::name($table)
+                            ->where($wherestr)
+                            ->order($order)->limit(intval($start), intval($length))->select();
+                        $recordsFiltered = $recordsTotal;
+                    }
+                } else {
+                    $recordsFilteredResult = Db::name($table)
+                        ->order($order)->limit(intval($start), intval($length))->select();
+                    $recordsFiltered = $recordsTotal;
+                }
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+
+
+
+
+
 
     /**
      * 上传
