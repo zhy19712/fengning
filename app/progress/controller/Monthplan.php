@@ -8,7 +8,6 @@
 /**
  * 进度管理-月度计划
  * Class Progressversion
-
  */
 namespace app\progress\controller;
 
@@ -34,7 +33,7 @@ class Monthplan extends Permissions
         return $this->fetch();
     }
 
-    public function assview()
+    public function progress()
     {
         return $this->fetch();
     }
@@ -45,7 +44,7 @@ class Monthplan extends Permissions
         if ($this->request->isAjax()){
             //实例化模型
             $model = new MonthplanModel();
-            //查询日志表
+            //查询监理日志表
             $data = $model->getall();
             $res = tree($data);
 
@@ -56,7 +55,7 @@ class Monthplan extends Permissions
             return json($res);
         }
     }
-    /**********************************月度计划************************/
+    /**********************************监理日志************************/
     /**
      * 获取一条信息
      */
@@ -76,14 +75,12 @@ class Monthplan extends Permissions
 
     public function getalldata()
     {
-
         if(request()->isAjax()){
 
             return $this->datatablesPre();
 
 
         }
-
     }
 
     function datatablesPre()
@@ -124,6 +121,8 @@ class Monthplan extends Permissions
         //新建的方法名与数据库表名保持一致
         return $this->$table($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString);
     }
+
+
 
     public function progress_monthplan($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
@@ -200,12 +199,6 @@ class Monthplan extends Permissions
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
-
-
-
-
-
-
 
     /**
      * 上传
@@ -421,7 +414,9 @@ class Monthplan extends Permissions
 
             //最后删除这条日志信息
             //查询attachment表中的文件上传路径
-            $attachment = Db::name("attachment")->where("id",$data_info["attachment_id"])->find();
+            $attachment = Db::name("attachment")
+                          ->where("id",$data_info["attachment_id"])
+                          ->find();
             $path = "." .$attachment['filepath'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if($attachment['filepath'])
@@ -435,7 +430,9 @@ class Monthplan extends Permissions
             }
 
             //删除attachment表中对应的记录
-            Db::name('attachment')->where("id",$data_info["attachment_id"])->delete();
+            Db::name('attachment')
+                ->where("id",$data_info["attachment_id"])
+                ->delete();
 
             //最后删除这一条记录信息
             $flag = $model->delLog($id);
@@ -522,7 +519,7 @@ class Monthplan extends Permissions
                 return json(['code' => 0,'msg' => '参数有误']);
             }
             // 是否已经关联过 picture_type  1工程划分模型 2 建筑模型 3三D模型
-            $is_related = Db::name('quality_model_picture_relation')->where(['type'=>1,'relevance_id'=>$relevance_id])->value('id');
+            $is_related = Db::name('progress_model_picture_relation')->where(['type'=>1,'relevance_id'=>$relevance_id])->value('id');
             $data['type'] = 1;
             $data['relevance_id'] = $relevance_id;
             $data['picture_id'] = $picture_id;
