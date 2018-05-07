@@ -8,7 +8,7 @@
 /**
  * 进度管理-月度计划
  * Class Progressversion
- * @package app\quality\controller
+
  */
 namespace app\progress\controller;
 
@@ -544,7 +544,7 @@ class Monthplan extends Permissions
     // 获取txt文件内容并插入到数据库中 insertTxtContent
     public function insertTxtContent()
     {
-        $filePath = './static/division/GolIdTable.txt';
+        $filePath = './static/monthplan/GolIdTable.txt';
         if(!file_exists($filePath)){
             return json(['code' => '-1','msg' => '文件不存在']);
         }
