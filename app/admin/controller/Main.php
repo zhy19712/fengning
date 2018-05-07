@@ -684,11 +684,11 @@ class Main extends Permissions
             }
 
             /*******工序信息***********/
-            $division_id = $model->getDivisionId();
+            $en_type = $model->getEnType($picture_number);
 
             //获取所有的控制点、工序、控制点下对应的信息
 
-            $processinfo = $model->getProcessInfo($division_id["division_id"]);
+            $processinfo = Db::name("materialtrackingdivision")->field("id,pid,name")->where(["pid"=>$en_type["en_type"],"type"=>3])->select();
 
 
             if(empty($processinfo))
@@ -696,17 +696,35 @@ class Main extends Permissions
                 $processinfo = [];
             }
 
-            //*****多表查询join改这里******
-//            $par = array();
-//            $par['type'] = 1;
-//            $par['division_id'] = $division_id;
-//            $processinfo_list = Db::name("quality_division_controlpoint_relation")->alias('a')
-//                ->join('controlpoint b', 'a.control_id=b.id', 'left')
-//                ->where($par)
-//                ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id,b.remark')
-//                ->order($order)->limit(intval($start), intval($length))->select();
+            foreach($processinfo as $key=>$val)
+            {
+                //*****多表查询join改这里******
+                $par = array();
+                $par['type'] = 1;
+                $par['a.division_id'] = $en_type["division_id"];//488
+                $par["a.ma_division_id"] = $val["id"];//63 64 65 66 67
+                $processinfo_list = Db::name("quality_division_controlpoint_relation")->alias('a')
+                    ->join('controlpoint b', 'a.control_id=b.id', 'left')
+                    ->where($par)
+                    ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
+                    ->select();
+                $processinfo[$key]["processinfo_list"] = $processinfo_list;
 
-           return json(["code"=>1,"unit_info"=>$unit_info]);
+            }
+
+           if(!empty($processinfo))
+           {
+               foreach ($processinfo as $a=>$b)
+               {
+                   foreach ($b['processinfo_list'] as $c=>$d)
+                   {
+                      $processinfo[$a]["quality_form_info"] = Db::name("quality_form_info")->field("id,form_name")
+                          ->where("cpr_id",$d["control_id"])->select();
+                   }
+               }
+           }
+
+           return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);
         }
     }
 }
