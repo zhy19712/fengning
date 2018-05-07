@@ -46,12 +46,13 @@
                 }
                 RealBimOcx.SetSuitableCam();
 
+                //模块验评情况
                 $.ajax({
                     url: "./countUnit",
                     type: "post",
                     dataType: "json",
                     success: function (res) {
-                        //全部
+                        //未验评 model_picture（全部）
                         for(var k = 0;k<res.model_picture.length;k++){
                             var allUObjSubID = res.model_picture[k].picture_number;
                             RealBimOcx.BatchAddSubClrInfoBegin();
