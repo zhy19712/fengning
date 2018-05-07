@@ -199,7 +199,7 @@
             <div id="fu">
                 <div id="zi">
                     <div id="bai"></div>
-                    <div id="leftTips" class="tipStyle"><span id="lYear"></span>-<span id="lMonth"></span>-<span class="spanId">1</span></div>
+                    <div id="leftTips" class="tipStyle"><span id="lYear"></span>-<span id="lMonth"></span>-<span class="spanId"></span></div>
                 </div>
                 <div id="leftTop" class="tipStyle"><span class="lYear"></span>-<span class="lMonth"></span>-<span id="rKai"></span></div>
                 <div id="rightTips" class="tipStyle"><span id="endYear"></span>-<span id="endMonth"></span>-<span id="rjie"></span></div>
@@ -364,12 +364,12 @@
                         <p class="rtp" style="float: left;">已建</p>
                     </div>
                     <div class="rMenu" id="rWeek">
-                        <p class="rtp" id="day" style="right: 54%; top: -10px; font-size: 26px; position: absolute;">09</p>
+                        <p class="rtp" id="day" style="right: 54%; top: -10px; font-size: 26px; position: absolute;"></p>
                         <div class="rsekuai" style="margin-left: 125px; background-color: rgb(157, 243, 142);"></div>
                         <p class="rtp" style="float: left;">在建</p>
                     </div>
                     <div class="rMenu" id="rZhou">
-                        <p class="rtp" id="weekinfo" style="padding-left: 19px; float: left;">星期四</p>
+                        <p class="rtp" id="weekinfo" style="padding-left: 19px; float: left;"></p>
                         <div class="rsekuai" style="margin-left: 1px;background-color: rgb(102, 164, 201);"></div>
                         <p class="rtp" style="float: left;">未建</p>
                     </div>
@@ -410,6 +410,8 @@
     $(".lMonth").text(month);
     $("#endYear").text(year);
     $("#endMonth").text(month);
+    $("#day").text(kai);
+    $(".spanId").text(kai);
 
     var arr = [
         {"id":"1","wbs":"1.1", "jihua":"2017-10-23", "jieshu":"2017-11-05"},
@@ -434,7 +436,7 @@
         {"id":"20","wbs":"8.2", "jihua":"2017-11-01", "jieshu":"2017-11-22"}
     ]
 
-    var ptime, rep =0;
+    var ptime, rep =0, dataTime;
 
     var proWidth = $(".progress").width();
     var fuWidth = $("#fu").width();
@@ -533,8 +535,32 @@
             var tipsRep = rep;
             tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
             $(".spanId").text(tipsRep);
+            $("#day").text(tipsRep);
             var date111 = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
-
+            var days = new Date(date111).getDay();
+            switch (days) {
+                case 0:
+                    $("#weekinfo").html("星期日");
+                    break;
+                case 1:
+                    $("#weekinfo").html("星期一");
+                    break;
+                case 2:
+                    $("#weekinfo").html("星期二");
+                    break;
+                case 3:
+                    $("#weekinfo").html("星期三");
+                    break;
+                case 4:
+                    $("#weekinfo").html("星期四");
+                    break;
+                case 5:
+                    $("#weekinfo").html("星期五");
+                    break;
+                case 6:
+                    $("#weekinfo").html("星期六");
+                    break;
+            }
             try{
                 var idx = [];
                 console.log(date111);
