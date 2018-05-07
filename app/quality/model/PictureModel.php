@@ -120,26 +120,27 @@ class PictureModel extends Model
             ->where('r.type = 1')
             ->where("p.picture_type = 1")
             ->where("p.picture_number",$picture_number)
-            ->field("u.site,u.coding,u.hinge,u.quantities,u.en_type,u.ma_bases,u.su_basis,u.el_start,u.el_cease,u.pile_number,u.start_date,u.completion_date")->find();
+            ->field("u.site,u.coding,u.hinge,u.quantities,u.en_type,u.ma_bases,u.su_basis,u.el_start,u.el_cease,u.pile_number,u.start_date,u.completion_date,u.en_type")->find();
         return $unit_info;
     }
 
     /**
-     * 根据picture_number模型图编号查询对应的工序信息，获取归属工程编号
+     * 根据picture_number模型图编号查询对应的工序信息，获取归属工程类型
      * @return false|\PDOStatement|string|\think\Collection
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getDivisionId()
+    public function getEnType($picture_number)
     {
-        $division_id =  Db::name('quality_unit')->alias('u')
+        $en_type =  Db::name('quality_unit')->alias('u')
             ->join('quality_model_picture_relation r', 'r.relevance_id = u.id', 'left')
             ->join('quality_model_picture p', 'p.id = r.picture_id', 'left')
             ->where("r.type = 1")
             ->where("p.picture_type = 1")
-            ->field("u.division_id")->find();
-        return $division_id;
+            ->where("p.picture_number",$picture_number)
+            ->field("u.en_type,u.division_id")->find();
+        return $en_type;
     }
 
     /**
