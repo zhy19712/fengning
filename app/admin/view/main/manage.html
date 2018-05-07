@@ -1,24 +1,90 @@
 {include file="../app/public/common_header.html"}
-
+<link rel="stylesheet" href="__WEBSITE__/main/manage.css">
 <div data-options="region:'west',title:'管理试图',split:true" style="width:260px;">
     <ul id="ztree" class="ztree"></ul>
 </div>
 <div data-options="region:'center',title:''" style="border: 0">
     <div class="easyui-layout" data-options="fit:true">
-        <div data-options="region:'north'" style="height:180px">
-            <ul>
-                <li>优良</li>
-                <li>合格</li>
-                <li>未验评</li>
+        <div data-options="region:'north'" class="north" style="height:39px">
+            <ul class="layer-review">
+                <li>
+                    <span>优良</span>
+                    <i class="green"></i>
+                </li>
+                <li>
+                    <span>合格</span>
+                    <i class="yellow"></i>
+                </li>
+                <li>
+                    <span>未验评</span>
+                    <i class="blue"></i>
+                </li>
+            </ul>
+            <ul class="layer-model-nav">
+                <li>
+                    <div class="layui-btn layui-btn-radius layui-btn-normal">
+                        <i class="fa fa-check-circle"></i>
+                        质量分布
+                    </div>
+                </li>
             </ul>
         </div>
-        <div data-options="region:'center'"></div>
+        <div data-options="region:'center'" class="layer-center">
+            <object id="RealBimOcx" classid="CLSID:2CD7E1BE-10B8-4A1C-B908-4FB7D4FD4ABD"  width="100%" height="100%"></object>
+            <!-- 初始化 -->
+            <script language="javascript"   for="RealBimOcx" EVENT="OnRealBimOcxInited()" type="text/javascript">
+                RealBimOcx.SwitchBIMSceneSimple("http://192.168.1.2:8008/default.aspx?dir=url_res02&path=","res_fengning_kw");
+                RealBimOcx.SetSceVersionInfoExt(100, -1, 0, 2000000000);
+                RealBimOcx.CreateAGolFont("CustomFont01","微软雅黑",true,true,14,14,32,1.0,0*64,"");
+                RealBimOcx.CreateAGolFont("CustomFont02","微软雅黑",true,true,12,12,8,1.0,0*64,"");
+            </script>
+            <!-- 初始化完成 -->
+            <script language="javascript"   for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
+                if(CompleteEvent == "LoadMainScene" && retError==0 ){
+                    RealBimOcx.SetAllHugeObjSubValidState(1);
+                    RealBimOcx.SetSceHugeObjVisible(true);
+                }
+                RealBimOcx.SetSuitableCam();
+
+                //模块验评情况
+                $.ajax({
+                    url: "./countUnit",
+                    type: "post",
+                    dataType: "json",
+                    success: function (res) {
+                        //未验评 model_picture（全部）
+                        for(var k = 0;k<res.model_picture.length;k++){
+                            var allUObjSubID = res.model_picture[k].picture_number;
+                            RealBimOcx.BatchAddSubClrInfoBegin();
+                            RealBimOcx.AddSubClrPercent(allUObjSubID,0.5,0xff529df8);    //第二个参数为透明度
+                            RealBimOcx.BatchAddSubClrInfoEnd();
+                        }
+                        //优良 excellent
+                        for(var i = 0;i<res.excellent.length;i++){
+                            var exUObjSubID = res.excellent[i].picture_number;
+                            RealBimOcx.BatchAddSubClrInfoBegin();
+                            RealBimOcx.AddSubClrPercent(exUObjSubID,1,0xff2aa515);    //第二个参数为透明度
+                            RealBimOcx.BatchAddSubClrInfoEnd();
+                        }
+                        //合格 qualified
+                        for(var j = 0;j<res.qualified.length;j++){
+                            var quUObjSubID = res.excellent[j].picture_number;
+                            RealBimOcx.BatchAddSubClrInfoBegin();
+                            RealBimOcx.AddSubClrPercent(quUObjSubID,1,0xff2aa515);    //第二个参数为透明度
+                            RealBimOcx.BatchAddSubClrInfoEnd();
+                        }
+                    }
+                });
+            </script>
+            <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
+
+            </script>
+        </div>
     </div>
 </div>
 <div data-options="region:'east',title:'管理信息',split:true" style="width:350px;padding:5px;">
 
 </div>
 {include file="../app/public/common_footer.html"}
-<script></script>
 </body>
 </html>
