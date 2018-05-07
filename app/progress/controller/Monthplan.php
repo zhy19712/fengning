@@ -8,6 +8,7 @@
 /**
  * 进度管理-月度计划
  * Class Progressversion
+ * @package app\quality\controller
  */
 namespace app\progress\controller;
 
@@ -29,11 +30,6 @@ class Monthplan extends Permissions
      * @return mixed
      */
     public function index()
-    {
-        return $this->fetch();
-    }
-
-    public function progress()
     {
         return $this->fetch();
     }
@@ -75,12 +71,19 @@ class Monthplan extends Permissions
 
     public function getalldata()
     {
+
+
         if(request()->isAjax()){
 
             return $this->datatablesPre();
 
 
         }
+
+
+
+
+
     }
 
     function datatablesPre()
@@ -122,13 +125,57 @@ class Monthplan extends Permissions
         return $this->$table($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString);
     }
 
-
-
-    public function progress_monthplan($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function norm_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
-        //$_type = $this->request->has('type') ? $this->request->param('type') : "";
-        //$_use = $this->request->has('use') ? $this->request->param('use') : "";
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        $node = new NormModel();
+        $idArr = $node->cateTree($id);
+        $idArr[] = $id;
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->whereIn('nodeId', $idArr)->count(0);
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)
+                    ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
+                    ->whereIn('nodeId', $idArr)
+                    ->where($columnString, 'like', '%' . $search . '%')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)
+                    ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
+                    ->whereIn('nodeId', $idArr)
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+    public function quality_template($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        $_type = $this->request->has('type') ? $this->request->param('type') : "";
+        $_use = $this->request->has('use') ? $this->request->param('use') : "";
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
@@ -199,6 +246,92 @@ class Monthplan extends Permissions
         }
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
+
+    public function upload($module = 'admin', $use = 'admin_thumb')
+    {
+        if ($this->request->file('file')) {
+            $file = $this->request->file('file');
+        } else {
+            $res['code'] = 1;
+            $res['msg'] = '没有上传文件';
+            return json($res);
+        }
+        $module = $this->request->has('module') ? $this->request->param('module') : $module;//模块
+        $web_config = Db::name('webconfig')->where('web', 'web')->find();
+        $info = $file->validate(['size' => $web_config['file_size'] * 1024, 'ext' => $web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . $module . DS . $use);
+        if ($info) {
+            //写入到附件表
+            $data = [];
+            $data['module'] = $module;
+            $data['filename'] = $info->getFilename();//文件名
+            $data['filepath'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();//文件路径
+            $data['fileext'] = $info->getExtension();//文件后缀
+            $data['filesize'] = $info->getSize();//文件大小
+            $data['create_time'] = time();//时间
+            $data['uploadip'] = $this->request->ip();//IP
+            $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
+            if ($data['module'] == 'admin') {
+                //通过后台上传的文件直接审核通过
+                $data['status'] = 1;
+                $data['admin_id'] = $data['user_id'];
+                $data['audit_time'] = time();
+            }
+            $data['use'] = $this->request->has('use') ? $this->request->param('use') : $use;//用处
+            $res['id'] = Db::name('attachment')->insertGetId($data);
+            $res['src'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();
+            $res['code'] = 2;
+            addlog($res['id']);//记录日志
+            return json($res);
+        } else {
+            // 上传失败获取错误信息
+            return $this->error('上传失败：' . $file->getError());
+        }
+    }
+
+    public function controlpoint($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        $c = new ControlPoint();
+        $idArr = $c->getChilds($id);
+        $idArr[] = $id;
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->whereIn('ProcedureId', $idArr)->count(0);
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)
+                    ->whereIn('ProcedureId', $idArr)
+                    ->where($columnString, 'like', '%' . $search . '%')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)
+                    ->whereIn('ProcedureId', $idArr)
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+
 
     /**
      * 上传
@@ -414,9 +547,7 @@ class Monthplan extends Permissions
 
             //最后删除这条日志信息
             //查询attachment表中的文件上传路径
-            $attachment = Db::name("attachment")
-                          ->where("id",$data_info["attachment_id"])
-                          ->find();
+            $attachment = Db::name("attachment")->where("id",$data_info["attachment_id"])->find();
             $path = "." .$attachment['filepath'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if($attachment['filepath'])
@@ -430,9 +561,7 @@ class Monthplan extends Permissions
             }
 
             //删除attachment表中对应的记录
-            Db::name('attachment')
-                ->where("id",$data_info["attachment_id"])
-                ->delete();
+            Db::name('attachment')->where("id",$data_info["attachment_id"])->delete();
 
             //最后删除这一条记录信息
             $flag = $model->delLog($id);
@@ -456,144 +585,6 @@ class Monthplan extends Permissions
             ];
             $flag = $model->editLog($data);
             return json($flag);
-        }
-    }
-
-    public function modelPicturePreview()
-    {
-        // 前台 传递 选中的 单元工程段号 编号 id
-        if($this->request->isAjax()){
-            $param = input('param.');
-            $id = isset($param['id']) ? $param['id'] : -1;
-            if($id == -1){
-                return json(['code' => 0,'msg' => '编号有误']);
-            }
-            // 获取关联的模型图
-            $picture = new PictureRelationModel();
-            $data = $picture->getAllNumber([$id]);
-            $picture_number = $data['picture_number_arr'];
-            return json(['code'=>1,'number'=>$picture_number,'msg'=>'单元工程段号-模型图编号']);
-        }
-    }
-
-    /**
-     *
-     *
-     *
-     *
-     * //模型功能
-     * 打开关联模型 页面 openModelPicture
-     * @return mixed|\think\response\Json
-     * @author hutao
-     */
-    public function openModelPicture()
-    {
-        // 前台 传递 选中的 单元工程段号的 id编号
-        if($this->request->isAjax()){
-            $param = input('param.');
-            $id = isset($param['id']) ? $param['id'] : -1;
-            if($id == -1){
-                return json(['code' => 0,'msg' => '编号有误']);
-            }
-            // 获取工程划分下的 所有的模型图主键,编号,名称
-            $picture = new PictureModel();
-            $data = $picture->getAllName($id);
-            return json(['code'=>1,'one_picture_id'=>$data['one_picture_id'],'data'=>$data['str'],'msg'=>'模型图列表']);
-        }
-        return $this->fetch('relationview');
-    }
-
-    /**
-     * 关联模型图
-     * @return \think\response\Json
-     * @author hutao
-     */
-    public function addModelPicture()
-    {
-        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图主键编号 picture_id
-        if($this->request->isAjax()){
-            $param = input('param.');
-            $relevance_id = isset($param['id']) ? $param['id'] : -1;
-            $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
-            if($relevance_id == -1 || $picture_id == -1){
-                return json(['code' => 0,'msg' => '参数有误']);
-            }
-            // 是否已经关联过 picture_type  1工程划分模型 2 建筑模型 3三D模型
-            $is_related = Db::name('progress_model_picture_relation')->where(['type'=>1,'relevance_id'=>$relevance_id])->value('id');
-            $data['type'] = 1;
-            $data['relevance_id'] = $relevance_id;
-            $data['picture_id'] = $picture_id;
-            $picture = new PictureRelationModel();
-            if(empty($is_related)){
-                // 关联模型图 一对一关联
-                $flag = $picture->insertTb($data);
-                return json($flag);
-            }else{
-                $data['id'] = $is_related;
-                $flag = $picture->editTb($data);
-                return json($flag);
-            }
-        }
-    }
-
-    // 此方法只是临时 导入模型图 编号和名称的 txt文件时使用
-    // 不存在于 功能列表里面 后期可以删除掉
-    // 获取txt文件内容并插入到数据库中 insertTxtContent
-    public function insertTxtContent()
-    {
-        $filePath = './static/monthplan/GolIdTable.txt';
-        if(!file_exists($filePath)){
-            return json(['code' => '-1','msg' => '文件不存在']);
-        }
-        $files = fopen($filePath, "r") or die("Unable to open file!");
-        $contents = $new_contents =[];
-        while(!feof($files)) {
-            $txt = iconv('gb2312','utf-8//IGNORE',fgets($files));
-            $txt = str_replace('[','',$txt);
-            $txt = str_replace(']','',$txt);
-            $txt = str_replace("\r\n",'',$txt);
-            $contents[] = $txt;
-        }
-
-        foreach ($contents as $v){
-            $new_contents[] = explode(' ',$v);
-        }
-
-        $data = [];
-        foreach ($new_contents as $k=>$val){
-            $data[$k]['picture_name'] = trim(next($val));
-            $data[$k]['picture_number'] = trim(next($val));
-        }
-
-        array_pop($data);
-
-        $picture = new PictureModel();
-        $picture->saveAll($data); // 使用saveAll 是因为 要 自动插入 时间
-        fclose($files);
-    }
-
-  //模型功能
-    /**
-     * 搜索模型
-     * @return \think\response\Json
-     * @author hutao
-     */
-    public function searchModel()
-    {
-        // 前台 传递  选中的 单元工程段号的 id编号  和  搜索框里的值 search_name
-        if($this->request->isAjax()){
-            $param = input('param.');
-            $id = isset($param['id']) ? $param['id'] : -1;
-            $search_name = isset($param['search_name']) ? $param['search_name'] : -1;
-            if($id == -1){
-                return json(['code' => 0,'msg' => '请传递选中的单元工程段号的编号']);
-            }if($id == -1 || $search_name == -1){
-                return json(['code' => 0,'msg' => '请写入需要搜索的值']);
-            }
-            // 获取搜索的模型图主键,编号,名称
-            $picture = new PictureModel();
-            $data = $picture->getAllName($id,$search_name);
-            return json(['code'=>1,'one_picture_id'=>$data['one_picture_id'],'data'=>$data['str'],'msg'=>'模型图列表']);
         }
     }
 
