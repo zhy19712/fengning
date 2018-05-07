@@ -105,33 +105,30 @@
             </button>
         </div>
     </div>
-    <div id="ad" style="margin-bottom: 40px">
-        <i id="backward" class="fa fa-fast-backward"></i>
-        <i id="start" class="fa fa-play"></i>
-        <i id="suspend" class="fa fa-pause" style="display: none"></i>
-        <i id="forward" class="fa fa-fast-forward"></i>
-    </div>
-    <div id="tip">
+    <!--<div id="ad" style="margin-bottom: 40px">-->
+        <!--<i id="backward" class="fa fa-fast-backward"></i>-->
+        <!--<i id="start" class="fa fa-play"></i>-->
+        <!--<i id="suspend" class="fa fa-pause" style="display: none"></i>-->
+        <!--<i id="forward" class="fa fa-fast-forward"></i>-->
+    <!--</div>-->
 
-    </div>
+    <!--<div class="progress">-->
+        <!--<div class="progress_bg">-->
+            <!--<div class="progress_bar"></div>-->
+        <!--</div>-->
+        <!--<div class="progress_btn"></div>-->
+        <!--<div class="text">0%</div>-->
+    <!--</div>-->
 
-    <div class="progress">
-        <div class="progress_bg">
-            <div class="progress_bar"></div>
-        </div>
-        <div class="progress_btn"></div>
-        <div class="text">0%</div>
-    </div>
+    <!--<div id="fu">-->
+        <!--<div id="zi">-->
+            <!--<div id="bai"></div>-->
+            <!--<div id="leftTips" class="tipStyle">2017-5-1</div>-->
+        <!--</div>-->
 
-    <div id="fu">
-        <div id="zi">
-            <div id="bai"></div>
-            <div id="leftTips" class="tipStyle">2017-5-1</div>
-        </div>
-
-        <div id="leftTop" class="tipStyle">2017-5-1</div>
-        <div id="rightTips" class="tipStyle">2017-5-15</div>
-    </div>
+        <!--<div id="leftTop" class="tipStyle">2017-5-1</div>-->
+        <!--<div id="rightTips" class="tipStyle">2017-5-15</div>-->
+    <!--</div>-->
 
     <div id="layuiRow" style="width: 100%;height: 100%">
         <table id="versonPro" class="table table-striped table-bordered" cellspacing="0"  width="100%">
@@ -428,7 +425,9 @@
     }
     //关联视图
     function monthFile(id) {
-        layer.msg("敬请期待")
+        document.cookie="proId="+id;
+        window.open('./progress.shtml');
+        console.log(id)
     }
 
     //添加计划
