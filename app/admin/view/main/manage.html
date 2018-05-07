@@ -77,13 +77,174 @@
                 });
             </script>
             <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
-
+                $.ajax({
+                    url: "./xxx",
+                    type: "post",
+                    data: {
+                        uObjSubID:uObjSubID
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        console.log(res);
+                    }
+                })
             </script>
         </div>
     </div>
 </div>
-<div data-options="region:'east',title:'管理信息',split:true" style="width:350px;padding:5px;">
+<div data-options="region:'east',title:'管理信息',split:true" style="width:350px;">
+    <div id="tt" class="easyui-tabs">
+        <div title="基本信息" style="padding:10px;display:none;">
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <div class="layui-colla-content layui-show">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">检验批名称</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">检验批编码</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关键部位</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">工程量</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">工程类型</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">施工依据</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">补充依据</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">高程（起）</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">高程（止）</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">桩号（起止）</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开始日期</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">结束日期</label>
+                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div title="工序信息" style="overflow:auto;padding:10px;display:none;">
 
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <div class="layui-colla-content layui-show">
+                        <ul class="layui-timeline">
+                            <li class="layui-timeline-item">
+                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <div class="layui-timeline-title">预应力锚杆钻孔</div>
+                                </div>
+                            </li>
+                            <li class="layui-timeline-item">
+                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <div class="layui-timeline-title">工程照片、强制性条文</div>
+                                </div>
+                            </li>
+                            <li class="layui-timeline-item">
+                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <div class="layui-timeline-title">单元工程验收</div>
+                                </div>
+                            </li>
+                            <li class="layui-timeline-item">
+                                <i class="layui-icon layui-timeline-axis current">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <div class="layui-timeline-title">验收（2017.08.30）</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div title="质量表格" style="padding:10px;display:none;">
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <div class="layui-colla-content layui-show">
+                        <table class="layui-table" lay-size="sm">
+                            <colgroup>
+                                <col>
+                                <col>
+                                <col width="56">
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                <td>预应力锚杆钻孔 </td>
+                                <td>预应力锚杆钻孔质量检查表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">工程照片、强制性条文</td>
+                                <td>工程记录照片表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>工程建设标准强制性条文执行记录表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">单元工程验收 </td>
+                                <td>预应力锚杆单元工程质量等级评定表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>单元工程检查验收申请表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {include file="../app/public/common_footer.html"}
 </body>
