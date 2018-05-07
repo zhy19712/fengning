@@ -553,7 +553,7 @@
 
             $("#fu").css("display", "block");
             // var oleft = $("#zi")[0].offsetWidth + 96;
-            var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 2.5;
+            var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 2;
             // console.log(oleft)
             // console.log($("#fu").width())
             var ob = oleft / $("#fu")[0].offsetWidth;
@@ -585,16 +585,17 @@
                 alert("亲，不能再退这么快了！")
             }
             stime = setInterval(function (){
-                $("#fu").css("display","block");
-                var oleft = $("#zi")[0].offsetWidth - 96;
-                var tipsLeft = Math.round($("#leftTips").offset().left);
-                console.log(tipsLeft + "left ")
-                var ob = oleft/$("#fu")[0].offsetWidth;
-                $("#zi").css("width",oleft+"px");
-                tipsLeft -= 181;
-                $("#leftTips").css("left",tipsLeft+"px");
-                if(oleft == 2){
-                    cleanSupElement()
+                rep-=1;
+                var tipsRep = rep;
+                tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
+                $(".spanId").text(tipsRep-1);
+                $("#fu").css("display", "block");
+                var oleft = $("#zi")[0].offsetWidth - Math.round(fuWidth/jie) - 2.5;
+                var ob = oleft / $("#fu")[0].offsetWidth;
+                $("#zi").css("width", oleft + "px");
+                $("#leftTips").css("left", oleft-35 + "px");
+                if (rep == 0) {
+                    cleanSupElement();
                 }
             },backTime)
         }
@@ -611,13 +612,15 @@
                 layer.msg("亲，不能再快了！")
             }
             stime = setInterval(function (){
-                $("#fu").css("display","block");
-                var oleft = $("#zi")[0].offsetWidth + 96;
-                var tipsLeft = Math.round($("#leftTips").offset().left+10);
-                var ob = oleft/$("#fu")[0].offsetWidth;
-                $("#zi").css("width",oleft+"px");
-                $("#leftTips").css("left",tipsLeft+"px");
-                if($("#zi")[0].offsetWidth -12 == $("#fu")[0].offsetWidth){
+                rep+=1;
+                var tipsRep = rep;
+                tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
+                $(".spanId").text(tipsRep);
+                $("#fu").css("display", "block");
+                var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 1.7;
+                $("#zi").css("width", oleft + "px");
+                $("#leftTips").css("left", oleft-35 + "px");
+                if (rep == jie) {
                     cleanSupElement();
                 }
             },times)
