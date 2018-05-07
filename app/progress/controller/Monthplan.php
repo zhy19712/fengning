@@ -34,18 +34,13 @@ class Monthplan extends Permissions
         return $this->fetch();
     }
 
-    public function assview()
-    {
-        return $this->fetch();
-    }
-
 
     public function tree()
     {
         if ($this->request->isAjax()){
             //实例化模型
             $model = new MonthplanModel();
-            //查询日志表
+            //查询监理日志表
             $data = $model->getall();
             $res = tree($data);
 
@@ -56,7 +51,7 @@ class Monthplan extends Permissions
             return json($res);
         }
     }
-    /**********************************月度计划************************/
+    /**********************************监理日志************************/
     /**
      * 获取一条信息
      */
@@ -76,14 +71,12 @@ class Monthplan extends Permissions
 
     public function getalldata()
     {
-
         if(request()->isAjax()){
 
             return $this->datatablesPre();
 
 
         }
-
     }
 
     function datatablesPre()
@@ -125,11 +118,57 @@ class Monthplan extends Permissions
         return $this->$table($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString);
     }
 
-    public function progress_monthplan($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    public function norm_file($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
-        //$_type = $this->request->has('type') ? $this->request->param('type') : "";
-        //$_use = $this->request->has('use') ? $this->request->param('use') : "";
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        $node = new NormModel();
+        $idArr = $node->cateTree($id);
+        $idArr[] = $id;
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->whereIn('nodeId', $idArr)->count(0);
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)
+                    ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
+                    ->whereIn('nodeId', $idArr)
+                    ->where($columnString, 'like', '%' . $search . '%')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)
+                    ->field('standard_number,standard_name,material_date,alternate_standard,remark,id')
+                    ->whereIn('nodeId', $idArr)
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+    public function quality_template($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        $_type = $this->request->has('type') ? $this->request->param('type') : "";
+        $_use = $this->request->has('use') ? $this->request->param('use') : "";
         //条件过滤后记录数 必要
         $recordsFiltered = 0;
         $recordsFilteredResult = array();
@@ -201,9 +240,89 @@ class Monthplan extends Permissions
         return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
     }
 
+    public function upload($module = 'admin', $use = 'admin_thumb')
+    {
+        if ($this->request->file('file')) {
+            $file = $this->request->file('file');
+        } else {
+            $res['code'] = 1;
+            $res['msg'] = '没有上传文件';
+            return json($res);
+        }
+        $module = $this->request->has('module') ? $this->request->param('module') : $module;//模块
+        $web_config = Db::name('webconfig')->where('web', 'web')->find();
+        $info = $file->validate(['size' => $web_config['file_size'] * 1024, 'ext' => $web_config['file_type']])->rule('date')->move(ROOT_PATH . 'public' . DS . 'uploads' . DS . $module . DS . $use);
+        if ($info) {
+            //写入到附件表
+            $data = [];
+            $data['module'] = $module;
+            $data['filename'] = $info->getFilename();//文件名
+            $data['filepath'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();//文件路径
+            $data['fileext'] = $info->getExtension();//文件后缀
+            $data['filesize'] = $info->getSize();//文件大小
+            $data['create_time'] = time();//时间
+            $data['uploadip'] = $this->request->ip();//IP
+            $data['user_id'] = Session::has('admin') ? Session::get('admin') : 0;
+            if ($data['module'] == 'admin') {
+                //通过后台上传的文件直接审核通过
+                $data['status'] = 1;
+                $data['admin_id'] = $data['user_id'];
+                $data['audit_time'] = time();
+            }
+            $data['use'] = $this->request->has('use') ? $this->request->param('use') : $use;//用处
+            $res['id'] = Db::name('attachment')->insertGetId($data);
+            $res['src'] = DS . 'uploads' . DS . $module . DS . $use . DS . $info->getSaveName();
+            $res['code'] = 2;
+            addlog($res['id']);//记录日志
+            return json($res);
+        } else {
+            // 上传失败获取错误信息
+            return $this->error('上传失败：' . $file->getError());
+        }
+    }
 
-
-
+    public function controlpoint($id, $draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        $c = new ControlPoint();
+        $idArr = $c->getChilds($id);
+        $idArr[] = $id;
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        $recordsFilteredResult = array();
+        //表的总记录数 必要
+        $recordsTotal = Db::name($table)->whereIn('ProcedureId', $idArr)->count(0);
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)
+                    ->whereIn('ProcedureId', $idArr)
+                    ->where($columnString, 'like', '%' . $search . '%')
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)
+                    ->whereIn('ProcedureId', $idArr)
+                    ->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
 
 
 
