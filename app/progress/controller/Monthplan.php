@@ -33,6 +33,11 @@ class Monthplan extends Permissions
         return $this->fetch();
     }
 
+    public function progress()
+    {
+        return $this->fetch();
+    }
+
 
     public function tree()
     {
