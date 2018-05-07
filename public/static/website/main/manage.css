@@ -110,3 +110,10 @@
     font-weight: bold;
     color: #56abe4;
 }
+.layui-table .bg{
+    background: #00B050;
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    opacity:0.5;
+    color: #FFF;
+}

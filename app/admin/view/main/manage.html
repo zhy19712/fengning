@@ -155,6 +155,21 @@
                     var infoTemplateHtml = infoTemplate.join(',');
                     $('#layuiCollapse').append(infoTemplateHtml);
                 }*/
+                //工序信息模板
+                function workInfoTemplateFun(res) {
+                    var workInfoTemplate = [];
+                    for(var i = 0;i<res.data.length;i++){
+                        workInfoTemplate.push('<li class="layui-timeline-item">');
+                        workInfoTemplate.push('<i class="layui-icon layui-timeline-axis iconFont">&#xe617;</i>');
+                        workInfoTemplate.push('<div class="layui-timeline-content layui-text">');
+                        workInfoTemplate.push('<div class="layui-timeline-title">'+ res.data[i] +'</div>');
+                        workInfoTemplate.push('</div>');
+                        workInfoTemplate.push('</li>');
+                    }
+                    var workInfoTemplateHtml = workInfoTemplate.join(',');
+                    $('#layuiTimeline').append(workInfoTemplateHtml);
+                }
+                //获取模板信息
                 $.ajax({
                     url: "./managementInfo",
                     type: "post",
@@ -163,6 +178,7 @@
                     },
                     dataType: "json",
                     success: function (res) {
+                        //workInfoTemplateFun(res);
                         $('.infoTitle').text(res.unit_info.site);
                         $('#site').text(res.unit_info.site);
                         $('#serial_number').text(res.unit_info.coding);
@@ -177,7 +193,7 @@
                         $('#start_date').text(res.unit_info.start_date);
                         $('#completion_date').text(res.unit_info.completion_date);
                     }
-                })
+                });
             </script>
         </div>
     </div>
@@ -250,9 +266,9 @@
                 <div class="layui-colla-item">
                     <h2 class="layui-colla-title infoTitle"></h2>
                     <div class="layui-colla-content layui-show">
-                        <ul class="layui-timeline">
+                        <ul class="layui-timeline" id="layuiTimeline">
                             <li class="layui-timeline-item">
-                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                <i class="layui-icon layui-timeline-axis iconFont">&#xe617;</i>
                                 <div class="layui-timeline-content layui-text">
                                     <div class="layui-timeline-title">预应力锚杆钻孔</div>
                                 </div>
@@ -285,7 +301,7 @@
                 <div class="layui-colla-item">
                     <h2 class="layui-colla-title infoTitle"></h2>
                     <div class="layui-colla-content layui-show">
-                        <table class="layui-table" lay-size="sm">
+                        <table class="layui-table" id="qualityTable" lay-size="sm">
                             <colgroup>
                                 <col>
                                 <col>
@@ -294,7 +310,7 @@
                             <tbody>
                             <tr>
                                 <td>预应力锚杆钻孔 </td>
-                                <td>预应力锚杆钻孔质量检查表</td>
+                                <td class="bg">预应力锚杆钻孔质量检查表</td>
                                 <td>
                                     <i class="fa fa-eye"></i>
                                     <i class="fa fa-search"></i>
@@ -302,14 +318,14 @@
                             </tr>
                             <tr>
                                 <td rowspan="2">工程照片、强制性条文</td>
-                                <td>工程记录照片表</td>
+                                <td class="bg">工程记录照片表</td>
                                 <td>
                                     <i class="fa fa-eye"></i>
                                     <i class="fa fa-search"></i>
                                 </td>
                             </tr>
                             <tr>
-                                <td>工程建设标准强制性条文执行记录表</td>
+                                <td class="bg">工程建设标准强制性条文执行记录表</td>
                                 <td>
                                     <i class="fa fa-eye"></i>
                                     <i class="fa fa-search"></i>
@@ -317,14 +333,14 @@
                             </tr>
                             <tr>
                                 <td rowspan="2">单元工程验收 </td>
-                                <td>预应力锚杆单元工程质量等级评定表</td>
+                                <td class="bg">预应力锚杆单元工程质量等级评定表</td>
                                 <td>
                                     <i class="fa fa-eye"></i>
                                     <i class="fa fa-search"></i>
                                 </td>
                             </tr>
                             <tr>
-                                <td>单元工程检查验收申请表</td>
+                                <td class="bg">单元工程检查验收申请表</td>
                                 <td>
                                     <i class="fa fa-eye"></i>
                                     <i class="fa fa-search"></i>
