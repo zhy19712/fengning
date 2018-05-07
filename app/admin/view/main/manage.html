@@ -151,9 +151,9 @@
                         infoTemplate.push('</table>');
                         infoTemplate.push('</div>');
                         infoTemplate.push('</div>');
-                        var infoTemplateHtml = infoTemplate.join(',');
-                        $('#layuiCollapse').append(infoTemplateHtml);
                     }
+                    var infoTemplateHtml = infoTemplate.join(',');
+                    $('#layuiCollapse').append(infoTemplateHtml);
                 }
                 $.ajax({
                     url: "./managementInfo",
