@@ -90,6 +90,71 @@
                 $('#tabs').show();
                 //隐藏质量分布
                 $('#qualityDistribute').hide();
+                //基本信息模板
+                function infoTemplateFun(res) {
+                    var infoTemplate = [];
+                    for(var i = 0;i<res.data.length;i++){
+                        infoTemplate.push('<div class="layui-colla-item">');
+                        infoTemplate.push('<h2 class="layui-colla-title infoTitle"></h2>');
+                        infoTemplate.push('<div class="layui-colla-content layui-show">');
+                        infoTemplate.push('<table class="layui-table" lay-skin="line" lay-size="sm">');
+                        infoTemplate.push('<tbody>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>检验批名称</td>');
+                        infoTemplate.push('<td>'+ res.data[i].site +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>检验批编码</td>');
+                        infoTemplate.push('<td id="serial_number">'+ res.data[i].serial_number +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>关键部位</td>');
+                        infoTemplate.push('<td id="hinge">'+ res.data[i].hinge +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>工程量</td>');
+                        infoTemplate.push('<td id="quantities">'+ res.data[i].quantities +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>工程类型</td>');
+                        infoTemplate.push('<td id="en_type">'+ res.data[i].en_type +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>施工依据</td>');
+                        infoTemplate.push('<td id="ma_bases">'+ res.data[i].ma_bases +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>补充依据</td>');
+                        infoTemplate.push('<td id="su_basis">'+ res.data[i].su_basis +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>高程（起）</td>');
+                        infoTemplate.push('<td id="el_start">'+ res.data[i].el_start +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>高程（止）</td>');
+                        infoTemplate.push('<td id="el_cease">'+ res.data[i].el_cease +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>桩号（起止）</td>');
+                        infoTemplate.push('<td id="pile_number">'+ res.data[i].pile_number +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>开始日期</td>');
+                        infoTemplate.push('<td id="start_date">'+ res.data[i].start_date +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('<tr>');
+                        infoTemplate.push('<td>结束日期</td>');
+                        infoTemplate.push('<td id="completion_date">'+ res.data[i].completion_date +'</td>');
+                        infoTemplate.push('</tr>');
+                        infoTemplate.push('</tbody>');
+                        infoTemplate.push('</table>');
+                        infoTemplate.push('</div>');
+                        infoTemplate.push('</div>');
+                        var infoTemplateHtml = infoTemplate.join(',');
+                        $('#layuiCollapse').append(infoTemplateHtml);
+                    }
+                }
                 $.ajax({
                     url: "./managementInfo",
                     type: "post",
@@ -98,6 +163,8 @@
                     },
                     dataType: "json",
                     success: function (res) {
+                        //infoTemplateFun(res);
+                        $('.infoTitle').text(res.unit_info.site);
                         $('#site').text(res.unit_info.site);
                         $('#serial_number').text(res.unit_info.coding);
                         $('#hinge').text(res.unit_info.hinge);
@@ -119,9 +186,9 @@
 <div data-options="region:'east',title:'管理信息',split:true" style="width:350px;">
     <div id="tabs" class="easyui-tabs" style="width:100%;display: none">
         <div title="基本信息" style="padding:10px;display:none;">
-            <div class="layui-collapse">
+            <div class="layui-collapse" id="layuiCollapse" lay-accordion>
                 <div class="layui-colla-item">
-                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <h2 class="layui-colla-title infoTitle"></h2>
                     <div class="layui-colla-content layui-show">
                         <table class="layui-table" lay-skin="line" lay-size="sm">
                             <tbody>
@@ -182,7 +249,7 @@
         <div title="工序信息" style="overflow:auto;padding:10px;display:none;">
             <div class="layui-collapse">
                 <div class="layui-colla-item">
-                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <h2 class="layui-colla-title infoTitle"></h2>
                     <div class="layui-colla-content layui-show">
                         <ul class="layui-timeline">
                             <li class="layui-timeline-item">
@@ -217,7 +284,7 @@
         <div title="质量表格" style="padding:10px;display:none;">
             <div class="layui-collapse">
                 <div class="layui-colla-item">
-                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <h2 class="layui-colla-title infoTitle"></h2>
                     <div class="layui-colla-content layui-show">
                         <table class="layui-table" lay-size="sm">
                             <colgroup>
@@ -272,7 +339,7 @@
         </div>
     </div>
     <div class="quality-distribute" id="qualityDistribute">
-        <h2>质量分布</h2>
+        <h2 class="layui-info-title">质量分布</h2>
         <table class="layui-table">
             <thead>
                 <tr>
@@ -296,6 +363,60 @@
                     <td>未验评</td>
                     <td id="unchecked_number"></td>
                     <td id="unchecked_rate"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- 计划任务信息 -->
+    <div class="planned-task-info" id="plannedTaskInfo">
+        <h2 class="layui-info-title">计划任务信息</h2>
+        <table class="layui-table" lay-skin="line" lay-size="sm">
+            <!--<thead>
+                <tr>
+                    <th>任务名称</th>
+                    <th>五层主体施工</th>
+                </tr>
+            </thead>-->
+            <tbody>
+                <tr>
+                    <td>任务名称</td>
+                    <td>五层主体施工</td>
+                </tr>
+                <tr>
+                    <td>责任人</td>
+                    <td>许闲心</td>
+                </tr>
+                <tr>
+                    <td>WBS编号</td>
+                    <td>1.1</td>
+                </tr>
+                <tr>
+                    <td>计划开工时间</td>
+                    <td>2016-11-01</td>
+                </tr>
+                <tr>
+                    <td>计划完工时间</td>
+                    <td>2016-11-15</td>
+                </tr>
+                <tr>
+                    <td>计划工期</td>
+                    <td>15</td>
+                </tr>
+                <tr>
+                    <td>实际开工时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>实际完工时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>实际工期</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>完成进度</td>
+                    <td>0</td>
                 </tr>
             </tbody>
         </table>
