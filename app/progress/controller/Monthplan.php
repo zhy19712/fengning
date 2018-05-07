@@ -421,7 +421,9 @@ class Monthplan extends Permissions
 
             //最后删除这条日志信息
             //查询attachment表中的文件上传路径
-            $attachment = Db::name("attachment")->where("id",$data_info["attachment_id"])->find();
+            $attachment = Db::name("attachment")
+                          ->where("id",$data_info["attachment_id"])
+                          ->find();
             $path = "." .$attachment['filepath'];
             $pdf_path = './uploads/temp/' . basename($path) . '.pdf';
             if($attachment['filepath'])
@@ -435,7 +437,9 @@ class Monthplan extends Permissions
             }
 
             //删除attachment表中对应的记录
-            Db::name('attachment')->where("id",$data_info["attachment_id"])->delete();
+            Db::name('attachment')
+                ->where("id",$data_info["attachment_id"])
+                ->delete();
 
             //最后删除这一条记录信息
             $flag = $model->delLog($id);
