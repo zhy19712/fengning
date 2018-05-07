@@ -120,7 +120,7 @@ class PictureModel extends Model
             ->where('r.type = 1')
             ->where("p.picture_type = 1")
             ->where("p.picture_number",$picture_number)
-            ->field("u.site,u.coding,u.hinge,u.quantities,u.en_type,u.ma_bases,u.el_start,u.el_cease,u.pile_number,u.start_date,u.completion_date")->find();
+            ->field("u.site,u.coding,u.hinge,u.quantities,u.en_type,u.ma_bases,u.su_basis,u.el_start,u.el_cease,u.pile_number,u.start_date,u.completion_date")->find();
         return $unit_info;
     }
 
