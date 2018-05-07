@@ -199,7 +199,7 @@
             <div id="fu">
                 <div id="zi">
                     <div id="bai"></div>
-                    <div id="leftTips" class="tipStyle"><span class="lYear"></span>-<span class="lMonth"></span>-<span class="spanId">1</span></div>
+                    <div id="leftTips" class="tipStyle"><span id="lYear"></span>-<span id="lMonth"></span>-<span class="spanId">1</span></div>
                 </div>
                 <div id="leftTop" class="tipStyle"><span class="lYear"></span>-<span class="lMonth"></span>-<span id="rKai"></span></div>
                 <div id="rightTips" class="tipStyle"><span id="endYear"></span>-<span id="endMonth"></span>-<span id="rjie"></span></div>
@@ -397,14 +397,16 @@
 <script>
 
     var kai =01;
-    var jie =15;
+    var jie =30;
     var year =2017;
     var month =11;
     var day =15;
 
     $("#rKai").text(kai);
     $("#rjie").text(jie);
+    $("#lYear").text(year);
     $(".lYear").text(year);
+    $("#lMonth").text(month);
     $(".lMonth").text(month);
     $("#endYear").text(year);
     $("#endMonth").text(month);
@@ -433,7 +435,7 @@
     ]
 
     var ptime, rep =0;
-    var tipsRep = rep;
+
     var proWidth = $(".progress").width();
     var fuWidth = $("#fu").width();
     $(function(){
@@ -517,14 +519,8 @@
             str+="<tr class='trId'"+arr[i].id+">\n" +
                 "    <td>"+arr[i].wbs+"</td>\n" +
                 "    <td>"+arr[i].jihua+"</td>\n" +
-                "    <td>"+arr[i].jieshu+"</td>\n" +
+                "    <td id='"+arr[i].jieshu+"'>"+arr[i].jieshu+"</td>\n" +
                 "</tr>"
-            tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
-            var shuzi = year+'-'+month+'-'+tipsRep;
-            console.log(shuzi)
-            if(shuzi == arr[i].jieshu){
-                $(".trId"+arr[i].id).remove();
-            }
         }
         $("#tabob tbody").append(str);
         //开始
@@ -533,36 +529,43 @@
         $("#start").css("display","none").siblings("#suspend").css("display","inline-block");
         cleanSupTime();
         stime = setInterval(function (){
-            // if(rep == 0){
-            //     window.clearInterval(stime);
-            // }else if(rep == 0) {
-                rep+=1;
+            rep+=1;
+            var tipsRep = rep;
+            tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
+            $(".spanId").text(tipsRep);
+            var date111 = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
 
-                tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
-                $(".spanId").text(tipsRep);
+            try{
+                var idx = [];
+                console.log(date111);
+                $("#tabob tbody tr").each(function (index,item) {
+                    var text = $(item).find("td:last-child").text();
+                    if(text == date111 ){
+                        idx.push(date111);
+                    }
+                });
+                idx.forEach(function (item,index) {
+                    $("#"+item).parents("tr").remove();
+                })
+            }catch(err){
+                console.log(err)
+            }
 
-                $("#fu").css("display", "block");
-                // var oleft = $("#zi")[0].offsetWidth + 96;
-                var oleft = $("#zi")[0].offsetWidth + (fuWidth/jie) - 2;
-                // console.log(oleft)
-                // console.log($("#fu").width())
-                var ob = oleft / $("#fu")[0].offsetWidth;
-                $("#zi").css("width", oleft + "px");
-                $("#leftTips").css("left", oleft-35 + "px");
-                if (rep == jie) {
-                    cleanSupElement();
-                }
-                // if($("#zi")[0].offsetWidth -12 == $("#fu")[0].offsetWidth){
-                //     cleanSupElement();
-                // }
-            // }
+            $("#fu").css("display", "block");
+            // var oleft = $("#zi")[0].offsetWidth + 96;
+            var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 2.5;
+            // console.log(oleft)
+            // console.log($("#fu").width())
+            var ob = oleft / $("#fu")[0].offsetWidth;
+            $("#zi").css("width", oleft + "px");
+            $("#leftTips").css("left", oleft-35 + "px");
+            if (rep == jie) {
+                cleanSupElement();
+            }
         },1200)
         if (rep == jie) {
             cleanSupElement();
         }
-        // if($("#zi")[0].offsetWidth-12 == $("#fu")[0].offsetWidth){
-        //     cleanSupElement();
-        // }
     });
 
     //暂停
