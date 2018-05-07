@@ -1,6 +1,6 @@
 {include file="../app/public/common_header.html"}
 <link rel="stylesheet" href="__WEBSITE__/main/manage.css">
-<div data-options="region:'west',title:'管理试图',split:true" style="width:260px;">
+<div data-options="region:'west',title:'管理试图',split:true,collapsed:true" style="width:260px;">
     <ul id="ztree" class="ztree"></ul>
 </div>
 <div data-options="region:'center',title:''" style="border: 0">
@@ -73,18 +73,236 @@
                             RealBimOcx.AddSubClrPercent(quUObjSubID,1,0xff2aa515);    //第二个参数为透明度
                             RealBimOcx.BatchAddSubClrInfoEnd();
                         }
+                        //质量分布
+                        $('#excellent_number').text(res.data.excellent_number);
+                        $('#excellent_rate').text(res.data.excellent_rate+'%');
+                        $('#qualified_number').text(res.data.qualified_number);
+                        $('#qualified_rate').text(res.data.qualified_rate+'%');
+                        $('#unchecked_number').text(res.data.unchecked_number);
+                        $('#unchecked_rate').text(res.data.unchecked_rate+'%');
                     }
                 });
             </script>
             <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
-
+                //显示管理信息
+                //easyUiPanelToggle();
+                //显示单元信息
+                $('#tabs').show();
+                //隐藏质量分布
+                $('#qualityDistribute').hide();
+                $.ajax({
+                    url: "./managementInfo",
+                    type: "post",
+                    data: {
+                        picture_number:uObjSubID
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        $('#site').text(res.unit_info.site);
+                        $('#serial_number').text(res.unit_info.coding);
+                        $('#hinge').text(res.unit_info.hinge);
+                        $('#quantities').text(res.unit_info.quantities);
+                        $('#en_type').text(res.unit_info.en_type);
+                        $('#ma_bases').text(res.unit_info.ma_bases);
+                        $('#su_basis').text(res.unit_info.su_basis);
+                        $('#el_start').text(res.unit_info.el_start);
+                        $('#el_cease').text(res.unit_info.el_cease);
+                        $('#pile_number').text(res.unit_info.pile_number);
+                        $('#start_date').text(res.unit_info.start_date);
+                        $('#completion_date').text(res.unit_info.completion_date);
+                    }
+                })
             </script>
         </div>
     </div>
 </div>
-<div data-options="region:'east',title:'管理信息',split:true" style="width:350px;padding:5px;">
-
+<div data-options="region:'east',title:'管理信息',split:true" style="width:350px;">
+    <div id="tabs" class="easyui-tabs" style="width:100%;display: none">
+        <div title="基本信息" style="padding:10px;display:none;">
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <div class="layui-colla-content layui-show">
+                        <table class="layui-table" lay-skin="line" lay-size="sm">
+                            <tbody>
+                                <tr>
+                                    <td>检验批名称</td>
+                                    <td id="site"></td>
+                                </tr>
+                                <tr>
+                                    <td>检验批编码</td>
+                                    <td id="serial_number"></td>
+                                </tr>
+                                <tr>
+                                    <td>关键部位</td>
+                                    <td id="hinge"></td>
+                                </tr>
+                                <tr>
+                                    <td>工程量</td>
+                                    <td id="quantities"></td>
+                                </tr>
+                                <tr>
+                                    <td>工程类型</td>
+                                    <td id="en_type"></td>
+                                </tr>
+                                <tr>
+                                    <td>施工依据</td>
+                                    <td id="ma_bases"></td>
+                                </tr>
+                                <tr>
+                                    <td>补充依据</td>
+                                    <td id="su_basis"></td>
+                                </tr>
+                                <tr>
+                                    <td>高程（起）</td>
+                                    <td id="el_start"></td>
+                                </tr>
+                                <tr>
+                                    <td>高程（止）</td>
+                                    <td id="el_cease"></td>
+                                </tr>
+                                <tr>
+                                    <td>桩号（起止）</td>
+                                    <td id="pile_number"></td>
+                                </tr>
+                                <tr>
+                                    <td>开始日期</td>
+                                    <td id="start_date"></td>
+                                </tr>
+                                <tr>
+                                    <td>结束日期</td>
+                                    <td id="completion_date"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div title="工序信息" style="overflow:auto;padding:10px;display:none;">
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <div class="layui-colla-content layui-show">
+                        <ul class="layui-timeline">
+                            <li class="layui-timeline-item">
+                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <div class="layui-timeline-title">预应力锚杆钻孔</div>
+                                </div>
+                            </li>
+                            <li class="layui-timeline-item">
+                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <div class="layui-timeline-title">工程照片、强制性条文</div>
+                                </div>
+                            </li>
+                            <li class="layui-timeline-item">
+                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <div class="layui-timeline-title">单元工程验收</div>
+                                </div>
+                            </li>
+                            <li class="layui-timeline-item">
+                                <i class="layui-icon layui-timeline-axis current">&#xe617;</i>
+                                <div class="layui-timeline-content layui-text">
+                                    <div class="layui-timeline-title">验收（2017.08.30）</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div title="质量表格" style="padding:10px;display:none;">
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">地下厂房</h2>
+                    <div class="layui-colla-content layui-show">
+                        <table class="layui-table" lay-size="sm">
+                            <colgroup>
+                                <col>
+                                <col>
+                                <col width="56">
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                <td>预应力锚杆钻孔 </td>
+                                <td>预应力锚杆钻孔质量检查表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">工程照片、强制性条文</td>
+                                <td>工程记录照片表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>工程建设标准强制性条文执行记录表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">单元工程验收 </td>
+                                <td>预应力锚杆单元工程质量等级评定表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>单元工程检查验收申请表</td>
+                                <td>
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-search"></i>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="quality-distribute" id="qualityDistribute">
+        <h2>质量分布</h2>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>类型</th>
+                    <th>数量</th>
+                    <th>占比</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>优良</td>
+                    <td id="excellent_number"></td>
+                    <td id="excellent_rate"></td>
+                </tr>
+                <tr>
+                    <td>合格</td>
+                    <td id="qualified_number"></td>
+                    <td id="qualified_rate"></td>
+                </tr>
+                <tr>
+                    <td>未验评</td>
+                    <td id="unchecked_number"></td>
+                    <td id="unchecked_rate"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 {include file="../app/public/common_footer.html"}
+<script src="__WEBSITE__/main/manage.js"></script>
 </body>
 </html>
