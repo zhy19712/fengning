@@ -602,12 +602,9 @@ class Main extends Permissions
      */
     public function countUnit()
     {
-        $unit_data = Db::name('quality_unit')->alias('u')
-            ->join('quality_model_picture_relation r', 'r.relevance_id = u.id', 'left')
-            ->join('quality_model_picture p', 'p.id = r.picture_id', 'left')
-            ->where('r.type = 1')
-            ->where("p.picture_type = 1")
-            ->field("p.picture_number,p.picture_name,u.EvaluateResult")->order("u.id asc")->select();
+        //实例化模型类
+        $model =  new PictureModel();
+        $unit_data = $model->getAllCountUnit();
 
         //定义一个空的数组
         $data = array();
@@ -618,13 +615,13 @@ class Main extends Permissions
             $count = array_count_values(array_column($unit_data,"EvaluateResult"));
 
             //0、未验评，1、优良，2、合格'
-            $data["excellent_number"] = $count["1"] ? $count["1"] : 0;
-            $data["qualified_number"] = empty($count["2"]) ? 0 : $count["2"];
-            $data["unchecked_number"] = $count["0"] ? $count["0"] : 0;
+            $data["excellent_number"] = $count["1"] ? $count["1"] : 0;//优良数量
+            $data["qualified_number"] = empty($count["2"]) ? 0 : $count["2"];//合格数量
+            $data["unchecked_number"] = $count["0"] ? $count["0"] : 0;//未验评数量
 
-            $data["excellent_rate"] = round($data["excellent_number"] / $total * 100);
-            $data["qualified_rate"] = round($data["qualified_number"] / $total * 100);
-            $data["unchecked_rate"] = round($data["unchecked_number"] / $total * 100);
+            $data["excellent_rate"] = round($data["excellent_number"] / $total * 100);//优良率
+            $data["qualified_rate"] = round($data["qualified_number"] / $total * 100);//合格率
+            $data["unchecked_rate"] = round($data["unchecked_number"] / $total * 100);//未验评率
 
             //定义三个空数组表示优良、合格、未验评
             $excellent = array();
@@ -655,10 +652,8 @@ class Main extends Permissions
         }
 
         //查询全部的模型文件
-        //实例化模型类
-        $pic = new PictureModel();
 
-        $model_picture = $pic->getAllModelPic();
+        $model_picture = $model->getAllModelPic();
 
         if(empty($model_picture))
         {
@@ -666,5 +661,39 @@ class Main extends Permissions
         }
 
         return json(["code"=>1,"excellent"=>$excellent,"qualified"=>$qualified,"unchecked"=>$unchecked,"data"=>$data,"model_picture"=>$model_picture]);
+    }
+
+    /**
+     * 管理3D-管理信息
+     * @return \think\response\Json
+     */
+    public function managementInfo()
+    {
+        //前台需要传过来picture_number模型图编号
+        if($this->request->isAjax()){
+            //实例化模型类
+            $model =  new PictureModel();
+            $picture_number = input('post.picture_number');
+
+            /*******基本信息**********/
+            $unit_info = $model->getUnitInfo($picture_number);
+
+            if(empty($unit_info))
+            {
+               $unit_info = [];
+            }
+
+            /*******工序信息***********/
+            $division_id = $model->getDivisionId();
+
+            $processinfo = $model->getProcessInfo($division_id["division_id"]);
+
+            if(empty($processinfo))
+            {
+                $processinfo = [];
+            }
+
+           return json(["code"=>1,"unit_info"=>$unit_info]);
+        }
     }
 }
