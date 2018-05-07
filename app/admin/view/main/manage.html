@@ -73,6 +73,13 @@
                             RealBimOcx.AddSubClrPercent(quUObjSubID,1,0xff2aa515);    //第二个参数为透明度
                             RealBimOcx.BatchAddSubClrInfoEnd();
                         }
+                        //质量分布
+                        $('#excellent_number').text(res.data.excellent_number);
+                        $('#excellent_rate').text(res.data.excellent_rate+'%');
+                        $('#qualified_number').text(res.data.qualified_number);
+                        $('#qualified_rate').text(res.data.qualified_rate+'%');
+                        $('#unchecked_number').text(res.data.unchecked_number);
+                        $('#unchecked_rate').text(res.data.unchecked_rate+'%');
                     }
                 });
             </script>
@@ -84,21 +91,32 @@
                 //隐藏质量分布
                 $('#qualityDistribute').hide();
                 $.ajax({
-                    url: "./xxx",
+                    url: "./managementInfo",
                     type: "post",
                     data: {
-                        uObjSubID:uObjSubID
+                        picture_number:uObjSubID
                     },
                     dataType: "json",
                     success: function (res) {
-                        console.log(res);
+                        $('#site').text(res.unit_info.site);
+                        $('#serial_number').text(res.unit_info.coding);
+                        $('#hinge').text(res.unit_info.hinge);
+                        $('#quantities').text(res.unit_info.quantities);
+                        $('#en_type').text(res.unit_info.en_type);
+                        $('#ma_bases').text(res.unit_info.ma_bases);
+                        $('#su_basis').text(res.unit_info.su_basis);
+                        $('#el_start').text(res.unit_info.el_start);
+                        $('#el_cease').text(res.unit_info.el_cease);
+                        $('#pile_number').text(res.unit_info.pile_number);
+                        $('#start_date').text(res.unit_info.start_date);
+                        $('#completion_date').text(res.unit_info.completion_date);
                     }
                 })
             </script>
         </div>
     </div>
 </div>
-<div data-options="region:'east',title:'管理信息',split:true,collapsed:true" style="width:350px;">
+<div data-options="region:'east',title:'管理信息',split:true" style="width:350px;">
     <div id="tabs" class="easyui-tabs" style="width:100%;display: none">
         <div title="基本信息" style="padding:10px;display:none;">
             <div class="layui-collapse">
@@ -109,51 +127,51 @@
                             <tbody>
                                 <tr>
                                     <td>检验批名称</td>
-                                    <td>贤心</td>
+                                    <td id="site"></td>
                                 </tr>
                                 <tr>
                                     <td>检验批编码</td>
-                                    <td>许闲心</td>
+                                    <td id="serial_number"></td>
                                 </tr>
                                 <tr>
                                     <td>关键部位</td>
-                                    <td>许闲心</td>
+                                    <td id="hinge"></td>
                                 </tr>
                                 <tr>
                                     <td>工程量</td>
-                                    <td>许闲心</td>
+                                    <td id="quantities"></td>
                                 </tr>
                                 <tr>
                                     <td>工程类型</td>
-                                    <td>许闲心</td>
+                                    <td id="en_type"></td>
                                 </tr>
                                 <tr>
                                     <td>施工依据</td>
-                                    <td>二期工程地下厂房开挖支护图</td>
+                                    <td id="ma_bases"></td>
                                 </tr>
                                 <tr>
                                     <td>补充依据</td>
-                                    <td>许闲心</td>
+                                    <td id="su_basis"></td>
                                 </tr>
                                 <tr>
                                     <td>高程（起）</td>
-                                    <td>许闲心</td>
+                                    <td id="el_start"></td>
                                 </tr>
                                 <tr>
                                     <td>高程（止）</td>
-                                    <td>许闲心</td>
+                                    <td id="el_cease"></td>
                                 </tr>
                                 <tr>
                                     <td>桩号（起止）</td>
-                                    <td>许闲心</td>
+                                    <td id="pile_number"></td>
                                 </tr>
                                 <tr>
                                     <td>开始日期</td>
-                                    <td>许闲心</td>
+                                    <td id="start_date"></td>
                                 </tr>
                                 <tr>
                                     <td>结束日期</td>
-                                    <td>许闲心</td>
+                                    <td id="completion_date"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -266,18 +284,18 @@
             <tbody>
                 <tr>
                     <td>优良</td>
-                    <td>2</td>
-                    <td>3.1%</td>
+                    <td id="excellent_number"></td>
+                    <td id="excellent_rate"></td>
                 </tr>
                 <tr>
                     <td>合格</td>
-                    <td>8</td>
-                    <td>12.3%</td>
+                    <td id="qualified_number"></td>
+                    <td id="qualified_rate"></td>
                 </tr>
                 <tr>
                     <td>未验评</td>
-                    <td>55</td>
-                    <td>84.6%</td>
+                    <td id="unchecked_number"></td>
+                    <td id="unchecked_rate"></td>
                 </tr>
             </tbody>
         </table>
