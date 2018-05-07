@@ -8,7 +8,7 @@
 /**
  * 进度管理-月度计划
  * Class Progressversion
- * @package app\quality\controller
+
  */
 namespace app\progress\controller;
 
@@ -459,6 +459,144 @@ class Monthplan extends Permissions
             ];
             $flag = $model->editLog($data);
             return json($flag);
+        }
+    }
+
+    public function modelPicturePreview()
+    {
+        // 前台 传递 选中的 单元工程段号 编号 id
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $id = isset($param['id']) ? $param['id'] : -1;
+            if($id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            // 获取关联的模型图
+            $picture = new PictureRelationModel();
+            $data = $picture->getAllNumber([$id]);
+            $picture_number = $data['picture_number_arr'];
+            return json(['code'=>1,'number'=>$picture_number,'msg'=>'单元工程段号-模型图编号']);
+        }
+    }
+
+    /**
+     *
+     *
+     *
+     *
+     * //模型功能
+     * 打开关联模型 页面 openModelPicture
+     * @return mixed|\think\response\Json
+     * @author hutao
+     */
+    public function openModelPicture()
+    {
+        // 前台 传递 选中的 单元工程段号的 id编号
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $id = isset($param['id']) ? $param['id'] : -1;
+            if($id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            // 获取工程划分下的 所有的模型图主键,编号,名称
+            $picture = new PictureModel();
+            $data = $picture->getAllName($id);
+            return json(['code'=>1,'one_picture_id'=>$data['one_picture_id'],'data'=>$data['str'],'msg'=>'模型图列表']);
+        }
+        return $this->fetch('relationview');
+    }
+
+    /**
+     * 关联模型图
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function addModelPicture()
+    {
+        // 前台 传递 单元工程段号(单元划分) 编号id  和  模型图主键编号 picture_id
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $relevance_id = isset($param['id']) ? $param['id'] : -1;
+            $picture_id = isset($param['picture_id']) ? $param['picture_id'] : -1;
+            if($relevance_id == -1 || $picture_id == -1){
+                return json(['code' => 0,'msg' => '参数有误']);
+            }
+            // 是否已经关联过 picture_type  1工程划分模型 2 建筑模型 3三D模型
+            $is_related = Db::name('quality_model_picture_relation')->where(['type'=>1,'relevance_id'=>$relevance_id])->value('id');
+            $data['type'] = 1;
+            $data['relevance_id'] = $relevance_id;
+            $data['picture_id'] = $picture_id;
+            $picture = new PictureRelationModel();
+            if(empty($is_related)){
+                // 关联模型图 一对一关联
+                $flag = $picture->insertTb($data);
+                return json($flag);
+            }else{
+                $data['id'] = $is_related;
+                $flag = $picture->editTb($data);
+                return json($flag);
+            }
+        }
+    }
+
+    // 此方法只是临时 导入模型图 编号和名称的 txt文件时使用
+    // 不存在于 功能列表里面 后期可以删除掉
+    // 获取txt文件内容并插入到数据库中 insertTxtContent
+    public function insertTxtContent()
+    {
+        $filePath = './static/monthplan/GolIdTable.txt';
+        if(!file_exists($filePath)){
+            return json(['code' => '-1','msg' => '文件不存在']);
+        }
+        $files = fopen($filePath, "r") or die("Unable to open file!");
+        $contents = $new_contents =[];
+        while(!feof($files)) {
+            $txt = iconv('gb2312','utf-8//IGNORE',fgets($files));
+            $txt = str_replace('[','',$txt);
+            $txt = str_replace(']','',$txt);
+            $txt = str_replace("\r\n",'',$txt);
+            $contents[] = $txt;
+        }
+
+        foreach ($contents as $v){
+            $new_contents[] = explode(' ',$v);
+        }
+
+        $data = [];
+        foreach ($new_contents as $k=>$val){
+            $data[$k]['picture_name'] = trim(next($val));
+            $data[$k]['picture_number'] = trim(next($val));
+        }
+
+        array_pop($data);
+
+        $picture = new PictureModel();
+        $picture->saveAll($data); // 使用saveAll 是因为 要 自动插入 时间
+        fclose($files);
+    }
+
+  //模型功能
+    /**
+     * 搜索模型
+     * @return \think\response\Json
+     * @author hutao
+     */
+    public function searchModel()
+    {
+        // 前台 传递  选中的 单元工程段号的 id编号  和  搜索框里的值 search_name
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $id = isset($param['id']) ? $param['id'] : -1;
+            $search_name = isset($param['search_name']) ? $param['search_name'] : -1;
+            if($id == -1){
+                return json(['code' => 0,'msg' => '请传递选中的单元工程段号的编号']);
+            }if($id == -1 || $search_name == -1){
+                return json(['code' => 0,'msg' => '请写入需要搜索的值']);
+            }
+            // 获取搜索的模型图主键,编号,名称
+            $picture = new PictureModel();
+            $data = $picture->getAllName($id,$search_name);
+            return json(['code'=>1,'one_picture_id'=>$data['one_picture_id'],'data'=>$data['str'],'msg'=>'模型图列表']);
         }
     }
 
