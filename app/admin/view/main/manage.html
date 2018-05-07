@@ -91,7 +91,7 @@
                 //隐藏质量分布
                 $('#qualityDistribute').hide();
                 //基本信息模板
-                function infoTemplateFun(res) {
+                /*function infoTemplateFun(res) {
                     var infoTemplate = [];
                     for(var i = 0;i<res.data.length;i++){
                         infoTemplate.push('<div class="layui-colla-item">');
@@ -154,7 +154,7 @@
                     }
                     var infoTemplateHtml = infoTemplate.join(',');
                     $('#layuiCollapse').append(infoTemplateHtml);
-                }
+                }*/
                 $.ajax({
                     url: "./managementInfo",
                     type: "post",
@@ -163,7 +163,6 @@
                     },
                     dataType: "json",
                     success: function (res) {
-                        //infoTemplateFun(res);
                         $('.infoTitle').text(res.unit_info.site);
                         $('#site').text(res.unit_info.site);
                         $('#serial_number').text(res.unit_info.coding);

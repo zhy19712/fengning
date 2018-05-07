@@ -53,6 +53,7 @@
     padding: 0 15px;
     color: #337ab7;
     font-weight: bold;
+    cursor:default;
 }
 .layui-colla-content{
     padding: 0;
