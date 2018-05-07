@@ -686,12 +686,25 @@ class Main extends Permissions
             /*******工序信息***********/
             $division_id = $model->getDivisionId();
 
+            //获取所有的控制点、工序、控制点下对应的信息
+
             $processinfo = $model->getProcessInfo($division_id["division_id"]);
+
 
             if(empty($processinfo))
             {
                 $processinfo = [];
             }
+
+            //*****多表查询join改这里******
+//            $par = array();
+//            $par['type'] = 1;
+//            $par['division_id'] = $division_id;
+//            $processinfo_list = Db::name("quality_division_controlpoint_relation")->alias('a')
+//                ->join('controlpoint b', 'a.control_id=b.id', 'left')
+//                ->where($par)
+//                ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id,b.remark')
+//                ->order($order)->limit(intval($start), intval($length))->select();
 
            return json(["code"=>1,"unit_info"=>$unit_info]);
         }
