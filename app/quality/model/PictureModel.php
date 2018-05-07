@@ -87,4 +87,77 @@ class PictureModel extends Model
         return $data;
     }
 
+    /**
+     * 获取模型全部的统计数据
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getAllCountUnit()
+    {
+        $unit_data = Db::name('quality_unit')->alias('u')
+            ->join('quality_model_picture_relation r', 'r.relevance_id = u.id', 'left')
+            ->join('quality_model_picture p', 'p.id = r.picture_id', 'left')
+            ->where('r.type = 1')
+            ->where("p.picture_type = 1")
+            ->field("p.picture_number,p.picture_name,u.EvaluateResult")->order("u.id asc")->select();
+        return $unit_data;
+    }
+
+    /**
+     * 根据picture_number模型图编号查询单元工程下对应的信息
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUnitInfo($picture_number)
+    {
+        $unit_info = Db::name('quality_unit')->alias('u')
+            ->join('quality_model_picture_relation r', 'r.relevance_id = u.id', 'left')
+            ->join('quality_model_picture p', 'p.id = r.picture_id', 'left')
+            ->where('r.type = 1')
+            ->where("p.picture_type = 1")
+            ->where("p.picture_number",$picture_number)
+            ->field("u.site,u.coding,u.hinge,u.quantities,u.en_type,u.ma_bases,u.su_basis,u.el_start,u.el_cease,u.pile_number,u.start_date,u.completion_date")->find();
+        return $unit_info;
+    }
+
+    /**
+     * 根据picture_number模型图编号查询对应的工序信息，获取归属工程编号
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getDivisionId()
+    {
+        $division_id =  Db::name('quality_unit')->alias('u')
+            ->join('quality_model_picture_relation r', 'r.relevance_id = u.id', 'left')
+            ->join('quality_model_picture p', 'p.id = r.picture_id', 'left')
+            ->where("r.type = 1")
+            ->where("p.picture_type = 1")
+            ->field("u.division_id")->find();
+        return $division_id;
+    }
+
+    /**
+     * 根据归属工程编号查询工序号
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getProcessInfo($division_id)
+    {
+        $processinfo = Db::name("quality_division_controlpoint_relation")->alias("cr")
+            ->join("materialtrackingdivision m","m.pid = cr.ma_division_id",'left')
+            ->where("cr.division_id",$division_id)
+            ->where("m.type = 3")
+            ->where("cr.type = 1")
+            ->field("m.id,m.pid,m.name")
+            ->select();
+        return $processinfo;
+    }
 }
