@@ -1,6 +1,6 @@
 {include file="../app/public/common_header.html"}
 <link rel="stylesheet" href="__WEBSITE__/main/manage.css">
-<div data-options="region:'west',title:'管理试图',split:true" style="width:260px;">
+<div data-options="region:'west',title:'管理试图',split:true,collapsed:true" style="width:260px;">
     <ul id="ztree" class="ztree"></ul>
 </div>
 <div data-options="region:'center',title:''" style="border: 0">
@@ -77,6 +77,12 @@
                 });
             </script>
             <script language="javascript"  for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
+                //显示管理信息
+                //easyUiPanelToggle();
+                //显示单元信息
+                $('#tabs').show();
+                //隐藏质量分布
+                $('#qualityDistribute').hide();
                 $.ajax({
                     url: "./xxx",
                     type: "post",
@@ -92,67 +98,70 @@
         </div>
     </div>
 </div>
-<div data-options="region:'east',title:'管理信息',split:true" style="width:350px;">
-    <div id="tt" class="easyui-tabs">
+<div data-options="region:'east',title:'管理信息',split:true,collapsed:true" style="width:350px;">
+    <div id="tabs" class="easyui-tabs" style="width:100%;display: none">
         <div title="基本信息" style="padding:10px;display:none;">
             <div class="layui-collapse">
                 <div class="layui-colla-item">
                     <h2 class="layui-colla-title">地下厂房</h2>
                     <div class="layui-colla-content layui-show">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">检验批名称</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">检验批编码</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">关键部位</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">工程量</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">工程类型</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">施工依据</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">补充依据</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">高程（起）</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">高程（止）</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">桩号（起止）</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">开始日期</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">结束日期</label>
-                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                        </div>
+                        <table class="layui-table" lay-skin="line" lay-size="sm">
+                            <tbody>
+                                <tr>
+                                    <td>检验批名称</td>
+                                    <td>贤心</td>
+                                </tr>
+                                <tr>
+                                    <td>检验批编码</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>关键部位</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>工程量</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>工程类型</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>施工依据</td>
+                                    <td>二期工程地下厂房开挖支护图</td>
+                                </tr>
+                                <tr>
+                                    <td>补充依据</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>高程（起）</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>高程（止）</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>桩号（起止）</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>开始日期</td>
+                                    <td>许闲心</td>
+                                </tr>
+                                <tr>
+                                    <td>结束日期</td>
+                                    <td>许闲心</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
         <div title="工序信息" style="overflow:auto;padding:10px;display:none;">
-
             <div class="layui-collapse">
                 <div class="layui-colla-item">
                     <h2 class="layui-colla-title">地下厂房</h2>
@@ -186,7 +195,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <div title="质量表格" style="padding:10px;display:none;">
             <div class="layui-collapse">
@@ -245,7 +253,38 @@
             </div>
         </div>
     </div>
+    <div class="quality-distribute" id="qualityDistribute">
+        <h2>质量分布</h2>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>类型</th>
+                    <th>数量</th>
+                    <th>占比</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>优良</td>
+                    <td>2</td>
+                    <td>3.1%</td>
+                </tr>
+                <tr>
+                    <td>合格</td>
+                    <td>8</td>
+                    <td>12.3%</td>
+                </tr>
+                <tr>
+                    <td>未验评</td>
+                    <td>55</td>
+                    <td>84.6%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 {include file="../app/public/common_footer.html"}
+<script src="__WEBSITE__/main/manage.js"></script>
 </body>
 </html>

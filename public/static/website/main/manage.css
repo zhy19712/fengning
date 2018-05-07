@@ -51,6 +51,8 @@
 }
 .layui-colla-title{
     padding: 0 15px;
+    color: #337ab7;
+    font-weight: bold;
     cursor:default;
 }
 .layui-colla-content{
@@ -100,4 +102,11 @@
 }
 .layui-table i.fa{
     margin: 0 2px;
+}
+.quality-distribute h2{
+    padding: 10px 0;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #56abe4;
 }

@@ -123,9 +123,9 @@ body #copyrights a{
 	box-shadow: 0px 0px 1px 2px rgba(0,0,0,.05);
 	min-height:100%;
 }
-body .layui-table thead tr{
+/*body .layui-table thead tr{
 	background:0;
-}
+}*/
 
 /* 模板视图切换按钮 */
 .layui-model{
