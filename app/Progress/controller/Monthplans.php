@@ -24,7 +24,7 @@ use app\progress\model\MonthplanModel;
 use app\progress\model\ProgressPictureModel;
 use app\progress\model\ProgressPictureRelationModel;
 
-class Monthplan extends Permissions
+class Monthplans extends Permissions
 {
     /**
      * 进度版本管理模板首页
