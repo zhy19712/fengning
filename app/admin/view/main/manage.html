@@ -174,7 +174,6 @@
                 }
                 //质量表格模板
                 function qualityTableTemplateFun(res) {
-                    //构建表格
                     $('#qualityTable tbody').empty();
                     var qualityTableTemplate = [];
                     for(var i = 0;i<res.processinfo.length;i++){
@@ -191,8 +190,8 @@
                             }
                             qualityTableTemplate.push('<td class="bg">'+ processinfo_list[j].name +'</td>');
                             qualityTableTemplate.push('<td>');
-                            qualityTableTemplate.push('<i class="fa fa-eye"></i>');
-                            qualityTableTemplate.push('<i class="fa fa-search"></i>');
+                            qualityTableTemplate.push('<i class="fa fa-eye faEye"></i>');
+                            qualityTableTemplate.push('<i class="fa fa-search" onclick="search(this)" pid='+ res.processinfo[i].pid +' uid='+ processinfo_list[j].division_id +' ></i>');
                             qualityTableTemplate.push('</td>');
                             qualityTableTemplate.push('</tr>');
                         }
@@ -200,6 +199,15 @@
                     var qualityTableTemplateHtml = qualityTableTemplate.join('');
                     $('#qualityTable tbody').append(qualityTableTemplateHtml);
                 }
+
+                search = function (that) {
+                    var pid = $(that).attr('pid');
+                    var uid = $(that).attr('uid');
+                    document.cookie="unitEnginNoId="+pid;
+                    document.cookie="divisionId="+uid;
+                    window.open('./controll');
+                }
+
                 //获取模板信息
                 $.ajax({
                     url: "./managementInfo",
