@@ -674,6 +674,7 @@ class Main extends Permissions
             //实例化模型类
             $model =  new PictureModel();
             $picture_number = input('post.picture_number');
+            $picture_number = 12;
 
             /*******基本信息**********/
             $unit_info = $model->getUnitInfo($picture_number);
@@ -688,7 +689,7 @@ class Main extends Permissions
 
             //获取所有的控制点、工序、控制点下对应的信息
 
-            $processinfo = Db::name("materialtrackingdivision")->field("id,pid,name")->where(["pid"=>$en_type["en_type"],"type"=>3])->select();
+            $processinfo = $model->getProcessInfo($en_type);
 
 
             if(empty($processinfo))
@@ -703,11 +704,7 @@ class Main extends Permissions
                 $par['type'] = 1;
                 $par['a.division_id'] = $en_type["division_id"];//488
                 $par["a.ma_division_id"] = $val["id"];//63 64 65 66 67
-                $processinfo_list = Db::name("quality_division_controlpoint_relation")->alias('a')
-                    ->join('controlpoint b', 'a.control_id=b.id', 'left')
-                    ->where($par)
-                    ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
-                    ->select();
+                $processinfo_list = $model->getProcessInfoList($par);
                 $processinfo[$key]["processinfo_list"] = $processinfo_list;
 
             }
