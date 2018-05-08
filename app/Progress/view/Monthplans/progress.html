@@ -233,6 +233,8 @@
                     // if(window.console && console.log){ console.log(uObjSubID); }
                     // console.dir(uObjSubID);
 
+
+
                     /*var node = [];
                     var treeObj = $.fn.zTree.getZTreeObj("ztree");
                     var nodes = treeObj.transformToArray(treeObj.getNodes());
@@ -247,15 +249,13 @@
                     RealBimOcx.ExitSubObjFlicker();
 
                     RealBimOcx.BatchAddSubClrInfoBegin();
-
                     RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ffa500);
-
                     RealBimOcx.BatchAddSubClrInfoEnd();
                     // //设置模型的可见性，0为不可见，1为可见。通过模型id进行关联。
-                    // RealBimOcx.SetHugeObjSubValidStateBegin();
-                    // RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
-                    // RealBimOcx.SetHugeObjSubValidStateEnd();
-                    // RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
+                    RealBimOcx.SetHugeObjSubValidStateBegin();
+                    RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
+                    RealBimOcx.SetHugeObjSubValidStateEnd();
+                    RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
 
 
                     //点击树的时候加载
@@ -320,8 +320,29 @@
                         RealBimOcx.SetAllHugeObjSubValidState(1);
                         //RealBimOcx.SetSceHugeObjVisible(false);
                     }
-
+                    var bimArr;
                     RealBimOcx.SetSuitableCam();//放在初始化设置里面就行了
+                    RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
+                    $.ajax({
+                        url: "{:url('progress/monthplans/modelPictureAllNumber')}",
+                        type: "post",
+                        data: {
+                            add_id:488,
+                        },
+                        success: function (res) {
+                            console.log(res.numberArr)
+                            bimArr = res.numberArr;
+                            RealBimOcx.BatchAddSubClrInfoBegin();
+                            RealBimOcx.SetHugeObjSubValidStateBegin();
+                            for(var i=0;i<bimArr.length;i++){
+                                RealBimOcx.AddSubClrPercent(bimArr[i],1,0x80ffa500);
+                                RealBimOcx.SetHugeObjSubValidStateInfo(bimArr[i], 1);
+                            }
+                            RealBimOcx.BatchAddSubClrInfoEnd();
+                            RealBimOcx.SetHugeObjSubValidStateEnd();
+
+                        }
+                    })
 
                     // var unitId = document.cookie.split(';')[0].split('=')[1];
                     //保存关联模型
@@ -412,6 +433,7 @@
 
 <script>
 
+    var bimArr;
     // 颜色值必须转成16进制
     // rgb(86, 83, 76) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8056534c);
     // rgb(157, 243, 142) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x809df38e);
@@ -435,7 +457,6 @@
 
     //结束的日期
     var endDate = sLaterYear+'-'+eLaterMonth+'-'+ee;
-    console.log(endDate)
 
     //开始的步数
     var rep = strDays;
@@ -644,6 +665,7 @@
             console.log(err)
         }
     }
+
     //开始
     $("#start").click(function () {
         // $("#ad #suspend:before").css("color","#00c0ef");
