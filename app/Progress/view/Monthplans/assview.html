@@ -154,14 +154,16 @@
 
                     RealBimOcx.SetSuitableCam();//放在初始化设置里面就行了
 
-                    var unitId = document.cookie.split(';')[0].split('=')[1];
+                    // var unitId = document.cookie.split(';')[0].split('=')[1];
+                    var unitId = 1;
+
                     //保存关联模型
                     window.saveModel = function (picture_id) {
                         if(!picture_id){
                             return false;
                         }
                         $.ajax({
-                            url: "{:url('quality/Division/addModelPicture')}",
+                            url: "{:url('progress/monthplans/addModelPicture')}",
                             type: "post",
                             data: {
                                 id:unitId,
@@ -216,7 +218,8 @@
 {include file="../app/public/common_footer.html"}
 
 <script>
-    var unitId = document.cookie.split(';')[0].split('=')[1];    //单元工程段号编号
+    // var unitId = document.cookie.split(';')[0].split('=')[1];    //单元工程段号编号
+    var unitId = 1;
     var primaryId; //模型主键
     //加载构件树
     var modelId = [];
@@ -225,13 +228,13 @@
         type: "post",
         dataType: "json",
         data:{
-            // id:window.unitId
-            id:1
+            id:window.unitId
         },
         success: function (res) {
+            console.log(res);
             primaryId = res.primaryId;
             //转换节点数据
-            var nodes = JSON.parse(res.data)
+            var nodes = JSON.parse(res.data);
             setZtree(nodes);
         }
     });
