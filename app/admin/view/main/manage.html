@@ -68,9 +68,10 @@
                         }
                         //合格 qualified
                         for(var j = 0;j<res.qualified.length;j++){
-                            var quUObjSubID = res.excellent[j].picture_number;
+                            var quUObjSubID = res.qualified[j].picture_number;
+                            console.log(res.qualified[j]);
                             RealBimOcx.BatchAddSubClrInfoBegin();
-                            RealBimOcx.AddSubClrPercent(quUObjSubID,1,0xff2aa515);    //第二个参数为透明度
+                            RealBimOcx.AddSubClrPercent(quUObjSubID,1,0xffefb336);    //第二个参数为透明度
                             RealBimOcx.BatchAddSubClrInfoEnd();
                         }
                         //质量分布
@@ -157,17 +158,47 @@
                 }*/
                 //工序信息模板
                 function workInfoTemplateFun(res) {
+                    $('#layuiTimeline').empty();
                     var workInfoTemplate = [];
-                    for(var i = 0;i<res.data.length;i++){
+                    for(var i = 0;i<res.processinfo.length;i++){
+                        var point_step = res.processinfo[i].point_step==1?'current':''; //执行到某个节点
                         workInfoTemplate.push('<li class="layui-timeline-item">');
-                        workInfoTemplate.push('<i class="layui-icon layui-timeline-axis iconFont">&#xe617;</i>');
+                        workInfoTemplate.push('<i class="layui-icon layui-timeline-axis '+ point_step +'">&#xe617;</i>');
                         workInfoTemplate.push('<div class="layui-timeline-content layui-text">');
-                        workInfoTemplate.push('<div class="layui-timeline-title">'+ res.data[i] +'</div>');
+                        workInfoTemplate.push('<div class="layui-timeline-title">'+ res.processinfo[i].name +'</div>');
                         workInfoTemplate.push('</div>');
                         workInfoTemplate.push('</li>');
                     }
-                    var workInfoTemplateHtml = workInfoTemplate.join(',');
+                    var workInfoTemplateHtml = workInfoTemplate.join('');
                     $('#layuiTimeline').append(workInfoTemplateHtml);
+                }
+                //质量表格模板
+                function qualityTableTemplateFun(res) {
+                    //构建表格
+                    $('#qualityTable tbody').empty();
+                    var qualityTableTemplate = [];
+                    for(var i = 0;i<res.processinfo.length;i++){
+                        if(res.processinfo[i].processinfo_list.length>0){
+                            var processinfo_list = res.processinfo[i].processinfo_list;
+                        }
+                        if(!processinfo_list){
+                            return false;
+                        }
+                        for(var j = 0;j<processinfo_list.length;j++){
+                            qualityTableTemplate.push('<tr>');
+                            if(j == 0){
+                                qualityTableTemplate.push('<td rowspan='+ processinfo_list.length +'>'+ res.processinfo[i].name +'</td>');
+                            }
+                            qualityTableTemplate.push('<td class="bg">'+ processinfo_list[j].name +'</td>');
+                            qualityTableTemplate.push('<td>');
+                            qualityTableTemplate.push('<i class="fa fa-eye"></i>');
+                            qualityTableTemplate.push('<i class="fa fa-search"></i>');
+                            qualityTableTemplate.push('</td>');
+                            qualityTableTemplate.push('</tr>');
+                        }
+                    }
+                    var qualityTableTemplateHtml = qualityTableTemplate.join('');
+                    $('#qualityTable tbody').append(qualityTableTemplateHtml);
                 }
                 //获取模板信息
                 $.ajax({
@@ -178,7 +209,8 @@
                     },
                     dataType: "json",
                     success: function (res) {
-                        //workInfoTemplateFun(res);
+                        workInfoTemplateFun(res);
+                        qualityTableTemplateFun(res);
                         $('.infoTitle').text(res.unit_info.site);
                         $('#site').text(res.unit_info.site);
                         $('#serial_number').text(res.unit_info.coding);
@@ -267,30 +299,6 @@
                     <h2 class="layui-colla-title infoTitle"></h2>
                     <div class="layui-colla-content layui-show">
                         <ul class="layui-timeline" id="layuiTimeline">
-                            <li class="layui-timeline-item">
-                                <i class="layui-icon layui-timeline-axis iconFont">&#xe617;</i>
-                                <div class="layui-timeline-content layui-text">
-                                    <div class="layui-timeline-title">预应力锚杆钻孔</div>
-                                </div>
-                            </li>
-                            <li class="layui-timeline-item">
-                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
-                                <div class="layui-timeline-content layui-text">
-                                    <div class="layui-timeline-title">工程照片、强制性条文</div>
-                                </div>
-                            </li>
-                            <li class="layui-timeline-item">
-                                <i class="layui-icon layui-timeline-axis">&#xe617;</i>
-                                <div class="layui-timeline-content layui-text">
-                                    <div class="layui-timeline-title">单元工程验收</div>
-                                </div>
-                            </li>
-                            <li class="layui-timeline-item">
-                                <i class="layui-icon layui-timeline-axis current">&#xe617;</i>
-                                <div class="layui-timeline-content layui-text">
-                                    <div class="layui-timeline-title">验收（2017.08.30）</div>
-                                </div>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -308,44 +316,6 @@
                                 <col width="56">
                             </colgroup>
                             <tbody>
-                            <tr>
-                                <td>预应力锚杆钻孔 </td>
-                                <td class="bg">预应力锚杆钻孔质量检查表</td>
-                                <td>
-                                    <i class="fa fa-eye"></i>
-                                    <i class="fa fa-search"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td rowspan="2">工程照片、强制性条文</td>
-                                <td class="bg">工程记录照片表</td>
-                                <td>
-                                    <i class="fa fa-eye"></i>
-                                    <i class="fa fa-search"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="bg">工程建设标准强制性条文执行记录表</td>
-                                <td>
-                                    <i class="fa fa-eye"></i>
-                                    <i class="fa fa-search"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td rowspan="2">单元工程验收 </td>
-                                <td class="bg">预应力锚杆单元工程质量等级评定表</td>
-                                <td>
-                                    <i class="fa fa-eye"></i>
-                                    <i class="fa fa-search"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="bg">单元工程检查验收申请表</td>
-                                <td>
-                                    <i class="fa fa-eye"></i>
-                                    <i class="fa fa-search"></i>
-                                </td>
-                            </tr>
                             </tbody>
                         </table>
                     </div>
