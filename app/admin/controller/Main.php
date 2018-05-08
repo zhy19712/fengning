@@ -605,7 +605,7 @@ class Main extends Permissions
         //实例化模型类
         $model =  new PictureModel();
         $unit_data = $model->getAllCountUnit();
-
+//        halt($unit_data);
         //定义一个空的数组
         $data = array();
         if(!empty($unit_data))
@@ -615,9 +615,9 @@ class Main extends Permissions
             $count = array_count_values(array_column($unit_data,"EvaluateResult"));
 
             //0、未验评，1、优良，2、合格'
-            $data["excellent_number"] = $count["1"] ? $count["1"] : 0;//优良数量
+            $data["excellent_number"] = empty($count["1"]) ? 0 : $count["1"];//优良数量
             $data["qualified_number"] = empty($count["2"]) ? 0 : $count["2"];//合格数量
-            $data["unchecked_number"] = $count["0"] ? $count["0"] : 0;//未验评数量
+            $data["unchecked_number"] = empty($count["0"]) ? 0 : $count["0"];//未验评数量
 
             $data["excellent_rate"] = round($data["excellent_number"] / $total * 100);//优良率
             $data["qualified_rate"] = round($data["qualified_number"] / $total * 100);//合格率
