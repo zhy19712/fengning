@@ -150,15 +150,26 @@ class PictureModel extends Model
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getProcessInfo($division_id)
+    public function getProcessInfo($en_type)
     {
-        $processinfo = Db::name("quality_division_controlpoint_relation")->alias("cr")
-            ->join("materialtrackingdivision m","m.pid = cr.ma_division_id",'left')
-            ->where("cr.division_id",$division_id)
-            ->where("m.type = 3")
-            ->where("cr.type = 1")
-            ->field("m.id,m.pid,m.name")
-            ->select();
+        $processinfo = Db::name("materialtrackingdivision")->field("id,pid,name")->where(["pid"=>$en_type["en_type"],"type"=>3])->select();
         return $processinfo;
+    }
+
+    /**
+     * 根据归属工程编号查询控制点信息
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getProcessInfoList($par)
+    {
+        $processinfo_list = Db::name("quality_division_controlpoint_relation")->alias('a')
+            ->join('controlpoint b', 'a.control_id=b.id', 'left')
+            ->where($par)
+            ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
+            ->select();
+        return $processinfo_list;
     }
 }
