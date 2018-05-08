@@ -716,18 +716,16 @@ class Main extends Permissions
 
             }
 
-           if(!empty($processinfo))
-           {
-               foreach ($processinfo as $a=>$b)
-               {
-                   foreach ($b['processinfo_list'] as $c=>$d)
-                   {
-                      $processinfo[$a]["quality_form_info"] = Db::name("quality_form_info")->field("id,form_name")
-                          ->where("cpr_id",$d["control_id"])->select();
-                   }
-               }
-           }
-
+//           if(!empty($processinfo))
+//           {
+//               foreach ($processinfo as $a=>$b)
+//               {
+//                   foreach ($b['processinfo_list'] as $c=>$d)
+//                   {
+//
+//                   }
+//               }
+//           }
            return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);
         }
     }
