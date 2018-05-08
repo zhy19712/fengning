@@ -48,6 +48,22 @@
         background: darkseagreen;
         text-align: center;
     }
+    .tipStyleGray{
+        width: 98px;
+        height: 20px;
+        color: #999;
+        background: #e1e4e9;
+        text-align: center;
+    }
+    /*i.fa:before {*/
+        /*color: rgba(230, 230, 230, 1);*/
+    /*}*/
+    /*#ad #start:before {*/
+        /*color: #00c0ef;*/
+    /*}*/
+    /*#ad #backward:before,#ad #suspend:before,#ad #stop:before {*/
+        /*color: rgba(230, 230, 230, 1);*/
+    /*}*/
     #leftTips,#leftTop{
         position: absolute;
         top: -25px;
@@ -59,7 +75,6 @@
         top: -25px;
         right: -36px;
     }
-
     #viewCenter{
         width: 99%;
         height: 85%;
@@ -147,7 +162,6 @@
         border: 1px solid #CED4D6;
         padding: 5px;
     }
-
     #tabob th {
         text-align: center;
         font-weight: bold;
@@ -163,7 +177,6 @@
         text-align: center;
         font-size: 12px;
     }
-
     .rtp {
         font-weight: bold;
         font-size: 12px;
@@ -202,12 +215,13 @@
                     <div id="leftTips" class="tipStyle"><span id="lYear"></span>-<span id="lMonth"></span>-<span class="spanId"></span></div>
                 </div>
                 <div id="leftTop" class="tipStyle"><span class="lYear"></span>-<span class="lMonth"></span>-<span id="rKai"></span></div>
-                <div id="rightTips" class="tipStyle"><span id="endYear"></span>-<span id="endMonth"></span>-<span id="rjie"></span></div>
+                <div id="rightTips" class="tipStyleGray"><span id="endYear"></span>-<span id="endMonth"></span>-<span id="reDays"></span></div>
             </div>
             <div id="ad" style="margin-bottom: 40px">
                 <i title="快退" id="backward" class="fa fa-fast-backward"></i>
                 <i title="开始" id="start" class="fa fa-play"></i>
                 <i title="暂停" id="suspend" class="fa fa-pause" style="display: none"></i>
+                <i title="停止" id="stop" class="fa fa-stop"></i>
                 <i title="快进" id="forward" class="fa fa-fast-forward"></i>
                 <i title="关闭页面" id="close" class="fa fa-arrow-up"></i>
             </div>
@@ -233,7 +247,9 @@
                     RealBimOcx.ExitSubObjFlicker();
 
                     RealBimOcx.BatchAddSubClrInfoBegin();
+
                     RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ffa500);
+
                     RealBimOcx.BatchAddSubClrInfoEnd();
                     // //设置模型的可见性，0为不可见，1为可见。通过模型id进行关联。
                     // RealBimOcx.SetHugeObjSubValidStateBegin();
@@ -396,48 +412,119 @@
 
 <script>
 
-    var kai =01;
-    var jie =30;
-    var year =2017;
-    var month =11;
-    var day =15;
+    // 颜色值必须转成16进制
+    // rgb(86, 83, 76) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8056534c);
+    // rgb(157, 243, 142) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x809df38e);
+    // rgb(102, 164, 201) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8066a4c9);
 
-    $("#rKai").text(kai);
-    $("#rjie").text(jie);
-    $("#lYear").text(year);
-    $(".lYear").text(year);
-    $("#lMonth").text(month);
-    $(".lMonth").text(month);
-    $("#endYear").text(year);
-    $("#endMonth").text(month);
-    $("#day").text(kai);
-    $(".spanId").text(kai);
+    //开始时间
+    var snewYear =2017, sNewMonth =11, strDays =1;
+
+    //结束时间
+    var sLaterYear =2017, eLaterMonth =11, eDays =22;
+
+    //总步数
+    var total;
+
+    var ss = strDays;
+    ss = ss < 10 ? '0' + ss : ss;
+    var ee = eDays;
+    ee = ee < 10 ? '0' + ee : ee;
+    //开始日期
+    var startDate = snewYear+'-'+sNewMonth+'-'+ss;
+
+    //结束的日期
+    var endDate = sLaterYear+'-'+eLaterMonth+'-'+ee;
+    console.log(endDate)
+
+    //开始的步数
+    var rep = strDays;
+
+    var ptime;
+
+    $("#rKai").text(strDays);
+    $("#reDays").text(eDays);
+    $("#lYear").text(snewYear);
+    $("#lMonth").text(sNewMonth);
+    //开始的时间
+    $(".lYear").text(snewYear);
+    $(".lMonth").text(sNewMonth);
+    //结束的时间
+    $("#endYear").text(sLaterYear);
+    $("#endMonth").text(eLaterMonth);
+    //动的与静止的天
+    $("#day").text(strDays);
+    $(".spanId").text(strDays);
+
+    //判断整个工期是不是在同一个月
+    if(sNewMonth == eLaterMonth){
+        total = eDays - strDays;
+    }else if(sNewMonth != eLaterMonth){
+        if(sNewMonth == 1 || sNewMonth == 3 || sNewMonth == 5 || sNewMonth == 7 || sNewMonth == 8 || sNewMonth == 10 || sNewMonth == 12 ){
+            var strRepDay = 31-strDays;
+            var endRepDay = eDays;
+            total  = strRepDay + endRepDay;
+            if(rep>=32){
+                rep = 1;
+                $("#lMonth").text(sNewMonth+1);
+            }
+        }
+        if(sNewMonth == 4 || sNewMonth == 6 || sNewMonth == 9 || sNewMonth == 11){
+            var strRepDay = 31-strDays;
+            var endRepDay = eDays;
+            total  = strRepDay + endRepDay;
+            if(rep>=31){
+                rep = 1;
+                $("#lMonth").text(sNewMonth+1);
+            }
+        }
+        if(sNewMonth == 2){
+            var strRepDay = 31-strDays;
+            var endRepDay = eDays;
+            total  = strRepDay + endRepDay;
+            if(rep>=29){
+                rep = 1;
+                $("#lMonth").text(sNewMonth+1);
+            }
+        }
+    }
 
     var arr = [
-        {"id":"1","wbs":"1.1", "jihua":"2017-10-23", "jieshu":"2017-11-05"},
-        {"id":"2","wbs":"1.2", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"3","wbs":"1.3", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"4","wbs":"1.4", "jihua":"2017-11-10", "jieshu":"2017-11-22"},
-        {"id":"5","wbs":"2.1", "jihua":"2017-10-28", "jieshu":"2017-11-03"},
-        {"id":"6","wbs":"2.2", "jihua":"2017-11-01", "jieshu":"2017-11-05"},
-        {"id":"7","wbs":"2.3", "jihua":"2017-11-06", "jieshu":"2017-11-22"},
-        {"id":"8","wbs":"3.1", "jihua":"2017-11-05", "jieshu":"2017-11-11"},
-        {"id":"9","wbs":"3.2", "jihua":"2017-11-12", "jieshu":"2017-11-18"},
-        {"id":"10","wbs":"3.3", "jihua":"2017-11-01", "jieshu":"2017-11-07"},
-        {"id":"11","wbs":"4.1", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
-        {"id":"12","wbs":"5.1", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"13","wbs":"6.1", "jihua":"2017-11-01", "jieshu":"2017-11-07"},
-        {"id":"14","wbs":"6.2", "jihua":"2017-11-08", "jieshu":"2017-11-15"},
-        {"id":"15","wbs":"6.3", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"16","wbs":"7.1", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
-        {"id":"17","wbs":"7.2", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
-        {"id":"18","wbs":"7.3", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
-        {"id":"19","wbs":"8.1", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"20","wbs":"8.2", "jihua":"2017-11-01", "jieshu":"2017-11-22"}
-    ]
-
-    var ptime, rep =0, dataTime;
-
+        {"id":"1","wbs":"1.1", "jihua":"2017-10-23", "eDaysshu":"2017-11-05"},
+        {"id":"2","wbs":"1.2", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"3","wbs":"1.3", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"4","wbs":"1.4", "jihua":"2017-11-10", "eDaysshu":"2017-11-22"},
+        {"id":"5","wbs":"2.1", "jihua":"2017-10-28", "eDaysshu":"2017-11-03"},
+        {"id":"6","wbs":"2.2", "jihua":"2017-11-01", "eDaysshu":"2017-11-05"},
+        {"id":"7","wbs":"2.3", "jihua":"2017-11-06", "eDaysshu":"2017-11-22"},
+        {"id":"8","wbs":"3.1", "jihua":"2017-11-05", "eDaysshu":"2017-11-11"},
+        {"id":"9","wbs":"3.2", "jihua":"2017-11-12", "eDaysshu":"2017-11-18"},
+        {"id":"10","wbs":"3.3", "jihua":"2017-11-01", "eDaysshu":"2017-11-07"},
+        {"id":"11","wbs":"4.1", "jihua":"2017-10-28", "eDaysshu":"2017-11-22"},
+        {"id":"12","wbs":"5.1", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"13","wbs":"6.1", "jihua":"2017-11-01", "eDaysshu":"2017-11-07"},
+        {"id":"14","wbs":"6.2", "jihua":"2017-11-08", "eDaysshu":"2017-11-15"},
+        {"id":"15","wbs":"6.3", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"16","wbs":"7.1", "jihua":"2017-10-28", "eDaysshu":"2017-11-22"},
+        {"id":"17","wbs":"7.2", "jihua":"2017-10-28", "eDaysshu":"2017-11-22"},
+        {"id":"18","wbs":"7.3", "jihua":"2017-10-28", "eDaysshu":"2017-11-22"},
+        {"id":"19","wbs":"8.1", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"20","wbs":"8.2", "jihua":"2017-11-01", "eDaysshu":"2017-11-22"}
+    ];
+    //初始化表格
+    function initArr(){
+        $("#tabob tbody").html('');
+        var str = '';
+        for(var i=0;i<arr.length;i++){
+            str+="<tr class='trId'"+arr[i].id+">\n" +
+                "    <td>"+arr[i].wbs+"</td>\n" +
+                "    <td>"+arr[i].jihua+"</td>\n" +
+                "    <td id='"+arr[i].eDaysshu+"'>"+arr[i].eDaysshu+"</td>\n" +
+                "</tr>"
+        }
+        $("#tabob tbody").append(str);
+    }
+    initArr();
     var proWidth = $(".progress").width();
     var fuWidth = $("#fu").width();
     $(function(){
@@ -512,19 +599,54 @@
     function cleanSupElement() {
         cleanSupTime();
         $("#start").css("display","inline-block").siblings("#suspend").css("display","none");
+        // $(".tipStyleGray").css({"color":"white","background":"darkseagreen"});
+        $(".tipStyleGray").css({"display":"none"});
     }
-
+    
+    //table联动
+    function tableMove(dataRiQi) {
+        var days = new Date(dataRiQi).getDay();
+        switch (days) {
+            case 0:
+                $("#weekinfo").html("星期日");
+                break;
+            case 1:
+                $("#weekinfo").html("星期一");
+                break;
+            case 2:
+                $("#weekinfo").html("星期二");
+                break;
+            case 3:
+                $("#weekinfo").html("星期三");
+                break;
+            case 4:
+                $("#weekinfo").html("星期四");
+                break;
+            case 5:
+                $("#weekinfo").html("星期五");
+                break;
+            case 6:
+                $("#weekinfo").html("星期六");
+                break;
+        }
+        try{
+            var idx = [];
+            $("#tabob tbody tr").each(function (index,item) {
+                var text = $(item).find("td:last-child").text();
+                if(text == dataRiQi ){
+                    idx.push(dataRiQi);
+                }
+            });
+            idx.forEach(function (item,index) {
+                $("#"+item).parents("tr").remove();
+            })
+        }catch(err){
+            console.log(err)
+        }
+    }
     //开始
     $("#start").click(function () {
-        var str = '';
-        for(var i=0;i<arr.length;i++){
-            str+="<tr class='trId'"+arr[i].id+">\n" +
-                "    <td>"+arr[i].wbs+"</td>\n" +
-                "    <td>"+arr[i].jihua+"</td>\n" +
-                "    <td id='"+arr[i].jieshu+"'>"+arr[i].jieshu+"</td>\n" +
-                "</tr>"
-        }
-        $("#tabob tbody").append(str);
+        // $("#ad #suspend:before").css("color","#00c0ef");
         //开始
         $("#viewLeft").css("width","85%");
         $("#viewRight").css("display","block");
@@ -536,60 +658,19 @@
             tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
             $(".spanId").text(tipsRep);
             $("#day").text(tipsRep);
-            var date111 = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
-            var days = new Date(date111).getDay();
-            switch (days) {
-                case 0:
-                    $("#weekinfo").html("星期日");
-                    break;
-                case 1:
-                    $("#weekinfo").html("星期一");
-                    break;
-                case 2:
-                    $("#weekinfo").html("星期二");
-                    break;
-                case 3:
-                    $("#weekinfo").html("星期三");
-                    break;
-                case 4:
-                    $("#weekinfo").html("星期四");
-                    break;
-                case 5:
-                    $("#weekinfo").html("星期五");
-                    break;
-                case 6:
-                    $("#weekinfo").html("星期六");
-                    break;
-            }
-            try{
-                var idx = [];
-                console.log(date111);
-                $("#tabob tbody tr").each(function (index,item) {
-                    var text = $(item).find("td:last-child").text();
-                    if(text == date111 ){
-                        idx.push(date111);
-                    }
-                });
-                idx.forEach(function (item,index) {
-                    $("#"+item).parents("tr").remove();
-                })
-            }catch(err){
-                console.log(err)
-            }
-
+            var dataRiQi = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
+            tableMove(dataRiQi);
             $("#fu").css("display", "block");
-            // var oleft = $("#zi")[0].offsetWidth + 96;
-            var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 2;
-            // console.log(oleft)
-            // console.log($("#fu").width())
-            var ob = oleft / $("#fu")[0].offsetWidth;
+            var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/total) - 2;
             $("#zi").css("width", oleft + "px");
             $("#leftTips").css("left", oleft-35 + "px");
-            if (rep == jie) {
+            if (dataRiQi == endDate) {
                 cleanSupElement();
             }
         },1200)
-        if (rep == jie) {
+        //走的结束时间
+        var implementDate = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+$(".spanId").text();
+        if (implementDate == endDate) {
             cleanSupElement();
         }
     });
@@ -598,6 +679,16 @@
     $("#suspend").click(function () {
         $("#start").css("display","inline-block").siblings("#suspend").css("display","none");
         cleanSupTime();
+    });
+
+    //停止
+    $("#stop").click(function () {
+        $("#start").css("display","inline-block").siblings("#suspend").css("display","none");
+        cleanSupTime();
+        $("#zi").css("width", "2px");
+        $("#leftTips").css("left","-35px");
+        rep = strDays;
+        $(".tipStyleGray").css({"display":"block"});
     });
 
     //快退
@@ -616,11 +707,11 @@
                 tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
                 $(".spanId").text(tipsRep-1);
                 $("#fu").css("display", "block");
-                var oleft = $("#zi")[0].offsetWidth - Math.round(fuWidth/jie) - 2.5;
-                var ob = oleft / $("#fu")[0].offsetWidth;
+                var startRep = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
+                var oleft = $("#zi")[0].offsetWidth - Math.round(fuWidth/total) - 2.5;
                 $("#zi").css("width", oleft + "px");
                 $("#leftTips").css("left", oleft-35 + "px");
-                if (rep == 0) {
+                if (startRep == endDate) {
                     cleanSupElement();
                 }
             },backTime)
@@ -642,11 +733,13 @@
                 var tipsRep = rep;
                 tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
                 $(".spanId").text(tipsRep);
+                var startRep = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
+                tableMove(startRep);
                 $("#fu").css("display", "block");
-                var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 1.7;
+                var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/total) - 1.7;
                 $("#zi").css("width", oleft + "px");
                 $("#leftTips").css("left", oleft-35 + "px");
-                if (rep == jie) {
+                if (startRep == endDate) {
                     cleanSupElement();
                 }
             },times)

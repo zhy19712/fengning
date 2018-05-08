@@ -39,6 +39,7 @@ class Monthplans extends Permissions
     {
         return $this->fetch();
     }
+
     public function progress()
     {
         return $this->fetch();
@@ -191,6 +192,31 @@ class Monthplans extends Permissions
     }
 
 
+
+
+   //获取模型图下的所有模型图和工程计划
+
+    public function modelPictureAllNumber()
+    {
+        // 前台 传递 选中的 工程划分 编号 add_id
+        if($this->request->isAjax()){
+            $param = input('param.');
+            $add_id = isset($param['add_id']) ? $param['add_id'] : -1;
+            if($add_id == -1){
+                return json(['code' => 0,'msg' => '编号有误']);
+            }
+            $id = Db::name('monthplan_unit')->where('monthplan_id',$add_id)->column('id');
+            // 获取关联的模型图
+            $picture = new PictureRelationModel();
+            $data= $picture->getAllNumber($id);
+            $picture_number = $data['picture_number_arr'];
+            return json(['code'=>1,'numberArr'=>$picture_number,'msg'=>'工程划分-模型图编号']);
+        }
+    }
+
+
+
+
     public function modelPicturePreview()
     {
         // 前台 传递 选中的 单元工程段号 编号 id
@@ -328,6 +354,8 @@ class Monthplans extends Permissions
             return json(['code'=>1,'one_picture_id'=>$data['one_picture_id'],'data'=>$data['str'],'msg'=>'模型图列表']);
         }
     }
+
+
 
 
 
