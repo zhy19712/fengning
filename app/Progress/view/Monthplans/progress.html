@@ -229,12 +229,10 @@
         <div id="viewCenter">
             <div id="viewLeft">
                 <script language="javascript" for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
+                    //点击模型上面的 改变事件都写到里面
 
                     // if(window.console && console.log){ console.log(uObjSubID); }
                     // console.dir(uObjSubID);
-
-
-
                     /*var node = [];
                     var treeObj = $.fn.zTree.getZTreeObj("ztree");
                     var nodes = treeObj.transformToArray(treeObj.getNodes());
@@ -252,10 +250,10 @@
                     RealBimOcx.AddSubClrPercent(uObjSubID,1,0x80ffa500);
                     RealBimOcx.BatchAddSubClrInfoEnd();
                     // //设置模型的可见性，0为不可见，1为可见。通过模型id进行关联。
-                    RealBimOcx.SetHugeObjSubValidStateBegin();
-                    RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
-                    RealBimOcx.SetHugeObjSubValidStateEnd();
-                    RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
+                    // RealBimOcx.SetHugeObjSubValidStateBegin();
+                    // RealBimOcx.SetHugeObjSubValidStateInfo(uObjSubID, 1);
+                    // RealBimOcx.SetHugeObjSubValidStateEnd();
+                    // RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
 
 
                     //点击树的时候加载
@@ -316,33 +314,34 @@
                 </script>
 
                 <script language="javascript" for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
-                    if(CompleteEvent == "LoadMainScene" && retError==0 ){
-                        RealBimOcx.SetAllHugeObjSubValidState(1);
-                        //RealBimOcx.SetSceHugeObjVisible(false);
-                    }
-                    var bimArr;
-                    RealBimOcx.SetSuitableCam();//放在初始化设置里面就行了
-                    RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
-                    $.ajax({
-                        url: "{:url('progress/monthplans/modelPictureAllNumber')}",
-                        type: "post",
-                        data: {
-                            add_id:488,
-                        },
-                        success: function (res) {
-                            console.log(res.numberArr)
-                            bimArr = res.numberArr;
-                            RealBimOcx.BatchAddSubClrInfoBegin();
-                            RealBimOcx.SetHugeObjSubValidStateBegin();
-                            for(var i=0;i<bimArr.length;i++){
-                                RealBimOcx.AddSubClrPercent(bimArr[i],1,0x80ffa500);
-                                RealBimOcx.SetHugeObjSubValidStateInfo(bimArr[i], 1);
-                            }
-                            RealBimOcx.BatchAddSubClrInfoEnd();
-                            RealBimOcx.SetHugeObjSubValidStateEnd();
 
-                        }
-                    })
+                    //初始化成功的自动加载的东西 （全部加载成功，再执行逻辑）
+                    if(CompleteEvent == "LoadMainScene" && retError==0 ){
+                        RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
+                        var bimArr;
+                        RealBimOcx.SetSuitableCam();//放在初始化设置里面就行了
+                        $.ajax({
+                            url: "{:url('progress/monthplans/modelPictureAllNumber')}",
+                            type: "post",
+                            data: {
+                                add_id:488,
+                            },
+                            success: function (res) {
+                                console.log(res.numberArr);
+                                bimArr = res.numberArr;
+                                RealBimOcx.BatchAddSubClrInfoBegin();//设置模型的颜色的开始
+                                RealBimOcx.SetHugeObjSubValidStateBegin();//设置模型的可见性的开始
+                                for(var i=0;i<bimArr.length;i++){
+                                    RealBimOcx.AddSubClrPercent(bimArr[i],1,0x80ffa500);//设置当前id模型的颜色
+                                    RealBimOcx.SetHugeObjSubValidStateInfo(bimArr[i], 1);//设置当前id模型的可见性
+                                }
+                                RealBimOcx.BatchAddSubClrInfoEnd();//设置模型的颜色的结束
+                                RealBimOcx.SetHugeObjSubValidStateEnd();//设置模型的可见性的结束
+
+                            }
+                        });
+                    }
+
 
                     // var unitId = document.cookie.split(';')[0].split('=')[1];
                     //保存关联模型
@@ -365,6 +364,7 @@
                     //     })
                     // }
                     //加载模型试图
+
                     window.loadModel = function (number) {
                         if(number==''){
                             RealBimOcx.SetAllHugeObjSubValidState(0);
@@ -380,7 +380,6 @@
                             RealBimOcx.SetSubObjFlickerEnd();
                         }
                     };
-                    // loadModel(17)
 
                     //取消模型闪烁
                     // window.cancelTwinkle = function () {
@@ -390,6 +389,7 @@
                     //FlickerInterval：闪烁时间间隔
                     //Alpha0，AlphaAmp0，RGBBlendInfo0，Alpha1，AlphaAmp1，RGBBlendInfo1：两种闪烁状态的透明度，透明度混合系数，以及颜色和颜色混合系数，与AddSubClrInfo()的后三个参数用法相同
                     // void SetSubObjFlickerBegin(LONG FlickerSwitchTimes,LONG FlickerInterval, BYTE Alpha0, BYTE AlphaAmp0, ULONG RGBBlendInfo0, BYTE Alpha1, BYTE AlphaAmp1, ULONG RGBBlendInfo1);
+
                 </script>
 
             </div>
@@ -433,7 +433,6 @@
 
 <script>
 
-    var bimArr;
     // 颜色值必须转成16进制
     // rgb(86, 83, 76) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8056534c);
     // rgb(157, 243, 142) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x809df38e);
@@ -793,144 +792,9 @@
         success: function (res) {
             primaryId = res.primaryId;
             //转换节点数据
-            var nodes = JSON.parse(res.data)
-            setZtree(nodes);
+            var nodes = JSON.parse(res.data);
         }
     });
 
-    //构建构件树
-    function setZtree(nodes) {
-        var setting = {
-            check: {
-                enable: true
-            },
-            data: {
-                simpleData: {
-                    enable: true,
-                    idKey: "id",
-                    pIdKey: "pId"
-                }
-            },
-            view:{
-                selectedMulti: false
-            },
-            callback:{
-                onCheck: zTreeOnCheck,
-                onClick: zTreeOnClick
-            },
-            showLine:true,
-            showTitle:true,
-            showIcon:true
-        };
-
-        zTreeObj = $.fn.zTree.init($("#ztree"), setting, nodes);
-        echoRelation();
-    }
-
-    //回显已关联节点
-    function echoRelation() {
-        //初始化后的调用就不用全局获取
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        // console.log(!treeObj)
-        if(!treeObj){
-            return false;
-        }
-        var checkedNode = treeObj.getNodeByParam('picture_id',primaryId);
-        treeObj.checkNode(checkedNode,true,false);
-        // console.log(checkedNode);
-    }
-    echoRelation();
-
-    //加载模型视图
-    function zTreeOnCheck(event, treeId, treeNode) {
-        console.log(treeNode);
-        picture_id = treeNode.picture_id;
-        //勾选定位模型
-        /*if(treeNode.checked){
-            loadModel(treeNode.add_id);
-        }*/
-        // 一对多
-        /*var node = [];
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        var nodes = treeObj.getCheckedNodes(true);
-        for(var i = 0;i<nodes.length;i++){
-            if(nodes[i].isParent==undefined||nodes[i].isParent==false){
-                node.push(nodes[i]);
-            }
-        }
-        creatSelectedZtree(node);*/
-
-        // 一对一
-        var node = [];
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        var checkedNodes = treeObj.getCheckedNodes(true);
-        for(var i = 0;i<checkedNodes.length;i++){
-            treeObj.checkNode(checkedNodes[i],false,false);
-        }
-        node.push(treeNode);
-        treeObj.checkNode(treeNode,true,false);
-        creatSelectedZtree(node);
-    }
-
-    //构建已选构件树
-    window.creatSelectedZtree = function (node,uObjSubID) {
-        var setting = {
-            data: {
-                simpleData: {
-                    enable: true,
-                    idKey: "id",
-                    pIdKey: "pId"
-                }
-            },
-            view:{
-                selectedMulti: false
-            },
-            callback:{
-                onClick: function (event, treeId, treeNode) {
-                    zTreeOnClick(event, treeId, treeNode);
-                }
-            },
-            showLine:true,
-            showTitle:true,
-            showIcon:true
-        };
-        zTreeObj = $.fn.zTree.init($("#selectZtree"), setting, node);
-        var checkedNodes = zTreeObj.getCheckedNodes(true);
-        $('#selectCount').text(checkedNodes.length);
-    }
-
-    //选中关联节点及加载模型视图
-    function zTreeOnClick(event, treeId, treeNode) {
-        var number = treeNode.picture_number;
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        var nodes = treeObj.getNodesByParam("id",treeNode.id);
-        treeObj.selectNode(nodes[0],true);
-        loadModel(number);
-    }
-
-    $('#save').click(function () {
-        saveModel(picture_id);
-    });
-
-    $('#close').click(function () {
-        window.close();
-    });
-
-    //搜索模型
-    $('#search').click(function () {
-        var inputModelName = $('#modelName').val();
-        var modelName = $.trim(inputModelName);
-        $.ajax({
-            url: "",
-            type: "post",
-            data: {
-                modelName:modelName
-            },
-            dataType: "json",
-            success: function (res) {
-
-            }
-        })
-    });
 </script>
 </html>
