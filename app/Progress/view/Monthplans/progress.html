@@ -66,7 +66,7 @@
         margin: 0 auto;
         position: relative;
         margin-top: 100px;
-        border: 1px solid red;
+        /*border: 1px solid red;*/
     }
 
 
@@ -199,10 +199,10 @@
             <div id="fu">
                 <div id="zi">
                     <div id="bai"></div>
-                    <div id="leftTips" class="tipStyle">2017-5-<span class="spanId">1</span></div>
+                    <div id="leftTips" class="tipStyle"><span id="lYear"></span>-<span id="lMonth"></span>-<span class="spanId"></span></div>
                 </div>
-                <div id="leftTop" class="tipStyle">2017-5-<span id="rKai"></span></div>
-                <div id="rightTips" class="tipStyle">2017-5-<span id="rjie"></span></div>
+                <div id="leftTop" class="tipStyle"><span class="lYear"></span>-<span class="lMonth"></span>-<span id="rKai"></span></div>
+                <div id="rightTips" class="tipStyle"><span id="endYear"></span>-<span id="endMonth"></span>-<span id="rjie"></span></div>
             </div>
             <div id="ad" style="margin-bottom: 40px">
                 <i title="快退" id="backward" class="fa fa-fast-backward"></i>
@@ -364,12 +364,12 @@
                         <p class="rtp" style="float: left;">已建</p>
                     </div>
                     <div class="rMenu" id="rWeek">
-                        <p class="rtp" id="day" style="right: 54%; top: -10px; font-size: 26px; position: absolute;">09</p>
+                        <p class="rtp" id="day" style="right: 54%; top: -10px; font-size: 26px; position: absolute;"></p>
                         <div class="rsekuai" style="margin-left: 125px; background-color: rgb(157, 243, 142);"></div>
                         <p class="rtp" style="float: left;">在建</p>
                     </div>
                     <div class="rMenu" id="rZhou">
-                        <p class="rtp" id="weekinfo" style="padding-left: 19px; float: left;">星期四</p>
+                        <p class="rtp" id="weekinfo" style="padding-left: 19px; float: left;"></p>
                         <div class="rsekuai" style="margin-left: 1px;background-color: rgb(102, 164, 201);"></div>
                         <p class="rtp" style="float: left;">未建</p>
                     </div>
@@ -384,106 +384,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1.1</td>
-                                <td>2017-10-23</td>
-                                <td>2017-11-05</td>
-                            </tr>
-                            <tr>
-                                <td>1.2</td>
-                                <td>2017-10-23</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>1.3</td>
-                                <td>2017-10-23</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>1.4</td>
-                                <td>2017-11-10</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>2.1</td>
-                                <td>2017-10-28</td>
-                                <td>2017-11-03</td>
-                            </tr>
-                            <tr>
-                                <td>2.2</td>
-                                <td>2017-11-01</td>
-                                <td>2017-11-05</td>
-                            </tr>
-                            <tr>
-                                <td>2.3</td>
-                                <td>2017-11-06</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>3.1</td>
-                                <td>2017-11-05</td>
-                                <td>2017-11-11</td>
-                            </tr>
-                            <tr>
-                                <td>3.2</td>
-                                <td>2017-11-12</td>
-                                <td>2017-11-18</td>
-                            </tr>
-                            <tr>
-                                <td>3.3</td>
-                                <td>2017-11-01</td>
-                                <td>2017-11-07</td>
-                            </tr>
-                            <tr>
-                                <td>4.1</td>
-                                <td>2017-10-28</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>5.1</td>
-                                <td>2017-10-23</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>6.1</td>
-                                <td>2017-11-01</td>
-                                <td>2017-11-07</td>
-                            </tr>
-                            <tr>
-                                <td>6.2</td>
-                                <td>2017-11-08</td>
-                                <td>2017-11-15</td>
-                            </tr>
-                            <tr>
-                                <td>6.3</td>
-                                <td>2017-10-23</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>7.1</td>
-                                <td>2017-10-28</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>7.2</td>
-                                <td>2017-10-28</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>7.3</td>
-                                <td>2017-10-28</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>8.1</td>
-                                <td>2017-10-23</td>
-                                <td>2017-11-22</td>
-                            </tr>
-                            <tr>
-                                <td>8.2</td>
-                                <td>2017-11-01</td>
-                                <td>2017-11-22</td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -495,11 +396,48 @@
 
 <script>
 
-    var kai =1;
-    var jie =15;
+    var kai =01;
+    var jie =30;
+    var year =2017;
+    var month =11;
+    var day =15;
+
     $("#rKai").text(kai);
     $("#rjie").text(jie);
-    var ptime, rep =0;
+    $("#lYear").text(year);
+    $(".lYear").text(year);
+    $("#lMonth").text(month);
+    $(".lMonth").text(month);
+    $("#endYear").text(year);
+    $("#endMonth").text(month);
+    $("#day").text(kai);
+    $(".spanId").text(kai);
+
+    var arr = [
+        {"id":"1","wbs":"1.1", "jihua":"2017-10-23", "jieshu":"2017-11-05"},
+        {"id":"2","wbs":"1.2", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
+        {"id":"3","wbs":"1.3", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
+        {"id":"4","wbs":"1.4", "jihua":"2017-11-10", "jieshu":"2017-11-22"},
+        {"id":"5","wbs":"2.1", "jihua":"2017-10-28", "jieshu":"2017-11-03"},
+        {"id":"6","wbs":"2.2", "jihua":"2017-11-01", "jieshu":"2017-11-05"},
+        {"id":"7","wbs":"2.3", "jihua":"2017-11-06", "jieshu":"2017-11-22"},
+        {"id":"8","wbs":"3.1", "jihua":"2017-11-05", "jieshu":"2017-11-11"},
+        {"id":"9","wbs":"3.2", "jihua":"2017-11-12", "jieshu":"2017-11-18"},
+        {"id":"10","wbs":"3.3", "jihua":"2017-11-01", "jieshu":"2017-11-07"},
+        {"id":"11","wbs":"4.1", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
+        {"id":"12","wbs":"5.1", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
+        {"id":"13","wbs":"6.1", "jihua":"2017-11-01", "jieshu":"2017-11-07"},
+        {"id":"14","wbs":"6.2", "jihua":"2017-11-08", "jieshu":"2017-11-15"},
+        {"id":"15","wbs":"6.3", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
+        {"id":"16","wbs":"7.1", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
+        {"id":"17","wbs":"7.2", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
+        {"id":"18","wbs":"7.3", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
+        {"id":"19","wbs":"8.1", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
+        {"id":"20","wbs":"8.2", "jihua":"2017-11-01", "jieshu":"2017-11-22"}
+    ]
+
+    var ptime, rep =0, dataTime;
+
     var proWidth = $(".progress").width();
     var fuWidth = $("#fu").width();
     $(function(){
@@ -578,39 +516,82 @@
 
     //开始
     $("#start").click(function () {
+        var str = '';
+        for(var i=0;i<arr.length;i++){
+            str+="<tr class='trId'"+arr[i].id+">\n" +
+                "    <td>"+arr[i].wbs+"</td>\n" +
+                "    <td>"+arr[i].jihua+"</td>\n" +
+                "    <td id='"+arr[i].jieshu+"'>"+arr[i].jieshu+"</td>\n" +
+                "</tr>"
+        }
+        $("#tabob tbody").append(str);
         //开始
         $("#viewLeft").css("width","85%");
         $("#viewRight").css("display","block");
         $("#start").css("display","none").siblings("#suspend").css("display","inline-block");
         cleanSupTime();
         stime = setInterval(function (){
-            // if(rep == 0){
-            //     window.clearInterval(stime);
-            // }else if(rep == 0) {
-                rep++;
-                $(".spanId").text(kai+1);
-                $("#fu").css("display", "block");
-                // var oleft = $("#zi")[0].offsetWidth + 96;
-                var oleft = $("#zi")[0].offsetWidth + (fuWidth/jie) - 2;
-                console.log(oleft)
-                console.log($("#fu").width())
-                var ob = oleft / $("#fu")[0].offsetWidth;
-                $("#zi").css("width", oleft + "px");
-                $("#leftTips").css("left", oleft-35 + "px");
-                if (rep == jie) {
-                    cleanSupElement();
-                }
-                // if($("#zi")[0].offsetWidth -12 == $("#fu")[0].offsetWidth){
-                //     cleanSupElement();
-                // }
-            // }
+            rep+=1;
+            var tipsRep = rep;
+            tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
+            $(".spanId").text(tipsRep);
+            $("#day").text(tipsRep);
+            var date111 = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
+            var days = new Date(date111).getDay();
+            switch (days) {
+                case 0:
+                    $("#weekinfo").html("星期日");
+                    break;
+                case 1:
+                    $("#weekinfo").html("星期一");
+                    break;
+                case 2:
+                    $("#weekinfo").html("星期二");
+                    break;
+                case 3:
+                    $("#weekinfo").html("星期三");
+                    break;
+                case 4:
+                    $("#weekinfo").html("星期四");
+                    break;
+                case 5:
+                    $("#weekinfo").html("星期五");
+                    break;
+                case 6:
+                    $("#weekinfo").html("星期六");
+                    break;
+            }
+            try{
+                var idx = [];
+                console.log(date111);
+                $("#tabob tbody tr").each(function (index,item) {
+                    var text = $(item).find("td:last-child").text();
+                    if(text == date111 ){
+                        idx.push(date111);
+                    }
+                });
+                idx.forEach(function (item,index) {
+                    $("#"+item).parents("tr").remove();
+                })
+            }catch(err){
+                console.log(err)
+            }
+
+            $("#fu").css("display", "block");
+            // var oleft = $("#zi")[0].offsetWidth + 96;
+            var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 2;
+            // console.log(oleft)
+            // console.log($("#fu").width())
+            var ob = oleft / $("#fu")[0].offsetWidth;
+            $("#zi").css("width", oleft + "px");
+            $("#leftTips").css("left", oleft-35 + "px");
+            if (rep == jie) {
+                cleanSupElement();
+            }
         },1200)
         if (rep == jie) {
             cleanSupElement();
         }
-        // if($("#zi")[0].offsetWidth-12 == $("#fu")[0].offsetWidth){
-        //     cleanSupElement();
-        // }
     });
 
     //暂停
@@ -630,16 +611,17 @@
                 alert("亲，不能再退这么快了！")
             }
             stime = setInterval(function (){
-                $("#fu").css("display","block");
-                var oleft = $("#zi")[0].offsetWidth - 96;
-                var tipsLeft = Math.round($("#leftTips").offset().left);
-                console.log(tipsLeft + "left ")
-                var ob = oleft/$("#fu")[0].offsetWidth;
-                $("#zi").css("width",oleft+"px");
-                tipsLeft -= 181;
-                $("#leftTips").css("left",tipsLeft+"px");
-                if(oleft == 2){
-                    cleanSupElement()
+                rep-=1;
+                var tipsRep = rep;
+                tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
+                $(".spanId").text(tipsRep-1);
+                $("#fu").css("display", "block");
+                var oleft = $("#zi")[0].offsetWidth - Math.round(fuWidth/jie) - 2.5;
+                var ob = oleft / $("#fu")[0].offsetWidth;
+                $("#zi").css("width", oleft + "px");
+                $("#leftTips").css("left", oleft-35 + "px");
+                if (rep == 0) {
+                    cleanSupElement();
                 }
             },backTime)
         }
@@ -656,13 +638,15 @@
                 layer.msg("亲，不能再快了！")
             }
             stime = setInterval(function (){
-                $("#fu").css("display","block");
-                var oleft = $("#zi")[0].offsetWidth + 96;
-                var tipsLeft = Math.round($("#leftTips").offset().left+10);
-                var ob = oleft/$("#fu")[0].offsetWidth;
-                $("#zi").css("width",oleft+"px");
-                $("#leftTips").css("left",tipsLeft+"px");
-                if($("#zi")[0].offsetWidth -12 == $("#fu")[0].offsetWidth){
+                rep+=1;
+                var tipsRep = rep;
+                tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
+                $(".spanId").text(tipsRep);
+                $("#fu").css("display", "block");
+                var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 1.7;
+                $("#zi").css("width", oleft + "px");
+                $("#leftTips").css("left", oleft-35 + "px");
+                if (rep == jie) {
                     cleanSupElement();
                 }
             },times)
