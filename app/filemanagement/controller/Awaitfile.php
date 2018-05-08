@@ -15,6 +15,8 @@ use app\admin\controller\Permissions;
 use app\filemanagement\model\ProjectmanagementModel;//档案管理-工程项目管理
 use app\filemanagement\model\FilebranchtypeModel;//档案管理-分支目录管理-项目分类-树节点
 use app\filemanagement\model\FilebranchModel;//档案管理-分支目录管理-项目分类
+use app\archive\model\DocumentTypeModel;//文档管理
+use app\quality\model\DivisionModel;//工程划分，单元工程
 use think\exception\PDOException;
 use think\Loader;
 use think\Db;
@@ -100,6 +102,39 @@ class Awaitfile extends Permissions
             return json(["code"=>1,"data"=>$result]);
         }
     }
+
+    /**********************************电子文件挂接选择文件目录树*********************/
+    /**
+     * 文档管理树
+     * @return \think\response\Json
+     */
+    public function getDocumenttypeTree()
+    {
+        if(request()->isAjax()) {
+            //实例化模型类
+            $model = new DocumentTypeModel();
+            $data = $model->getall();
+            $res = tree($data);
+            foreach ((array)$res as $k => $v) {
+                $v['id'] = strval($v['id']);
+            }
+            return json($res);
+        }
+    }
+
+    /**
+     * 工程划分，单元工程管理树
+     * @return \think\response\Json
+     */
+    public function getDivisionTree()
+    {
+        if(request()->isAjax()){
+            $node = new DivisionModel();
+            $nodeStr = $node->getNodeInfo();
+            return json($nodeStr);
+        }
+    }
+
 
     /**
      * 新增或编辑待整理文件
