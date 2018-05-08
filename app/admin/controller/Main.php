@@ -713,19 +713,8 @@ class Main extends Permissions
                     $processinfo[$key]["point_step"] = 0;
                 }
                 $processinfo[$key]["processinfo_list"] = $processinfo_list;
-
             }
 
-//           if(!empty($processinfo))
-//           {
-//               foreach ($processinfo as $a=>$b)
-//               {
-//                   foreach ($b['processinfo_list'] as $c=>$d)
-//                   {
-//
-//                   }
-//               }
-//           }
            return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);
         }
     }
