@@ -221,11 +221,12 @@
     //加载构件树
     var modelId = [];
     $.ajax({
-        url: "{:url('quality/Division/openModelPicture')}",
+        url: "{:url('progress/monthplans/openModelPicture')}",
         type: "post",
         dataType: "json",
         data:{
-            id:window.unitId
+            // id:window.unitId
+            id:1
         },
         success: function (res) {
             primaryId = res.primaryId;
