@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: admin
- * Date: 2018/5/5
- * Time: 17:31
+ * Date: 2018/5/8
+ * Time: 10:52
  */
 /*
  * 档案管理-档案管理-待整理文件
@@ -13,16 +13,16 @@ namespace app\filemanagement\model;
 use think\exception\PDOException;
 use \think\Model;
 
-class Filependingdocuments extends Model
+class FileelectronicModel extends Model
 {
-    protected $name='file_pending_documents';
+    protected $name='file_electronic_file_connection';
 
     /**
-     * 新增整理文件
+     * 新增电子文件挂接
      * @param $param
      * @return array
      */
-    public function insertPd($param)
+    public function insertFe($param)
     {
         try{
             $result = $this->allowField(true)->save($param);
@@ -38,11 +38,11 @@ class Filependingdocuments extends Model
     }
 
     /**
-     * 编辑整理文件
+     * 编辑电子文件挂接
      * @param $param
      * @return array
      */
-    public function editPd($param)
+    public function editFe($param)
     {
         try{
             $result = $this->allowField(true)->save($param,['id' => $param['id']]);
@@ -57,11 +57,11 @@ class Filependingdocuments extends Model
     }
 
     /**
-     * 删除整理文件
+     * 删除电子文件挂接
      * @param $id
      * @return array
      */
-    public function delPd($id)
+    public function delFe($id)
     {
         try{
             $this->where("id",$id)->delete();
@@ -72,7 +72,7 @@ class Filependingdocuments extends Model
     }
 
     /**
-     * 获取一条整理文件信息
+     * 获取一条电子文件挂接
      * @param $id
      * @throws \think\exception\DbException
      */

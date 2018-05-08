@@ -69,4 +69,13 @@ class DocumentTypeModel extends Model
         }
         return $nodeArray;
     }
+
+    /**
+     * 获取文档管理表下的全部数据
+     * @return false|\PDOStatement|string|\think\Collection
+     */
+    public function getall()
+    {
+        return $this->select();
+    }
 }

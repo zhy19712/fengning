@@ -674,7 +674,6 @@ class Main extends Permissions
             //实例化模型类
             $model =  new PictureModel();
             $picture_number = input('post.picture_number');
-            $picture_number = 12;
 
             /*******基本信息**********/
             $unit_info = $model->getUnitInfo($picture_number);
