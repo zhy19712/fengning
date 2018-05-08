@@ -596,6 +596,12 @@ class Main extends Permissions
         return $this->fetch('manage');
     }
 
+    //查看控制点页面
+    public function controll()
+    {
+        return $this->fetch('controll');
+    }
+
     /**
      * 管理3D-统计未验评、优良、合格
      * @return mixed
