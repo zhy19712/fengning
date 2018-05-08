@@ -39,6 +39,10 @@ class Monthplans extends Permissions
     {
         return $this->fetch();
     }
+    public function progress()
+    {
+        return $this->fetch();
+    }
 
 
     /**********************************月度计划************************/
