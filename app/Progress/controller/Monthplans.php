@@ -222,7 +222,7 @@ class Monthplans extends Permissions
 
                 $unit_data = Db::name('monthplan_unit')
                     ->where('id', $reid)
-                    ->field('start_date,completion_date,type，wbs_no')
+                    ->field('start_date,completion_date,type,wbs_no')
                     ->select();
 
 
