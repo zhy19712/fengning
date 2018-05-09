@@ -190,7 +190,7 @@
                             }
                             qualityTableTemplate.push('<td class="bg">'+ form_list[j].form_name +'</td>');
                             qualityTableTemplate.push('<td>');
-                            qualityTableTemplate.push('<i class="fa fa-eye faEye"></i>');
+                            qualityTableTemplate.push('<i class="fa fa-eye faEye" onclick="seeOnLine(this)" formId='+ form_list[j].form_id +' cprId='+ form_list[j].cpr_id +'></i>');
                             qualityTableTemplate.push('<i class="fa fa-search" onclick="search(this)" pid='+ res.processinfo[i].pid +' uid='+ form_list[j].division_id +' ></i>');
                             qualityTableTemplate.push('</td>');
                             qualityTableTemplate.push('</tr>');

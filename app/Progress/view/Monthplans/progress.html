@@ -318,8 +318,8 @@
                     //初始化成功的自动加载的东西 （全部加载成功，再执行逻辑）
                     if(CompleteEvent == "LoadMainScene" && retError==0 ){
                         RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
-                        var bimArr;
                         RealBimOcx.SetSuitableCam();//放在初始化设置里面就行了
+
                         $.ajax({
                             url: "{:url('progress/monthplans/modelPictureAllNumber')}",
                             type: "post",
@@ -327,19 +327,66 @@
                                 add_id:488,
                             },
                             success: function (res) {
-                                console.log(res.numberArr);
-                                bimArr = res.numberArr;
-                                RealBimOcx.BatchAddSubClrInfoBegin();//设置模型的颜色的开始
-                                RealBimOcx.SetHugeObjSubValidStateBegin();//设置模型的可见性的开始
+                                console.log(res)
+                                bimArr = res.moduleId;
+                                moduleArr = res.moduleData;
+                                loadModelView(bimArr);                          }
+                        });
+                        //加载全部模型
+                        window.loadModelView = function (bimArr) {
+                            if(bimArr.length == 0){
+                                RealBimOcx.SetAllHugeObjSubValidState(0);
+                            }else if(bimArr.length != 0){
+                                //设置模型的可见性的开始
+                                RealBimOcx.SetHugeObjSubValidStateBegin();
                                 for(var i=0;i<bimArr.length;i++){
-                                    RealBimOcx.AddSubClrPercent(bimArr[i],1,0x80ffa500);//设置当前id模型的颜色
-                                    RealBimOcx.SetHugeObjSubValidStateInfo(bimArr[i], 1);//设置当前id模型的可见性
+                                    var bimObjSubID = bimArr[i];
+                                    RealBimOcx.SetHugeObjSubValidStateInfo(bimObjSubID, 1);//设置当前id模型的可见性
                                 }
-                                RealBimOcx.BatchAddSubClrInfoEnd();//设置模型的颜色的结束
                                 RealBimOcx.SetHugeObjSubValidStateEnd();//设置模型的可见性的结束
 
+                                //设置模型的颜色的开始
+                                RealBimOcx.BatchAddSubClrInfoBegin();
+                                for(var i=0;i<bimArr.length;i++){
+                                    var bimObjSubID = bimArr[i];
+                                    // RealBimOcx.AddSubClrPercent(bimObjSubID,0.7,0xff9df38e);//设置当前id模型的颜色
+                                    RealBimOcx.AddSubClrPercent(bimObjSubID,1,0x8056534c);//设置当前id模型的颜色
+                                }
+                                RealBimOcx.BatchAddSubClrInfoEnd();//设置模型的颜色的结束
                             }
-                        });
+                        };
+                        //获取加载模型时间
+                        window.loadModelViewTime = function (moduleArr) {
+                            if(moduleArr.length == 0){
+                                RealBimOcx.SetAllHugeObjSubValidState(0);
+                            }else if(moduleArr.length != 0){
+                                var strModuleDate;
+                                var endModuleDate;
+                                RealBimOcx.SetHugeObjSubValidStateBegin();//设置模型的可见性的开始
+                                for(var key in moduleArr){
+                                    strModuleDate = moduleArr[key][0].start_date;//取得开始时间
+                                    endModuleDate = moduleArr[key][0].completion_date;//取得结束时间
+                                    // strModuleTime.push(moduleArr[key][0].type);
+                                    // endModuleTime.push(endModuleDate);
+                                    var moduleObjSubID = key;
+                                    RealBimOcx.SetHugeObjSubValidStateInfo(moduleObjSubID, 1);//设置当前id模型的可见性
+                                }
+                                RealBimOcx.SetHugeObjSubValidStateEnd();//设置模型的可见性的结束
+
+                                RealBimOcx.BatchAddSubClrInfoBegin();//设置模型的颜色的开始
+                                for(var key in moduleArr){
+                                    var moduleObjSubID = key;
+                                    if(moduleArr[key][0].type == 0){
+                                        RealBimOcx.AddSubClrPercent(moduleObjSubID,1,0xff56534c);//设置当前id模型的颜色
+                                    }else if(moduleArr[key][0].type == 1){
+                                        RealBimOcx.AddSubClrPercent(moduleObjSubID,1,0xff9df38e);//设置当前id模型的颜色
+                                    }else if(moduleArr[key][0].type == 2){
+                                        RealBimOcx.AddSubClrPercent(moduleObjSubID,1,0xff66a4c9);//设置当前id模型的颜色
+                                    }
+                                }
+                                RealBimOcx.BatchAddSubClrInfoEnd();//设置模型的颜色的结束
+                            }
+                        };
                     }
 
 
@@ -365,21 +412,21 @@
                     // }
                     //加载模型试图
 
-                    window.loadModel = function (number) {
-                        if(number==''){
-                            RealBimOcx.SetAllHugeObjSubValidState(0);
-                        }else{
-                            RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
-                            RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
-                            RealBimOcx.SetHugeObjSubValidStateInfo(number, 1); //设置单个模型可见
-                            RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
-                            RealBimOcx.FocusCameraToComponent(number,1); //3：视角距离
-                            //模型视图闪烁
-                            RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
-                            RealBimOcx.AddFlickerSubObjects(number);
-                            RealBimOcx.SetSubObjFlickerEnd();
-                        }
-                    };
+                    // window.loadModel = function (number) {
+                    //     if(number==''){
+                    //         RealBimOcx.SetAllHugeObjSubValidState(0);
+                    //     }else{
+                    //         RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
+                    //         RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
+                    //         RealBimOcx.SetHugeObjSubValidStateInfo(number, 1); //设置单个模型可见
+                    //         RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
+                    //         RealBimOcx.FocusCameraToComponent(number,1); //3：视角距离
+                    //         //模型视图闪烁
+                    //         RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
+                    //         RealBimOcx.AddFlickerSubObjects(number);
+                    //         RealBimOcx.SetSubObjFlickerEnd();
+                    //     }
+                    // };
 
                     //取消模型闪烁
                     // window.cancelTwinkle = function () {
@@ -432,17 +479,21 @@
 {include file="../app/public/common_footer.html"}
 
 <script>
+    var bimArr = [];//全部的模型中的个别模块id
+    var moduleArr = []; //对应模块和模型的时间
+    // var strModuleTime = [];
+    // var endModuleTime = [];
 
     // 颜色值必须转成16进制
-    // rgb(86, 83, 76) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8056534c);
-    // rgb(157, 243, 142) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x809df38e);
-    // rgb(102, 164, 201) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8066a4c9);
+    // 以建rgb(86, 83, 76) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8056534c);
+    // 在建rgb(157, 243, 142) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x809df38e);
+    // 未建rgb(102, 164, 201) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8066a4c9);
 
     //开始时间
-    var snewYear =2017, sNewMonth =11, strDays =1;
+    var snewYear =2017, sNewMonth =04, strDays =10;
 
     //结束时间
-    var sLaterYear =2017, eLaterMonth =11, eDays =22;
+    var sLaterYear =2017, eLaterMonth =04, eDays =30;
 
     //总步数
     var total;
@@ -547,64 +598,64 @@
     initArr();
     var proWidth = $(".progress").width();
     var fuWidth = $("#fu").width();
-    $(function(){
-        var tag = false,ox = 0,left = 0,bgleft = 0;
-        var tips = 0;
-        $('.progress_btn').mousedown(function(e) {
-            ox = e.pageX - left;
-            tips = e.pageX - left;
-            tag = true;
-        });
-        $(document).mouseup(function() {
-            tag = false;
-        });
-        $('.progress').mousemove(function(e) {
-            if (tag) {
-                ptime = setInterval(function (){
-                    if(rep ==0){
-                        window.clearInterval(ptime);
-                    }else if(rep != 0){
-                        rep +=1;
-                        left = e.pageX - ox;
-                        if (left <= 0) {
-                            left = 0;
-                        }else if (left > proWidth) {
-                            left = proWidth;
-                        }
-                        $('.progress_btn').css('left', left);
-                        $('#leftTipsBtn').css('left', left-44+'px');
-                        $('.progress_bar').width(left);
-                        $('.text').html(parseInt((left/proWidth)*100) + '%');
-                        if(rep == 15){
-                            window.clearInterval(ptime);
-                        }
-                    }
-
-                },1200)
-            }
-        });
-
-        $('.progress_bg').click(function(e) {
-            if(!tag) {
-
-                bgleft = $('.progress_bg').offset().left;
-                left = e.pageX - bgleft;
-
-                if (left <= 0) {
-                    left = 0;
-                }
-
-                if(left > proWidth) {
-                    left = proWidth;
-                }
-
-                $('.progress_btn').css('left', left);
-                $('#leftTipsBtn').css('left', left-44+'px');
-                $('.progress_bar').animate({width:left},proWidth);
-                $('.text').html(parseInt((left/proWidth)*100) + '%');
-            }
-        });
-    });
+    // $(function(){
+    //     var tag = false,ox = 0,left = 0,bgleft = 0;
+    //     var tips = 0;
+    //     $('.progress_btn').mousedown(function(e) {
+    //         ox = e.pageX - left;
+    //         tips = e.pageX - left;
+    //         tag = true;
+    //     });
+    //     $(document).mouseup(function() {
+    //         tag = false;
+    //     });
+    //     $('.progress').mousemove(function(e) {
+    //         if (tag) {
+    //             ptime = setInterval(function (){
+    //                 if(rep ==0){
+    //                     window.clearInterval(ptime);
+    //                 }else if(rep != 0){
+    //                     rep +=1;
+    //                     left = e.pageX - ox;
+    //                     if (left <= 0) {
+    //                         left = 0;
+    //                     }else if (left > proWidth) {
+    //                         left = proWidth;
+    //                     }
+    //                     $('.progress_btn').css('left', left);
+    //                     $('#leftTipsBtn').css('left', left-44+'px');
+    //                     $('.progress_bar').width(left);
+    //                     $('.text').html(parseInt((left/proWidth)*100) + '%');
+    //                     if(rep == 15){
+    //                         window.clearInterval(ptime);
+    //                     }
+    //                 }
+    //
+    //             },1200)
+    //         }
+    //     });
+    //
+    //     $('.progress_bg').click(function(e) {
+    //         if(!tag) {
+    //
+    //             bgleft = $('.progress_bg').offset().left;
+    //             left = e.pageX - bgleft;
+    //
+    //             if (left <= 0) {
+    //                 left = 0;
+    //             }
+    //
+    //             if(left > proWidth) {
+    //                 left = proWidth;
+    //             }
+    //
+    //             $('.progress_btn').css('left', left);
+    //             $('#leftTipsBtn').css('left', left-44+'px');
+    //             $('.progress_bar').animate({width:left},proWidth);
+    //             $('.text').html(parseInt((left/proWidth)*100) + '%');
+    //         }
+    //     });
+    // });
 
     var stime, stimeBackward, stimeForward, times = 1200, backTime = 1200;
 
@@ -622,7 +673,7 @@
         // $(".tipStyleGray").css({"color":"white","background":"darkseagreen"});
         $(".tipStyleGray").css({"display":"none"});
     }
-    
+
     //table联动
     function tableMove(dataRiQi) {
         var days = new Date(dataRiQi).getDay();
@@ -665,6 +716,8 @@
         }
     }
 
+    var dataRiQi;
+    var moduleType = [];
     //开始
     $("#start").click(function () {
         // $("#ad #suspend:before").css("color","#00c0ef");
@@ -679,8 +732,9 @@
             tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
             $(".spanId").text(tipsRep);
             $("#day").text(tipsRep);
-            var dataRiQi = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
+            dataRiQi = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
             tableMove(dataRiQi);
+            loadModelViewTime(moduleArr);
             $("#fu").css("display", "block");
             var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/total) - 2;
             $("#zi").css("width", oleft + "px");
