@@ -152,7 +152,12 @@ class PictureModel extends Model
      */
     public function getProcessInfo($en_type)
     {
-        $processinfo = Db::name("materialtrackingdivision")->field("id,pid,name")->where(["pid"=>$en_type["en_type"],"type"=>3])->select();
+        $processinfo = Db::name("materialtrackingdivision")->alias('a')
+//            ->join('quality_form_info q', 'q.ProcedureId=a.id', 'left')
+            ->where(["pid"=>$en_type["en_type"],"type"=>3])
+//            ->field("a.id,a.pid,a.name,q.id as form_id,q.form_name as form_name")
+            ->field("a.id,a.pid,a.name")
+            ->select();
         return $processinfo;
     }
 
@@ -168,7 +173,7 @@ class PictureModel extends Model
         $processinfo_list = Db::name("quality_division_controlpoint_relation")->alias('a')
             ->join('controlpoint b', 'a.control_id=b.id', 'left')
             ->where($par)
-            ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
+            ->field('a.id as cpr_id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
             ->select();
         return $processinfo_list;
     }

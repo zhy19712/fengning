@@ -199,18 +199,52 @@ class Monthplans extends Permissions
     public function modelPictureAllNumber()
     {
         // 前台 传递 选中的 工程划分 编号 add_id
-        if($this->request->isAjax()){
+        if($this->request->isAjax()) {
             $param = input('param.');
             $add_id = isset($param['add_id']) ? $param['add_id'] : -1;
-            if($add_id == -1){
-                return json(['code' => 0,'msg' => '编号有误']);
+
+            if ($add_id == -1) {
+                return json(['code' => 0, 'msg' => '编号有误']);
             }
-            $id = Db::name('monthplan_unit')->where('monthplan_id',$add_id)->column('id');
+            $id = Db::name('monthplan_unit')->where('monthplan_id', $add_id)->column('id');
+
             // 获取关联的模型图
             $picture = new PictureRelationModel();
-            $data= $picture->getAllNumber($id);
+            $data = $picture->getAllNumber($id);
             $picture_number = $data['picture_number_arr'];
-            return json(['code'=>1,'numberArr'=>$picture_number,'msg'=>'工程划分-模型图编号']);
+            $picture_id = $data['picture_id_arr'];
+            //循环获取工程信息
+            foreach ($picture_id as $k => $value) {
+                $relation = Db::name('progress_model_picture_relation')
+                    ->where('picture_id', $value)
+                    ->field('relevance_id,picture_id')
+                    ->select();
+
+                $reid = $relation[0]['relevance_id'];
+                $pid = $relation[0]['picture_id'] - 1;
+
+                $unit_data = Db::name('monthplan_unit')
+                    ->where('id', $reid)
+                    ->field('start_date,completion_date,type')
+                    ->select();
+
+
+                $moduleData[$pid] = $unit_data;
+
+                //遍历，分别单独取出开始时间和结束时间
+                $startDate[$k] = strtotime($unit_data[0]['start_date']);
+                $completionDate[$k] = strtotime($unit_data[0]['completion_date']);
+
+
+            }
+
+            //合并所有工程（unit）的开始时间和结束时间，并进行比较取出最早时间和最晚时间作为总计划中的开始点和结束点
+            $dateSection = array_merge($startDate, $completionDate);
+            $startPoint = date("Y-m-d", min($dateSection));
+            $completionPoint = date("Y-m-d", max($dateSection));
+
+
+            return json(['code' => 1, 'moduleId' => $picture_number, 'startPoint' => $startPoint, 'completionPoint' => $completionPoint, 'moduleData' => $moduleData, 'msg' => '工程划分-模型图编号']);
         }
     }
 

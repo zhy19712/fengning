@@ -48,6 +48,22 @@
         background: darkseagreen;
         text-align: center;
     }
+    .tipStyleGray{
+        width: 98px;
+        height: 20px;
+        color: #999;
+        background: #e1e4e9;
+        text-align: center;
+    }
+    /*i.fa:before {*/
+        /*color: rgba(230, 230, 230, 1);*/
+    /*}*/
+    /*#ad #start:before {*/
+        /*color: #00c0ef;*/
+    /*}*/
+    /*#ad #backward:before,#ad #suspend:before,#ad #stop:before {*/
+        /*color: rgba(230, 230, 230, 1);*/
+    /*}*/
     #leftTips,#leftTop{
         position: absolute;
         top: -25px;
@@ -59,7 +75,6 @@
         top: -25px;
         right: -36px;
     }
-
     #viewCenter{
         width: 99%;
         height: 85%;
@@ -147,7 +162,6 @@
         border: 1px solid #CED4D6;
         padding: 5px;
     }
-
     #tabob th {
         text-align: center;
         font-weight: bold;
@@ -163,7 +177,6 @@
         text-align: center;
         font-size: 12px;
     }
-
     .rtp {
         font-weight: bold;
         font-size: 12px;
@@ -202,12 +215,13 @@
                     <div id="leftTips" class="tipStyle"><span id="lYear"></span>-<span id="lMonth"></span>-<span class="spanId"></span></div>
                 </div>
                 <div id="leftTop" class="tipStyle"><span class="lYear"></span>-<span class="lMonth"></span>-<span id="rKai"></span></div>
-                <div id="rightTips" class="tipStyle"><span id="endYear"></span>-<span id="endMonth"></span>-<span id="rjie"></span></div>
+                <div id="rightTips" class="tipStyleGray"><span id="endYear"></span>-<span id="endMonth"></span>-<span id="reDays"></span></div>
             </div>
             <div id="ad" style="margin-bottom: 40px">
                 <i title="快退" id="backward" class="fa fa-fast-backward"></i>
                 <i title="开始" id="start" class="fa fa-play"></i>
                 <i title="暂停" id="suspend" class="fa fa-pause" style="display: none"></i>
+                <i title="停止" id="stop" class="fa fa-stop"></i>
                 <i title="快进" id="forward" class="fa fa-fast-forward"></i>
                 <i title="关闭页面" id="close" class="fa fa-arrow-up"></i>
             </div>
@@ -215,10 +229,10 @@
         <div id="viewCenter">
             <div id="viewLeft">
                 <script language="javascript" for="RealBimOcx" EVENT="OnCurSelModelChanged(strObjName, uObjSubID,   fObjSelX, fObjSelY, fObjSelZ,  fObjBVMinX,fObjBVMinY,fObjBVMinZ,  fObjBVMaxX,fObjBVMaxY,fObjBVMaxZ)" type="text/javascript">
+                    //点击模型上面的 改变事件都写到里面
 
                     // if(window.console && console.log){ console.log(uObjSubID); }
                     // console.dir(uObjSubID);
-
                     /*var node = [];
                     var treeObj = $.fn.zTree.getZTreeObj("ztree");
                     var nodes = treeObj.transformToArray(treeObj.getNodes());
@@ -300,12 +314,81 @@
                 </script>
 
                 <script language="javascript" for="RealBimOcx" EVENT="WorkCompleteNotification(CompleteEvent,retError)" type="text/javascript">
+
+                    //初始化成功的自动加载的东西 （全部加载成功，再执行逻辑）
                     if(CompleteEvent == "LoadMainScene" && retError==0 ){
-                        RealBimOcx.SetAllHugeObjSubValidState(1);
-                        //RealBimOcx.SetSceHugeObjVisible(false);
+                        RealBimOcx.SetAllHugeObjSubValidState(0); //全部不显示
+                        RealBimOcx.SetSuitableCam();//放在初始化设置里面就行了
+
+                        $.ajax({
+                            url: "{:url('progress/monthplans/modelPictureAllNumber')}",
+                            type: "post",
+                            data: {
+                                add_id:488,
+                            },
+                            success: function (res) {
+                                console.log(res)
+                                bimArr = res.moduleId;
+                                moduleArr = res.moduleData;
+                                loadModelView(bimArr);                          }
+                        });
+                        //加载全部模型
+                        window.loadModelView = function (bimArr) {
+                            if(bimArr.length == 0){
+                                RealBimOcx.SetAllHugeObjSubValidState(0);
+                            }else if(bimArr.length != 0){
+                                //设置模型的可见性的开始
+                                RealBimOcx.SetHugeObjSubValidStateBegin();
+                                for(var i=0;i<bimArr.length;i++){
+                                    var bimObjSubID = bimArr[i];
+                                    RealBimOcx.SetHugeObjSubValidStateInfo(bimObjSubID, 1);//设置当前id模型的可见性
+                                }
+                                RealBimOcx.SetHugeObjSubValidStateEnd();//设置模型的可见性的结束
+
+                                //设置模型的颜色的开始
+                                RealBimOcx.BatchAddSubClrInfoBegin();
+                                for(var i=0;i<bimArr.length;i++){
+                                    var bimObjSubID = bimArr[i];
+                                    // RealBimOcx.AddSubClrPercent(bimObjSubID,0.7,0xff9df38e);//设置当前id模型的颜色
+                                    RealBimOcx.AddSubClrPercent(bimObjSubID,1,0x8056534c);//设置当前id模型的颜色
+                                }
+                                RealBimOcx.BatchAddSubClrInfoEnd();//设置模型的颜色的结束
+                            }
+                        };
+                        //获取加载模型时间
+                        window.loadModelViewTime = function (moduleArr) {
+                            if(moduleArr.length == 0){
+                                RealBimOcx.SetAllHugeObjSubValidState(0);
+                            }else if(moduleArr.length != 0){
+                                var strModuleDate;
+                                var endModuleDate;
+                                RealBimOcx.SetHugeObjSubValidStateBegin();//设置模型的可见性的开始
+                                for(var key in moduleArr){
+                                    strModuleDate = moduleArr[key][0].start_date;//取得开始时间
+                                    endModuleDate = moduleArr[key][0].completion_date;//取得结束时间
+                                    // strModuleTime.push(moduleArr[key][0].type);
+                                    // endModuleTime.push(endModuleDate);
+                                    var moduleObjSubID = key;
+                                    RealBimOcx.SetHugeObjSubValidStateInfo(moduleObjSubID, 1);//设置当前id模型的可见性
+                                }
+                                RealBimOcx.SetHugeObjSubValidStateEnd();//设置模型的可见性的结束
+
+                                RealBimOcx.BatchAddSubClrInfoBegin();//设置模型的颜色的开始
+                                for(var key in moduleArr){
+                                    var moduleObjSubID = key;
+                                    if(moduleArr[key][0].type == 0){
+                                        RealBimOcx.AddSubClrPercent(moduleObjSubID,1,0xff56534c);//设置当前id模型的颜色
+                                    }else if(moduleArr[key][0].type == 1){
+                                        RealBimOcx.AddSubClrPercent(moduleObjSubID,1,0xff9df38e);//设置当前id模型的颜色
+                                    }else if(moduleArr[key][0].type == 2){
+                                        RealBimOcx.AddSubClrPercent(moduleObjSubID,1,0xff66a4c9);//设置当前id模型的颜色
+                                    }
+                                }
+                                RealBimOcx.BatchAddSubClrInfoEnd();//设置模型的颜色的结束
+                            }
+                        };
                     }
 
-                    RealBimOcx.SetSuitableCam();//放在初始化设置里面就行了
 
                     // var unitId = document.cookie.split(';')[0].split('=')[1];
                     //保存关联模型
@@ -328,22 +411,22 @@
                     //     })
                     // }
                     //加载模型试图
-                    window.loadModel = function (number) {
-                        if(number==''){
-                            RealBimOcx.SetAllHugeObjSubValidState(0);
-                        }else{
-                            RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
-                            RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
-                            RealBimOcx.SetHugeObjSubValidStateInfo(number, 1); //设置单个模型可见
-                            RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
-                            RealBimOcx.FocusCameraToComponent(number,1); //3：视角距离
-                            //模型视图闪烁
-                            RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
-                            RealBimOcx.AddFlickerSubObjects(number);
-                            RealBimOcx.SetSubObjFlickerEnd();
-                        }
-                    };
-                    // loadModel(17)
+
+                    // window.loadModel = function (number) {
+                    //     if(number==''){
+                    //         RealBimOcx.SetAllHugeObjSubValidState(0);
+                    //     }else{
+                    //         RealBimOcx.SetAllHugeObjSubValidState(0);   //设置模型全部不可见
+                    //         RealBimOcx.SetHugeObjSubValidStateBegin();  //启用模型可见
+                    //         RealBimOcx.SetHugeObjSubValidStateInfo(number, 1); //设置单个模型可见
+                    //         RealBimOcx.SetHugeObjSubValidStateEnd();   //停用模型可见
+                    //         RealBimOcx.FocusCameraToComponent(number,1); //3：视角距离
+                    //         //模型视图闪烁
+                    //         RealBimOcx.SetSubObjFlickerBegin(3,500,255,255,0xffffff,255,255,0x80ff0000);
+                    //         RealBimOcx.AddFlickerSubObjects(number);
+                    //         RealBimOcx.SetSubObjFlickerEnd();
+                    //     }
+                    // };
 
                     //取消模型闪烁
                     // window.cancelTwinkle = function () {
@@ -353,6 +436,7 @@
                     //FlickerInterval：闪烁时间间隔
                     //Alpha0，AlphaAmp0，RGBBlendInfo0，Alpha1，AlphaAmp1，RGBBlendInfo1：两种闪烁状态的透明度，透明度混合系数，以及颜色和颜色混合系数，与AddSubClrInfo()的后三个参数用法相同
                     // void SetSubObjFlickerBegin(LONG FlickerSwitchTimes,LONG FlickerInterval, BYTE Alpha0, BYTE AlphaAmp0, ULONG RGBBlendInfo0, BYTE Alpha1, BYTE AlphaAmp1, ULONG RGBBlendInfo1);
+
                 </script>
 
             </div>
@@ -395,109 +479,183 @@
 {include file="../app/public/common_footer.html"}
 
 <script>
+    var bimArr = [];//全部的模型中的个别模块id
+    var moduleArr = []; //对应模块和模型的时间
+    // var strModuleTime = [];
+    // var endModuleTime = [];
 
-    var kai =01;
-    var jie =30;
-    var year =2017;
-    var month =11;
-    var day =15;
+    // 颜色值必须转成16进制
+    // 以建rgb(86, 83, 76) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8056534c);
+    // 在建rgb(157, 243, 142) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x809df38e);
+    // 未建rgb(102, 164, 201) ===> RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x8066a4c9);
 
-    $("#rKai").text(kai);
-    $("#rjie").text(jie);
-    $("#lYear").text(year);
-    $(".lYear").text(year);
-    $("#lMonth").text(month);
-    $(".lMonth").text(month);
-    $("#endYear").text(year);
-    $("#endMonth").text(month);
-    $("#day").text(kai);
-    $(".spanId").text(kai);
+    //开始时间
+    var snewYear =2017, sNewMonth =04, strDays =10;
+
+    //结束时间
+    var sLaterYear =2017, eLaterMonth =04, eDays =30;
+
+    //总步数
+    var total;
+
+    var ss = strDays;
+    ss = ss < 10 ? '0' + ss : ss;
+    var ee = eDays;
+    ee = ee < 10 ? '0' + ee : ee;
+    //开始日期
+    var startDate = snewYear+'-'+sNewMonth+'-'+ss;
+
+    //结束的日期
+    var endDate = sLaterYear+'-'+eLaterMonth+'-'+ee;
+
+    //开始的步数
+    var rep = strDays;
+
+    var ptime;
+
+    $("#rKai").text(strDays);
+    $("#reDays").text(eDays);
+    $("#lYear").text(snewYear);
+    $("#lMonth").text(sNewMonth);
+    //开始的时间
+    $(".lYear").text(snewYear);
+    $(".lMonth").text(sNewMonth);
+    //结束的时间
+    $("#endYear").text(sLaterYear);
+    $("#endMonth").text(eLaterMonth);
+    //动的与静止的天
+    $("#day").text(strDays);
+    $(".spanId").text(strDays);
+
+    //判断整个工期是不是在同一个月
+    if(sNewMonth == eLaterMonth){
+        total = eDays - strDays;
+    }else if(sNewMonth != eLaterMonth){
+        if(sNewMonth == 1 || sNewMonth == 3 || sNewMonth == 5 || sNewMonth == 7 || sNewMonth == 8 || sNewMonth == 10 || sNewMonth == 12 ){
+            var strRepDay = 31-strDays;
+            var endRepDay = eDays;
+            total  = strRepDay + endRepDay;
+            if(rep>=32){
+                rep = 1;
+                $("#lMonth").text(sNewMonth+1);
+            }
+        }
+        if(sNewMonth == 4 || sNewMonth == 6 || sNewMonth == 9 || sNewMonth == 11){
+            var strRepDay = 31-strDays;
+            var endRepDay = eDays;
+            total  = strRepDay + endRepDay;
+            if(rep>=31){
+                rep = 1;
+                $("#lMonth").text(sNewMonth+1);
+            }
+        }
+        if(sNewMonth == 2){
+            var strRepDay = 31-strDays;
+            var endRepDay = eDays;
+            total  = strRepDay + endRepDay;
+            if(rep>=29){
+                rep = 1;
+                $("#lMonth").text(sNewMonth+1);
+            }
+        }
+    }
 
     var arr = [
-        {"id":"1","wbs":"1.1", "jihua":"2017-10-23", "jieshu":"2017-11-05"},
-        {"id":"2","wbs":"1.2", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"3","wbs":"1.3", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"4","wbs":"1.4", "jihua":"2017-11-10", "jieshu":"2017-11-22"},
-        {"id":"5","wbs":"2.1", "jihua":"2017-10-28", "jieshu":"2017-11-03"},
-        {"id":"6","wbs":"2.2", "jihua":"2017-11-01", "jieshu":"2017-11-05"},
-        {"id":"7","wbs":"2.3", "jihua":"2017-11-06", "jieshu":"2017-11-22"},
-        {"id":"8","wbs":"3.1", "jihua":"2017-11-05", "jieshu":"2017-11-11"},
-        {"id":"9","wbs":"3.2", "jihua":"2017-11-12", "jieshu":"2017-11-18"},
-        {"id":"10","wbs":"3.3", "jihua":"2017-11-01", "jieshu":"2017-11-07"},
-        {"id":"11","wbs":"4.1", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
-        {"id":"12","wbs":"5.1", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"13","wbs":"6.1", "jihua":"2017-11-01", "jieshu":"2017-11-07"},
-        {"id":"14","wbs":"6.2", "jihua":"2017-11-08", "jieshu":"2017-11-15"},
-        {"id":"15","wbs":"6.3", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"16","wbs":"7.1", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
-        {"id":"17","wbs":"7.2", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
-        {"id":"18","wbs":"7.3", "jihua":"2017-10-28", "jieshu":"2017-11-22"},
-        {"id":"19","wbs":"8.1", "jihua":"2017-10-23", "jieshu":"2017-11-22"},
-        {"id":"20","wbs":"8.2", "jihua":"2017-11-01", "jieshu":"2017-11-22"}
-    ]
-
-    var ptime, rep =0, dataTime;
-
+        {"id":"1","wbs":"1.1", "jihua":"2017-10-23", "eDaysshu":"2017-11-05"},
+        {"id":"2","wbs":"1.2", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"3","wbs":"1.3", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"4","wbs":"1.4", "jihua":"2017-11-10", "eDaysshu":"2017-11-22"},
+        {"id":"5","wbs":"2.1", "jihua":"2017-10-28", "eDaysshu":"2017-11-03"},
+        {"id":"6","wbs":"2.2", "jihua":"2017-11-01", "eDaysshu":"2017-11-05"},
+        {"id":"7","wbs":"2.3", "jihua":"2017-11-06", "eDaysshu":"2017-11-22"},
+        {"id":"8","wbs":"3.1", "jihua":"2017-11-05", "eDaysshu":"2017-11-11"},
+        {"id":"9","wbs":"3.2", "jihua":"2017-11-12", "eDaysshu":"2017-11-18"},
+        {"id":"10","wbs":"3.3", "jihua":"2017-11-01", "eDaysshu":"2017-11-07"},
+        {"id":"11","wbs":"4.1", "jihua":"2017-10-28", "eDaysshu":"2017-11-22"},
+        {"id":"12","wbs":"5.1", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"13","wbs":"6.1", "jihua":"2017-11-01", "eDaysshu":"2017-11-07"},
+        {"id":"14","wbs":"6.2", "jihua":"2017-11-08", "eDaysshu":"2017-11-15"},
+        {"id":"15","wbs":"6.3", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"16","wbs":"7.1", "jihua":"2017-10-28", "eDaysshu":"2017-11-22"},
+        {"id":"17","wbs":"7.2", "jihua":"2017-10-28", "eDaysshu":"2017-11-22"},
+        {"id":"18","wbs":"7.3", "jihua":"2017-10-28", "eDaysshu":"2017-11-22"},
+        {"id":"19","wbs":"8.1", "jihua":"2017-10-23", "eDaysshu":"2017-11-22"},
+        {"id":"20","wbs":"8.2", "jihua":"2017-11-01", "eDaysshu":"2017-11-22"}
+    ];
+    //初始化表格
+    function initArr(){
+        $("#tabob tbody").html('');
+        var str = '';
+        for(var i=0;i<arr.length;i++){
+            str+="<tr class='trId'"+arr[i].id+">\n" +
+                "    <td>"+arr[i].wbs+"</td>\n" +
+                "    <td>"+arr[i].jihua+"</td>\n" +
+                "    <td id='"+arr[i].eDaysshu+"'>"+arr[i].eDaysshu+"</td>\n" +
+                "</tr>"
+        }
+        $("#tabob tbody").append(str);
+    }
+    initArr();
     var proWidth = $(".progress").width();
     var fuWidth = $("#fu").width();
-    $(function(){
-        var tag = false,ox = 0,left = 0,bgleft = 0;
-        var tips = 0;
-        $('.progress_btn').mousedown(function(e) {
-            ox = e.pageX - left;
-            tips = e.pageX - left;
-            tag = true;
-        });
-        $(document).mouseup(function() {
-            tag = false;
-        });
-        $('.progress').mousemove(function(e) {
-            if (tag) {
-                ptime = setInterval(function (){
-                    if(rep ==0){
-                        window.clearInterval(ptime);
-                    }else if(rep != 0){
-                        rep +=1;
-                        left = e.pageX - ox;
-                        if (left <= 0) {
-                            left = 0;
-                        }else if (left > proWidth) {
-                            left = proWidth;
-                        }
-                        $('.progress_btn').css('left', left);
-                        $('#leftTipsBtn').css('left', left-44+'px');
-                        $('.progress_bar').width(left);
-                        $('.text').html(parseInt((left/proWidth)*100) + '%');
-                        if(rep == 15){
-                            window.clearInterval(ptime);
-                        }
-                    }
-
-                },1200)
-            }
-        });
-
-        $('.progress_bg').click(function(e) {
-            if(!tag) {
-
-                bgleft = $('.progress_bg').offset().left;
-                left = e.pageX - bgleft;
-
-                if (left <= 0) {
-                    left = 0;
-                }
-
-                if(left > proWidth) {
-                    left = proWidth;
-                }
-
-                $('.progress_btn').css('left', left);
-                $('#leftTipsBtn').css('left', left-44+'px');
-                $('.progress_bar').animate({width:left},proWidth);
-                $('.text').html(parseInt((left/proWidth)*100) + '%');
-            }
-        });
-    });
+    // $(function(){
+    //     var tag = false,ox = 0,left = 0,bgleft = 0;
+    //     var tips = 0;
+    //     $('.progress_btn').mousedown(function(e) {
+    //         ox = e.pageX - left;
+    //         tips = e.pageX - left;
+    //         tag = true;
+    //     });
+    //     $(document).mouseup(function() {
+    //         tag = false;
+    //     });
+    //     $('.progress').mousemove(function(e) {
+    //         if (tag) {
+    //             ptime = setInterval(function (){
+    //                 if(rep ==0){
+    //                     window.clearInterval(ptime);
+    //                 }else if(rep != 0){
+    //                     rep +=1;
+    //                     left = e.pageX - ox;
+    //                     if (left <= 0) {
+    //                         left = 0;
+    //                     }else if (left > proWidth) {
+    //                         left = proWidth;
+    //                     }
+    //                     $('.progress_btn').css('left', left);
+    //                     $('#leftTipsBtn').css('left', left-44+'px');
+    //                     $('.progress_bar').width(left);
+    //                     $('.text').html(parseInt((left/proWidth)*100) + '%');
+    //                     if(rep == 15){
+    //                         window.clearInterval(ptime);
+    //                     }
+    //                 }
+    //
+    //             },1200)
+    //         }
+    //     });
+    //
+    //     $('.progress_bg').click(function(e) {
+    //         if(!tag) {
+    //
+    //             bgleft = $('.progress_bg').offset().left;
+    //             left = e.pageX - bgleft;
+    //
+    //             if (left <= 0) {
+    //                 left = 0;
+    //             }
+    //
+    //             if(left > proWidth) {
+    //                 left = proWidth;
+    //             }
+    //
+    //             $('.progress_btn').css('left', left);
+    //             $('#leftTipsBtn').css('left', left-44+'px');
+    //             $('.progress_bar').animate({width:left},proWidth);
+    //             $('.text').html(parseInt((left/proWidth)*100) + '%');
+    //         }
+    //     });
+    // });
 
     var stime, stimeBackward, stimeForward, times = 1200, backTime = 1200;
 
@@ -512,19 +670,57 @@
     function cleanSupElement() {
         cleanSupTime();
         $("#start").css("display","inline-block").siblings("#suspend").css("display","none");
+        // $(".tipStyleGray").css({"color":"white","background":"darkseagreen"});
+        $(".tipStyleGray").css({"display":"none"});
     }
 
+    //table联动
+    function tableMove(dataRiQi) {
+        var days = new Date(dataRiQi).getDay();
+        switch (days) {
+            case 0:
+                $("#weekinfo").html("星期日");
+                break;
+            case 1:
+                $("#weekinfo").html("星期一");
+                break;
+            case 2:
+                $("#weekinfo").html("星期二");
+                break;
+            case 3:
+                $("#weekinfo").html("星期三");
+                break;
+            case 4:
+                $("#weekinfo").html("星期四");
+                break;
+            case 5:
+                $("#weekinfo").html("星期五");
+                break;
+            case 6:
+                $("#weekinfo").html("星期六");
+                break;
+        }
+        try{
+            var idx = [];
+            $("#tabob tbody tr").each(function (index,item) {
+                var text = $(item).find("td:last-child").text();
+                if(text == dataRiQi ){
+                    idx.push(dataRiQi);
+                }
+            });
+            idx.forEach(function (item,index) {
+                $("#"+item).parents("tr").remove();
+            })
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    var dataRiQi;
+    var moduleType = [];
     //开始
     $("#start").click(function () {
-        var str = '';
-        for(var i=0;i<arr.length;i++){
-            str+="<tr class='trId'"+arr[i].id+">\n" +
-                "    <td>"+arr[i].wbs+"</td>\n" +
-                "    <td>"+arr[i].jihua+"</td>\n" +
-                "    <td id='"+arr[i].jieshu+"'>"+arr[i].jieshu+"</td>\n" +
-                "</tr>"
-        }
-        $("#tabob tbody").append(str);
+        // $("#ad #suspend:before").css("color","#00c0ef");
         //开始
         $("#viewLeft").css("width","85%");
         $("#viewRight").css("display","block");
@@ -536,60 +732,20 @@
             tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
             $(".spanId").text(tipsRep);
             $("#day").text(tipsRep);
-            var date111 = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
-            var days = new Date(date111).getDay();
-            switch (days) {
-                case 0:
-                    $("#weekinfo").html("星期日");
-                    break;
-                case 1:
-                    $("#weekinfo").html("星期一");
-                    break;
-                case 2:
-                    $("#weekinfo").html("星期二");
-                    break;
-                case 3:
-                    $("#weekinfo").html("星期三");
-                    break;
-                case 4:
-                    $("#weekinfo").html("星期四");
-                    break;
-                case 5:
-                    $("#weekinfo").html("星期五");
-                    break;
-                case 6:
-                    $("#weekinfo").html("星期六");
-                    break;
-            }
-            try{
-                var idx = [];
-                console.log(date111);
-                $("#tabob tbody tr").each(function (index,item) {
-                    var text = $(item).find("td:last-child").text();
-                    if(text == date111 ){
-                        idx.push(date111);
-                    }
-                });
-                idx.forEach(function (item,index) {
-                    $("#"+item).parents("tr").remove();
-                })
-            }catch(err){
-                console.log(err)
-            }
-
+            dataRiQi = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
+            tableMove(dataRiQi);
+            loadModelViewTime(moduleArr);
             $("#fu").css("display", "block");
-            // var oleft = $("#zi")[0].offsetWidth + 96;
-            var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 2;
-            // console.log(oleft)
-            // console.log($("#fu").width())
-            var ob = oleft / $("#fu")[0].offsetWidth;
+            var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/total) - 2;
             $("#zi").css("width", oleft + "px");
             $("#leftTips").css("left", oleft-35 + "px");
-            if (rep == jie) {
+            if (dataRiQi == endDate) {
                 cleanSupElement();
             }
         },1200)
-        if (rep == jie) {
+        //走的结束时间
+        var implementDate = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+$(".spanId").text();
+        if (implementDate == endDate) {
             cleanSupElement();
         }
     });
@@ -598,6 +754,16 @@
     $("#suspend").click(function () {
         $("#start").css("display","inline-block").siblings("#suspend").css("display","none");
         cleanSupTime();
+    });
+
+    //停止
+    $("#stop").click(function () {
+        $("#start").css("display","inline-block").siblings("#suspend").css("display","none");
+        cleanSupTime();
+        $("#zi").css("width", "2px");
+        $("#leftTips").css("left","-35px");
+        rep = strDays;
+        $(".tipStyleGray").css({"display":"block"});
     });
 
     //快退
@@ -616,11 +782,11 @@
                 tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
                 $(".spanId").text(tipsRep-1);
                 $("#fu").css("display", "block");
-                var oleft = $("#zi")[0].offsetWidth - Math.round(fuWidth/jie) - 2.5;
-                var ob = oleft / $("#fu")[0].offsetWidth;
+                var startRep = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
+                var oleft = $("#zi")[0].offsetWidth - Math.round(fuWidth/total) - 2.5;
                 $("#zi").css("width", oleft + "px");
                 $("#leftTips").css("left", oleft-35 + "px");
-                if (rep == 0) {
+                if (startRep == endDate) {
                     cleanSupElement();
                 }
             },backTime)
@@ -642,11 +808,13 @@
                 var tipsRep = rep;
                 tipsRep = tipsRep < 10 ? '0' + tipsRep : tipsRep;
                 $(".spanId").text(tipsRep);
+                var startRep = $("#lYear").text()+"-"+$("#lMonth").text()+"-"+tipsRep;
+                tableMove(startRep);
                 $("#fu").css("display", "block");
-                var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/jie) - 1.7;
+                var oleft = $("#zi")[0].offsetWidth + Math.round(fuWidth/total) - 1.7;
                 $("#zi").css("width", oleft + "px");
                 $("#leftTips").css("left", oleft-35 + "px");
-                if (rep == jie) {
+                if (startRep == endDate) {
                     cleanSupElement();
                 }
             },times)
@@ -678,144 +846,9 @@
         success: function (res) {
             primaryId = res.primaryId;
             //转换节点数据
-            var nodes = JSON.parse(res.data)
-            setZtree(nodes);
+            var nodes = JSON.parse(res.data);
         }
     });
 
-    //构建构件树
-    function setZtree(nodes) {
-        var setting = {
-            check: {
-                enable: true
-            },
-            data: {
-                simpleData: {
-                    enable: true,
-                    idKey: "id",
-                    pIdKey: "pId"
-                }
-            },
-            view:{
-                selectedMulti: false
-            },
-            callback:{
-                onCheck: zTreeOnCheck,
-                onClick: zTreeOnClick
-            },
-            showLine:true,
-            showTitle:true,
-            showIcon:true
-        };
-
-        zTreeObj = $.fn.zTree.init($("#ztree"), setting, nodes);
-        echoRelation();
-    }
-
-    //回显已关联节点
-    function echoRelation() {
-        //初始化后的调用就不用全局获取
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        // console.log(!treeObj)
-        if(!treeObj){
-            return false;
-        }
-        var checkedNode = treeObj.getNodeByParam('picture_id',primaryId);
-        treeObj.checkNode(checkedNode,true,false);
-        // console.log(checkedNode);
-    }
-    echoRelation();
-
-    //加载模型视图
-    function zTreeOnCheck(event, treeId, treeNode) {
-        console.log(treeNode);
-        picture_id = treeNode.picture_id;
-        //勾选定位模型
-        /*if(treeNode.checked){
-            loadModel(treeNode.add_id);
-        }*/
-        // 一对多
-        /*var node = [];
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        var nodes = treeObj.getCheckedNodes(true);
-        for(var i = 0;i<nodes.length;i++){
-            if(nodes[i].isParent==undefined||nodes[i].isParent==false){
-                node.push(nodes[i]);
-            }
-        }
-        creatSelectedZtree(node);*/
-
-        // 一对一
-        var node = [];
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        var checkedNodes = treeObj.getCheckedNodes(true);
-        for(var i = 0;i<checkedNodes.length;i++){
-            treeObj.checkNode(checkedNodes[i],false,false);
-        }
-        node.push(treeNode);
-        treeObj.checkNode(treeNode,true,false);
-        creatSelectedZtree(node);
-    }
-
-    //构建已选构件树
-    window.creatSelectedZtree = function (node,uObjSubID) {
-        var setting = {
-            data: {
-                simpleData: {
-                    enable: true,
-                    idKey: "id",
-                    pIdKey: "pId"
-                }
-            },
-            view:{
-                selectedMulti: false
-            },
-            callback:{
-                onClick: function (event, treeId, treeNode) {
-                    zTreeOnClick(event, treeId, treeNode);
-                }
-            },
-            showLine:true,
-            showTitle:true,
-            showIcon:true
-        };
-        zTreeObj = $.fn.zTree.init($("#selectZtree"), setting, node);
-        var checkedNodes = zTreeObj.getCheckedNodes(true);
-        $('#selectCount').text(checkedNodes.length);
-    }
-
-    //选中关联节点及加载模型视图
-    function zTreeOnClick(event, treeId, treeNode) {
-        var number = treeNode.picture_number;
-        var treeObj = $.fn.zTree.getZTreeObj("ztree");
-        var nodes = treeObj.getNodesByParam("id",treeNode.id);
-        treeObj.selectNode(nodes[0],true);
-        loadModel(number);
-    }
-
-    $('#save').click(function () {
-        saveModel(picture_id);
-    });
-
-    $('#close').click(function () {
-        window.close();
-    });
-
-    //搜索模型
-    $('#search').click(function () {
-        var inputModelName = $('#modelName').val();
-        var modelName = $.trim(inputModelName);
-        $.ajax({
-            url: "",
-            type: "post",
-            data: {
-                modelName:modelName
-            },
-            dataType: "json",
-            success: function (res) {
-
-            }
-        })
-    });
 </script>
 </html>

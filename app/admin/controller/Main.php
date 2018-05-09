@@ -596,6 +596,12 @@ class Main extends Permissions
         return $this->fetch('manage');
     }
 
+    //查看控制点页面
+    public function controll()
+    {
+        return $this->fetch('controll');
+    }
+
     /**
      * 管理3D-统计未验评、优良、合格
      * @return mixed
@@ -705,15 +711,33 @@ class Main extends Permissions
                 $par['a.division_id'] = $en_type["division_id"];//488
                 $par["a.ma_division_id"] = $val["id"];//63 64 65 66 67
                 $processinfo_list = $model->getProcessInfoList($par);
+
+
                 if(empty($processinfo_list))
                 {
                     $processinfo[$key]["point_step"] = 1;
                 }else
                 {
                     $processinfo[$key]["point_step"] = 0;
+
                 }
-                $processinfo[$key]["processinfo_list"] = $processinfo_list;
+
+//                $processinfo[$key]["processinfo_list"] = $processinfo_list;
+                $form_list = Db::name("quality_form_info")->field("id as form_id,form_name,DivisionId as division_id,ProcedureId as ma_division_id,ControlPointId as control_id")->where("ProcedureId",$val["id"])->select();
+
+                foreach($form_list as $a=>$b)
+                {
+                    //cpr_id为control_point中的id
+                    $cpr_id = Db::name("quality_division_controlpoint_relation")->field("id as cpr_id")
+                        ->where(["division_id"=>$b["division_id"],"ma_division_id"=>$b["ma_division_id"],"control_id"=>$b["control_id"],"type"=>1])->find();
+                    $form_list[$a]["cpr_id"] = $cpr_id["cpr_id"];
+
+                }
+
+                $processinfo[$key]["form_list"] = $form_list;
             }
+
+
 
            return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);
         }

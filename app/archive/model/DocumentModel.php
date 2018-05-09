@@ -88,6 +88,15 @@ Class DocumentModel extends Model
         }
         return false;
     }
+
+    /**
+     * 获取一条信息
+     */
+    public function getOne($id)
+    {
+        $data = $this->where('id', $id)->find();
+        return $data;
+    }
 }
 
 Class DocumentAttachment extends Model
