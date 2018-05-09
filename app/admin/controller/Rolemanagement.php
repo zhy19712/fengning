@@ -383,7 +383,7 @@ class Rolemanagement extends Permissions
                         $info['cate']['permissions'] = explode(',', $info['cate']['permissions']);
                     }
                     //查询所有的菜单选项
-                    $menus = Db::name('admin_menu')->select();
+                    $menus = Db::name('admin_menu')->field("id,name,pid")->select();
 
                     //所有的树节点
                     $all_point = tree($menus);
@@ -395,7 +395,7 @@ class Rolemanagement extends Permissions
 //                return $this->fetch();
                 }
             } else {
-                $menus = Db::name('admin_menu')->select();
+                $menus = Db::name('admin_menu')->field("id,name,pid")->select();
                 $all_point = tree($menus);
 
                 return json(["code" => 1, "all_point" => $all_point]);
