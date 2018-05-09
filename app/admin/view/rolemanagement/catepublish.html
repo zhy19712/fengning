@@ -106,12 +106,14 @@
         callback:{
           onAsyncSuccess:function () {
             if(!selectArr||selectArr.length==0){
+              zTreeObj.expandAll(true);
               return;
             }
             $.each(selectArr, function (i, item) {
               var node = zTreeObj.getNodeByParam("id", item);
               zTreeObj.checkNode(node, true, false);
             });
+            zTreeObj.expandAll(true);
           }
         }
       };
