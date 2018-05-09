@@ -63,14 +63,11 @@ class Monthplans extends Permissions
     }
 
 
-
     public function getalldata()
     {
         if(request()->isAjax()){
 
             return $this->datatablesPre();
-
-
         }
     }
 
@@ -225,7 +222,7 @@ class Monthplans extends Permissions
 
                 $unit_data = Db::name('monthplan_unit')
                     ->where('id', $reid)
-                    ->field('start_date,completion_date,type')
+                    ->field('start_date,completion_date,type，wbs_no')
                     ->select();
 
 
@@ -238,7 +235,7 @@ class Monthplans extends Permissions
 
             }
 
-            //合并所有工程（unit）的开始时间和结束时间，并进行比较取出最早时间和最晚时间作为总计划中的开始点和结束点
+            //合并所有工程（unit）的开始时间和结束时间，并进行比较取出最早时间和最晚时间作为总工程中的开始点和结束点
             $dateSection = array_merge($startDate, $completionDate);
             $startPoint = date("Y-m-d", min($dateSection));
             $completionPoint = date("Y-m-d", max($dateSection));
