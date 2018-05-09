@@ -676,11 +676,11 @@ class Main extends Permissions
     public function managementInfo()
     {
         //前台需要传过来picture_number模型图编号
-        if($this->request->isAjax()){
+//        if($this->request->isAjax()){
             //实例化模型类
             $model =  new PictureModel();
             $picture_number = input('post.picture_number');
-//            $picture_number = 15;
+            $picture_number = 15;
 
             /*******基本信息**********/
             $unit_info = $model->getUnitInfo($picture_number);
@@ -724,10 +724,10 @@ class Main extends Permissions
 
 //                $processinfo[$key]["processinfo_list"] = $processinfo_list;
 
-                $processinfo[$key]["form_list"] = Db::name("quality_form_info")->field("id as form_id,form_name,DivisionId as division_id")->where("ProcedureId",$val["id"])->select();
+                $processinfo[$key]["form_list"] = Db::name("quality_form_info")->field("id as form_id,form_name,DivisionId as division_id,ProcedureId as ma_division_id")->where("ProcedureId",$val["id"])->select();
             }
 
            return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);
-        }
+//        }
     }
 }
