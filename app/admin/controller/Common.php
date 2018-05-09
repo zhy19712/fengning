@@ -238,10 +238,14 @@ class Common extends Controller
                 //是登录操作
                 $post = $this->request->post();
                 //验证  唯一规则： 表名，字段名，排除主键值，主键名
+//                $validate = new \think\Validate([
+//                    ['name', 'require|alphaDash', '用户名不能为空|用户名格式只能是字母、数字、——或_'],
+//                    ['password', 'require', '密码不能为空'],
+//                    ['captcha','require|captcha','验证码不能为空|验证码不正确'],
+//                ]);
                 $validate = new \think\Validate([
                     ['name', 'require|alphaDash', '用户名不能为空|用户名格式只能是字母、数字、——或_'],
-                    ['password', 'require', '密码不能为空'],
-                    ['captcha','require|captcha','验证码不能为空|验证码不正确'],
+                    ['password', 'require', '密码不能为空']
                 ]);
                 //验证部分数据合法性
                 if (!$validate->check($post)) {
@@ -253,6 +257,7 @@ class Common extends Controller
                     return $this->error('用户名不存在');
                 } else {
                     //验证密码
+                    $temp = $post['password'];
                     $post['password'] = password($post['password']);
                     if($name['password'] != $post['password']) {
                         return $this->error('密码错误');
@@ -262,13 +267,17 @@ class Common extends Controller
                             //检查当前有没有记住的账号
                             if(Cookie::has('usermember')) {
                                 Cookie::delete('usermember');
+                                Cookie::delete('userpass');
                             }
                             //保存新的
                             Cookie::forever('usermember',$post['name']);
+                            Cookie::forever('userpass',$temp);
+
                         } else {
                             //未选择记住账号，或属于取消操作
                             if(Cookie::has('usermember')) {
                                 Cookie::delete('usermember');
+                                Cookie::delete('userpass');
                             }
                         }
                         Session::set("admin",$name['id']); //保存新的
@@ -278,14 +287,13 @@ class Common extends Controller
                         Session::set("admin_cate_id",$name['admin_cate_id']); //保存新的
                         //记录登录时间和ip
                         Db::name('admin')->where('id',$name['id'])->update(['login_ip' =>  $this->request->ip(),'login_time' => time()]);
-                        //记录操作日志
-                        addlog();
                         return $this->success('登录成功,正在跳转...','admin/index/index');
                     }
                 }
             } else {
                 if(Cookie::has('usermember')) {
                     $this->assign('usermember',Cookie::get('usermember'));
+                    $this->assign('userpass',Cookie::get('userpass'));
                 }
                 return $this->fetch();
             }

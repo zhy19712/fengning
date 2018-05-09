@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
     <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/ztree/css/zTreeStyle/zTreeStyle.css"  media="all">
 </head>
 <style>
     h3{
@@ -24,151 +25,124 @@
 </style>
 <body style="padding:10px;">
 <div class="body-div">
-    <h3 class="path" style="margin-left: 5px;color:#56abe9;">系统管理-超级管理员</h3>
+    <input type="hidden" id="roleId">
+    <h3 id="path" style="margin-left: 5px;color:#56abe9;">系统管理-超级管理员</h3>
+    <a class="layui-btn layui-btn-normal" onclick="savecog()">保存</a>
     <hr>
     <div style="margin-top: 20px;">
     </div>
-    <form class="layui-form" id="admin">
-        <div class="layui-form-item">
-            <div class="layui-collapse" lay-accordion="" style="margin-left:5px;">
-                {volist name="$info.menu" id="data"}
-                {notempty name="$data.list"}
-                <div class="layui-colla-item" style="">
-                    <h2 class="layui-colla-title" style="background:0;">{$data.name}</h2>
-                    <div class="layui-colla-content layui-show">
-                        <table>
-                            <tbody>
-                            {eq name="data.type" value="1"}
-                            <tr>
-                                <td>
-                                    {$data.str}<input type="checkbox" lay-ignore lay-skin="primary" name="admin_menu_id[]" value="{$data.id}" {notempty name="$info.cate.permissions"}{volist name="$info.cate.permissions" id="datas"}{eq name="$datas" value="$data.id"}checked{/eq}{/volist}{/notempty}>{$data.name}
-                                </td>
-                            </tr>
-                            {/eq}
-                            {volist name="$data.list" id="vo"}
-                            <tr>
-                                {eq name="vo.is_display" value="1"}
-                                <td>
-                                    {$vo.str}<input type="checkbox" lay-ignore lay-skin="primary" name="admin_menu_id[]" value="{$vo.id}" {notempty name="$info.cate.permissions"}{volist name="$info.cate.permissions" id="datas"}{eq name="$datas" value="$vo.id"}checked {else /}{eq name="$vo.type" value="2"}checked disabled{/eq}{/eq}{/volist}{else /}{eq name="$vo.type" value="2"}checked disabled{/eq}{/notempty}>{$vo.name}
-                                </td>
-                                {else /}{eq name="vo.type" value="1"}
-                                <td>
-                                    {$vo.str}<input type="checkbox" lay-ignore lay-skin="primary" name="admin_menu_id[]" value="{$vo.id}" {notempty name="$info.cate.permissions"}{volist name="$info.cate.permissions" id="datas"}{eq name="$datas" value="$vo.id"}checked {else /}{eq name="$vo.type" value="2"}checked disabled{/eq}{/eq}{/volist}{else /}{eq name="$vo.type" value="2"}checked disabled{/eq}{/notempty}>{$vo.name}
-                                </td>
-                                {/eq}{/eq}
-                            </tr>
-                            {/volist}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                {else /}
-                {eq name="data.type" value="1"}
-                <div class="layui-colla-item" style="border:0;">
-                    <h2 class="layui-colla-title" style="background:0;">{$data.name}</h2>
-                    <div class="layui-colla-content layui-show">
-                        <table>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    {$data.str}<input type="checkbox" lay-ignore lay-skin="primary" name="admin_menu_id[]" value="{$data.id}" {notempty name="$info.cate.permissions"}{volist name="$info.cate.permissions" id="datas"}{eq name="$datas" value="$data.id"}checked{/eq}{/volist}{/notempty}>{$data.name}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                {/eq}
-                {/notempty}
-                {/volist}
-            </div>
-        </div>
-        {notempty name="$info.cate"}
-        <input type="hidden" name="roleId" id="roleId" value="{$info.cate.id}">
-        {/notempty}
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="admin">保存</button>
-            </div>
-        </div>
-    </form>
-
+    <ul id="ztree" class="ztree" style=" height: 97%; padding-left: 20px;"></ul>
 
     <script src="__PUBLIC__/layui/layui.js"></script>
     <script src="__PUBLIC__/jquery/jquery.min.js"></script>
+    <script src="__PUBLIC__/ztree/js/jquery.ztree.all.min.js"></script>
     <script>
-        //获取参数
-        var objdata = {};
-        function urlSearch() {
-            var str=location.search;
-            str=str.substr(1); //取得所有参数   stringvar.substr(start [, length ]
-            var arr=str.split("&"); //各个参数放到数组里
-            for(var i=0;i < arr.length;i++){
-                num=arr[i].indexOf("=");
-                if(num>0){
-                    name=arr[i].substring(0,num);
-                    value=arr[i].substr(num+1);
-                    objdata[name]=value;
-                }
-            }
-        }
-        //获取参数
-        urlSearch();
-        if(objdata.path!==""){
-            $(".path").html(decodeURIComponent(objdata.path));
-        }
-
-        var admin_menu_id = [];
-        //截取参数
-        function str2Arr(str) {
-            var obj = {};
-            var arr = str.split("&");
-            for(var i=0;i < arr.length;i++){
-                num=arr[i].indexOf("=");
-                if(num>0){
-                    name=arr[i].substring(0,num);
-                    value=arr[i].substr(num+1);
-                    admin_menu_id.push(value)
-                }
-            }
-        }
-
-        var message;
-        layui.config({
-            base: '/static/website/common/js/',
-            version: '1.0.1'
-        }).use(['app', 'message']);
+      layui.use(['layer'], function() {
+        var layer = layui.layer;
+      });
     </script>
+
     <script>
-        layui.use(['layer', 'form'], function() {
-            var layer = layui.layer,
-                $ = layui.jquery,
-                form = layui.form;
-            $(window).on('load', function() {
-                form.on('submit(admin)', function(data) {
-                    var dataset =  $('#admin').serialize();
-                    str2Arr(dataset);
-                    $.ajax({
-                        url:"{:url('admin/Rolemanagement/catepublish')}",
-                        data:{
-                            "id":objdata.roleId,
-                            "admin_menu_id" : admin_menu_id
-                        },
-                        type:'post',
-                        async: false,
-                        success:function(res) {
-                            if(res.code == 1) {
-                                window.parent.cateMsg(res.msg);
-                            } else {
-                                window.parent.cateMsg(res.msg)
-                            }
-                        }
-                    })
-                    return false;
-                });
+      var selectArr = [];
+      //获取参数
+      var objdata = {};
+      function urlSearch() {
+        var str=location.search;
+        str=str.substr(1); //取得所有参数   stringvar.substr(start [, length ]
+        var arr=str.split("&"); //各个参数放到数组里
+        for(var i=0;i < arr.length;i++){
+          num=arr[i].indexOf("=");
+          if(num>0){
+            name=arr[i].substring(0,num);
+            value=arr[i].substr(num+1);
+            objdata[name]=value;
+          }
+        }
+      }
+      //获取参数
+      urlSearch();
+
+      $("#path").html(decodeURIComponent(objdata.path))
+      $("#roleId").val(objdata.roleId);
+      //数据处理
+      function DataFilter(treeId, parentNode, responseData) {
+        selectArr = responseData.select;
+        var responseData = responseData.all_point;
+        return responseData;
+      }
+      //初始化配置树
+      var setting = {
+        view: {
+          showLine: true, //设置 zTree 是否显示节点之间的连线。
+          selectedMulti: false, //设置是否允许同时选中多个节点。
+          // dblClickExpand: true //双击节点时，是否自动展开父节点的标识。
+        },
+        async: {
+          enable : true,
+          autoParam: ["pid"],
+          type : "post",
+          url : "./cateControllerIndex",
+          otherParam: {"id":function () {
+              return $("#roleId").val();
+            }},
+          dataType :"json",
+          dataFilter:DataFilter
+
+        },
+        data:{
+          simpleData : {
+            enable:true,
+            idkey: "id",
+            pIdKey: "pid",
+            rootPId:0
+          },
+          key:{
+            name:"name"
+          }
+        },
+        check:{
+          enable: true,
+        },
+        callback:{
+          onAsyncSuccess:function () {
+            if(!selectArr||selectArr.length==0){
+              zTreeObj.expandAll(true);
+              return;
+            }
+            $.each(selectArr, function (i, item) {
+              var node = zTreeObj.getNodeByParam("id", item);
+              zTreeObj.checkNode(node, true, false);
             });
+            zTreeObj.expandAll(true);
+          }
+        }
+      };
+      //初始化树
+      zTreeObj = $.fn.zTree.init($("#ztree"), setting, null);
+
+      //保存
+      function savecog() {
+        var idArr = [];
+        var Snodes = zTreeObj.getCheckedNodes(true);
+        $.each(Snodes, function (i, item) {
+          idArr.push(item.id);
         });
+        $.ajax({
+          url:'./cateControllerEdit',
+          type:"POST",
+          data:{admin_menu_id:idArr,id:$("#roleId").val()},
+          dataType:"JSON",
+          success:function (res) {
+            if(res.code==1){
+              window.parent.cateMsg(res.msg);
+            }else{
+              window.parent.cateMsg(res.msg);
+            }
+          }
+        })
+      }
     </script>
+
 </div>
 </body>
 </html>
