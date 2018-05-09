@@ -676,11 +676,11 @@ class Main extends Permissions
     public function managementInfo()
     {
         //前台需要传过来picture_number模型图编号
-//        if($this->request->isAjax()){
+        if($this->request->isAjax()){
             //实例化模型类
             $model =  new PictureModel();
             $picture_number = input('post.picture_number');
-            $picture_number = 15;
+//            $picture_number = 15;
 
             /*******基本信息**********/
             $unit_info = $model->getUnitInfo($picture_number);
@@ -723,11 +723,23 @@ class Main extends Permissions
                 }
 
 //                $processinfo[$key]["processinfo_list"] = $processinfo_list;
+                $form_list = Db::name("quality_form_info")->field("id as form_id,form_name,DivisionId as division_id,ProcedureId as ma_division_id,ControlPointId as control_id")->where("ProcedureId",$val["id"])->select();
 
-                $processinfo[$key]["form_list"] = Db::name("quality_form_info")->field("id as form_id,form_name,DivisionId as division_id,ProcedureId as ma_division_id")->where("ProcedureId",$val["id"])->select();
+                foreach($form_list as $a=>$b)
+                {
+                    //cpr_id为control_point中的id
+                    $cpr_id = Db::name("quality_division_controlpoint_relation")->field("id as cpr_id")
+                        ->where(["division_id"=>$b["division_id"],"ma_division_id"=>$b["ma_division_id"],"control_id"=>$b["control_id"],"type"=>1])->find();
+                    $form_list[$a]["cpr_id"] = $cpr_id["cpr_id"];
+
+                }
+
+                $processinfo[$key]["form_list"] = $form_list;
             }
 
+
+
            return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);
-//        }
+        }
     }
 }
