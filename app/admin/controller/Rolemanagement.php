@@ -322,13 +322,25 @@ class Rolemanagement extends Permissions
     }
 
     /**
-     * 管理员角色添加和修改操作
+     * 管理员角色添加和修改操作-首页
      * @return mixed|void
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function catepublish()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 管理员角色添加和修改操作
+     * @return mixed|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function cateController()
     {
         //获取角色id
         $roleId = $this->request->has('roleId') ? $this->request->param('roleId', 0, 'intval') : 0;
@@ -337,10 +349,11 @@ class Rolemanagement extends Permissions
 
         $id = $roleId?$roleId:$id;
 
+//        $id = 1;
+
+        //实例化模型类
         $model = new \app\admin\model\AdminCate();
-
         if($id > 0) {
-
             //是修改操作
             if(request()->isAjax()){
                 //是提交操作
@@ -354,12 +367,10 @@ class Rolemanagement extends Permissions
                     $post['permissions'] = '0';
                 }
                 if(false == $model->allowField(true)->save($post,['id'=>$id])) {
-                    return $this->error('修改失败');
+                    return json(["code"=>-1,"msg"=>"修改角色信息失败！"]);
                 } else {
-
                     addlog($model->id);//写入日志
-
-                    return $this->success('修改角色信息成功');
+                    return json(["code"=>1,"msg"=>"修改角色信息成功！"]);
                 }
             } else {
                 //非提交操作
@@ -368,51 +379,62 @@ class Rolemanagement extends Permissions
                     //将菜单id字符串拆分成数组
                     $info['cate']['permissions'] = explode(',',$info['cate']['permissions']);
                 }
+                //查询所有的菜单选项
                 $menus = Db::name('admin_menu')->select();
-                $info['menu'] = $this->menulist($menus);
-                $this->assign('info',$info);
-                return $this->fetch();
+
+                //所有的树节点
+                $all_point = tree($menus);
+
+                return json(["code"=>1,"all_point"=>$all_point,"select"=>$info['cate']['permissions']]);
+
+//                $info['menu'] = $this->menulist($menus);
+//                $this->assign('info',$info);
+//                return $this->fetch();
             }
         }else{
             $menus = Db::name('admin_menu')->select();
-            $info['menu'] = $this->menulist($menus);
-            $this->assign('info',$info);
-            return $this->fetch();
+            $all_point = tree($menus);
+
+            return json(["code"=>1,"all_point"=>$all_point]);
+
+//            $info['menu'] = $this->menulist($menus);
+//            $this->assign('info',$info);
+//            return $this->fetch();
         }
     }
 
-    protected function menulist($menu,$id=0,$level=0){
-
-        static $menus = array();
-        $size = count($menus)-1;
-        foreach ($menu as $value) {
-            if ($value['pid']==$id) {
-                $value['level'] = $level+1;
-                if($level == 0)
-                {
-                    $value['str'] = str_repeat('',$value['level']);
-                    $menus[] = $value;
-                }
-                elseif($level == 2)
-                {
-                    $value['str'] = '&emsp;&emsp;&emsp;&emsp;'.'└ ';
-                    $menus[$size]['list'][] = $value;
-                }
-                elseif($level == 3)
-                {
-                    $value['str'] = '&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;'.'└ ';
-                    $menus[$size]['list'][] = $value;
-                }
-                else
-                {
-                    $value['str'] = '&emsp;&emsp;'.'└ ';
-                    $menus[$size]['list'][] = $value;
-                }
-
-                $this->menulist($menu,$value['id'],$value['level']);
-            }
-        }
-        return $menus;
-    }
+//    protected function menulist($menu,$id=0,$level=0){
+//
+//        static $menus = array();
+//        $size = count($menus)-1;
+//        foreach ($menu as $value) {
+//            if ($value['pid']==$id) {
+//                $value['level'] = $level+1;
+//                if($level == 0)
+//                {
+//                    $value['str'] = str_repeat('',$value['level']);
+//                    $menus[] = $value;
+//                }
+//                elseif($level == 2)
+//                {
+//                    $value['str'] = '&emsp;&emsp;&emsp;&emsp;'.'└ ';
+//                    $menus[$size]['list'][] = $value;
+//                }
+//                elseif($level == 3)
+//                {
+//                    $value['str'] = '&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;'.'└ ';
+//                    $menus[$size]['list'][] = $value;
+//                }
+//                else
+//                {
+//                    $value['str'] = '&emsp;&emsp;'.'└ ';
+//                    $menus[$size]['list'][] = $value;
+//                }
+//
+//                $this->menulist($menu,$value['id'],$value['level']);
+//            }
+//        }
+//        return $menus;
+//    }
 }
 
