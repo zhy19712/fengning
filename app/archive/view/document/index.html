@@ -529,8 +529,8 @@
                     "targets": [4],
                     "render": function (data, type, row) {
                         var a = data;
-                        var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
-                        html += "<a type='button' class='' style='margin-left: 5px;' onclick='downFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
+                        var html = "<span style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></span>";
+                        html += "<span style='margin-left: 5px;' onclick='downFile("+row[4]+")'><i title='下载' class='fa fa-download'></i></span>";
                         // html += "<a type='button' class='' style='margin-left: 5px;' onclick='AssFile(this)'><i title='关联文件' class='fa fa-chain'></i></a>";
                         // html += "<a type='button' class='' style='margin-left: 5px;' onclick='reviewHistory(this)'><i title='审阅历史' class='fa fa-file-text'></i></a>";
                         return html;
