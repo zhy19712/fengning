@@ -81,10 +81,10 @@
           enable : true,
           autoParam: ["pid"],
           type : "post",
-          url : "./cateController",
+          url : "./cateControllerIndex",
           otherParam: {"id":function () {
               return $("#roleId").val();
-            },type:0},
+            }},
           dataType :"json",
           dataFilter:DataFilter
 
@@ -128,9 +128,9 @@
           idArr.push(item.id);
         });
         $.ajax({
-          url:'./cateController',
+          url:'./cateControllerEdit',
           type:"POST",
-          data:{admin_menu_id:idArr,id:$("#roleId").val(),type:1},
+          data:{admin_menu_id:idArr,id:$("#roleId").val()},
           dataType:"JSON",
           success:function (res) {
             if(res.code==1){
