@@ -342,64 +342,68 @@ class Rolemanagement extends Permissions
      */
     public function cateController()
     {
-        //获取角色id
-        $roleId = $this->request->has('roleId') ? $this->request->param('roleId', 0, 'intval') : 0;
+        if (request()->isAjax()){
+            //获取角色id
+            $roleId = $this->request->has('roleId') ? $this->request->param('roleId', 0, 'intval') : 0;
 
-        $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
 
-        $id = $roleId?$roleId:$id;
+            $type = $param = input('post.type');
+
+            $id = $roleId ? $roleId : $id;
 
 //        $id = 1;
 
-        //实例化模型类
-        $model = new \app\admin\model\AdminCate();
-        if($id > 0) {
-            //是修改操作
-            if(request()->isAjax()){
-                //是提交操作
-                $post = $this->request->post();
-                //验证  唯一规则： 表名，字段名，排除主键值，主键名
-                //验证用户名是否存在
-                //处理选中的权限菜单id，转为字符串
-                if(!empty($post['admin_menu_id'])) {
-                    $post['permissions'] = implode(',',$post['admin_menu_id']);
+            //实例化模型类
+            $model = new \app\admin\model\AdminCate();
+            if ($id > 0) {
+                //是修改操作
+                if ($type == 1) {
+                    //是提交操作
+                    $post = $this->request->post();
+                    //验证  唯一规则： 表名，字段名，排除主键值，主键名
+                    //验证用户名是否存在
+                    //处理选中的权限菜单id，转为字符串
+                    if (!empty($post['admin_menu_id'])) {
+                        $post['permissions'] = implode(',', $post['admin_menu_id']);
+                    } else {
+                        $post['permissions'] = '0';
+                    }
+                    if (false == $model->allowField(true)->save($post, ['id' => $id])) {
+                        return json(["code" => -1, "msg" => "修改角色信息失败！"]);
+                    } else {
+                        addlog($model->id);//写入日志
+                        return json(["code" => 1, "msg" => "修改角色信息成功！"]);
+                    }
                 } else {
-                    $post['permissions'] = '0';
-                }
-                if(false == $model->allowField(true)->save($post,['id'=>$id])) {
-                    return json(["code"=>-1,"msg"=>"修改角色信息失败！"]);
-                } else {
-                    addlog($model->id);//写入日志
-                    return json(["code"=>1,"msg"=>"修改角色信息成功！"]);
-                }
-            } else {
-                //非提交操作
-                $info['cate'] = $model->where('id',$id)->find();
-                if(!empty($info['cate']['permissions'])) {
-                    //将菜单id字符串拆分成数组
-                    $info['cate']['permissions'] = explode(',',$info['cate']['permissions']);
-                }
-                //查询所有的菜单选项
-                $menus = Db::name('admin_menu')->select();
+                    //非提交操作
+                    $info['cate'] = $model->where('id', $id)->find();
+                    if (!empty($info['cate']['permissions'])) {
+                        //将菜单id字符串拆分成数组
+                        $info['cate']['permissions'] = explode(',', $info['cate']['permissions']);
+                    }
+                    //查询所有的菜单选项
+                    $menus = Db::name('admin_menu')->select();
 
-                //所有的树节点
-                $all_point = tree($menus);
+                    //所有的树节点
+                    $all_point = tree($menus);
 
-                return json(["code"=>1,"all_point"=>$all_point,"select"=>$info['cate']['permissions']]);
+                    return json(["code" => 1, "all_point" => $all_point, "select" => $info['cate']['permissions']]);
 
 //                $info['menu'] = $this->menulist($menus);
 //                $this->assign('info',$info);
 //                return $this->fetch();
-            }
-        }else{
-            $menus = Db::name('admin_menu')->select();
-            $all_point = tree($menus);
+                }
+            } else {
+                $menus = Db::name('admin_menu')->select();
+                $all_point = tree($menus);
 
-            return json(["code"=>1,"all_point"=>$all_point]);
+                return json(["code" => 1, "all_point" => $all_point]);
 
 //            $info['menu'] = $this->menulist($menus);
 //            $this->assign('info',$info);
 //            return $this->fetch();
+            }
         }
     }
 
