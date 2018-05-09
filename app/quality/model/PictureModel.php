@@ -168,7 +168,7 @@ class PictureModel extends Model
         $processinfo_list = Db::name("quality_division_controlpoint_relation")->alias('a')
             ->join('controlpoint b', 'a.control_id=b.id', 'left')
             ->where($par)
-            ->field('a.id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
+            ->field('a.id as cpr_id,b.code,b.name,a.status,a.division_id,a.ma_division_id,a.control_id')
             ->select();
         return $processinfo_list;
     }

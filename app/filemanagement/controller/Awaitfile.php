@@ -15,8 +15,12 @@ use app\admin\controller\Permissions;
 use app\filemanagement\model\ProjectmanagementModel;//档案管理-工程项目管理
 use app\filemanagement\model\FilebranchtypeModel;//档案管理-分支目录管理-项目分类-树节点
 use app\filemanagement\model\FilebranchModel;//档案管理-分支目录管理-项目分类
-use app\archive\model\DocumentTypeModel;//文档管理
+use app\filemanagement\model\FileelectronicModel;//档案管理-档案管理-待整理文件-电子文件挂接
+use app\archive\model\DocumentTypeModel;//文档管理类型
+use app\archive\model\DocumentModel;//文档管理
 use app\quality\model\DivisionModel;//工程划分，单元工程
+use app\quality\model\DivisionUnitModel;//单元工程
+use app\standard\model\MaterialTrackingDivision;//工序表
 use think\exception\PDOException;
 use think\Loader;
 use think\Db;
@@ -135,7 +139,108 @@ class Awaitfile extends Permissions
         }
     }
 
+    /**
+     * 获取检验批列表
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getDivisionUnitTree()
+    {
+        if(request()->isAjax()) {
+            $id = input("post.id");
+//            $id = 4;
+            return json(DivisionUnitModel::all(['division_id' => $id]));
+        }
+    }
 
+    /**
+     * 获取工序列表
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getProcedures()
+    {
+//        if(request()->isAjax()) {
+            $id = input("post.en_type");//工程类型
+        $id = 4;
+            $data = MaterialTrackingDivision::all(['pid' => $id, 'type' => 3]);
+            return json(["code"=>1,"data"=>$data]);
+//        }
+    }
+
+    /**
+     * 添加电子文件挂接
+     */
+    public function electronicFileHang()
+    {
+        try{
+            if(request()->isAjax()){
+                //实例化模型类
+                $Fileelectronic = new FileelectronicModel();
+                $Document = new DocumentModel();
+
+                $param = input('post.');
+
+                //需要的是一个id数组
+                //用type区分图纸管理、文档管理、质量管理
+                //type=paper，type=doc,type=quality
+                $file_id_data = $param["id"];//前台传过来的id数组
+                $type = $param["type"];//类型
+                $fpd_id = $param["fpd_id"];//档案管理-待整理文件表的自增id
+
+                switch ($type)
+                {
+                    case "paper":
+                        break;
+                    case "doc":
+                        if(!empty($file_id_data))
+                        {
+                            foreach ($file_id_data as $key=>$val)
+                            {
+                                //判断当前控制点是否存在数据库中
+                                $result = $Fileelectronic->getid($type,$fpd_id,$val);
+                                if($result["id"])
+                                {
+                                    unset($file_id_data[$key]);
+                                }
+                            }
+
+                            if(!empty($file_id_data))
+                            {
+                                foreach ($file_id_data as $k=>$v)
+                                {
+                                    //根据图纸管理、文档管理、质量管理中的文件id
+                                    $document_info = $Document->getOne($v);
+                                    if(!empty($document_info))
+                                    {
+                                        $data = [
+                                            "fpd_id" => $fpd_id,//返回的fengning_file_pending_documents表的id
+                                            "type" => $type,//paper图纸管理，doc文档管理，quality质量管理
+                                            "file_id" => $v,//对应的是图纸管理，文档管理，质量管理表的文件id
+                                            "electronic_file_name" => $document_info["docname"],//文件名称
+                                            "type_code" => "文档",//类型代码
+                                            "date" => date("Y-m-d",time())
+                                        ];
+                                        $Fileelectronic->insertFe($data);
+                                    }
+                                }
+                            }
+
+                            return ['code' => 1,'msg' => '添加成功'];
+                        }
+                        else
+                        {
+                            return ['code' => -1,'msg' => ''];
+                        }
+                }
+
+            }
+        }catch (PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
     /**
      * 新增或编辑待整理文件
      */

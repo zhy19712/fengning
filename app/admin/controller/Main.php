@@ -676,11 +676,11 @@ class Main extends Permissions
     public function managementInfo()
     {
         //前台需要传过来picture_number模型图编号
-        if($this->request->isAjax()){
+//        if($this->request->isAjax()){
             //实例化模型类
             $model =  new PictureModel();
             $picture_number = input('post.picture_number');
-//            $picture_number = 15;
+            $picture_number = 15;
 
             /*******基本信息**********/
             $unit_info = $model->getUnitInfo($picture_number);
@@ -717,11 +717,26 @@ class Main extends Permissions
                 }else
                 {
                     $processinfo[$key]["point_step"] = 0;
+
+                    foreach($processinfo_list as $a=>$b)
+                    {
+                        $cpr = Db::name('quality_division_controlpoint_relation')->where(['id' => $b['cpr_id']])->field('division_id,ma_division_id,control_id')->select();
+                        $whereStr = array();
+                        $whereStr['DivisionId'] = $cpr[0]['division_id'];
+                        $whereStr['ProcedureId'] = $cpr[0]['ma_division_id'];
+                        $whereStr['ControlPointId'] = $cpr[0]['control_id'];
+                        $form_list = Db::name("quality_form_info")->alias('a')
+                            ->field('a.id,a.form_name')
+                            ->where($whereStr)
+                            ->order('create_time','desc')->select();
+                        $processinfo[$key][$a]["form_list"] = $form_list;
+                    }
                 }
+
                 $processinfo[$key]["processinfo_list"] = $processinfo_list;
             }
 
            return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);
-        }
+//        }
     }
 }

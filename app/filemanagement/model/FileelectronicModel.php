@@ -6,7 +6,7 @@
  * Time: 10:52
  */
 /*
- * 档案管理-档案管理-待整理文件
+ * 档案管理-档案管理-待整理文件-电子文件挂接
  * @package app\filemanagement\model
  */
 namespace app\filemanagement\model;
@@ -79,6 +79,18 @@ class FileelectronicModel extends Model
     public function getOne($id)
     {
         $data = $this->where("id",$id)->find();
+        return $data;
+    }
+
+    /**
+     * 判断是否有当前添加的节点
+     * @param $selfid
+     * @param $procedureid
+     * @param $procedureid
+     */
+    public function getid($type,$fpd_id,$val)
+    {
+        $data = $this->where(["fpd_id"=>$fpd_id,"type"=>$type,"file_id"=>$val])->find();
         return $data;
     }
 }
