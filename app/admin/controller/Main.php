@@ -711,6 +711,8 @@ class Main extends Permissions
                 $par['a.division_id'] = $en_type["division_id"];//488
                 $par["a.ma_division_id"] = $val["id"];//63 64 65 66 67
                 $processinfo_list = $model->getProcessInfoList($par);
+
+
                 if(empty($processinfo_list))
                 {
                     $processinfo[$key]["point_step"] = 1;
@@ -718,22 +720,11 @@ class Main extends Permissions
                 {
                     $processinfo[$key]["point_step"] = 0;
 
-                    foreach($processinfo_list as $a=>$b)
-                    {
-                        $cpr = Db::name('quality_division_controlpoint_relation')->where(['id' => $b['cpr_id']])->field('division_id,ma_division_id,control_id')->select();
-                        $whereStr = array();
-                        $whereStr['DivisionId'] = $cpr[0]['division_id'];
-                        $whereStr['ProcedureId'] = $cpr[0]['ma_division_id'];
-                        $whereStr['ControlPointId'] = $cpr[0]['control_id'];
-                        $form_list = Db::name("quality_form_info")->alias('a')
-                            ->field('a.id,a.form_name')
-                            ->where($whereStr)
-                            ->order('create_time','desc')->select();
-                        $processinfo[$key][$a]["form_list"] = $form_list;
-                    }
                 }
 
-                $processinfo[$key]["processinfo_list"] = $processinfo_list;
+//                $processinfo[$key]["processinfo_list"] = $processinfo_list;
+
+                $processinfo[$key]["form_list"] = Db::name("quality_form_info")->field("id as form_id,form_name,DivisionId as division_id")->where("ProcedureId",$val["id"])->select();
             }
 
            return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);

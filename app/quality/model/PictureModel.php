@@ -152,7 +152,12 @@ class PictureModel extends Model
      */
     public function getProcessInfo($en_type)
     {
-        $processinfo = Db::name("materialtrackingdivision")->field("id,pid,name")->where(["pid"=>$en_type["en_type"],"type"=>3])->select();
+        $processinfo = Db::name("materialtrackingdivision")->alias('a')
+//            ->join('quality_form_info q', 'q.ProcedureId=a.id', 'left')
+            ->where(["pid"=>$en_type["en_type"],"type"=>3])
+//            ->field("a.id,a.pid,a.name,q.id as form_id,q.form_name as form_name")
+            ->field("a.id,a.pid,a.name")
+            ->select();
         return $processinfo;
     }
 
