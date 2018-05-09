@@ -334,13 +334,13 @@ class Rolemanagement extends Permissions
     }
 
     /**
-     * 管理员角色添加和修改操作
+     * 管理员角色添加和修改操作-展示所有的权限列表
      * @return mixed|void
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function cateController()
+    public function cateControllerIndex()
     {
         if (request()->isAjax()){
             //获取角色id
@@ -348,33 +348,11 @@ class Rolemanagement extends Permissions
 
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
 
-            //type = 1为修改，type = 0为查看
-            $type = $param = input('post.type');
-
             $id = $roleId ? $roleId : $id;
-
-//            $id = 1;
 
             //实例化模型类
             $model = new \app\admin\model\AdminCate();
             if ($id > 0) {
-                //是修改操作
-                if ($type == 1) {
-                    //是提交操作
-                    $post = $this->request->post();
-                    //处理选中的权限菜单id，转为字符串
-                    if (!empty($post['admin_menu_id'])) {
-                        $post['permissions'] = implode(',', $post['admin_menu_id']);
-                    } else {
-                        $post['permissions'] = '0';
-                    }
-                    if (false == $model->allowField(true)->save($post, ['id' => $id])) {
-                        return json(["code" => -1, "msg" => "修改角色信息失败！"]);
-                    } else {
-                        addlog($model->id);//写入日志
-                        return json(["code" => 1, "msg" => "修改角色信息成功！"]);
-                    }
-                } else {
                     //非提交操作
                     $info['cate'] = $model->where('id', $id)->find();
                     if (!empty($info['cate']['permissions'])) {
@@ -397,16 +375,58 @@ class Rolemanagement extends Permissions
 //                $info['menu'] = $this->menulist($menus);
 //                $this->assign('info',$info);
 //                return $this->fetch();
-                }
+
+            } else {
+
+                $menus = Db::name('admin_menu')->field("id,name,pid")->select();
+                $all_point = tree($menus);
+
+                return json(["code" => 1, "all_point" => $all_point]);
+            }
+        }
+    }
+
+    /**
+     * 管理员角色添加和修改操作-保存修改
+     * @return mixed|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function cateControllerEdit()
+    {
+        if (request()->isAjax()){
+            //获取角色id
+            $roleId = $this->request->has('roleId') ? $this->request->param('roleId', 0, 'intval') : 0;
+
+            $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
+
+            $id = $roleId ? $roleId : $id;
+
+            //实例化模型类
+            $model = new \app\admin\model\AdminCate();
+            if ($id > 0) {
+                //是修改操作
+                    //是提交操作
+                    $post = $this->request->post();
+                    //处理选中的权限菜单id，转为字符串
+                    if (!empty($post['admin_menu_id'])) {
+                        $post['permissions'] = implode(',', $post['admin_menu_id']);
+                    } else {
+                        $post['permissions'] = '0';
+                    }
+                    if (false == $model->allowField(true)->save($post, ['id' => $id])) {
+                        return json(["code" => -1, "msg" => "修改角色信息失败！"]);
+                    } else {
+                        addlog($model->id);//写入日志
+                        return json(["code" => 1, "msg" => "修改角色信息成功！"]);
+                    }
+
             } else {
                 $menus = Db::name('admin_menu')->field("id,name,pid")->select();
                 $all_point = tree($menus);
 
                 return json(["code" => 1, "all_point" => $all_point]);
-
-//            $info['menu'] = $this->menulist($menus);
-//            $this->assign('info',$info);
-//            return $this->fetch();
             }
         }
     }
