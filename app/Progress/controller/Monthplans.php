@@ -202,6 +202,7 @@ class Monthplans extends Permissions
         if($this->request->isAjax()) {
             $param = input('param.');
             $add_id = isset($param['add_id']) ? $param['add_id'] : -1;
+
             if ($add_id == -1) {
                 return json(['code' => 0, 'msg' => '编号有误']);
             }
@@ -224,7 +225,7 @@ class Monthplans extends Permissions
 
                 $unit_data = Db::name('monthplan_unit')
                     ->where('id', $reid)
-                    ->field('start_date,completion_date')
+                    ->field('start_date,completion_date,type')
                     ->select();
 
 
