@@ -111,7 +111,10 @@
             }
             $.each(selectArr, function (i, item) {
               var node = zTreeObj.getNodeByParam("id", item);
-              zTreeObj.checkNode(node, true, false);
+              if(node){
+                zTreeObj.checkNode(node, true, false);
+              }
+
             });
             zTreeObj.expandAll(true);
           }
