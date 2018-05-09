@@ -348,11 +348,12 @@ class Rolemanagement extends Permissions
 
             $id = $this->request->has('id') ? $this->request->param('id', 0, 'intval') : 0;
 
+            //type = 1为修改，type = 0为查看
             $type = $param = input('post.type');
 
             $id = $roleId ? $roleId : $id;
 
-//        $id = 1;
+//            $id = 1;
 
             //实例化模型类
             $model = new \app\admin\model\AdminCate();
@@ -361,8 +362,6 @@ class Rolemanagement extends Permissions
                 if ($type == 1) {
                     //是提交操作
                     $post = $this->request->post();
-                    //验证  唯一规则： 表名，字段名，排除主键值，主键名
-                    //验证用户名是否存在
                     //处理选中的权限菜单id，转为字符串
                     if (!empty($post['admin_menu_id'])) {
                         $post['permissions'] = implode(',', $post['admin_menu_id']);
@@ -381,6 +380,11 @@ class Rolemanagement extends Permissions
                     if (!empty($info['cate']['permissions'])) {
                         //将菜单id字符串拆分成数组
                         $info['cate']['permissions'] = explode(',', $info['cate']['permissions']);
+                    }
+
+                    if(empty($info['cate']['permissions']))
+                    {
+                        $info['cate']['permissions'] = [];
                     }
                     //查询所有的菜单选项
                     $menus = Db::name('admin_menu')->field("id,name,pid")->select();
