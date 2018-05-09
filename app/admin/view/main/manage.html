@@ -177,21 +177,21 @@
                     $('#qualityTable tbody').empty();
                     var qualityTableTemplate = [];
                     for(var i = 0;i<res.processinfo.length;i++){
-                        if(res.processinfo[i].processinfo_list.length>0){
-                            var processinfo_list = res.processinfo[i].processinfo_list;
+                        if(res.processinfo[i].form_list.length>0){
+                            var form_list = res.processinfo[i].form_list;
                         }
-                        if(!processinfo_list){
+                        if(!form_list){
                             return false;
                         }
-                        for(var j = 0;j<processinfo_list.length;j++){
+                        for(var j = 0;j<form_list.length;j++){
                             qualityTableTemplate.push('<tr>');
                             if(j == 0){
-                                qualityTableTemplate.push('<td rowspan='+ processinfo_list.length +'>'+ res.processinfo[i].name +'</td>');
+                                qualityTableTemplate.push('<td rowspan='+ form_list.length +'>'+ res.processinfo[i].name +'</td>');
                             }
-                            qualityTableTemplate.push('<td class="bg">'+ processinfo_list[j].name +'</td>');
+                            qualityTableTemplate.push('<td class="bg">'+ form_list[j].form_name +'</td>');
                             qualityTableTemplate.push('<td>');
                             qualityTableTemplate.push('<i class="fa fa-eye faEye"></i>');
-                            qualityTableTemplate.push('<i class="fa fa-search" onclick="search(this)" pid='+ res.processinfo[i].pid +' uid='+ processinfo_list[j].division_id +' ></i>');
+                            qualityTableTemplate.push('<i class="fa fa-search" onclick="search(this)" pid='+ res.processinfo[i].pid +' uid='+ form_list[j].division_id +' ></i>');
                             qualityTableTemplate.push('</td>');
                             qualityTableTemplate.push('</tr>');
                         }
