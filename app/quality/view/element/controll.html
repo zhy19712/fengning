@@ -360,9 +360,9 @@
                 "orderable": false,
                 "targets": [3],
                 "render": function (data, type, row) {
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='downConFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
-                    // html += "<a type='button' class='' style='margin-left: 5px;' onclick='printConFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></a>";
+                    var html = "<span style='margin-left: 5px;' onclick='downConFile("+row[3]+")'><i title='下载' class='fa fa-download'></i></span>";
+                    // html += "<span style='margin-left: 5px;' onclick='printFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></span>";
+                    // html += "<span style='margin-left: 5px;' onclick='printConFile("+row[3]+")'><i title='打印' class='fa fa-print'></i></span>";
                     return html;
                 }
             },
@@ -950,9 +950,9 @@
                 "targets": [4],
                 "render": function (data, type, row) {
                     var a = data;
-                    var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFileImp("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                    html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                    var html = "<span style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></span>";
+                    html += "<span style='margin-left: 5px;' onclick='downConFileImp("+row[4]+")'><i title='下载' class='fa fa-download'></i></span>";
+                    html += "<span style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></span>";
                     return html;
                 }
             }
@@ -1086,9 +1086,9 @@
                  "orderable": false,
                  "targets": [4],
                  "render": function (data, type, row) {
-                     var html = "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></a>";
-                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='downConFileData("+row[4]+")'><i title='下载' class='fa fa-download'></i></a>";
-                     html += "<a type='button' class='' style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></a>";
+                     var html = "<span style='margin-left: 5px;' onclick='printConFile("+row[4]+")'><i title='预览' class='fa fa-search'></i></span>";
+                     html += "<span style='margin-left: 5px;' onclick='downConFileData("+row[4]+")'><i title='下载' class='fa fa-download'></i></span>";
+                     html += "<span style='margin-left: 5px;' onclick='delFile("+row[4]+")'><i title='删除' class='fa fa-trash'></i></span>";
                      return html;
                  }
              }
@@ -1200,8 +1200,8 @@
                      "targets": [4],
                      "render": function (data, type, row) {
                          // console.log(row);
-                         console.log(row[5]+"当前审批人Id");
-                         console.log($("#userId").val() + "当前登录人Id");
+                         // console.log(row[5]+"当前审批人Id");
+                         // console.log($("#userId").val() + "当前登录人Id");
                          var html = "";
                          html += "<a title='查看' onclick='seeOnLine("+row[4]+")'><i class='fa fa fa-search'></i></a>";
                          if (row[3] === 0) {
