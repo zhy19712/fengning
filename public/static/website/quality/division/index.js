@@ -1,6 +1,20 @@
 //初始化layui组件
 var initUi = layui.use('form','laydate');
 var form = layui.form;
+//ctrl
+isCtrlDown = false;
+$(document).keydown(function (event) {
+    var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+    if(KeyCode==17){
+        isCtrlDown = true;
+    }
+});
+$(document).keyup(function (event) {
+    var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+    if(KeyCode==17){
+        isCtrlDown = false;
+    }
+});
 //工程标准及规范树
 $.ztree({
     //点击节点

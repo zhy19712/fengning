@@ -73,9 +73,16 @@
 
 
                 // 设置透明度和颜色：0为全透明，1为不透明
-                 RealBimOcx.BatchAddSubClrInfoBegin();
-                 RealBimOcx.AddSubClrPercent(uObjSubID,0.8,0x80ff0000);
-                 RealBimOcx.BatchAddSubClrInfoEnd();
+                if(!isCtrlDown){
+                    RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
+                    RealBimOcx.BatchAddSubClrInfoBegin();
+                    RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);    //第二个参数为透明度
+                    RealBimOcx.BatchAddSubClrInfoEnd();
+                }else{
+                    RealBimOcx.BatchAddSubClrInfoBegin();
+                    RealBimOcx.AddSubClrPercent(uObjSubID,0.5,0x80800080);   //第二个参数为透明度
+                    RealBimOcx.BatchAddSubClrInfoEnd();
+                }
 
 
 
@@ -379,5 +386,16 @@
 <div id="form_container" style="display: none;"></div>
 {include file="../app/public/common_footer.html"}
 <script src="__WEBSITE__/quality/division/index.js"></script>
+<script>
+    //键盘事件
+    $(document).keyup(function (event) {
+        var KeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+        if ( KeyCode == 27 ){
+            RealBimOcx.AddAnchorEnd();
+            RealBimOcx.CreateMarkerEnd("", 0, 0, "", true);
+            RealBimOcx.SetAllSubClrInfos(0,0,0xff); //颜色重置为空
+        }
+    });
+</script>
 </body>
 </html>
