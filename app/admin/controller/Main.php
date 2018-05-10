@@ -736,9 +736,6 @@ class Main extends Permissions
 
                 $processinfo[$key]["form_list"] = $form_list;
             }
-
-
-
            return json(["code"=>1,"unit_info"=>$unit_info,"processinfo"=>$processinfo]);
         }
     }

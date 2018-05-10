@@ -162,12 +162,69 @@ class Awaitfile extends Permissions
      */
     public function getProcedures()
     {
-//        if(request()->isAjax()) {
+        if(request()->isAjax()) {
             $id = input("post.en_type");//工程类型
-        $id = 4;
+//        $id = 4;
             $data = MaterialTrackingDivision::all(['pid' => $id, 'type' => 3]);
             return json(["code"=>1,"data"=>$data]);
-//        }
+        }
+    }
+
+    /**
+     * 获取所有工序下的所有控制点
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\exception\DbException
+     */
+    public function getAllControlerPoint()
+    {
+        if(request()->isAjax()){
+
+            $division_id = $this->request->param('division_id');
+
+            if ($this->request->has('ma_division_id')) {
+                $par['ma_division_id'] = $this->request->param('ma_division_id');
+            }
+
+            $allControllerPoint = Db::name("quality_division_controlpoint_relation")->alias('a')
+                ->join('controlpoint b', 'a.control_id=b.id', 'left')
+                ->where(["a.type"=>1,"a.division_id"=>$division_id,"a.status"=>1])
+                ->field('a.id,b.name,a.ma_division_id,a.control_id')
+                ->select();
+
+
+            if(!empty($allControllerPoint))
+            {
+                foreach ($allControllerPoint as $key=>$val)
+                {
+                    $search = array();
+                    $search['a.type'] = 1;
+                    $search['a.contr_relation_id'] = $val["id"];
+
+                    $upload_form_info = Db::name("quality_upload")->alias('a')
+                    ->join('attachment b', 'a.attachment_id=b.id', 'left')
+                    ->join('admin c', 'b.user_id=c.id', 'left')
+                    ->join('admin_group d', 'c.admin_group_id=d.id')
+                    ->where($search)
+                    ->field('a.id,a.data_name,c.nickname,d.name,b.create_time')
+                    ->select();
+
+                    if(!empty($upload_form_info))
+                    {
+                        foreach ($upload_form_info as $a=>$b)
+                        {
+                            //查询所属的工序名
+                            $name = Db::name("materialtrackingdivision")->field("name as ma_name")->where("id",$val["ma_division_id"])->find();
+
+                            $upload_form_info[$a]["ma_name"] = $name["ma_name"];
+
+                        }
+                    }
+                    $allControllerPoint[$key]["upload_form_list"] = $upload_form_info;
+                }
+            }
+            return json(["code"=>1,"data"=>$allControllerPoint]);
+        }
     }
 
     /**
