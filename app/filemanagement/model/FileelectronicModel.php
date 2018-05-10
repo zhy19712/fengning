@@ -72,6 +72,21 @@ class FileelectronicModel extends Model
     }
 
     /**
+     * 删除所属的上传的整理文件id下的全部电子文件挂接
+     * @param $fpd_id
+     * @return array
+     */
+    public function delAllFe($fpd_id)
+    {
+        try{
+            $this->where("fpd_id",$fpd_id)->delete();
+            return ['code' => 1, 'msg' => '删除成功'];
+        }catch(PDOException $e){
+            return ['code' => -1,'msg' => $e->getMessage()];
+        }
+    }
+
+    /**
      * 获取一条电子文件挂接
      * @param $id
      * @throws \think\exception\DbException

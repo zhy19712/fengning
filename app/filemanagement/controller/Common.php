@@ -68,74 +68,6 @@ class Common extends Controller
     }
 
     /**
-     * 分支目录管理-项目分类
-     * @param $draw
-     * @param $table
-     * @param $search
-     * @param $start
-     * @param $length
-     * @param $limitFlag
-     * @param $order
-     * @param $columns
-     * @param $columnString
-     * @return \think\response\Json
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function file_branch_directory($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
-    {
-        //查询
-        //条件过滤后记录数 必要
-        $recordsFiltered = 0;
-        //表的总记录数 必要
-        $classifyid = input('classifyid');
-        //表的总记录数 必要
-        $recordsTotal = 0;
-        $recordsTotal = Db::name($table)->where('classifyid',$classifyid)->where("pid = 0")->count(0);
-        $recordsFilteredResult = array();
-        if(strlen($search)>0){
-            //有搜索条件的情况
-            if($limitFlag){
-                //*****多表查询join改这里******
-                $recordsFilteredResult = Db::name($table)->where('classifyid',$classifyid)->where("pid = 0")->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start),intval($length))->select();
-                $recordsFiltered = sizeof($recordsFilteredResult);
-            }
-        }else{
-            //没有搜索条件的情况
-            if($limitFlag){
-                $recordsFilteredResult = Db::name($table)->where('classifyid',$classifyid)->where("pid = 0")->order($order)->limit(intval($start),intval($length))->select();
-                $recordsFiltered = $recordsTotal;
-            }
-        }
-        //实例化model类
-        $model = new FilebranchModel();
-        $temp = array();
-        $infos = array();
-        foreach ($recordsFilteredResult as $key => $value) {
-            //计算列长度
-            $length = sizeof($columns);
-            for ($i = 0; $i < $length; $i++) {
-                array_push($temp, $value[$columns[$i]['name']]);
-            }
-
-
-            $children_info = $model->getAllChild($temp["2"]);
-            halt($children_info);
-
-            array_push($temp, $children_info);
-
-            $infos[] = $temp;
-
-            $temp = [];
-        }
-        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
-    }
-
-
-
-
-    /**
      * 文件上传
      * @param string $module
      * @param string $use
@@ -186,23 +118,7 @@ class Common extends Controller
         }
     }
 
-    /**
-     * 档案管理-工程项目管理
-     * @param $id
-     * @param $draw
-     * @param $table
-     * @param $search
-     * @param $start
-     * @param $length
-     * @param $limitFlag
-     * @param $order
-     * @param $columns
-     * @param $columnString
-     * @return \think\response\Json
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
+    //档案管理-工程项目管理
     public function file_project_management($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
     {
         //查询
@@ -229,6 +145,88 @@ class Common extends Controller
             }
         }
 
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            //计算列长度
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+    //档案管理-待整理文件-电子文件挂接
+    public function file_electronic_file_connection($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //获取筛选条件
+        $fpd_id = input('fpd_id') ? input('fpd_id') : "";//返回的fengning_file_pending_documents表的id
+        //表的总记录数 必要
+        $recordsTotal = 0;
+        $recordsTotal = Db::name($table)->where(["fpd_id" => $fpd_id])->count(0);
+        $recordsFilteredResult = array();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->where(["fpd_id" => $fpd_id])->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->where(["fpd_id" => $fpd_id])->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
+        $temp = array();
+        $infos = array();
+        foreach ($recordsFilteredResult as $key => $value) {
+            //计算列长度
+            $length = sizeof($columns);
+            for ($i = 0; $i < $length; $i++) {
+                array_push($temp, $value[$columns[$i]['name']]);
+            }
+            $infos[] = $temp;
+            $temp = [];
+
+        }
+        return json(['draw' => intval($draw), 'recordsTotal' => intval($recordsTotal), 'recordsFiltered' => $recordsFiltered, 'data' => $infos]);
+    }
+
+    //档案管理-待整理文件
+    public function file_pending_documents($draw, $table, $search, $start, $length, $limitFlag, $order, $columns, $columnString)
+    {
+        //查询
+        //条件过滤后记录数 必要
+        $recordsFiltered = 0;
+        //获取筛选条件
+        $classifyid = input('classifyid') ? input('classifyid') : "";//项目分类树节点id
+        //表的总记录数 必要
+        $recordsTotal = 0;
+        $recordsTotal = Db::name($table)->where(["classifyid" => $classifyid])->count(0);
+        $recordsFilteredResult = array();
+        if (strlen($search) > 0) {
+            //有搜索条件的情况
+            if ($limitFlag) {
+                //*****多表查询join改这里******
+                $recordsFilteredResult = Db::name($table)->where(["classifyid" => $classifyid])->where($columnString, 'like', '%' . $search . '%')->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = sizeof($recordsFilteredResult);
+            }
+        } else {
+            //没有搜索条件的情况
+            if ($limitFlag) {
+                $recordsFilteredResult = Db::name($table)->where(["classifyid" => $classifyid])->order($order)->limit(intval($start), intval($length))->select();
+                $recordsFiltered = $recordsTotal;
+            }
+        }
         $temp = array();
         $infos = array();
         foreach ($recordsFilteredResult as $key => $value) {
