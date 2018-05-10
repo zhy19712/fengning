@@ -122,13 +122,13 @@
                     controlPointName = res[i].name;
                     if(i==0){
                         optionStrAfter +=
-                            '<a href="javascript:;"  class="imgListStyle" onclick="clickConName('+res[i].id+')">' +
+                            '<a class="imgListStyle" onclick="clickConName('+res[i].id+')">' +
                             '<img src="__WEBSITE__/quality/branch/work.png" alt="工作">&nbsp;'+res[i].name+'<span style="display: none;">'+res[i].id+'</span>' +
                             '</a>\n';
                         continue;
                     }
                     optionStrAfter +=
-                        '<a href="javascript:;"  class="imgListStyle" onclick="clickConName('+res[i].id+')">' +
+                        '<a class="imgListStyle" onclick="clickConName('+res[i].id+')">' +
                         '<img class="imgNone" src="__WEBSITE__/quality/branch/right.png" alt="箭头">' +
                         '<img src="__WEBSITE__/quality/branch/work.png" alt="工作">&nbsp;'+res[i].name+'<span style="display: none;">'+res[i].id+'</span>' +
                         '</a>\n';
