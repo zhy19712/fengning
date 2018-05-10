@@ -216,7 +216,7 @@ class Monthplans extends Permissions
                     ->where('picture_id', $value)
                     ->field('relevance_id,picture_id')
                     ->select();
-
+                //换find方法比较合适，find()能取到一维数组，前台已经按二维数组格式来取，最好不要再修改
                 $reid = $relation[0]['relevance_id'];
                 $pid = $relation[0]['picture_id'] - 1;
 
