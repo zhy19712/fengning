@@ -166,7 +166,7 @@ var tableItem = $('#tableItem').DataTable( {
             "targets": [3],
             "render" :  function(data,type,row) {
                 var a = data;
-                var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
+                var html =  "<a type='button'  class='' style='margin-left: 5px;' onclick='conDown("+data+")'><i class='fa fa-download'></i></a>" ;
                 // html += "<a type='button' class='' style='margin-left: 5px;' onclick='conPrint("+data+")'><i class='fa fa-print'></i></a>" ;
                 return html;
             }
@@ -210,7 +210,7 @@ var tableSituation = $('#tableSituation').DataTable( {
             "targets": [4],
             "render" :  function(data,type,row) {
                 var a = data;
-                var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-search'></i></a>" ;
+                var html =  "<a type='button'  class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-search'></i></a>" ;
                 html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown2("+data+")'><i class='fa fa-download'></i></a>" ;
                 html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
                 return html;
@@ -272,7 +272,7 @@ var tableImage = $('#tableImage').DataTable( {
             "targets": [4],
             "render" :  function(data,type,row) {
                 var a = data;
-                var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-search'></i></a>" ;
+                var html =  "<a type='button'  class='' style='margin-left: 5px;' onclick='conPicshow("+data+")'><i class='fa fa-search'></i></a>" ;
                 html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDown2("+data+")'><i class='fa fa-download'></i></a>" ;
                 html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
                 return html;

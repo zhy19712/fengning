@@ -101,7 +101,7 @@ var tableItem = $('#tableItem').DataTable( {
       "targets": [6],
       "render" :  function(data,type,row) {
         var a = data;
-        var html =  "<a type='button' href='javasrcipt:;' class='' style='margin-left: 5px;' onclick='conShow("+data+")'><i class='fa fa-search'></i></a>" ;
+        var html =  "<a type='button'  class='' style='margin-left: 5px;' onclick='conShow("+data+")'><i class='fa fa-search'></i></a>" ;
         html += "<a type='button' class='' style='margin-left: 5px;' onclick='conEdit("+data+")'><i class='fa fa-pencil'></i></a>" ;
         html += "<a type='button' class='' style='margin-left: 5px;' onclick='conDel("+data+")'><i class='fa fa-trash'></i></a>" ;
         return html;
