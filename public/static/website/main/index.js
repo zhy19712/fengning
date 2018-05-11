@@ -453,13 +453,20 @@ function addAttachment() {
     });
     //添加样式
     $('#anchorFile').parent().css('padding','20px');
-    $('.webuploader-pick').next().css({
-        width:'60px',
-        height:'20px',
-        right:0,
-        left:'auto'
-    });
 }
+
+//重置webupload按钮宽高
+$('#anchorLayerTab').tabs({
+    onSelect:function(title,index){
+        $('.webuploader-pick').next().css({
+            width:'60px',
+            height:'20px',
+            right:0,
+            left:'auto'
+        });
+    }
+});
+
 //显示删除按钮
 $('.imgItem').bind('mouseover mouseleave',function (e) {
     if(e.type == 'mouseover'){
