@@ -1,6 +1,0 @@
-runtime/*
-*.log
-.idea/*
-vendor/*
-/public/uploads
-/public/temp
